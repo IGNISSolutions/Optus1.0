@@ -20,7 +20,7 @@
                                     UserToken: User.Token,
                                     path: $parent.FilePath(),
                                 },
-                                maxFileSize: 50 * 1024,
+                                maxFileSize: 100 * 1024,
                                 initialPreview: filename() ? [$parent.FilePath() + filename()] : [],
                                 allowedFileExtensions: ['jpg', 'jpeg', 'png', 'pdf', 'zip', 'rar', 'doc', 'docx', 'xls', 'xlsx', 'dwg']
                             }" name="file[]" type="file">
