@@ -81,6 +81,39 @@
     </div>
     <!-- /ko -->
 </div>
+<!-- Items a licitar -->
+<div class="m-heading-1 border-default m-bordered text-left">
+  <h4 class="block bold" style="margin-top: 0; padding-top: 0;">
+    Items a licitar
+  </h4>
+  <table class="table table-striped table-bordered" id="ListaConcursosEconomicas">
+    <thead>
+      <tr>
+        <th class="text-center vertical-align-middle" style="white-space: nowrap;">Item</th>
+        <th class="text-center vertical-align-middle" style="white-space: nowrap;">Descripción</th>
+        <th class="text-center vertical-align-middle" style="white-space: nowrap;">Unidad</th>
+        <th class="text-center vertical-align-middle" style="white-space: nowrap;">Cant Sol</th>
+        <th class="text-center vertical-align-middle" style="white-space: nowrap;">Cant Min</th>
+      </tr>
+    </thead>
+    <tbody data-bind="foreach: Productos">
+      <tr>
+        <td class="text-center vertical-align-middle col-md-4" data-bind="text: product_name"></td>
+        <td class="text-center vertical-align-middle col-md-4" data-bind="text: product_description"></td>
+        <td class="text-center vertical-align-middle col-md-1" data-bind="text: measurement_name"></td>
+        <td class="text-center vertical-align-middle col-md-1" data-bind="text: total_quantity"></td>
+        <td class="text-center vertical-align-middle col-md-1" data-bind="text: minimum_quantity"></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<!-- Evaluador Técnico -->
+<div class="m-heading-1 border-default m-bordered text-left">
+  <h4 class="block bold" style="margin-top: 0; padding-top: 0;">
+    Evaluador Técnico
+  </h4>
+  <p data-bind="text: Evaluador" style="font-weight: bold;"></p>
+</div>
 <div class="m-heading-1 border-default m-bordered text-left">
     <h4 class="block bold" style="margin-top: 0; padding-top: 0;"></h4>
     <table class="table table-striped table-bordered" id="ListaConcursosEconomicas">

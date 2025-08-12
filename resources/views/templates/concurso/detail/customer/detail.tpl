@@ -154,10 +154,10 @@
 
             {if $tipo eq 'convocatoria-oferentes'}
                 {include file='concurso/detail/customer/convocatoria.tpl'}
-            {else if $tipo eq 'chat-muro-consultas'}
-                <chat-component
-                    params='IdConcurso: IdConcurso(), IsClient: IsClient(), IsProv: IsProv(), ChatEnable: ChatEnable(), OferentesInvitados: OferentesInvitados()'>
-                </chat-component>
+                {else if $tipo eq 'chat-muro-consultas'}
+                    <chat-component
+                        params='IdConcurso: IdConcurso(), IsClient: IsClient(), IsProv: IsProv(), ChatEnable: ChatEnable(), OferentesInvitados: OferentesInvitados(), FechaHoy: FechaHoy(), HoraHoy: HoraHoy(), CierreMuroConsultas: CierreMuroConsultas(), CierreMuroConsultasHora: CierreMuroConsultasHora()'>
+                    </chat-component>
             {else if $tipo eq 'analisis-tecnicas'}
                 {include file='concurso/detail/customer/tecnica.tpl'}
             {else if $tipo eq 'analisis-ofertas'}
@@ -210,6 +210,8 @@
 <!-- KNOCKOUT JS -->
 {block 'knockout' append}
     <script type="text/javascript">
+
+
         var ManualAdjudicationProduct = function(data = null) {
             var self = this;
 
@@ -465,8 +467,6 @@
                 });
             };
 
-
-
             this.IdConcurso = ko.observable(data.list.IdConcurso);
             this.Tipo = ko.observable(data.list.Tipo);
             this.Nombre = ko.observable(data.list.Nombre);
@@ -541,6 +541,20 @@
             this.ShowChatButton = ko.observable(self.IsSobrecerrado() ? true : data.list.ChatEnable);
             this.IsClient = ko.observable(true);
             this.IsProv = ko.observable(false);
+
+            var ahora = new Date();
+                // Formatear HoraHoy en formato hh:mm:ss
+                this.HoraHoy = ko.observable(
+                    ahora.getHours().toString().padStart(2, '0') + ':' +
+                    ahora.getMinutes().toString().padStart(2, '0') + ':' +
+                    ahora.getSeconds().toString().padStart(2, '0')
+                );
+
+                // Formatear FechaHoy en formato dd-mm-yyyy
+                this.FechaHoy = ko.observable(
+                    ahora.getDate().toString().padStart(2, '0') + '-' +  // dd
+                    (ahora.getMonth() + 1).toString().padStart(2, '0') + '-' +  // mm
+                    ahora.getFullYear());
 
             if (params[3] === 'convocatoria-oferentes') {
                 this.Media = ko.observableArray(data.list.Media);

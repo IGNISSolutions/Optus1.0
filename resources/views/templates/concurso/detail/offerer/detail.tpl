@@ -1739,7 +1739,7 @@
             // Iterar sobre cada fila y extraer los valores
             tableRows.forEach((row, index) => {
                 // Solo agregar filas que no estén en el rango de las filas 2 a 10
-                if (index < 0 || index > 19) {  // Excluir las filas 2 a 10 (índices 1 a 9)
+                if (index < 0 || index > 21) {  // Excluir las filas 2 a 10 (índices 1 a 9)
                     const cells = row.querySelectorAll("td"); // Obtener las celdas de la fila
                     data.push({
                         "Item": cells[1]?.innerText.trim() || "", // Columna 1: Item

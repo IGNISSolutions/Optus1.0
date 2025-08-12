@@ -22,7 +22,7 @@ class AuthController extends BaseController
         $limiteIntentosLogin = 5;
         $ventanaDeTiempo = Carbon::now()->subMinutes(15);
 
-        // Contar intentos fallidos desde la IP
+        // 1) Control de intentos fallidos por IP
         $intentosFallidos = dependency('db')->table('login_logs')
             ->where('ip', $ip)
             ->where('estado', 'F')
@@ -38,78 +38,85 @@ class AuthController extends BaseController
             ], 429);
         }
 
-        $username = $request->getParsedBody()['UserName'];
-        $password = $request->getParsedBody()['Password'];
+        // 2) Recuperar credenciales del payload
+        $body     = $request->getParsedBody();
+        $username = $body['UserName']   ?? '';
+        $password = $body['Password']   ?? '';
 
-        // Buscar usuario
-        $user = User::where(function ($query) use ($username) {
-            $query->where('username', '=', $username)
-                ->orWhere('email', '=', $username);
+        // 3) Buscar el usuario en BD
+        $userModel = User::where(function ($q) use ($username) {
+            $q->where('username', $username)
+            ->orWhere('email', $username);
         })->first();
 
-        if ($user) {
-            // IP dinámica
-            $ipsActuales = dependency('db')->table('users_login_ips')
-            ->where('user_id', $user->id)
-            ->orderBy('created_at', 'asc')
-            ->get();
+        $success = false;
+        $message = 'Usuario o Contraseña incorrectos.';
+        $status  = 422;
+        $userData = null;
 
+        if ($userModel) {
+            // 4) Lógica de IP dinámica (2FA)
+            $ipsActuales   = dependency('db')->table('users_login_ips')
+                ->where('user_id', $userModel->id)
+                ->orderBy('created_at', 'asc')
+                ->get();
             $ipsRegistradas = $ipsActuales->pluck('ip_address')->toArray();
 
-            if (!in_array($ip, $ipsRegistradas)) {
+            if (! in_array($ip, $ipsRegistradas)) {
                 if ($ipsActuales->count() >= 10) {
-                    // Activar 2FA: no guardar la nueva IP todavía
-                    $user->update(['requires_ip_verification' => 'S']);
+                    $userModel->update(['requires_ip_verification' => 'S']);
                 } else {
-                    // Guardar nueva IP directamente
-                    $this->guardarIpUsuario($user->id, $ip);
-                    $user->update(['requires_ip_verification' => 'N']);
+                    $this->guardarIpUsuario($userModel->id, $ip);
+                    $userModel->update(['requires_ip_verification' => 'N']);
                 }
             } else {
-                // IP ya conocida, login normal
-                $user->update(['requires_ip_verification' => 'N']);
+                $userModel->update(['requires_ip_verification' => 'N']);
             }
 
-            // Validación de contraseña
-            $username_md5 = md5($user->username);
-            $part1 = substr($username_md5, 0, strlen($username_md5) / 2);
-            $part2 = substr($username_md5, strlen($username_md5) / 2);
-            $passwordHash = hash("sha256", $part2 . $password . $part1);
+            // 5) Verificar contraseña
+            $usernameMd5 = md5($userModel->username);
+            $part1       = substr($usernameMd5, 0, 16);
+            $part2       = substr($usernameMd5, 16);
+            $hash        = hash('sha256', $part2 . $password . $part1);
 
-            if ($user->password === $passwordHash) {
-                $result = $this->setUsuario($user, $password);
-                if ($result) {
-                    $success = true;
-                    $message = 'Usuario validado.';
-                    $status = 200;
-                    $this->login_logs($username, $user, 'S', 'Optus', 'Inicio de sesión exitoso');
-                    $user = $result;
-                } else {
-                    $success = false;
-                    $message = 'Ha ocurrido un error.';
-                    $status = 500;
-                    $this->login_logs($username, $user, 'F', 'Optus', 'Error al establecer la sesión');
-                    $user = null;
-                }
+            if ($userModel->password === $hash) {
+                // 6) Iniciar sesión: cargar token, SESSION, preparar $userData
+                $userData = $this->setUsuario($userModel, $password);
+                $success  = true;
+                $message  = 'Usuario validado.';
+                $status   = 200;
+                $this->login_logs($username, $userModel, 'S', 'Optus', 'Inicio de sesión exitoso');
             } else {
-                $success = false;
-                $message = 'Usuario o Contraseña incorrectos.';
-                $status = 422;
-                $user = null;
-                $this->login_logs($username, $user, 'F', 'Optus', 'Contraseña incorrecta');
+                $this->login_logs($username, $userModel, 'F', 'Optus', 'Contraseña incorrecta');
             }
         } else {
-            $success = false;
-            $message = 'Usuario o Contraseña incorrectos.';
-            $status = 422;
-            $user = null;
             $this->login_logs($username, null, 'F', 'Optus', 'Usuario incorrecto');
         }
 
+        // 7) Sólo si el login fue exitoso, firmamos y enviamos la cookie
+        if ($success && $userModel) {
+            $payload = $userModel->customer_company_id;
+            $secret  = $_ENV['TOKEN_SECRET_KEY'];
+            $hmac    = hash_hmac('sha256', $payload, $secret);
+            $cookieValue = "{$payload}.{$hmac}";
+
+            // Flags: Secure sólo en HTTPS real, HttpOnly para no exponerla a JS
+            setcookie(
+                'customer_company',
+                $cookieValue,
+                time() + 7 * 24 * 60 * 60,
+                '/',
+                null,
+                true,   // Secure: sólo HTTPS
+                true    // HttpOnly
+            );
+        }
+
+        // 8) Devolver JSON limpio
         return $this->json($response, [
             'success' => $success,
             'message' => $message,
-            'data'    => ['user' => $user]
+            'data'    => ['user' => $userData]
         ], $status);
     }
 

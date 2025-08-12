@@ -1255,11 +1255,54 @@ class ConcursoController extends BaseController
                         'path' => filePath($file_path . $sheet->filename)
                     ];
                 }
+                $products = [];
+                foreach ($concurso->productos as $product) {
+                    $products[] = [
+                        'product_id'          => $product->id,
+                        'product_name'        => $product->nombre,
+                        'product_description' => $product->descripcion,
+                        'currency_id'         => $concurso->tipo_moneda->id,
+                        'currency_name'       => $concurso->tipo_moneda->nombre,
+                        'minimum_quantity'    => $product->oferta_minima,
+                        'total_quantity'      => $product->cantidad,
+                        'measurement_id'      => $product->unidad_medida->id,
+                        'measurement_name'    => $product->unidad_medida->name,
+                    ];
+                }
+
+                // Obtener el registro de User
+                $evalUser = User::find($concurso->ficha_tecnica_usuario_evalua);
+
+                // Extraer first + last intentando varios campos
+                if ($evalUser) {
+                    // Si tu DB realmente usa first_name / last_name:
+                    $first = $evalUser->first_name  ?? null;
+                    $last  = $evalUser->last_name   ?? null;
+
+                    // Si esos no existen, probar name o username
+                    if (! $first && isset($evalUser->name)) {
+                        // asumimos que name es “Nombre Apellido”
+                        [$first, $last] = array_pad(explode(' ', $evalUser->name, 2), 2, '');
+                    }
+                    if (! $first && isset($evalUser->username)) {
+                        $first = $evalUser->username;
+                    }
+
+                    $evalName = trim($first . ' ' . $last);
+                    if ($evalName === '') {
+                        $evalName = '— Sin evaluador —';
+                    }
+                } else {
+                    $evalName = '— Sin evaluador —';
+                }
+
                 $list = array_merge($list, array_merge($common_data, [
                     'Media' => $media,
+                    'Productos' => $products,
                     'OferentesInvitados' => $oferentesInvitados,
                     'OferentesAInvitar' => $results,
                     'OferenteAInvitar' => null,
+                    'Evaluador' => $evalName,
                     //'Usertype' => $user_type
                 ]));
             }
@@ -1631,12 +1674,14 @@ class ConcursoController extends BaseController
                 //'FinalizacionConsultas' => $create ? Carbon::now()->addDays(3)->addHour(1)->format('d-m-Y H:i') : $concurso->finalizacion_consultas->format('d-m-Y H:i'),
                 'FinalizacionConsultas' => $create
                 ? Carbon::now()->addDays(3)->addHour(2)->minute(0)->second(0)->format('d-m-Y H:i')
-                : $concurso->finalizacion_consultas->addHour(2)->minute(0)->second(0)->format('d-m-Y H:i'),                'AceptacionTerminos' => $create && !$is_copy ? 'no' : $concurso->aceptacion_terminos,
+                : $concurso->finalizacion_consultas->format('d-m-Y H:i'),                
+                'AceptacionTerminos' => $create && !$is_copy ? 'no' : $concurso->aceptacion_terminos,
                 'Aperturasobre' => $create && !$is_copy ? 'no' : $concurso->aperturasobre,
                 //'FechaLimite' => $create ? Carbon::now()->addDays(1)->addHour()->format('d-m-Y H:i') : $concurso->fecha_limite->format('d-m-Y H:i'),
                 'FechaLimite' => $create 
-                ? Carbon::now()->addDays(1)->addHour(1)->minute(0)->second(0)->format('d-m-Y H:i')
-                : $concurso->fecha_limite->addHour(1)->minute(0)->second(0)->format('d-m-Y H:i'),                'SeguroCaucion' => $create && !$is_copy ? 'no' : $concurso->seguro_caucion,
+                ? Carbon::now()->addDays(1)->addHour(2)->minute(0)->second(0)->format('d-m-Y H:i')
+                : $concurso->fecha_limite->format('d-m-Y H:i'),               
+                'SeguroCaucion' => $create && !$is_copy ? 'no' : $concurso->seguro_caucion,
                 'DiagramaGant' => $create && !$is_copy ? 'no' : $concurso->diagrama_gant,
 
                 'CertificadoVisitaObra' => $create && !$is_copy ? 'no' : $concurso->cert_visita,

@@ -21,89 +21,77 @@ var AppOptus = function() {
 }();
 
 var UserLogin = function() {
-    var self = this;
+  var self = this;
 
-    this.UserName = ko.observable();
-    this.Password = ko.observable();
+  this.UserName = ko.observable();
+  this.Password = ko.observable();
 
-    this.Login = function() {
-        const data = {
-            UserName: self.UserName(),
-            Password: self.Password()
-        };
-        Services.Post('/login/send', data,
-            (response) => {
-                if (response.success) {
-                    if (response.data.user.RequiresIpVerification == 'S') {
-                        window.location.href = '/verify-code-advice';
-                    } else if (response.data.user.PassChange == 'S') {
-                        window.location.href = '/verify-code-advice';
-                    } else {
-                        User.SetValues(response.data.user);
-                        setCookie('customer_company_id', response.data.user.customer_company_id, 7);
-                        window.location.href = '/dashboard';
-                    }
-                } else {
-                    swal('Error', response.message, 'error');
-                }
-            },
-            (error) => {
-                swal('Error', error.message, 'error');
-            },
-            null,
-            null
-        );
+  this.Login = function() {
+    const payload = {
+      UserName: self.UserName(),
+      Password: self.Password()
     };
-    
-    this.LoginAD = async function() {
-        swal({
-            title: "Seleccione una opción",
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonText: "AD TLC",
-            cancelButtonText: "AD LG",
-            closeOnConfirm: true,
-            closeOnCancel: true
-        }, function(isConfirm) {
-            if (isConfirm) {
-                window.location.href = '/ad/login/TLC';
-            } else {
-                window.location.href = '/ad/login/LG';
-            }
-        });
-    };
-    
-    function setCookie(name, value, days) {
-        var expires = "";
-        if (days) {
-            var date = new Date();
-            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-            expires = "; expires=" + date.toUTCString();
+
+    // Usamos fetch directamente para poder enviar 'credentials: include'
+    fetch('/login/send', {
+      method: 'POST',
+      credentials: 'include',               // <–– permite recibir la cookie firmada por el servidor
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+    .then(res => res.json())
+    .then(response => {
+      if (response.success) {
+        const user = response.data.user;
+
+        if (user.RequiresIpVerification === 'S' || user.PassChange === 'S') {
+          window.location.href = '/verify-code-advice';
+        } else {
+          User.SetValues(user);
+          // ¡OJO! Aquí ya **no** ponemos setCookie():  
+          // el servidor nos envió la cookie firmada (HttpOnly) en la cabecera Set-Cookie  
+          window.location.href = '/dashboard';
         }
-        document.cookie = name + "=" + (value || "") + expires + "; path=/";
-    }
+      } else {
+        swal('Error', response.message, 'error');
+      }
+    })
+    .catch(error => {
+      swal('Error', error.message, 'error');
+    });
+  };
+
+  this.LoginAD = async function() {
+    swal({
+      title: "Seleccione una opción",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "AD TLC",
+      cancelButtonText: "AD LG",
+      closeOnConfirm: true,
+      closeOnCancel: true
+    }, function(isConfirm) {
+      window.location.href = isConfirm
+        ? '/ad/login/TLC'
+        : '/ad/login/LG';
+    });
+  };
 };
 
+
+// Si tu lógica de window.onload sólo servía para «recuperar» la cookie,
+// puedes simplificarla o eliminarla:
 window.onload = function() {
-    const data = localStorage.getItem('userdata')
-    if (data) {
-        localStorage.removeItem('userdata');
-        const user = JSON.parse(data);
-        User.SetValues(user);
-        setCookie('customer_company_id', user.customer_company_id, 7);
-        window.location.href = '/dashboard';
-    }
+  const data = localStorage.getItem('userdata');
+  if (data) {
+    localStorage.removeItem('userdata');
+    const user = JSON.parse(data);
+    User.SetValues(user);
+    // No hace falta volver a setear la cookie en JS
+    window.location.href = '/dashboard';
+  }
 };
 
-function setCookie(name, value, days) {
-    var expires = "";
-    if (days) {
-        var date = new Date();
-        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-        expires = "; expires=" + date.toUTCString();
-    }
-    document.cookie = name + "=" + (value || "") + expires + "; path=/";
-}
 
 var User = function() {
     var _default = {

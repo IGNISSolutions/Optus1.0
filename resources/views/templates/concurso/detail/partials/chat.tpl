@@ -146,12 +146,8 @@
                 const fechaCierreParts = fechaCierreStr.split('-');
                 const fechaCierre = new Date(
                     fechaCierreParts[2] + '-' + fechaCierreParts[1] + '-' + fechaCierreParts[0] + 'T' + horaCierreStr
-                );
-
-                console.log("🕓 Hoy:", fechaHoy.toISOString());
-                console.log("🕓 Cierre:", fechaCierre.toISOString());
-                console.log("✅ ¿Mostrar botón?", fechaHoy < fechaCierre);
-
+                );  
+                
                 return fechaHoy < fechaCierre;
             });
 
