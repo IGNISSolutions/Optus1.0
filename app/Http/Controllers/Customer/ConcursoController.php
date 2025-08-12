@@ -1614,6 +1614,19 @@ class ConcursoController extends BaseController
                 } else {
                     $isReadOnly = false; // Asume que los demás casos no tienen restricciones.
                 }
+
+                // Logica para bloquear campos de puntajes plantillas tecnicas cuando hay propeusta presentada
+                // Bloquear si algún participante ya tiene analisis_tecnica_valores NO NULL
+                $bloquearCamposTecnica = false;
+
+                if ($concurso && !empty($concurso->id)) {
+                    $countConAnalisis = Participante::where('id_concurso', $concurso->id)
+                        ->whereNotNull('analisis_tecnica_valores')
+                        ->count();
+
+                    $bloquearCamposTecnica = ($countConAnalisis > 0);
+                }
+
             }
 
             $sheets = [];
@@ -1642,9 +1655,8 @@ class ConcursoController extends BaseController
                 'IsGo' => $is_go,
                 'IsSobrecerrado' => $is_sobrecerrado,
                 'IsOnline' => $is_online,
-                'ReadOnly' => $create
-                    ? false 
-                    : $isReadOnly,
+                'ReadOnly' => $create ? false : $isReadOnly,
+                'BloquearCamposTecnica' => $create ? false : $bloquearCamposTecnica,
                 'BloquearInvitacionOferentes' => $bloquearInvitacionOferentes,
                 'Nombre' => $create && !$is_copy ? '' : $concurso->nombre,
                 'AreaUsr' => $create && !$is_copy ? '' : $concurso->area_sol,

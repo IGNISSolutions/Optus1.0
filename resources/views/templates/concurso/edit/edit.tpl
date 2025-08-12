@@ -1000,7 +1000,8 @@
             this.ReadOnly = ko.observable(data.list.ReadOnly);
 
             this.BloquearInvitacionOferentes = ko.observable(data.list.BloquearInvitacionOferentes);
-            
+            this.BloquearCamposTecnica = ko.observable(!!data.list.BloquearCamposTecnica);
+
             this.FilePath = ko.observable(data.list.FilePath);
             this.ProductMeasurementList = ko.observableArray(data.list.ProductMeasurementList);
             this.NewProduct = ko.observable(new Product());
