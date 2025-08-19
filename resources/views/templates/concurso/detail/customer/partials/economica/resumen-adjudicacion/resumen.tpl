@@ -24,29 +24,129 @@
             <!-- /ko -->
         </tr>
         <tr>
-            <th>Ahorro %</th>
-            <td data-bind="number: ConcursoEconomicas.mejoresOfertas.mejorIntegral.ahorro_porc, precision: 2, symbol: '%', after: true, style: { color: ConcursoEconomicas.mejoresOfertas.mejorIntegral.ahorro_porc == 0 ? 'black' : (ConcursoEconomicas.mejoresOfertas.mejorIntegral.ahorro_porc > 0 ? 'green':'red') }" class="text-center vertical-align-middle text-bold"></td>
+            <th class= "text-center" data-bind="text: $root.EsAscendente() ? 'Ganancia %' : 'Ahorro %'"></th>
+            <!-- Mejor oferta integral (% dinámico) -->
+            <td class="text-center vertical-align-middle text-bold"
+                data-bind="number: $root.EsAscendente()
+                                    ? ConcursoEconomicas.mejoresOfertas.mejorIntegral.ganancia_porc
+                                    : ConcursoEconomicas.mejoresOfertas.mejorIntegral.ahorro_porc,
+                            precision: 2, symbol: '%', after: true,
+                            style: { color: (
+                                    $root.EsAscendente()
+                                    ? ConcursoEconomicas.mejoresOfertas.mejorIntegral.ganancia_porc
+                                    : ConcursoEconomicas.mejoresOfertas.mejorIntegral.ahorro_porc
+                                    ) == 0 ? 'black' : (
+                                    (
+                                        $root.EsAscendente()
+                                        ? ConcursoEconomicas.mejoresOfertas.mejorIntegral.ganancia_porc
+                                        : ConcursoEconomicas.mejoresOfertas.mejorIntegral.ahorro_porc
+                                    ) > 0 ? 'green' : 'red'
+                                    ) }"></td>
 
-            <td data-bind="number: ConcursoEconomicas.mejoresOfertas.mejorIndividual.ahorro_porc, precision: 2, symbol: '%', after: true, style: { color: ConcursoEconomicas.mejoresOfertas.mejorIndividual.ahorro_porc == 0 ? 'black' : (ConcursoEconomicas.mejoresOfertas.mejorIndividual.ahorro_porc > 0 ? 'green':'red') }" class="text-center vertical-align-middle text-bold"></td>
-            
+            <!-- Mejor oferta individual (% dinámico) -->
+            <td class="text-center vertical-align-middle text-bold"
+                data-bind="number: $root.EsAscendente()
+                                    ? ConcursoEconomicas.mejoresOfertas.mejorIndividual.ganancia_porc
+                                    : ConcursoEconomicas.mejoresOfertas.mejorIndividual.ahorro_porc,
+                            precision: 2, symbol: '%', after: true,
+                            style: { color: (
+                                    $root.EsAscendente()
+                                    ? ConcursoEconomicas.mejoresOfertas.mejorIndividual.ganancia_porc
+                                    : ConcursoEconomicas.mejoresOfertas.mejorIndividual.ahorro_porc
+                                    ) == 0 ? 'black' : (
+                                    (
+                                        $root.EsAscendente()
+                                        ? ConcursoEconomicas.mejoresOfertas.mejorIndividual.ganancia_porc
+                                        : ConcursoEconomicas.mejoresOfertas.mejorIndividual.ahorro_porc
+                                    ) > 0 ? 'green' : 'red'
+                                    ) }"></td>
+
             <!-- ko if: $root.ManualAdjudication().total() == 0 -->
             <td data-bind="text:'-'" class="vertical-align-middle text-center text-bold"></td>
             <!-- /ko -->
             <!-- ko if: $root.ManualAdjudication().total() > 0  -->
-            <td data-bind="number: $root.ManualAdjudication().AhorroRelativo(), precision: 2, symbol: '%', after: true, style: { color: $root.ManualAdjudication().AhorroRelativo() == 0 ? 'black' : ($root.ManualAdjudication().AhorroRelativo() > 0 ? 'green':'red') }" class="text-center vertical-align-middle text-bold"></td>
+            <!-- Manual: % dinámico (ganancia / ahorro) -->
+            <td class="text-center vertical-align-middle text-bold"
+                data-bind="number: $root.EsAscendente()
+                                    ? $root.ManualAdjudication().GananciaRelativa()
+                                    : $root.ManualAdjudication().AhorroRelativo(),
+                        precision: 2, symbol: '%', after: true,
+                        style: { color: (
+                                    $root.EsAscendente()
+                                    ? $root.ManualAdjudication().GananciaRelativa()
+                                    : $root.ManualAdjudication().AhorroRelativo()
+                                ) == 0 ? 'black' : (
+                                    (
+                                    $root.EsAscendente()
+                                    ? $root.ManualAdjudication().GananciaRelativa()
+                                    : $root.ManualAdjudication().AhorroRelativo()
+                                    ) > 0 ? 'green' : 'red'
+                                ) }">
+            </td>
+
             <!-- /ko -->
         </tr>
         <tr>
-            <th>Ahorro absoluto</th>
-            <td data-bind="number: ConcursoEconomicas.mejoresOfertas.mejorIntegral.ahorro_abs, precision: 2, style: { color: ConcursoEconomicas.mejoresOfertas.mejorIntegral.ahorro_abs == 0 ? 'black' : (ConcursoEconomicas.mejoresOfertas.mejorIntegral.ahorro_abs > 0 ? 'green':'red') }" class="text-center vertical-align-middle text-bold"></td>
-            
-            <td data-bind="number: ConcursoEconomicas.mejoresOfertas.mejorIndividual.ahorro_abs, precision: 2, style: { color: ConcursoEconomicas.mejoresOfertas.mejorIndividual.ahorro_abs == 0 ? 'black' : (ConcursoEconomicas.mejoresOfertas.mejorIndividual.ahorro_abs > 0 ? 'green':'red') }" class="text-center vertical-align-middle text-bold"></td>
+            <th class= "text-center" data-bind="text: $root.EsAscendente() ? 'Ganancia abs' : 'Ahorro abs'"></th>
+            <!-- Mejor oferta integral (abs dinámico) -->
+            <td class="text-center vertical-align-middle text-bold"
+                data-bind="number: $root.EsAscendente()
+                                    ? ConcursoEconomicas.mejoresOfertas.mejorIntegral.ganancia_abs
+                                    : ConcursoEconomicas.mejoresOfertas.mejorIntegral.ahorro_abs,
+                            precision: 2,
+                            style: { color: (
+                                    $root.EsAscendente()
+                                    ? ConcursoEconomicas.mejoresOfertas.mejorIntegral.ganancia_abs
+                                    : ConcursoEconomicas.mejoresOfertas.mejorIntegral.ahorro_abs
+                                    ) == 0 ? 'black' : (
+                                    (
+                                        $root.EsAscendente()
+                                        ? ConcursoEconomicas.mejoresOfertas.mejorIntegral.ganancia_abs
+                                        : ConcursoEconomicas.mejoresOfertas.mejorIntegral.ahorro_abs
+                                    ) > 0 ? 'green' : 'red'
+                                    ) }"></td>
+
+            <!-- Mejor oferta individual (abs dinámico) -->
+            <td class="text-center vertical-align-middle text-bold"
+                data-bind="number: $root.EsAscendente()
+                                    ? ConcursoEconomicas.mejoresOfertas.mejorIndividual.ganancia_abs
+                                    : ConcursoEconomicas.mejoresOfertas.mejorIndividual.ahorro_abs,
+                            precision: 2,
+                            style: { color: (
+                                    $root.EsAscendente()
+                                    ? ConcursoEconomicas.mejoresOfertas.mejorIndividual.ganancia_abs
+                                    : ConcursoEconomicas.mejoresOfertas.mejorIndividual.ahorro_abs
+                                    ) == 0 ? 'black' : (
+                                    (
+                                        $root.EsAscendente()
+                                        ? ConcursoEconomicas.mejoresOfertas.mejorIndividual.ganancia_abs
+                                        : ConcursoEconomicas.mejoresOfertas.mejorIndividual.ahorro_abs
+                                    ) > 0 ? 'green' : 'red'
+                                    ) }"></td>
             
             <!-- ko if: $root.ManualAdjudication().total() == 0 -->
             <td data-bind="text:'-'" class="vertical-align-middle text-center text-bold"></td>
             <!-- /ko -->
             <!-- ko if: $root.ManualAdjudication().total() > 0  -->
-            <td data-bind="number: $root.ManualAdjudication().AhorroAbsoluto(), precision: 2, style: { color: $root.ManualAdjudication().AhorroAbsoluto() == 0 ? 'black' : ($root.ManualAdjudication().AhorroAbsoluto() > 0 ? 'green':'red') }" class="text-center vertical-align-middle text-bold"></td>
+            <!-- Manual: abs dinámico (ganancia / ahorro) -->
+            <td class="text-center vertical-align-middle text-bold"
+                data-bind="number: $root.EsAscendente()
+                                    ? $root.ManualAdjudication().GananciaAbsoluta()
+                                    : $root.ManualAdjudication().AhorroAbsoluto(),
+                        precision: 2,
+                        style: { color: (
+                                    $root.EsAscendente()
+                                    ? $root.ManualAdjudication().GananciaAbsoluta()
+                                    : $root.ManualAdjudication().AhorroAbsoluto()
+                                ) == 0 ? 'black' : (
+                                    (
+                                    $root.EsAscendente()
+                                    ? $root.ManualAdjudication().GananciaAbsoluta()
+                                    : $root.ManualAdjudication().AhorroAbsoluto()
+                                    ) > 0 ? 'green' : 'red'
+                                ) }">
+            </td>
+
             <!-- /ko -->
         </tr>
         <!-- ko if: active -->

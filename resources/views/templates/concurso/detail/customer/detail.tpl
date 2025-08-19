@@ -413,6 +413,18 @@
                 return total != 0.00 ? total : 0.00;
             });
 
+            // >>> NUEVO: Ganancia absoluta (total - targetCost)
+            this.GananciaAbsoluta = ko.computed(() => {
+                if (this.targetCost() === 0.00 || self.items().length === 0) return 0.00;
+                return +(this.total() - this.targetCost()).toFixed(2);
+            });
+
+            // >>> NUEVO: Ganancia relativa (%)
+            this.GananciaRelativa = ko.computed(() => {
+                if (this.targetCost() === 0.00 || self.items().length === 0) return 0.00;
+                return +(((this.GananciaAbsoluta() * 100) / this.targetCost()).toFixed(2));
+            });
+
             if (data.ManualAdjudicationItems.length > 0) {
                 data.ManualAdjudicationItems.forEach(item => {
                     self.items.push(new ManualAdjudicationItem(self.items, item));
@@ -467,6 +479,7 @@
                 });
             };
 
+            this.EsAscendente = ko.observable(false);
             this.IdConcurso = ko.observable(data.list.IdConcurso);
             this.Tipo = ko.observable(data.list.Tipo);
             this.Nombre = ko.observable(data.list.Nombre);
@@ -541,6 +554,8 @@
             this.ShowChatButton = ko.observable(self.IsSobrecerrado() ? true : data.list.ChatEnable);
             this.IsClient = ko.observable(true);
             this.IsProv = ko.observable(false);
+            
+            
 
             var ahora = new Date();
                 // Formatear HoraHoy en formato hh:mm:ss
@@ -557,10 +572,12 @@
                     ahora.getFullYear());
 
             if (params[3] === 'convocatoria-oferentes') {
+                this.Productos = ko.observableArray(data.list.Productos);
                 this.Media = ko.observableArray(data.list.Media);
                 this.AceptacionInvitacion = ko.observable(data.list.AceptacionInvitacion);
                 this.OferenteAInvitar = ko.observable(data.list.OferenteAInvitar);
                 this.OferentesAInvitar = ko.observable(data.list.OferentesAInvitar);
+                this.Evaluador = ko.observable(data.list.Evaluador);
 
             } else if (params[3] === 'analisis-tecnicas') {
                 this.TechnicalEvaluations = ko.observableArray(data.list.TechnicalEvaluations);
@@ -650,6 +667,7 @@
                 this.Evaluaciones = ko.observableArray(data.list.Evaluaciones);
                 this.TitleNewRound = ko.observable("Lanzar " + self.NuevaRonda());
                 this.Proveedores = ko.observableArray(data.list.Proveedores);
+                this.EsAscendente = ko.observable(!!data.list.EsAscendente);
 
 
 

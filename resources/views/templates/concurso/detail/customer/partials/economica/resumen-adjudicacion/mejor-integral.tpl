@@ -8,9 +8,9 @@
             <th class="text-center"> Costo<br>Objetivo </th>
             <th class="text-center"> Precio<br>Unitario </th>
             <th class="text-center"> Precio<br>Total </th>
-            <th class="text-center"> % Ahorro </th>
-            <th class="text-center"> Ahorro<br>absoluto </th>
-            <th class="text-center"> Proveedor </th>
+            <th class= "text-center" data-bind="text: $root.EsAscendente() ? 'Ganancia %' : 'Ahorro %'"></th>
+            <th class= "text-center" data-bind="text: $root.EsAscendente() ? 'Ganancia abs' : 'Ahorro abs'"></th>
+            <th class= "text-center" data-bind="text: $root.EsAscendente() ? 'Oferente' : 'Proveedor'"></th>
         </tr>
     </thead>
     <tbody data-bind="foreach: { data: ConcursoEconomicas.mejoresOfertas.mejorIntegral.items, as:'item' }">
@@ -25,8 +25,21 @@
             <td data-bind="text: 'No aplica'" class="text-center vertical-align-middle"></td>
             <!-- /ko -->
             <!-- ko if: targetcost > 0 -->
-            <td data-bind="number: ahorro_porc, precision: 2, symbol: '%', after: true, style: { color: ahorro_porc == 0 ? 'black' : (ahorro_porc > 0 ? 'green':'red') }" class="text-center vertical-align-middle"></td>
-            <td data-bind="number: ahorro_abs, precision: 2, style: { color: ahorro_abs == 0 ? 'black' : (ahorro_abs > 0 ? 'green' : 'red') }" class="text-center vertical-align-middle"></td>
+            <td class="text-center vertical-align-middle"
+                data-bind="number: $root.EsAscendente() ? ganancia_porc : ahorro_porc,
+                        precision: 2, symbol: '%', after: true,
+                        style: { color: ($root.EsAscendente() ? ganancia_porc : ahorro_porc) == 0 
+                                        ? 'black' 
+                                        : (($root.EsAscendente() ? ganancia_porc : ahorro_porc) > 0 ? 'green' : 'red') }">
+            </td>
+
+            <td class="text-center vertical-align-middle"
+                data-bind="number: $root.EsAscendente() ? ganancia_abs : ahorro_abs,
+                        precision: 2,
+                        style: { color: ($root.EsAscendente() ? ganancia_abs : ahorro_abs) == 0 
+                                        ? 'black' 
+                                        : (($root.EsAscendente() ? ganancia_abs : ahorro_abs) > 0 ? 'green' : 'red') }">
+            </td>
             <!-- /ko -->
             
             <!-- ko if: $index() === 0 -->

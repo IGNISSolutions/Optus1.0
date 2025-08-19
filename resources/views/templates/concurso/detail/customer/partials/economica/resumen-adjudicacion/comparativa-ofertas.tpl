@@ -6,7 +6,9 @@
 <table class="table table-striped table-bordered text-xsmall" id="ListaConcursosEconomicas">
   <thead class="text-center">
     <tr style="background: #ccc;">
-      <th class="text-center">Proveedor</th>
+      <th class="text-center"
+          data-bind="text: ($root.EsAscendente() ? 'Oferente' : 'Proveedor')">
+      </th>
       <th class="text-center">Fecha presentación</th>
       <th class="text-center">Comentario</th>
       <th class="text-center">Propuesta Económica</th>
