@@ -642,40 +642,50 @@
                 );
             };
 
-            this.onCuitBlur = function() {
+            this.onCuitBlur = function () {
             // Solo corre cuando un CUSTOMER crea un OFFERER nuevo
             if ('{$userType}' !== 'customer') return;
-            if (params[1] !== 'offerer') return;     // tipo en la URL
-            if (params[2] !== 'nuevo') return;       // acción en la URL
+            if (params[1] !== 'offerer') return;   // tipo en la URL
+            if (params[2] !== 'nuevo') return;     // acción en la URL
 
             var raw = self.Entity.Cuit() || '';
             var cuit = String(raw).replace(/\D/g, ''); // solo dígitos
-
-            // Validación mínima para no consultar por cualquier cosa
             if (cuit.length !== 11) return;
 
             $.blockUI();
-
-            // Endpoint sugerido (ver backend más abajo)
             var url = '/empresas/offerer/by-cuit/' + cuit;
 
             Services.Get(url, { UserToken: User.Token },
-                function(response) {
-                    $.unblockUI();
+                function (response) {
+                $.unblockUI();
 
-                    // Si existe, mostramos el modal de confirmación
-                    if (response && response.success && response.data && response.data.id) {
-                        self.showOffererExistsModal(response.data);
-                    }
-                    // Si no existe, no hacemos nada (user sigue creando)
+                // Caso 1: existe proveedor y NO está asociado todavía → mostrar modal para asociar
+                if (response && response.success && response.data && response.data.id) {
+                    self.showOffererExistsModal(response.data);
+                    return;
+                }
+
+                // Caso 2: cualquier otro (ya asociado, no existe, cuit inválido, etc.) → mostrar aviso
+                var msg = (response && response.message) ? response.message : 'No se pudo verificar el CUIT.';
+                swal({
+                    title: 'Aviso',
+                    text: msg,
+                    type: 'warning',
+                    confirmButtonText: 'Aceptar'
+                }, function () {
+                    // limpiamos y devolvemos foco
+                    self.Entity.Cuit('');
+                    setTimeout(function(){ document.getElementById('cuit')?.focus(); }, 0);
+                });
                 },
-                function(error) {
-                    $.unblockUI();
-                    // Podés loguear o ignorar silenciosamente
-                    // swal('Error', error.message || 'No se pudo verificar el CUIT', 'error');
+                function (error) {
+                $.unblockUI();
+                // Errores de red o 5xx
+                var msg = (error && error.message) ? error.message : 'Error al verificar el CUIT.';
+                swal('Error', msg, 'error');
                 }
             );
-        };
+            };
 
         this.showOffererExistsModal = function(offerer) {
             // offerer = { id, business_name, cuit, nombre, apellido, email}
