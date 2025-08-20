@@ -578,6 +578,7 @@
                 this.OferenteAInvitar = ko.observable(data.list.OferenteAInvitar);
                 this.OferentesAInvitar = ko.observable(data.list.OferentesAInvitar);
                 this.Evaluador = ko.observable(data.list.Evaluador);
+                this.EsAscendente = ko.observable(!!data.list.EsAscendente);
 
             } else if (params[3] === 'analisis-tecnicas') {
                 this.TechnicalEvaluations = ko.observableArray(data.list.TechnicalEvaluations);

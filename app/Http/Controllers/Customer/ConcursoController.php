@@ -1267,6 +1267,11 @@ class ConcursoController extends BaseController
                     ];
                 }
 
+                $esAscendente = false;
+                if ($concurso->is_online && strtolower(trim($concurso->tipo_valor_ofertar)) === 'ascendente') {
+                    $esAscendente = true;
+                }
+
                 // Obtener el registro de User
                 $evalUser = User::find($concurso->ficha_tecnica_usuario_evalua);
 
@@ -1300,6 +1305,7 @@ class ConcursoController extends BaseController
                     'OferentesAInvitar' => $results,
                     'OferenteAInvitar' => null,
                     'Evaluador' => $evalName,
+                    'EsAscendente'=> $esAscendente,
                     //'Usertype' => $user_type
                 ]));
             }

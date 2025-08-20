@@ -10,8 +10,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                <h4 class="modal-title">
-                    Invitar Nuevo Proveedor
+                <h4 class="modal-title" data-bind="text: ($root.EsAscendente() ? 'Invitar nuevo oferente' : 'Invitar nuevo proveedor')">
                 </h4>
             </div>
             <div class="modal-body text-left">
@@ -119,8 +118,7 @@
     <table class="table table-striped table-bordered" id="ListaConcursosEconomicas">
         <thead>
             <tr>
-                <th class="text-center vertical-align-middle">
-                    Proveedores Invitados
+                <th class="text-center vertical-align-middle" data-bind="text: ($root.EsAscendente() ? 'Oferentes invitados' : 'Proveedores invitados')">
                 </th>
                 <th class="text-center vertical-align-middle">
                     Fecha Invitación

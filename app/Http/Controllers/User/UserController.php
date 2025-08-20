@@ -1248,7 +1248,7 @@ class UserController extends BaseController
 		    [
                         "id" => 19,
                         "description" => "Edición+de+Usuarios+Proveedores",
-                        "active" => false
+                        "active" => true
                     ]
 
                 ],
