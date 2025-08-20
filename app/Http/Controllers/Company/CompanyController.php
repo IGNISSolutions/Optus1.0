@@ -206,6 +206,40 @@ class CompanyController extends BaseController
         ]);
     }
 
+    public function getOffererByCuit(Request $request, Response $response, $params)
+    {
+        $cuit = preg_replace('/\D/', '', $params['cuit'] ?? '');
+
+        if (strlen($cuit) !== 11) {
+            return $response->withJson([
+                'success' => false,
+                'message' => 'CUIT inválido'
+            ]);
+        }
+
+        $offerer = OffererCompany::where('cuit', $cuit)->first();
+
+        if (!$offerer) {
+            return $response->withJson([
+                'success' => false,
+                'message' => 'No existe proveedor con ese CUIT'
+            ]);
+        }
+
+        return $response->withJson([
+            'success' => true,
+            'data' => [
+                'id'            => $offerer->id,
+                'business_name' => $offerer->business_name,
+                'cuit'          => $offerer->cuit,
+                'email' => $offerer->email,
+                'nombre' => $offerer->first_name,
+                'apellido' => $offerer->last_name,
+            ]
+        ]);
+    }
+
+
     public function parseList($companies, $role)
     {
         $results = [];
