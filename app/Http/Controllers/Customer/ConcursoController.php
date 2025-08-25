@@ -1587,6 +1587,7 @@ class ConcursoController extends BaseController
         $create = (bool) ($params['action'] === 'create');
         $is_copy = isset($params['id']);
         $isReadOnly = false;
+        $isVisible = false;
         $emailService = new EmailService();
         $bloquearInvitacionOferentes = false;
 
@@ -1612,6 +1613,7 @@ class ConcursoController extends BaseController
                 $is_online = $concurso->is_online;
                 $fechaActual = Carbon::now();
                 $fechasubasta = $concurso->inicio_subasta;
+                $fechaEconomicaLicitacion = $concurso -> fecha_limite_economicas;
                 
                 $habilita_envio_invitaciones = $concurso->productos->count() > 0 && $concurso->oferentes->where('is_seleccionado', true)->count() > 0;
 
@@ -1620,6 +1622,7 @@ class ConcursoController extends BaseController
                 if ($is_sobrecerrado) {
                     $isReadOnly = ($is_revisado && $concurso->ronda_actual == 1) || $concurso->ronda_actual > 1;
                     $bloquearInvitacionOferentes = $invitacionesExistentes;
+                    $isVisible = $fechaEconomicaLicitacion < $fechaActual;
                     
                 } elseif ($is_online) {
                     $isReadOnly = ($fechasubasta < $fechaActual); // Asegúrate de usar ">" en lugar de ">="
@@ -1668,6 +1671,7 @@ class ConcursoController extends BaseController
                 'IsSobrecerrado' => $is_sobrecerrado,
                 'IsOnline' => $is_online,
                 'ReadOnly' => $create ? false : $isReadOnly,
+                'Visible'  => $create ? false : $isVisible,
                 'BloquearCamposTecnica' => $create ? false : $bloquearCamposTecnica,
                 'BloquearInvitacionOferentes' => $bloquearInvitacionOferentes,
                 'Nombre' => $create && !$is_copy ? '' : $concurso->nombre,
