@@ -324,6 +324,7 @@ class EmailService
     private function getTelecentroImagePath(): ?string
     {
         $candidates = [
+            '/assets/global/img/Logos/TLC/telecentro.png',
             '/assets/telecentro.png',
             '/global/img/telecentro.png',
             '/img/telecentro.png',
