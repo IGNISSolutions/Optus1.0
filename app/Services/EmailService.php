@@ -10,6 +10,9 @@ use App\Models\Mailer;
 class EmailService
 {
     protected $mail = null;
+    // CID y bandera para insertar el logo de Telecentro en el footer (SMTP y Graph)
+    protected $telecentroCid = 'telecentro_footer_logo';
+    protected $telecentroEmbedded = false;
 
     public function __construct()
     {
@@ -128,7 +131,7 @@ class EmailService
         ];
 
         if ($customer_company_id == 7) {
-            $result = $this->sendMailOptus($message, $subject, $email_to, $alias);
+            $result = $this->sendMailTelecentro($message, $subject, $email_to, $alias);
             return $result;
         }
         
@@ -187,7 +190,7 @@ class EmailService
         return $results;
     }
 
-    private function sendMailOptus($message, $subject, $email_to, $alias)
+    private function sendMailTelecentro($message, $subject, $email_to, $alias)
     {
         // CONFIGURAR LAS VARIABLES CON LOS DATOS DE TU APLICACIÓN DE AZURE
         $tenantId     = env('TENANT_MAILER_TLC');
@@ -232,6 +235,23 @@ class EmailService
         }
 
         // 3. ENVIAR CORREO CON LA API DE MICROSOFT GRAPH
+        // Adjuntar logo de Telecentro como imagen inline (si existe) y agregar footer HTML
+        $attachments = [];
+        $telecentroPath = $this->getTelecentroImagePath();
+        if ($telecentroPath && file_exists($telecentroPath)) {
+            $message .= $this->getTelecentroFooterHtml($this->telecentroCid);
+            $content = @file_get_contents($telecentroPath);
+            if ($content !== false) {
+                $attachments[] = [
+                    '@odata.type' => '#microsoft.graph.fileAttachment',
+                    'name'        => 'telecentro.png',
+                    'contentBytes'=> base64_encode($content),
+                    'isInline'    => true,
+                    'contentId'   => $this->telecentroCid
+                ];
+            }
+        }
+
         $senderEmail = "licitaciones@telecentro.net.ar";
         $mailUrl     = "https://graph.microsoft.com/v1.0/users/{$senderEmail}/sendMail";
         $emailBody   = [
@@ -245,6 +265,9 @@ class EmailService
             ],
             "saveToSentItems" => true
         ];
+        if (!empty($attachments)) {
+            $emailBody['message']['attachments'] = $attachments;
+        }
 
         $ch = curl_init($mailUrl);
         curl_setopt_array($ch, [
@@ -271,5 +294,55 @@ class EmailService
         } else {
             return ['success' => false, 'message' => "Error enviando correo. HTTP $httpCode"];
         }
+    }
+
+    // ---- Helpers para footer con imagen Telecentro ----
+    private function embedTelecentroLogoIfAvailable(): bool
+    {
+        if ($this->telecentroEmbedded) {
+            return true;
+        }
+        $path = $this->getTelecentroImagePath();
+        if (!$path || !file_exists($path)) {
+            return false;
+        }
+        if ($this->mail->AddEmbeddedImage($path, $this->telecentroCid, 'telecentro.png')) {
+            $this->telecentroEmbedded = true;
+            return true;
+        }
+        return false;
+    }
+
+    private function getTelecentroFooterHtml(string $cid): string
+    {
+        $html  = '<div style="margin-top:16px;padding-top:12px;border-top:1px solid #e6e6e6;text-align:center">';
+        $html .= '<img src="cid:' . htmlspecialchars($cid, ENT_QUOTES, 'UTF-8') . '" alt="Telecentro" style="height:36px;" />';
+        $html .= '</div>';
+        return $html;
+    }
+
+    private function getTelecentroImagePath(): ?string
+    {
+        $candidates = [
+            '/assets/telecentro.png',
+            '/global/img/telecentro.png',
+            '/img/telecentro.png',
+            '/telecentro.png',
+        ];
+        foreach ($candidates as $rel) {
+            try {
+                if (function_exists('publicPath') && function_exists('asset')) {
+                    $abs = publicPath(asset($rel));
+                } else {
+                    $abs = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'public' . str_replace('/', DIRECTORY_SEPARATOR, $rel);
+                }
+                if (is_string($abs) && file_exists($abs)) {
+                    return $abs;
+                }
+            } catch (\Throwable $e) {
+                // continuar intentando
+            }
+        }
+        return null;
     }
 }

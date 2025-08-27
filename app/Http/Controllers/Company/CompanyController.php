@@ -18,6 +18,7 @@ use App\Models\Alcance;
 use DateTimeZone;
 use DateTime;
 
+
 class CompanyController extends BaseController
 {
     public function serveList(Request $request, Response $response, $params)
@@ -205,6 +206,57 @@ class CompanyController extends BaseController
             'userType' => user()->type->code
         ]);
     }
+
+    public function getOffererByCuit(Request $request, Response $response, $params)
+    {
+        $cuit = preg_replace('/\D/', '', $params['cuit'] ?? '');
+
+        if (strlen($cuit) !== 11) {
+            return $response->withJson([
+                'success' => false,
+                'message' => 'CUIT inválido'
+            ]);
+        }
+
+        $offerer = OffererCompany::where('cuit', $cuit)->first();
+
+        if (!$offerer) {
+            return $response->withJson([
+                'success' => false,
+                'message' => 'No existe proveedor con ese CUIT'
+            ]);
+        }
+
+        // ID de la empresa cliente asociada al usuario logueado
+        $user = user();
+        //cuando ya existe la relación:
+
+        $already = $user->customer_company
+            ->associated_offerers()
+            ->where('offerer_companies.id', $offerer->id)
+            ->exists();
+
+        if ($already) {
+            return $response->withJson([
+                'success' => false,
+                'message' => 'Ya estás asociado a este proveedor.'
+            ]);
+        }
+
+
+        return $response->withJson([
+            'success' => true,
+            'data' => [
+                'id'            => $offerer->id,
+                'business_name' => $offerer->business_name,
+                'cuit'          => $offerer->cuit,
+                'email' => $offerer->email,
+                'nombre' => $offerer->first_name,
+                'apellido' => $offerer->last_name,
+            ]
+        ]);
+    }
+
 
     public function parseList($companies, $role)
     {

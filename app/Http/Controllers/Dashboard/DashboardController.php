@@ -357,7 +357,7 @@ class DashboardController extends BaseController
     $user = User();
     $query = Concurso::whereNull('deleted_at');
 
-    if ($user->type_id == 8) {
+    if ($user->type_id == 8 || $user->type_id == 5  ) {
         // Supervisor: ver todos los concursos de su empresa
         $idsUsuariosEmpresa = User::where('customer_company_id', $user->customer_company_id)->pluck('id');
         $query->whereIn('id_cliente', $idsUsuariosEmpresa);

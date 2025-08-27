@@ -11,7 +11,7 @@
             </label>
             <label class="radio-inline">
                 <input type="radio" name="IncluyePrecalifTecnica" value="no"
-                    data-bind="checked: Entity.IncluyePrecalifTecnica, disable: ReadOnly(), disable: ReadOnly()">
+                    data-bind="checked: Entity.IncluyePrecalifTecnica, disable: ReadOnly(), disable: ReadOnly() || $root.BloquearCamposTecnica()">
                 NO
             </label>
         </div>
@@ -32,7 +32,7 @@
                 optionsText: 'text', 
                 optionsValue: 'id', 
                 select2: { placeholder: 'Seleccionar...', allowClear: true}, 
-                disable: IsDisableIncluyePrecalifTecnica() || ReadOnly()">
+                disable: IsDisableIncluyePrecalifTecnica() || ReadOnly() || $root.BloquearCamposTecnica()">
                 </select>
             </div>
         </div>
@@ -64,7 +64,7 @@
                                 </td>
                                 <td>
                                     <input type="number" class="form-control"
-                                        data-bind="value: Entity.PlantillaTecnicaSeleccionada().puntaje_minimo, disable: ReadOnly()"
+                                        data-bind="value: Entity.PlantillaTecnicaSeleccionada().puntaje_minimo, disable: ReadOnly() || $root.BloquearCamposTecnica()"
                                         min="0" max="100" step="10">
                                 </td>
                                 <!-- ko if: Entity.PlantillaTecnicaSeleccionada().total() == 100 -->
@@ -95,7 +95,7 @@
                                 </td>
                                 <td class="col-md-1 text-center vertical-align-middle">
                                     <input class="form-control ponderacion" type="number" id="ponderacion"
-                                        name="ponderacion" min="0" max="100" data-bind="value: ponderacion">
+                                        name="ponderacion" min="0" max="100" data-bind="value: ponderacion, disable: $root.ReadOnly() || $root.BloquearCamposTecnica()">
                                 </td>
                             </tr>
                         </tbody>
@@ -107,7 +107,7 @@
                                 <td data-bind="text: atributo" class="col-md-6 vertical-align-middle">
                                 </td>
                                 <td class="col-md-2 text-center vertical-align-middle">
-                                    <input class="form-control" type="number" data-bind="value: ponderacion" disabled>
+                                    <input class="form-control" type="number" data-bind="value: ponderacion, disable: $root.ReadOnly() || $root.BloquearCamposTecnica()">
                                 </td>
                             </tr>
                         </tbody>
@@ -132,12 +132,12 @@
             <div class="pull-right">
                 <label class="radio-inline">
                     <input type="radio" value="si"
-                        data-bind="checked: Entity.ListaProveedores, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.ListaProveedores, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     SI
                 </label>
                 <label class="radio-inline">
                     <input type="radio" value="no"
-                        data-bind="checked: Entity.ListaProveedores, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.ListaProveedores, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     NO
                 </label>
             </div>
@@ -147,12 +147,12 @@
             <div class="pull-right">
                 <label class="radio-inline">
                     <input type="radio" value="si"
-                        data-bind="checked: Entity.CertificadoVisitaObra, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.CertificadoVisitaObra, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     SI
                 </label>
                 <label class="radio-inline">
                     <input type="radio" value="no"
-                        data-bind="checked: Entity.CertificadoVisitaObra, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.CertificadoVisitaObra, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     NO
                 </label>
             </div>
@@ -168,12 +168,12 @@
             <div class="pull-right">
                 <label class="radio-inline">
                     <input type="radio" value="si"
-                        data-bind="checked: Entity.SeguroCaucion, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.SeguroCaucion, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     SI
                 </label>
                 <label class="radio-inline">
                     <input type="radio" value="no"
-                        data-bind="checked: Entity.SeguroCaucion, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.SeguroCaucion, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     NO
                 </label>
             </div>
@@ -183,12 +183,12 @@
             <div class="pull-right">
                 <label class="radio-inline">
                     <input type="radio" value="si"
-                        data-bind="checked: Entity.BaseCondicionesFirmado, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.BaseCondicionesFirmado, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     SI
                 </label>
                 <label class="radio-inline">
                     <input type="radio" value="no"
-                        data-bind="checked: Entity.BaseCondicionesFirmado, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.BaseCondicionesFirmado, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     NO
                 </label>
             </div>
@@ -198,12 +198,12 @@
             <div class="pull-right">
                 <label class="radio-inline">
                     <input type="radio" value="si"
-                        data-bind="checked: Entity.CondicionesGenerales, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.CondicionesGenerales, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     SI
                 </label>
                 <label class="radio-inline">
                     <input type="radio" value="no"
-                        data-bind="checked: Entity.CondicionesGenerales, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.CondicionesGenerales, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     NO
                 </label>
             </div>
@@ -213,12 +213,12 @@
             <div class="pull-right">
                 <label class="radio-inline">
                     <input type="radio" value="si"
-                        data-bind="checked: Entity.PliegoTecnico, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.PliegoTecnico, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     SI
                 </label>
                 <label class="radio-inline">
                     <input type="radio" value="no"
-                        data-bind="checked: Entity.PliegoTecnico, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.PliegoTecnico, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     NO
                 </label>
             </div>
@@ -228,12 +228,12 @@
             <div class="pull-right">
                 <label class="radio-inline">
                     <input type="radio" value="si"
-                        data-bind="checked: Entity.LegajoImpositivo, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.LegajoImpositivo, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     SI
                 </label>
                 <label class="radio-inline">
                     <input type="radio" value="no"
-                        data-bind="checked: Entity.LegajoImpositivo, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.LegajoImpositivo, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     NO
                 </label>
             </div>
@@ -245,12 +245,12 @@
             <div class="pull-right">
                 <label class="radio-inline">
                     <input type="radio" value="si"
-                        data-bind="checked: Entity.DiagramaGant, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.DiagramaGant, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     SI
                 </label>
                 <label class="radio-inline">
                     <input type="radio" value="no"
-                        data-bind="checked: Entity.DiagramaGant, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.DiagramaGant, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     NO
                 </label>
             </div>
@@ -260,12 +260,12 @@
             <div class="pull-right">
                 <label class="radio-inline">
                     <input type="radio" value="si"
-                        data-bind="checked: Entity.AcuerdoConfidencialidad, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.AcuerdoConfidencialidad, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     SI
                 </label>
                 <label class="radio-inline">
                     <input type="radio" value="no"
-                        data-bind="checked: Entity.AcuerdoConfidencialidad, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.AcuerdoConfidencialidad, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     NO
                 </label>
             </div>
@@ -275,12 +275,12 @@
             <div class="pull-right">
                 <label class="radio-inline">
                     <input type="radio" value="si"
-                        data-bind="checked: Entity.AntecedentesReferencias, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.AntecedentesReferencias, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     SI
                 </label>
                 <label class="radio-inline">
                     <input type="radio" value="no"
-                        data-bind="checked: Entity.AntecedentesReferencias, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.AntecedentesReferencias, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     NO
                 </label>
             </div>
@@ -290,7 +290,7 @@
             <div class="pull-right">
                 <label class="radio-inline">
                     <input type="radio" value="si"
-                        data-bind="checked: Entity.ReporteAccidentes, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.ReporteAccidentes, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     SI
                 </label>
                 <label class="radio-inline">
@@ -305,12 +305,12 @@
             <div class="pull-right">
                 <label class="radio-inline">
                     <input type="radio" value="si"
-                        data-bind="checked: Entity.EnvioMuestras, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.EnvioMuestras, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     SI
                 </label>
                 <label class="radio-inline">
                     <input type="radio" value="no"
-                        data-bind="checked: Entity.EnvioMuestras, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.EnvioMuestras, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     NO
                 </label>
             </div>
@@ -327,12 +327,12 @@
             <div class="pull-right">
                 <label class="radio-inline">
                     <input type="radio" value="si"
-                        data-bind="checked: Entity.nom251, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.nom251, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     SI
                 </label>
                 <label class="radio-inline">
                     <input type="radio" value="no"
-                        data-bind="checked: Entity.nom251, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.nom251, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     NO
                 </label>
             </div>
@@ -342,12 +342,12 @@
             <div class="pull-right">
                 <label class="radio-inline">
                     <input type="radio" value="si"
-                        data-bind="checked: Entity.distintivo, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.distintivo, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     SI
                 </label>
                 <label class="radio-inline">
                     <input type="radio" value="no"
-                        data-bind="checked: Entity.distintivo, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.distintivo, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     NO
                 </label>
             </div>
@@ -357,12 +357,12 @@
             <div class="pull-right">
                 <label class="radio-inline">
                     <input type="radio" value="si"
-                        data-bind="checked: Entity.filtros_sanitarios, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.filtros_sanitarios, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     SI
                 </label>
                 <label class="radio-inline">
                     <input type="radio" value="no"
-                        data-bind="checked: Entity.filtros_sanitarios, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.filtros_sanitarios, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     NO
                 </label>
             </div>
@@ -372,12 +372,12 @@
             <div class="pull-right">
                 <label class="radio-inline">
                     <input type="radio" value="si"
-                        data-bind="checked: Entity.repse, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.repse, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     SI
                 </label>
                 <label class="radio-inline">
                     <input type="radio" value="no"
-                        data-bind="checked: Entity.repse, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.repse, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     NO
                 </label>
             </div>
@@ -387,12 +387,12 @@
             <div class="pull-right">
                 <label class="radio-inline">
                     <input type="radio" value="si"
-                        data-bind="checked: Entity.poliza, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.poliza, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     SI
                 </label>
                 <label class="radio-inline">
                     <input type="radio" value="no"
-                        data-bind="checked: Entity.poliza, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.poliza, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     NO
                 </label>
             </div>
@@ -402,12 +402,12 @@
             <div class="pull-right">
                 <label class="radio-inline">
                     <input type="radio" value="si"
-                        data-bind="checked: Entity.primariesgo, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.primariesgo, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     SI
                 </label>
                 <label class="radio-inline">
                     <input type="radio" value="no"
-                        data-bind="checked: Entity.primariesgo, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.primariesgo, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     NO
                 </label>
             </div>
@@ -421,12 +421,12 @@
             <div class="pull-right">
                 <label class="radio-inline">
                     <input type="radio" value="si"
-                        data-bind="checked: Entity.obras_referencias, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.obras_referencias, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     SI
                 </label>
                 <label class="radio-inline">
                     <input type="radio" value="no"
-                        data-bind="checked: Entity.obras_referencias, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.obras_referencias, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     NO
                 </label>
             </div>
@@ -436,12 +436,12 @@
             <div class="pull-right">
                 <label class="radio-inline">
                     <input type="radio" value="si"
-                        data-bind="checked: Entity.obras_organigrama, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.obras_organigrama, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     SI
                 </label>
                 <label class="radio-inline">
                     <input type="radio" value="no"
-                        data-bind="checked: Entity.obras_organigrama, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.obras_organigrama, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     NO
                 </label>
             </div>
@@ -451,12 +451,12 @@
             <div class="pull-right">
                 <label class="radio-inline">
                     <input type="radio" value="si"
-                        data-bind="checked: Entity.obras_equipos, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.obras_equipos, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     SI
                 </label>
                 <label class="radio-inline">
                     <input type="radio" value="no"
-                        data-bind="checked: Entity.obras_equipos, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.obras_equipos, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     NO
                 </label>
             </div>
@@ -466,12 +466,12 @@
             <div class="pull-right">
                 <label class="radio-inline">
                     <input type="radio" value="si"
-                        data-bind="checked: Entity.obras_cronograma, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.obras_cronograma, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     SI
                 </label>
                 <label class="radio-inline">
                     <input type="radio" value="no"
-                        data-bind="checked: Entity.obras_cronograma, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.obras_cronograma, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     NO
                 </label>
             </div>
@@ -481,12 +481,12 @@
             <div class="pull-right">
                 <label class="radio-inline">
                     <input type="radio" value="si"
-                        data-bind="checked: Entity.obras_memoria, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.obras_memoria, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     SI
                 </label>
                 <label class="radio-inline">
                     <input type="radio" value="no"
-                        data-bind="checked: Entity.obras_memoria, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.obras_memoria, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     NO
                 </label>
             </div>
@@ -496,12 +496,12 @@
             <div class="pull-right">
                 <label class="radio-inline">
                     <input type="radio" value="si"
-                        data-bind="checked: Entity.obras_antecedentes, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.obras_antecedentes, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     SI
                 </label>
                 <label class="radio-inline">
                     <input type="radio" value="no"
-                        data-bind="checked: Entity.obras_antecedentes, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.obras_antecedentes, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     NO
                 </label>
             </div>
@@ -515,12 +515,12 @@
             <div class="pull-right">
                 <label class="radio-inline">
                     <input type="radio" value="si"
-                        data-bind="checked: Entity.tarima_ficha_tecnica, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.tarima_ficha_tecnica, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     SI
                 </label>
                 <label class="radio-inline">
                     <input type="radio" value="no"
-                        data-bind="checked: Entity.tarima_ficha_tecnica, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.tarima_ficha_tecnica, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     NO
                 </label>
             </div>
@@ -530,12 +530,12 @@
             <div class="pull-right">
                 <label class="radio-inline">
                     <input type="radio" value="si"
-                        data-bind="checked: Entity.tarima_licencia, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.tarima_licencia, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     SI
                 </label>
                 <label class="radio-inline">
                     <input type="radio" value="no"
-                        data-bind="checked: Entity.tarima_licencia, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.tarima_licencia, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     NO
                 </label>
             </div>
@@ -545,12 +545,12 @@
             <div class="pull-right">
                 <label class="radio-inline">
                     <input type="radio" value="si"
-                        data-bind="checked: Entity.tarima_nom_144, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.tarima_nom_144, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     SI
                 </label>
                 <label class="radio-inline">
                     <input type="radio" value="no"
-                        data-bind="checked: Entity.tarima_nom_144, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.tarima_nom_144, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     NO
                 </label>
             </div>
@@ -560,12 +560,12 @@
             <div class="pull-right">
                 <label class="radio-inline">
                     <input type="radio" value="si"
-                        data-bind="checked: Entity.tarima_acreditacion, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.tarima_acreditacion, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     SI
                 </label>
                 <label class="radio-inline">
                     <input type="radio" value="no"
-                        data-bind="checked: Entity.tarima_acreditacion, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.tarima_acreditacion, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     NO
                 </label>
             </div>
@@ -579,12 +579,12 @@
             <div class="pull-right">
                 <label class="radio-inline">
                     <input type="radio" value="si"
-                        data-bind="checked: Entity.edificio_balance, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.edificio_balance, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     SI
                 </label>
                 <label class="radio-inline">
                     <input type="radio" value="no"
-                        data-bind="checked: Entity.edificio_balance, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.edificio_balance, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     NO
                 </label>
             </div>
@@ -594,12 +594,12 @@
             <div class="pull-right">
                 <label class="radio-inline">
                     <input type="radio" value="si"
-                        data-bind="checked: Entity.edificio_iva, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.edificio_iva, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     SI
                 </label>
                 <label class="radio-inline">
                     <input type="radio" value="no"
-                        data-bind="checked: Entity.edificio_iva, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.edificio_iva, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     NO
                 </label>
             </div>
@@ -609,12 +609,12 @@
             <div class="pull-right">
                 <label class="radio-inline">
                     <input type="radio" value="si"
-                        data-bind="checked: Entity.edificio_cuit, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.edificio_cuit, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     SI
                 </label>
                 <label class="radio-inline">
                     <input type="radio" value="no"
-                        data-bind="checked: Entity.edificio_cuit, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.edificio_cuit, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     NO
                 </label>
             </div>
@@ -624,12 +624,12 @@
             <div class="pull-right">
                 <label class="radio-inline">
                     <input type="radio" value="si"
-                        data-bind="checked: Entity.edificio_brochure, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.edificio_brochure, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     SI
                 </label>
                 <label class="radio-inline">
                     <input type="radio" value="no"
-                        data-bind="checked: Entity.edificio_brochure, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.edificio_brochure, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     NO
                 </label>
             </div>
@@ -639,12 +639,12 @@
             <div class="pull-right">
                 <label class="radio-inline">
                     <input type="radio" value="si"
-                        data-bind="checked: Entity.edificio_organigrama, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.edificio_organigrama, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     SI
                 </label>
                 <label class="radio-inline">
                     <input type="radio" value="no"
-                        data-bind="checked: Entity.edificio_organigrama, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.edificio_organigrama, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     NO
                 </label>
             </div>
@@ -654,12 +654,12 @@
             <div class="pull-right">
                 <label class="radio-inline">
                     <input type="radio" value="si"
-                        data-bind="checked: Entity.edificio_organigrama_obra, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.edificio_organigrama_obra, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     SI
                 </label>
                 <label class="radio-inline">
                     <input type="radio" value="no"
-                        data-bind="checked: Entity.edificio_organigrama_obra, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.edificio_organigrama_obra, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     NO
                 </label>
             </div>
@@ -669,12 +669,12 @@
             <div class="pull-right">
                 <label class="radio-inline">
                     <input type="radio" value="si"
-                        data-bind="checked: Entity.edificio_subcontratistas, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.edificio_subcontratistas, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     SI
                 </label>
                 <label class="radio-inline">
                     <input type="radio" value="no"
-                        data-bind="checked: Entity.edificio_subcontratistas, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.edificio_subcontratistas, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     NO
                 </label>
             </div>
@@ -684,12 +684,12 @@
             <div class="pull-right">
                 <label class="radio-inline">
                     <input type="radio" value="si"
-                        data-bind="checked: Entity.edificio_gestion, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.edificio_gestion, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     SI
                 </label>
                 <label class="radio-inline">
                     <input type="radio" value="no"
-                        data-bind="checked: Entity.edificio_gestion, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.edificio_gestion, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     NO
                 </label>
             </div>
@@ -699,12 +699,12 @@
             <div class="pull-right">
                 <label class="radio-inline">
                     <input type="radio" value="si"
-                        data-bind="checked: Entity.edificio_maquinas, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.edificio_maquinas, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     SI
                 </label>
                 <label class="radio-inline">
                     <input type="radio" value="no"
-                        data-bind="checked: Entity.edificio_maquinas, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                        data-bind="checked: Entity.edificio_maquinas, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     NO
                 </label>
             </div>
@@ -720,12 +720,12 @@
         <div class="pull-right">
             <label class="radio-inline">
                 <input type="radio" value="si"
-                    data-bind="checked: Entity.EntregaDocEvaluacion, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                    data-bind="checked: Entity.EntregaDocEvaluacion, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                 SI
             </label>
             <label class="radio-inline">
                 <input type="radio" value="no"
-                    data-bind="checked: Entity.EntregaDocEvaluacion, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                    data-bind="checked: Entity.EntregaDocEvaluacion, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                 NO
             </label>
         </div>
@@ -735,12 +735,12 @@
         <div class="pull-right">
             <label class="radio-inline">
                 <input type="radio" value="si"
-                    data-bind="checked: Entity.RequisitosLegales, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                    data-bind="checked: Entity.RequisitosLegales, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                 SI
             </label>
             <label class="radio-inline">
                 <input type="radio" value="no"
-                    data-bind="checked: Entity.RequisitosLegales, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                    data-bind="checked: Entity.RequisitosLegales, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                 NO
             </label>
         </div>
@@ -750,12 +750,12 @@
         <div class="pull-right">
             <label class="radio-inline">
                 <input type="radio" value="si"
-                    data-bind="checked: Entity.ExperienciaYReferencias, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                    data-bind="checked: Entity.ExperienciaYReferencias, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                 SI
             </label>
             <label class="radio-inline">
                 <input type="radio" value="no"
-                    data-bind="checked: Entity.ExperienciaYReferencias, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                    data-bind="checked: Entity.ExperienciaYReferencias, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                 NO
             </label>
         </div>
@@ -765,12 +765,12 @@
         <div class="pull-right">
             <label class="radio-inline">
                 <input type="radio" value="si"
-                    data-bind="checked: Entity.DocumentacionREPSE, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                    data-bind="checked: Entity.DocumentacionREPSE, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                 SI
             </label>
             <label class="radio-inline">
                 <input type="radio" value="no"
-                    data-bind="checked: Entity.DocumentacionREPSE, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                    data-bind="checked: Entity.DocumentacionREPSE, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                 NO
             </label>
         </div>
@@ -780,12 +780,12 @@
         <div class="pull-right">
             <label class="radio-inline">
                 <input type="radio" value="si"
-                    data-bind="checked: Entity.Alcance, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                    data-bind="checked: Entity.Alcance, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                 SI
             </label>
             <label class="radio-inline">
                 <input type="radio" value="no"
-                    data-bind="checked: Entity.Alcance, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                    data-bind="checked: Entity.Alcance, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                 NO
             </label>
         </div>
@@ -795,12 +795,12 @@
         <div class="pull-right">
             <label class="radio-inline">
                 <input type="radio" value="si"
-                    data-bind="checked: Entity.Garantias, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                    data-bind="checked: Entity.Garantias, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                 SI
             </label>
             <label class="radio-inline">
                 <input type="radio" value="no"
-                    data-bind="checked: Entity.Garantias, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+                    data-bind="checked: Entity.Garantias, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                 NO
             </label>
         </div>
@@ -813,12 +813,12 @@
 <div class="pull-right">
     <label class="radio-inline">
         <input type="radio" value="si"
-            data-bind="checked: Entity.FormaPago, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+            data-bind="checked: Entity.FormaPago, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
         SI
     </label>
     <label class="radio-inline">
         <input type="radio" value="no"
-            data-bind="checked: Entity.FormaPago, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+            data-bind="checked: Entity.FormaPago, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
         NO
     </label>
 </div>
@@ -831,12 +831,12 @@
 <div class="pull-right">
     <label class="radio-inline">
         <input type="radio" value="si"
-            data-bind="checked: Entity.TiempoFabricacion, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+            data-bind="checked: Entity.TiempoFabricacion, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
         SI
     </label>
     <label class="radio-inline">
         <input type="radio" value="no"
-            data-bind="checked: Entity.TiempoFabricacion, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+            data-bind="checked: Entity.TiempoFabricacion, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
         NO
     </label>
 </div>
@@ -847,12 +847,12 @@
 <div class="pull-right">
     <label class="radio-inline">
         <input type="radio" value="si"
-            data-bind="checked: Entity.FichaTecnica, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+            data-bind="checked: Entity.FichaTecnica, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
         SI
     </label>
     <label class="radio-inline">
         <input type="radio" value="no"
-            data-bind="checked: Entity.FichaTecnica, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
+            data-bind="checked: Entity.FichaTecnica, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
         NO
     </label>
 </div>
@@ -877,7 +877,7 @@
                         optionsText: 'text', 
                         optionsValue: 'id', 
                         select2: { placeholder: 'Seleccionar...', allowClear: true, multiple: true }, 
-                        disable: IsDisableIncluyePrecalifTecnica() || ReadOnly()
+                        disable: IsDisableIncluyePrecalifTecnica() || ReadOnly() || $root.BloquearCamposTecnica()
                         ">
                 </select>
             </div>

@@ -251,6 +251,9 @@ app()->group('/empresas', function () {
     $this->get('/{type}/usuarios/{id}', 'App\Http\Controllers\User\UserController:serveList')->add(new AuthMiddleware())->setName('empresas.usuariosOferentes');
     // lista de usuarios por oferente
     $this->get('/{type}/usuarios/list/{id}', 'App\Http\Controllers\User\UserController:list')->add(new AuthMiddleware())->setName('empresas.usuariosOferentesList');
+    // Verificacion de cuit existente (para asociar o no)
+    $this->get('/offerer/by-cuit/{cuit}', 'App\Http\Controllers\Company\CompanyController:getOffererByCuit')->add(new AuthMiddleware())->setName('empresas.getOffererByCuit');
+
 });
 
 // MATERIALES DE EMPRESAS

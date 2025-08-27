@@ -428,7 +428,7 @@ class ConcursoController extends BaseController
             // CREATED
             if (isAdmin()) {
                 $created = Concurso::all();
-            } else if ($user->type_id != 7 && $user->type_id != 3) {
+            } else if ($user->type_id != 7 && $user->type_id != 3 && $user->type_id != 4 && $user->type_id != 2) {
                 $created = $user->customer_company->getAllConcursosByCompany()->get();
             } else if ($user->type_id == 3) {
                 $created = $user->customer_company->getAllConcursosByCompany()
@@ -450,7 +450,7 @@ class ConcursoController extends BaseController
             // CREATED WITH TRASHED
             if (isAdmin()) {
                 $created_with_trashed = Concurso::withTrashed()->get();
-            } else if ($user->type_id != 7 && $user->type_id != 3) {
+            } else if ($user->type_id != 7 && $user->type_id != 3 && $user->type_id != 4 && $user->type_id != 2) {
                 $created_with_trashed = $user->customer_company->getAllConcursosByCompany()->withTrashed()->get();
             } else if ($user->type_id == 3) {
                 $created_with_trashed = $user->customer_company->getAllConcursosByCompany()
@@ -469,7 +469,7 @@ class ConcursoController extends BaseController
                 $deleted_with_trashed = Concurso::where([
                     ['deleted_at', '!=', null]
                 ])->get();
-            } else if ($user->type_id != 7 && $user->type_id != 3) {
+            } else if ($user->type_id != 7 && $user->type_id != 3 && $user->type_id != 4 && $user->type_id != 2) {
                 $deleted_with_trashed = $user->customer_company->getAllConcursosByCompany()->withTrashed()->get();
             } else if ($user->type_id == 3) {
                 $deleted_with_trashed = $user->customer_company->getAllConcursosByCompany()
@@ -759,66 +759,63 @@ class ConcursoController extends BaseController
             }
 
 
-            // EVALUACI��N
+            // EVALUACIÓN
             $concursos = collect();
+
             $concursos = $concursos
-                ->merge(
-                    $created
-                        ->where('adjudicado', true)
-                )
-                ->merge(
-                    $evaluating
-                        ->where('adjudicado', true)
-                )
-                ->merge(
-                    $evaluating
-                        ->where('adjudicado', true)
-                )
+                ->merge($created->where('adjudicado', true))
+                ->merge($evaluating->where('adjudicado', true))
                 ->unique('id')
                 ->filter(function ($concurso) {
+                    // Excluir concursos online usando el flag booleano
+                    if ((bool)($concurso->is_online ?? false)) {
+                        return false;
+                    }
+                    // Mantener sólo los que tienen oferentes en etapa de evaluación
                     return $concurso->oferentes_etapa_evaluacion->count() > 0;
                 })
-                /*->filter(function ($concurso) {
-                    return $concursos = $concurso->oferentes
-                    ->where('etapa_actual', Participante::ETAPAS['estrategia-aceptada'])
-                    ->all();
-                })*/
                 ->sortBy('id');
 
             foreach ($concursos as $concurso) {
-                array_push(
-                    $list['ListaConcursosEvaluacionReputacion'],
-                    $this->mapConcursoList($concurso)
-                );
+                $list['ListaConcursosEvaluacionReputacion'][] = $this->mapConcursoList($concurso);
             }
 
 
+
             // INFORMES
-                $concursos = collect();
-                $concursos = $concursos->merge(
-                    $created->filter(function ($concurso) {
-                        // Filtrar oferentes con adjudicación aceptada
-                        $oferentesAdjudicados = $concurso->oferentes
-                            ->where('etapa_actual', 'adjudicacion-aceptada');
+            $concursos = collect();
+            $concursos = $concursos->merge(
+                $created->filter(function ($concurso) {
+                    $statuses = ['adjudicacion-aceptada', 'adjudicacion-rechazada'];
 
-                        // Para cada oferente adjudicado, buscamos si tiene evaluación asociada
-                        foreach ($oferentesAdjudicados as $oferente) {
-                            $evaluado = Evaluacion::where('id_participante', $oferente->id)->exists();
-                            if ($evaluado) {
-                                return true;
-                            }
+                    // Caso subasta online: basta con que exista algún oferente en cualquiera de esos estados
+                    if ($concurso->tipo_concurso === 'online') {
+                        // Si tenés la relación cargada:
+                        return $concurso->oferentes->contains(function ($o) use ($statuses) {
+                            return in_array($o->etapa_actual, $statuses, true);
+                        });
+
+                        // Alternativa (más performante si NO está cargada la relación):
+                        // return $concurso->oferentes()->whereIn('etapa_actual', $statuses)->exists();
+                    }
+
+                    // Caso no online: conservar lógica previa (aceptada + evaluación existente)
+                    $oferentesAdjudicados = $concurso->oferentes->where('etapa_actual', 'adjudicacion-aceptada');
+
+                    foreach ($oferentesAdjudicados as $oferente) {
+                        if (Evaluacion::where('id_participante', $oferente->id)->exists()) {
+                            return true;
                         }
+                    }
 
-                        return false;
-                    })
-                );
+                    return false;
+                })
+            );
 
-                foreach ($concursos as $concurso) {
-                    array_push(
-                        $list['ListaConcursosInformes'],
-                        $this->mapConcursoList($concurso)
-                    );
-                }
+            foreach ($concursos as $concurso) {
+                $list['ListaConcursosInformes'][] = $this->mapConcursoList($concurso);
+            }
+
 
 
             // CANCELADOS
@@ -1270,6 +1267,11 @@ class ConcursoController extends BaseController
                     ];
                 }
 
+                $esAscendente = false;
+                if ($concurso->is_online && strtolower(trim($concurso->tipo_valor_ofertar)) === 'ascendente') {
+                    $esAscendente = true;
+                }
+
                 // Obtener el registro de User
                 $evalUser = User::find($concurso->ficha_tecnica_usuario_evalua);
 
@@ -1303,6 +1305,7 @@ class ConcursoController extends BaseController
                     'OferentesAInvitar' => $results,
                     'OferenteAInvitar' => null,
                     'Evaluador' => $evalName,
+                    'EsAscendente'=> $esAscendente,
                     //'Usertype' => $user_type
                 ]));
             }
@@ -1431,7 +1434,13 @@ class ConcursoController extends BaseController
                     ];
                 }
 
+                $esAscendente = false;
+                if ($concurso->is_online && strtolower(trim($concurso->tipo_valor_ofertar)) === 'ascendente') {
+                    $esAscendente = true;
+                }
+
                 $list = array_merge($list, array_merge($common_data, [
+                    'EsAscendente' => $esAscendente,
                     'OferentesInvitados' => $oferentesInvitados,
                     'Oferentes' => $oferentes->toArray(),
                     'TipoValorOferta' => $concurso->tipo_valor_ofertar,
@@ -1552,6 +1561,9 @@ class ConcursoController extends BaseController
             $status = method_exists($e, 'getStatusCode') ? $e->getStatusCode() : (method_exists($e, 'getCode') ? $e->getCode() : 500);
         }
 
+        $txt = fopen("detail.txt","w");
+        fwrite($txt, json_encode($list));
+
         return $this->json($response, [
             'success' => $success,
             'message' => $message,
@@ -1575,6 +1587,7 @@ class ConcursoController extends BaseController
         $create = (bool) ($params['action'] === 'create');
         $is_copy = isset($params['id']);
         $isReadOnly = false;
+        $isVisible = false;
         $emailService = new EmailService();
         $bloquearInvitacionOferentes = false;
 
@@ -1600,6 +1613,7 @@ class ConcursoController extends BaseController
                 $is_online = $concurso->is_online;
                 $fechaActual = Carbon::now();
                 $fechasubasta = $concurso->inicio_subasta;
+                $fechaEconomicaLicitacion = $concurso -> fecha_limite_economicas;
                 
                 $habilita_envio_invitaciones = $concurso->productos->count() > 0 && $concurso->oferentes->where('is_seleccionado', true)->count() > 0;
 
@@ -1608,12 +1622,26 @@ class ConcursoController extends BaseController
                 if ($is_sobrecerrado) {
                     $isReadOnly = ($is_revisado && $concurso->ronda_actual == 1) || $concurso->ronda_actual > 1;
                     $bloquearInvitacionOferentes = $invitacionesExistentes;
+                    $isVisible = $fechaEconomicaLicitacion < $fechaActual;
                     
                 } elseif ($is_online) {
                     $isReadOnly = ($fechasubasta < $fechaActual); // Asegúrate de usar ">" en lugar de ">="
                 } else {
                     $isReadOnly = false; // Asume que los demás casos no tienen restricciones.
                 }
+
+                // Logica para bloquear campos de puntajes plantillas tecnicas cuando hay propeusta presentada
+                // Bloquear si algún participante ya tiene analisis_tecnica_valores NO NULL
+                $bloquearCamposTecnica = false;
+
+                if ($concurso && !empty($concurso->id)) {
+                    $countConAnalisis = Participante::where('id_concurso', $concurso->id)
+                        ->whereNotNull('analisis_tecnica_valores')
+                        ->count();
+
+                    $bloquearCamposTecnica = ($countConAnalisis > 0);
+                }
+
             }
 
             $sheets = [];
@@ -1642,9 +1670,9 @@ class ConcursoController extends BaseController
                 'IsGo' => $is_go,
                 'IsSobrecerrado' => $is_sobrecerrado,
                 'IsOnline' => $is_online,
-                'ReadOnly' => $create
-                    ? false 
-                    : $isReadOnly,
+                'ReadOnly' => $create ? false : $isReadOnly,
+                'Visible'  => $create ? false : $isVisible,
+                'BloquearCamposTecnica' => $create ? false : $bloquearCamposTecnica,
                 'BloquearInvitacionOferentes' => $bloquearInvitacionOferentes,
                 'Nombre' => $create && !$is_copy ? '' : $concurso->nombre,
                 'AreaUsr' => $create && !$is_copy ? '' : $concurso->area_sol,

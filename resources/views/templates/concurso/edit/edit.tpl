@@ -190,19 +190,19 @@
     <div class="row">
         <div class="col-md-12 ">
             <div class="portlet light bg-inverse">
-                <!-- ko ifnot: ReadOnly() -->
+                
                 <div class="portlet-title">
                     <div class="caption font-red-sunglo">
                         <span class="caption-subject bold uppercase"> Multimedia</span>
                     </div>
                 </div>
-                <!-- /ko -->
+                
                 <div class="portlet-body form">
                     <div class="row">
                         <div class="col-md-12">
-                            <!-- ko ifnot: ReadOnly() -->
+                            
                             {include file='concurso/edit/multimedia.tpl'}
-                            <!-- /ko -->
+                            
                         </div>
                     </div>
 
@@ -534,6 +534,7 @@
                     self.Sheets.push(new Sheet(item));
                 });
             }
+            this.Visible = ko.observable(!!data.list.Visible);
 
             this.Pais = ko.observable(data.list.Pais);
             this.Provincia = ko.observable(data.list.Provincia);
@@ -998,9 +999,11 @@
             this.IsSobrecerrado = ko.observable(data.list.IsSobrecerrado);
             this.IsOnline = ko.observable(data.list.IsOnline);
             this.ReadOnly = ko.observable(data.list.ReadOnly);
+            this.Visible = ko.observable(data.list.Visible);
 
             this.BloquearInvitacionOferentes = ko.observable(data.list.BloquearInvitacionOferentes);
-            
+            this.BloquearCamposTecnica = ko.observable(!!data.list.BloquearCamposTecnica);
+
             this.FilePath = ko.observable(data.list.FilePath);
             this.ProductMeasurementList = ko.observableArray(data.list.ProductMeasurementList);
             this.NewProduct = ko.observable(new Product());

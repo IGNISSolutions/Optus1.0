@@ -42,15 +42,12 @@
                             <div class="col-md-4">
                                 <div class="form-group required" data-bind="validationElement: Entity.Cuit">
                                     <label class="control-label visible-ie8 visible-ie9" style="display: block;">Código Fiscal</label>
-                                    <input data-bind="textInput: Entity.Cuit, event: { keypress: onlyNumbers }" 
+                                    <input 
+                                        data-bind="textInput: Entity.Cuit, event: { keypress: onlyNumbers, blur: onCuitBlur }" 
                                         class="form-control placeholder-no-fix"
-                                        type="text" 
-                                        name="cuit" 
-                                        id="cuit" 
-                                        maxlength="11" 
-                                        placeholder="Por ejemplo, 123456780"
-                                        pattern="\d*"
-                                        inputmode="numeric" />
+                                        type="text" name="cuit" id="cuit" maxlength="11" placeholder="Por ejemplo, 123456780"
+                                        pattern="\d*" inputmode="numeric"
+                                        onpaste="return false;" ondrop="return false;" autocomplete="off" />
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -81,18 +78,20 @@
                                 <div class="form-group required" data-bind="validationElement: Entity.Cuit">
                                     <label class="control-label visible-ie8 visible-ie9" style="display: block;">Código
                                         Fiscal</label>
-                                        <input data-bind="textInput: Entity.Cuit, event: { keypress: onlyNumbers }" 
-                                        class="form-control placeholder-no-fix"
-                                        type="text" 
-                                        name="cuit" 
-                                        id="cuit" 
-                                        maxlength="11" 
-                                        placeholder="Por ejemplo, 123456780"
-                                        pattern="\d*"
-                                        inputmode="numeric"
-                                        onpaste="return false;"
-                                        ondrop="return false;"
-                                        autocomplete="off" />
+                                        <input 
+                                            data-bind="textInput: Entity.Cuit, event: { keypress: onlyNumbers, blur: onCuitBlur }" 
+                                            class="form-control placeholder-no-fix"
+                                            type="text" 
+                                            name="cuit" 
+                                            id="cuit" 
+                                            maxlength="11" 
+                                            placeholder="Por ejemplo, 123456780"
+                                            pattern="\d*"
+                                            inputmode="numeric"
+                                            onpaste="return false;"
+                                            ondrop="return false;"
+                                            autocomplete="off" />
+
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -433,7 +432,7 @@
 
             this.Estados = ko.observable(data.list.Estados);
             this.Estado = 1,
-                this.RazonSocial = ko.observable(data.list.RazonSocial).extend({ required: true });
+            this.RazonSocial = ko.observable(data.list.RazonSocial).extend({ required: true });
             this.Cuit = ko.observable(data.list.Cuit).extend({ required: true });
 
             this.Pais = ko.observable(data.list.Pais);
@@ -643,77 +642,124 @@
                 );
             };
 
-            this.onCuitBlur = function() {
-                if('{$userType}' == 'customer' && params[2] == 'nuevo' && self.Entity.Cuit() != null){
-                var url = '/empresas/' + params[1] + '/' + self.Entity.Cuit();
-                Services.Get(url, { UserToken: User.Token },
-                    (response) => {
-                        $.unblockUI();
-                        if (response.success) {
-                            this.toggleAssociation(response.data)
-                        }
-                        console.log(response);
-                    },
-                    (error) => {
-                        $.unblockUI();
-                        swal('Error', error.message, 'error');
-                    }
-                );
-            }
-        }
+            this.onCuitBlur = function () {
+            // Solo corre cuando un CUSTOMER crea un OFFERER nuevo
+            if ('{$userType}' !== 'customer') return;
+            if (params[1] !== 'offerer') return;   // tipo en la URL
+            if (params[2] !== 'nuevo') return;     // acción en la URL
 
-        this.toggleAssociation = function(offerer) {
+            var raw = self.Entity.Cuit() || '';
+            var cuit = String(raw).replace(/\D/g, ''); // solo dígitos
+            if (cuit.length !== 11) return;
+
+            $.blockUI();
+            var url = '/empresas/offerer/by-cuit/' + cuit;
+
+            Services.Get(url, { UserToken: User.Token },
+                function (response) {
+                $.unblockUI();
+
+                // Caso 1: existe proveedor y NO está asociado todavía → mostrar modal para asociar
+                if (response && response.success && response.data && response.data.id) {
+                    self.showOffererExistsModal(response.data);
+                    return;
+                }
+
+                // Caso 2: cualquier otro (ya asociado, no existe, cuit inválido, etc.) → mostrar aviso
+                var msg = (response && response.message) ? response.message : 'No se pudo verificar el CUIT.';
+                swal({
+                    title: 'Aviso',
+                    text: msg,
+                    type: 'warning',
+                    confirmButtonText: 'Aceptar'
+                }, function () {
+                    // limpiamos y devolvemos foco
+                    self.Entity.Cuit('');
+                    setTimeout(function(){ document.getElementById('cuit')?.focus(); }, 0);
+                });
+                },
+                function (error) {
+                $.unblockUI();
+                // Errores de red o 5xx
+                var msg = (error && error.message) ? error.message : 'Error al verificar el CUIT.';
+                swal('Error', msg, 'error');
+                }
+            );
+            };
+
+        this.showOffererExistsModal = function(offerer) {
+            // offerer = { id, business_name, cuit, nombre, apellido, email}
+            var htmlMsg =
+                '<div style="text-align:left;">' +
+                    '<p>Este proveedor ya se encuentra registrado:</p>' +
+                    '<p><b>Razón social:</b> ' + (offerer.business_name || '—') + '</p>' +
+                    '<p><b>Código fiscal:</b> ' + (offerer.cuit || '—') + '</p>' +
+                    '<p><b>Info. de Contacto:</b></p>' +
+                    '<p><b> - Nombre:</b> ' + (offerer.nombre + ' ' + offerer.apellido || '—') + '</p>' +
+                    '<p><b> - Email:</b> ' + (offerer.email || '—') + '</p>' +
+                '</div>';
+
             swal({
-                title: "El proveedor " + offerer[0]['business_name'] +
-                    " ya se encuentra registrado, ¿Desea asociarlo a su lista de proveedores?",
+                title: "Proveedor existente",
+                text: htmlMsg,
+                html: true,                  // SweetAlert v1
+                type: "warning",
                 showCancelButton: true,
+                confirmButtonText: "Agregar proveedor",
+                cancelButtonText: "Cancelar",
                 closeOnConfirm: false,
-                animation: "slide-from-top"
+                closeOnCancel: true,
+                confirmButtonColor: "#34a853"
             }, function(isConfirm) {
                 if (isConfirm) {
-                    $.blockUI();
-                    var data = {
-                        UserToken: User.Token,
-                        Data: JSON.stringify(ko.toJS({
-                            Id: offerer[0]['id']
-                        }))
-                    };
-                    var url = '/empresas/' + params[1] + '/association';
-                    Services.Post(url, data,
-                        (response) => {
-                            $.unblockUI();
-                            if (response.success) {
-                                setTimeout(() => {
-                                    swal({
-                                        title: 'Hecho',
-                                        text: response.message,
-                                        type: 'success',
-                                        closeOnClickOutside: false,
-                                        closeOnConfirm: true,
-                                        confirmButtonText: 'Aceptar',
-                                        confirmButtonClass: 'btn btn-success'
-                                    }, function(result) {
-                                        if (result)
-                                            window.location.href = response.data.redirect;
-                                    });
-                                }, 500);
-                            } else {
-                                swal({
-                                    title: "Error",
-                                    text: response.message,
-                                    type: "error",
-                                    timer: 4000
-                                });
-                            }
-                        },
-                        (error) => {
-                            $.unblockUI();
-                            swal('Error', error.message, 'error');
-                        }
-                    );
+                    self.associateExisting(offerer.id);
+                } else {
+                    //limpiar CUIT y devolver el foco al input
+                    self.Entity.Cuit('');
+                    setTimeout(function(){ document.getElementById('cuit')?.focus(); }, 0);
                 }
-            })
-        }
+            });
+        };
+
+        this.associateExisting = function(offererId) {
+            $.blockUI();
+
+            var data = {
+                UserToken: User.Token,
+                Data: JSON.stringify({ Id: offererId })
+            };
+
+            // Ya usabas esta ruta en tu código
+            var url = '/empresas/' + params[1] + '/association';
+
+            Services.Post(url, data,
+                function(response) {
+                    $.unblockUI();
+                    if (response.success) {
+                        swal({
+                            title: 'Hecho',
+                            text: response.message,
+                            type: 'success',
+                            closeOnClickOutside: false,
+                            closeOnConfirm: true,
+                            confirmButtonText: 'Aceptar',
+                            confirmButtonClass: 'btn btn-success'
+                        }, function(result) {
+                            if (response.data && response.data.redirect) {
+                                window.location.href = response.data.redirect;
+                            }
+                        });
+                    } else {
+                        swal('Error', response.message || 'No se pudo asociar el proveedor.', 'error');
+                    }
+                },
+                function(error) {
+                    $.unblockUI();
+                    swal('Error', error.message || 'No se pudo asociar el proveedor.', 'error');
+                }
+            );
+        };
+
 
         };
 

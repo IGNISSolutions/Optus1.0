@@ -49,7 +49,7 @@
                     <th class="text-center bold sorting" tabindex="0" style="white-space: nowrap;"> Item </th>
                     <th class="text-center bold sorting" tabindex="0" style="white-space: nowrap;"> Oferta </th>
                     <th class="text-center bold sorting" tabindex="0" style="white-space: nowrap;"> Hora </th>
-                    <th class="text-center bold sorting" tabindex="0" style="white-space: nowrap;"> Proveedor </th>
+                    <th class="text-center bold sorting" tabindex="0" style="white-space: nowrap;" data-bind="text: ($root.EsAscendente() ? 'Oferente' : 'Proveedor')"> </th>
                     <th class="text-center bold sorting" tabindex="0" style="white-space: nowrap;"> Cant. Ofertada </th>
                 </tr>
             </thead>

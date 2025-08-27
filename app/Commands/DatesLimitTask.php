@@ -71,7 +71,27 @@ class DatesLimitTask extends BaseController
             $companies = OffererCompany::with('users')->whereIn('id', $companiesInvited)->get();
 
             foreach ($oferentes as $oferente) {
-                $users = $oferente->company->users->pluck('email');
+                // Traer la company con sus usuarios en una sola query
+                $company = $oferente->company()->with('users')->first();
+
+                if (!$company) {
+                    $this->printLog("Oferente {$oferente->id} sin compañía asociada, se omite.");
+                    continue;
+                }
+
+                // Obtener emails como array, sin nulos/duplicados
+                $users = $company->users
+                    ->pluck('email')
+                    ->filter()          // quita null/'' 
+                    ->unique()
+                    ->values()
+                    ->all();
+
+                if (empty($users)) {
+                    $this->printLog("Compañía {$company->id} ({$company->business_name}) sin usuarios con email, se omite envío.");
+                    // si querés seguir sin enviar mails, continuá; si no, podés notificar al cliente
+                    continue;
+                }
 
                 $nombre = $oferente->company->business_name;
                 $invitacion_pendiente = $oferente->is_invitacion_pendiente;
@@ -124,8 +144,8 @@ class DatesLimitTask extends BaseController
                      */
                     $diff = Carbon::now()->diffInDays($fecha_tecnica);
                     $fecha_vencida = $oferente->has_tecnica_vencida;
-                    if ($diff <= 2 && !$fecha_vencida && !$presento_tecnica && $concurso->technical_includes) {
-                        $title = 'Fecha límite para presentar ofertas técnicas';
+                    if ($diff <= 3 && !$fecha_vencida && !$presento_tecnica && $concurso->technical_includes) {
+                        $title = 'Fecha límite para presentar ofertas técnicas (Recordatorio)';
                         $subject = $concurso->nombre . ' - ' . $title;
                         $template = rootPath(config('app.templates_path')) . '/email/dates_limit_technical.tpl';
 
@@ -161,8 +181,8 @@ class DatesLimitTask extends BaseController
                     $diff = Carbon::now()->diffInDays($fecha_economica);
                     $fecha_vencida = $oferente->has_economica_vencida;
                     if ($concurso->is_sobrecerrado) {
-                        if ($diff <= 2 && !$fecha_vencida && !$presento_economica) {
-                            $title = 'Fecha límite para presentar ofertas económicas';
+                        if ($diff <= 3 && !$fecha_vencida && !$presento_economica) {
+                            $title = 'Fecha límite para presentar ofertas económicas (Recordatorio)';
                             $subject = $concurso->nombre . ' - ' . $title;
                             $template = rootPath(config('app.templates_path')) . '/email/dates_limit_economic.tpl';
 
@@ -171,6 +191,7 @@ class DatesLimitTask extends BaseController
                                 'ano' => Carbon::now()->format('Y'),
                                 'concurso' => $concurso,
                                 'company_name' => $oferente->company->business_name,
+                                'timeZone' => $this->toGmtOffset($concurso->cliente->customer_company->timeZone)
 
                             ]);
 
@@ -226,9 +247,9 @@ class DatesLimitTask extends BaseController
                         }
                     }
 
-                    /**
+                    /*
                      * SEGUNDA RONDA OFERTAS
-                     */
+                    
                     $diff = Carbon::now()->diffInDays($fecha_segunda_ronda);
                     if ($diff <= 2 && (int) $presento_economica && $concurso->segunda_ronda_habilita === 'si') {
                         $title = 'Fecha límite para presentar segunda ronda oferta económicas';
@@ -252,7 +273,7 @@ class DatesLimitTask extends BaseController
                             $this->printLog('ERROR: La Invitación no ha podido ser enviada a ' . $nombre . ' (Segunda Ronda Ofertas)');
                             $this->printLog($result['message']);
                         }
-                    }
+                    } */
 
                     /**
                      * MURO MENSAJES
