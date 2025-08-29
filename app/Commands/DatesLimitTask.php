@@ -66,12 +66,11 @@ class DatesLimitTask extends BaseController
             $sent_count_4 = 0;
             $sent_count_5 = 0;
 
-            $oferentes = $concurso->oferentes->where('is_seleccionado', false);
-            $companiesInvited = $concurso->oferentes->where('is_seleccionado', true)->pluck('id_offerer');
-            $companies = OffererCompany::with('users')->whereIn('id', $companiesInvited)->get();
+            // Iteramos TODOS los oferentes y dentro decidimos qué correos aplicar
+            $oferentes = $concurso->oferentes;
 
             foreach ($oferentes as $oferente) {
-                // Traer la company con sus usuarios en una sola query
+                // === BLOQUE TUYO: company + users (sin cambios) ===
                 $company = $oferente->company()->with('users')->first();
 
                 if (!$company) {
@@ -79,46 +78,52 @@ class DatesLimitTask extends BaseController
                     continue;
                 }
 
-                // Obtener emails como array, sin nulos/duplicados
                 $users = $company->users
                     ->pluck('email')
-                    ->filter()          // quita null/'' 
+                    ->filter()
                     ->unique()
                     ->values()
                     ->all();
 
                 if (empty($users)) {
                     $this->printLog("Compañía {$company->id} ({$company->business_name}) sin usuarios con email, se omite envío.");
-                    // si querés seguir sin enviar mails, continuá; si no, podés notificar al cliente
                     continue;
                 }
+                // === FIN BLOQUE TUYO ===
 
-                $nombre = $oferente->company->business_name;
+                // Flags comunes
+                $nombre               = $oferente->company->business_name;
                 $invitacion_pendiente = $oferente->is_invitacion_pendiente;
                 $invitacion_rechazada = $oferente->is_invitacion_rechazada;
-                $invitacion_aceptada = $oferente->has_invitacion_aceptada;
-                $presento_economica = $oferente->has_economica_presentada;
-                $presento_tecnica = $oferente->has_tecnica_presentada;
+                $invitacion_aceptada  = $oferente->has_invitacion_aceptada;
+                $presento_economica   = $oferente->has_economica_presentada;
+                $presento_tecnica     = $oferente->has_tecnica_presentada;
+
+                // is_seleccionado puede venir en la columna del modelo o en el pivote
+                $selected = (bool) ($oferente->is_seleccionado ?? optional($oferente->pivot)->is_seleccionado ?? false);
 
                 if (!$invitacion_rechazada) {
+
                     /**
-                     * INVITACION / CONVOCATORIA
+                     * INVITACIÓN / CONVOCATORIA
+                     * (Solo para oferentes SELECCIONADOS)
+                     * Envío cuando faltan 3, 2 o 1 días (cron corre 1 vez/día).
                      */
-                    $diff = Carbon::now()->diffInDays($concurso->fecha_limite);
+                    $diff = Carbon::now()->diffInDays($concurso->fecha_limite, false);
                     $fecha_vencida = $oferente->has_invitacion_vencida;
 
-                    if ((!$fecha_vencida) && ($diff <= 2) && ($invitacion_pendiente)) {
-                        $title = 'Invitación a Concurso de Precios';
-                        $subject = $concurso->nombre . ' - ' . $title;
+                    if ($selected && !$fecha_vencida && $invitacion_pendiente && $diff <= 3 && $diff >= 0) {
+                        $title    = 'Invitación a Concurso de Precios';
+                        $subject  = $concurso->nombre . ' - ' . $title;
                         $template = rootPath(config('app.templates_path')) . '/email/invitation.tpl';
 
                         $html = $this->fetch($template, [
-                            'title' => $title,
-                            'ano' => Carbon::now()->format('Y'),
-                            'concurso' => $concurso,
+                            'title'         => $title,
+                            'ano'           => Carbon::now()->format('Y'),
+                            'concurso'      => $concurso,
                             'fecha_tecnica' => $concurso->technical_includes ? $concurso->ficha_tecnica_fecha_limite->format('Y-m-d H:i') : 'No aplica',
-                            'company_name' => $oferente->company->business_name,
-                            'timeZone' => $this->toGmtOffset($concurso->cliente->customer_company->timeZone)
+                            'company_name'  => $oferente->company->business_name,
+                            'timeZone'      => $this->toGmtOffset($concurso->cliente->customer_company->timeZone)
                         ]);
 
                         $result = $this->emailService->send($html, $subject, $users, "");
@@ -130,7 +135,7 @@ class DatesLimitTask extends BaseController
                             $this->printLog('ERROR: La Invitación no ha podido ser enviada a ' . $nombre . ' (Invitación a Concurso/Convocatoria)');
                             $this->printLog($result['message']);
                         }
-                    } elseif ($fecha_vencida && $invitacion_pendiente) {
+                    } elseif ($selected && $fecha_vencida && $invitacion_pendiente) {
                         print("entre aqui");
                         if ($this->rechazarOferente($oferente, $concurso, 'invitation')) {
                             $this->printLog('Oferente ' . $nombre . ' rechazado en concurso ' . strtoupper($concurso_nombre) . ' porque superó fecha límite para esta etapa: (Invitación a Concurso/Convocatoria)');
@@ -140,22 +145,23 @@ class DatesLimitTask extends BaseController
                     }
 
                     /**
-                     * PRESENTACION TECNICAS
+                     * PRESENTACIÓN TÉCNICAS
+                     * (Mantiene tu lógica actual: <= 3 días, si aplica y no presentó)
                      */
-                    $diff = Carbon::now()->diffInDays($fecha_tecnica);
+                    $diff = Carbon::now()->diffInDays($fecha_tecnica, false);
                     $fecha_vencida = $oferente->has_tecnica_vencida;
-                    if ($diff <= 3 && !$fecha_vencida && !$presento_tecnica && $concurso->technical_includes) {
-                        $title = 'Fecha límite para presentar ofertas técnicas (Recordatorio)';
-                        $subject = $concurso->nombre . ' - ' . $title;
+
+                    if ($diff <= 3 && $diff >= 0 && !$fecha_vencida && !$presento_tecnica && $concurso->technical_includes) {
+                        $title    = 'Fecha límite para presentar ofertas técnicas (Recordatorio)';
+                        $subject  = $concurso->nombre . ' - ' . $title;
                         $template = rootPath(config('app.templates_path')) . '/email/dates_limit_technical.tpl';
 
                         $html = $this->fetch($template, [
-                            'title' => $title,
-                            'ano' => Carbon::now()->format('Y'),
-                            'concurso' => $concurso,
+                            'title'        => $title,
+                            'ano'          => Carbon::now()->format('Y'),
+                            'concurso'     => $concurso,
                             'company_name' => $oferente->company->business_name,
-                            'timeZone' => $this->toGmtOffset($concurso->cliente->customer_company->timeZone)
-
+                            'timeZone'     => $this->toGmtOffset($concurso->cliente->customer_company->timeZone)
                         ]);
 
                         $result = $this->emailService->send($html, $subject, $users, "");
@@ -176,23 +182,24 @@ class DatesLimitTask extends BaseController
                     }
 
                     /**
-                     * PRESENTACION ECONOMICAS
+                     * PRESENTACIÓN ECONÓMICAS
+                     * (Mantiene tu lógica actual: <= 3 días, si aplica y no presentó)
                      */
-                    $diff = Carbon::now()->diffInDays($fecha_economica);
+                    $diff = Carbon::now()->diffInDays($fecha_economica, false);
                     $fecha_vencida = $oferente->has_economica_vencida;
+
                     if ($concurso->is_sobrecerrado) {
-                        if ($diff <= 3 && !$fecha_vencida && !$presento_economica) {
-                            $title = 'Fecha límite para presentar ofertas económicas (Recordatorio)';
-                            $subject = $concurso->nombre . ' - ' . $title;
+                        if ($diff <= 3 && $diff >= 0 && !$fecha_vencida && !$presento_economica) {
+                            $title    = 'Fecha límite para presentar ofertas económicas (Recordatorio)';
+                            $subject  = $concurso->nombre . ' - ' . $title;
                             $template = rootPath(config('app.templates_path')) . '/email/dates_limit_economic.tpl';
 
                             $html = $this->fetch($template, [
-                                'title' => $title,
-                                'ano' => Carbon::now()->format('Y'),
-                                'concurso' => $concurso,
+                                'title'        => $title,
+                                'ano'          => Carbon::now()->format('Y'),
+                                'concurso'     => $concurso,
                                 'company_name' => $oferente->company->business_name,
-                                'timeZone' => $this->toGmtOffset($concurso->cliente->customer_company->timeZone)
-
+                                'timeZone'     => $this->toGmtOffset($concurso->cliente->customer_company->timeZone)
                             ]);
 
                             $result = $this->emailService->send($html, $subject, $users, "");
@@ -213,20 +220,22 @@ class DatesLimitTask extends BaseController
                         }
                     }
 
+                    /**
+                     * SUBASTA (si aplica)
+                     */
                     if ($concurso->is_online) {
-                        $diff = Carbon::now()->diffInHours($concurso->inicio_subasta);
+                        $diff = Carbon::now()->diffInHours($concurso->inicio_subasta, false);
 
-                        if ($diff <= 48) {
-                            $title = 'Fecha inicio de SUBASTA';
-                            $subject = $concurso->nombre . ' - ' . $title;
+                        if ($diff <= 48 && $diff >= 0) {
+                            $title    = 'Fecha inicio de SUBASTA';
+                            $subject  = $concurso->nombre . ' - ' . $title;
                             $template = rootPath(config('app.templates_path')) . '/email/reminder-subasta.tpl';
 
                             $html = $this->fetch($template, [
-                                'title' => $title,
-                                'ano' => Carbon::now()->format('Y'),
-                                'concurso' => $concurso,
+                                'title'        => $title,
+                                'ano'          => Carbon::now()->format('Y'),
+                                'concurso'     => $concurso,
                                 'company_name' => $oferente->company->business_name,
-
                             ]);
 
                             $result = $this->emailService->send($html, $subject, $users, "");
@@ -247,50 +256,21 @@ class DatesLimitTask extends BaseController
                         }
                     }
 
-                    /*
-                     * SEGUNDA RONDA OFERTAS
-                    
-                    $diff = Carbon::now()->diffInDays($fecha_segunda_ronda);
-                    if ($diff <= 2 && (int) $presento_economica && $concurso->segunda_ronda_habilita === 'si') {
-                        $title = 'Fecha límite para presentar segunda ronda oferta económicas';
-                        $subject = $concurso->nombre . ' - ' . $title;
-                        $template = rootPath(config('app.templates_path')) . '/email/dates_limit_second_round.tpl';
-
-                        $html = $this->fetch($template, [
-                            'title' => $title,
-                            'ano' => Carbon::now()->format('Y'),
-                            'concurso' => $concurso,
-                            'company_name' => $oferente->company->business_name,
-
-                        ]);
-
-                        $result = $this->emailService->send($html, $subject, $users, "");
-
-                        if ($result['success']) {
-                            $this->printLog('Invitación enviada a ' . $nombre . ' (Segunda Ronda Ofertas)');
-                            $sent_count_4++;
-                        } else {
-                            $this->printLog('ERROR: La Invitación no ha podido ser enviada a ' . $nombre . ' (Segunda Ronda Ofertas)');
-                            $this->printLog($result['message']);
-                        }
-                    } */
-
                     /**
                      * MURO MENSAJES
                      */
-                    $diff = Carbon::now()->diffInDays($concurso->finalizacion_consultas);
+                    $diff = Carbon::now()->diffInDays($concurso->finalizacion_consultas, false);
                     $diasCierre = 5;
-                    if ($diff <= $diasCierre && $concurso->is_chat_enabled && $invitacion_aceptada) {
-                        $title = 'Fecha límite para consultas en el muro de mensaje';
-                        $subject = $concurso->nombre . ' - ' . $title;
+                    if ($diff <= $diasCierre && $diff >= 0 && $concurso->is_chat_enabled && $invitacion_aceptada) {
+                        $title    = 'Fecha límite para consultas en el muro de mensaje';
+                        $subject  = $concurso->nombre . ' - ' . $title;
                         $template = rootPath(config('app.templates_path')) . '/email/dates_limit_chat.tpl';
 
                         $html = $this->fetch($template, [
-                            'title' => $title,
-                            'ano' => Carbon::now()->format('Y'),
-                            'concurso' => $concurso,
+                            'title'        => $title,
+                            'ano'          => Carbon::now()->format('Y'),
+                            'concurso'     => $concurso,
                             'company_name' => $oferente->company->business_name,
-
                         ]);
 
                         $result = $this->emailService->send($html, $subject, $users, "");
@@ -303,17 +283,17 @@ class DatesLimitTask extends BaseController
                             $this->printLog($result['message']);
                         }
                     }
-
-                }
-            }
+                } // end if !$invitacion_rechazada
+            } // end foreach oferentes
 
             $this->printLog($sent_count_1 . ' correos enviados para Invitación/Convocatoria.');
             $this->printLog($sent_count_2 . ' correos enviados para Presentaciones Técnicas.');
             $this->printLog($sent_count_3 . ' correos enviados para Presentaciones Económicas.');
             $this->printLog($sent_count_4 . ' correos enviados para Segunda Ronda de Ofertas.');
             $this->printLog($sent_count_5 . ' correos enviados para Envío de Fecha Límite.');
-        }
+        } // end foreach concursos
     }
+
 
     private function processConcursos()
     {
