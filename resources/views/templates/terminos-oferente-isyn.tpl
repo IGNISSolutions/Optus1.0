@@ -1,5 +1,5 @@
 
-html_content = r"""<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="utf-8">
@@ -33,7 +33,7 @@ ol.alpha-list li {
 <body>
 <div class="page">
 
-<p class="MsoNormal MsoSmall"><b>Código Anexo # 1</b> — <b>ISYN-Anx-1_V.1</b> — <b>Fecha de emisión:</b> 15/10/2024</p>
+<p class="MsoNormal MsoSmall"><b>Fecha de emisión:</b> 15/10/2024</p>
 
 <h1 class="MsoTitle">Términos y Condiciones de la Subasta</h1>
 
