@@ -33,7 +33,7 @@ class AuthController extends BaseController
             $this->login_logs($request->getParsedBody()['UserName'], null, 'F', 'Optus', 'Bloqueado por exceso de intentos');
             return $this->json($response, [
                 'success' => false,
-                'message' => 'Demasiados intentos fallidos. Intenta nuevamente más tarde.',
+                'message' => 'Demasiados intentos fallidos. Se le ha bloqueado el acceso por 15 minutos. Intenta nuevamente pasada esa ventana de tiempo.',
                 'data'    => ['user' => null]
             ], 429);
         }

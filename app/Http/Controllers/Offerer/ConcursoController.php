@@ -444,14 +444,39 @@ class ConcursoController extends BaseController
             // Obtener el oferente
             $oferente = $concurso->oferentes->where('id_offerer', $user->offerer_company_id)->first();
 
-            $terminos_filename = rootPath(config('app.templates_path')) . '/terminos-oferente.tpl';
+            $terminos = ''; // evitar undefined
+            $templatesPath = rootPath(config('app.templates_path'));
 
+            $tplDefault = $templatesPath . '/terminos-oferente.tpl';
+            $tplIsyn    = $templatesPath . '/terminos-oferente-isyn.tpl';
+
+            // 1) Obtener el id del usuario que creó el concurso (id_cliente)
+            $creatorUserId = null;
+            if (isset($concurso->id_cliente)) {
+                $creatorUserId = (int) $concurso->id_cliente;
+            } else {
+                // fallback por las dudas de no tener la propiedad cargada
+                $creatorUserId = (int) Concurso::where('id', $concurso->id)->value('id_cliente');
+            }
+
+            // 2) Con ese usuario, obtener su customer_company_id
+            $creatorCustomerCompanyId = null;
+            if ($creatorUserId) {
+                $creatorCustomerCompanyId = (int) \App\Models\User::where('id', $creatorUserId)->value('customer_company_id');
+            }
+
+            // 3) ¿El creador pertenece a la company 17?
+            $isIsynConcurso = ($creatorCustomerCompanyId === 17);
+
+            // 4) Elegir el tpl
+            $terminos_filename = ($isIsynConcurso && is_file($tplIsyn)) ? $tplIsyn : $tplDefault;
+
+            // 5) Render del tpl elegido
             if (is_file($terminos_filename)) {
                 ob_start();
                 include $terminos_filename;
                 $terminos = ob_get_clean();
             }
-
             $descriptionImg = $concurso->descriptionImagen == null ? "/default.gif" : $concurso->descriptionImagen;
             $descriptionText = $concurso->descriptionDescription == null ? null : $concurso->descriptionDescription;
             if ($concurso->descriptionImagen == null || $concurso->descriptionImagen == "default.gif") {
