@@ -190,6 +190,50 @@ class EmailService
         return $results;
     }
 
+    private function guessMimeType(string $path): string
+    {
+        if (function_exists('mime_content_type')) {
+            $t = @mime_content_type($path);
+            if ($t) return $t;
+        }
+        $ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+        $map = ['png'=>'image/png','jpg'=>'image/jpeg','jpeg'=>'image/jpeg','gif'=>'image/gif','svg'=>'image/svg+xml'];
+        return $map[$ext] ?? 'application/octet-stream';
+    }
+
+    private function resolvePublicPath(string $rel): ?string
+    {
+        try {
+            if (function_exists('publicPath') && function_exists('asset')) {
+                $abs = publicPath(asset($rel));
+            } else {
+                $abs = dirname(__DIR__, 2).DIRECTORY_SEPARATOR.'public'.str_replace('/', DIRECTORY_SEPARATOR, $rel);
+            }
+            return file_exists($abs) ? $abs : null;
+        } catch (\Throwable $e) {
+            return null;
+        }
+    }
+
+    private function getFrontLogoPath(): ?string
+    {
+        $customer_company_id = $_SESSION['customer_company_id'] ?? null;
+
+        // 1) Intentá con logosmall de Mailer
+        if ($customer_company_id) {
+            $lst = Mailer::where('customer_company_id', $customer_company_id)->first();
+            if ($lst && !empty($lst['logosmall'])) {
+                $p = $this->resolvePublicPath($lst['logosmall']);
+                if ($p) return $p;
+            }
+        }
+        // 2) Fallbacks
+        foreach (['/global/img/logo-small.png','/assets/global/img/logo-small.png'] as $rel) {
+            $p = $this->resolvePublicPath($rel);
+            if ($p) return $p;
+        }
+        return null;
+    }
     private function sendMailTelecentro($message, $subject, $email_to, $alias)
     {
         // CONFIGURAR LAS VARIABLES CON LOS DATOS DE TU APLICACIÓN DE AZURE
@@ -238,33 +282,43 @@ class EmailService
         // Adjuntar logo de Telecentro como imagen inline (si existe) y agregar footer HTML
         $attachments = [];
         $telecentroPath = $this->getTelecentroImagePath();
-        if ($telecentroPath && file_exists($telecentroPath)) {
+        // (A) Adjuntar el logo principal para <img src="cid:front">
+        if ($frontPath = $this->getFrontLogoPath()) {
+            $attachments[] = [
+                '@odata.type' => '#microsoft.graph.fileAttachment',
+                'name'        => basename($frontPath),
+                'contentType' => $this->guessMimeType($frontPath),
+                'contentBytes'=> base64_encode(file_get_contents($frontPath)),
+                'isInline'    => true,
+                'contentId'   => 'front',
+            ];
+        }
+
+        // (B) Footer de Telecentro: agrega el HTML y adjunta el PNG inline
+        if ($telecentroPath = $this->getTelecentroImagePath()) {
             $message .= $this->getTelecentroFooterHtml($this->telecentroCid);
-            $content = @file_get_contents($telecentroPath);
-            if ($content !== false) {
-                $attachments[] = [
-                    '@odata.type' => '#microsoft.graph.fileAttachment',
-                    'name'        => 'telecentro.png',
-                    'contentBytes'=> base64_encode($content),
-                    'isInline'    => true,
-                    'contentId'   => $this->telecentroCid
-                ];
-            }
+            $attachments[] = [
+                '@odata.type' => '#microsoft.graph.fileAttachment',
+                'name'        => 'telecentro.png',
+                'contentType' => $this->guessMimeType($telecentroPath),
+                'contentBytes'=> base64_encode(file_get_contents($telecentroPath)),
+                'isInline'    => true,
+                'contentId'   => $this->telecentroCid,
+            ];
         }
 
         $senderEmail = "licitaciones@telecentro.net.ar";
         $mailUrl     = "https://graph.microsoft.com/v1.0/users/{$senderEmail}/sendMail";
-        $emailBody   = [
+
+        $emailBody = [
             "message" => [
                 "subject"      => $subject,
-                "body"         => [
-                    "contentType" => "HTML",
-                    "content"     => $message
-                ],
-                "toRecipients" => $toRecipients
+                "body"         => ["contentType" => "HTML", "content" => $message],
+                "toRecipients" => $toRecipients,
             ],
-            "saveToSentItems" => true
+            "saveToSentItems" => true,
         ];
+
         if (!empty($attachments)) {
             $emailBody['message']['attachments'] = $attachments;
         }
@@ -324,6 +378,7 @@ class EmailService
     private function getTelecentroImagePath(): ?string
     {
         $candidates = [
+            '/assets/global/img/Logos/TLC/telecentro.png',
             '/assets/telecentro.png',
             '/global/img/telecentro.png',
             '/img/telecentro.png',
