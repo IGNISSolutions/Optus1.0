@@ -862,7 +862,6 @@ class ConcursoController extends BaseController
         foreach ($concursos as $concurso) {
             $list['ListaConcursosInformes'][] = $this->mapConcursoList($concurso);
         }
-
             // CANCELADOS
                 $concursos = collect();
                if ($user->type_id == 7) {
@@ -2436,47 +2435,47 @@ class ConcursoController extends BaseController
                     }
                 }
 
-$result = $this->createConcurso($params['type'], $entity);
+            $result = $this->createConcurso($params['type'], $entity);
 
-if ($result['error']) {
-    $connection->rollBack();
-    $message = $result['message'];
-    $status = 422;
-    $success = false;
-} else {
-    $connection->commit();
-    $message = 'Concurso guardado con éxito.';
-    $success = true;
+            if ($result['error']) {
+                $connection->rollBack();
+                $message = $result['message'];
+                $status = 422;
+                $success = false;
+            } else {
+                $connection->commit();
+                $message = 'Concurso guardado con éxito.';
+                $success = true;
 
-    // Enviar email de confirmación al usuario que creó el concurso
-    $user = user();
-    $concurso = $result['data']['concurso'] ?? null;
+                // Enviar email de confirmación al usuario que creó el concurso
+                $user = user();
+                $concurso = $result['data']['concurso'] ?? null;
 
-    // ✅ IMPORTANTE: asegurar que el objeto tenga los oferentes cargados
-    if ($concurso && !$concurso->relationLoaded('oferentes')) {
-        $concurso->load('oferentes.company');
-    }
+                // ✅ IMPORTANTE: asegurar que el objeto tenga los oferentes cargados
+                if ($concurso && !$concurso->relationLoaded('oferentes')) {
+                    $concurso->load('oferentes.company');
+                }
 
-    $oferentesNombres = [];
-    if ($concurso && $concurso->oferentes && $concurso->oferentes->count() > 0) {
-        foreach ($concurso->oferentes as $oferente) {
-            $oferentesNombres[] = $oferente->company->business_name ?? 'Sin nombre';
-        }
-    }
+                $oferentesNombres = [];
+                if ($concurso && $concurso->oferentes && $concurso->oferentes->count() > 0) {
+                    foreach ($concurso->oferentes as $oferente) {
+                        $oferentesNombres[] = $oferente->company->business_name ?? 'Sin nombre';
+                    }
+                }
 
-    $templateUsuario = rootPath(config('app.templates_path')) . '/email/confirmation-creation-client.tpl';
+                $templateUsuario = rootPath(config('app.templates_path')) . '/email/confirmation-creation-client.tpl';
 
-    $htmlUser = $this->fetch($templateUsuario, [
-        'user' => $user,
-        'ano' => Carbon::now()->format('Y'),
-        'concurso' => $concurso,
-        'title' => 'Confirmación de Creación de Concurso',
-        'oferentes' => $oferentesNombres, // 👈 ahora sí, se pasa al email
-    ]);
+                $htmlUser = $this->fetch($templateUsuario, [
+                    'user' => $user,
+                    'ano' => Carbon::now()->format('Y'),
+                    'concurso' => $concurso,
+                    'title' => 'Confirmación de Creación de Concurso',
+                    'oferentes' => $oferentesNombres, // 👈 ahora sí, se pasa al email
+                ]);
 
-    $emailService = new EmailService();
-    $emailService->send($htmlUser, 'Confirmación de Creación de Concurso', [$user->email], "");
-}
+                $emailService = new EmailService();
+                $emailService->send($htmlUser, 'Confirmación de Creación de Concurso', [$user->email], "");
+            }
 
             }
 
@@ -2656,7 +2655,14 @@ if ($result['error']) {
 
                             //Enviamos el mail a los oferentes que se envio Invitación
                             foreach ($oferentes as $oferente) {
-                                $users = $oferente->company->users->pluck('email');
+
+                                //Obtenemos emails de los oferentes asociados
+                                $recipients = $oferente->company
+                                    ? $oferente->company->users()->pluck('email')->filter()->unique()->values()->toArray()
+                                    : [];
+                                if (empty($recipients)) {
+                                    continue; // no hay a quién enviar, seguimos con el próximo oferente
+                                }
                                 $htmlBody['company_name'] = $oferente->company->business_name;
                                 if ($ajustdate) {
                                     if ($oferente->has_invitacion_vencida || $oferente->is_invitacion_pendiente) {
@@ -2741,7 +2747,7 @@ if ($result['error']) {
                                 $result = $emailService->send(
                                     $html,
                                     $subject,
-                                    $users,
+                                    $recipients,
                                     ""
                                 );
                             }
