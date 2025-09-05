@@ -670,14 +670,48 @@ class ConcursoController extends BaseController
                 );
             }
 
-            // PROPUESTAS ECONÓMICAS
-            $concursos = collect();
-            $concursos = $concursos->merge(
-                $created
-                    ->filter(function ($concurso) {
-                        return $concurso->oferentes_etapa_economica->count() > 0;
+        // PROPUESTAS ECONÓMICAS
+        $concursos = collect();
+
+        $etapasEconomicas = [
+            'economica-pendiente', 'economica-pendiente-2', 'economica-pendiente-3',
+            'economica-pendiente-4', 'economica-pendiente-5',
+            'economica-presentada', 'economica-revisada', 'economica-declinada',
+        ];
+
+        $concursos = $concursos
+            ->merge($created)
+            ->merge($evaluating)
+            ->unique('id')
+            ->filter(function ($concurso) use ($etapasEconomicas) {
+                // 1) Excluir si existe algún oferente ACEPTADA o RECHAZADA (con o sin sufijo)
+                $tieneCerrado = $concurso->oferentes()
+                    ->where(function ($q) {
+                        $q->where('etapa_actual', 'adjudicacion-aceptada')
+                        ->orWhere('etapa_actual', 'like', 'adjudicacion-aceptada-%');
                     })
-            )->sortBy('id');
+                    ->exists();
+
+                if ($tieneCerrado) {
+                    return false;
+                }
+
+                // 2A) Incluir si hay oferentes en cualquier etapa ECONÓMICA que definiste
+                $hayEnEconomica = $concurso->oferentes()
+                    ->whereIn('etapa_actual', $etapasEconomicas)
+                    ->exists();
+
+                // 2B) O incluir si hay al menos un ADJUDICACION-PENDIENTE (con o sin sufijo)
+                $hayAdjPendiente = $concurso->oferentes()
+                    ->where(function ($q) {
+                        $q->where('etapa_actual', 'adjudicacion-pendiente')
+                        ->orWhere('etapa_actual', 'like', 'adjudicacion-pendiente-%');
+                    })
+                    ->exists();
+
+                return $hayEnEconomica || $hayAdjPendiente;
+            })
+            ->sortBy('id');
 
             foreach ($concursos as $concurso) {
                 $oferentes = $concurso->oferentes_etapa_economica;
@@ -782,42 +816,52 @@ class ConcursoController extends BaseController
 
 
 
-            // INFORMES
-            $concursos = collect();
-            $concursos = $concursos->merge(
-                $created->filter(function ($concurso) {
-                    $statuses = ['adjudicacion-aceptada', 'adjudicacion-rechazada'];
 
-                    // Caso subasta online: basta con que exista algún oferente en cualquiera de esos estados
-                    if ($concurso->tipo_concurso === 'online') {
-                        // Si tenés la relación cargada:
-                        return $concurso->oferentes->contains(function ($o) use ($statuses) {
-                            return in_array($o->etapa_actual, $statuses, true);
-                        });
+        // INFORMES
+        $concursos = collect();
 
-                        // Alternativa (más performante si NO está cargada la relación):
-                        // return $concurso->oferentes()->whereIn('etapa_actual', $statuses)->exists();
-                    }
+        $concursos = $concursos->merge(
+            $created->filter(function ($concurso) {
+                $oferentes = $concurso->oferentes ?? collect();
+                if ($oferentes->isEmpty()) return false;
 
-                    // Caso no online: conservar lógica previa (aceptada + evaluación existente)
-                    $oferentesAdjudicados = $concurso->oferentes->where('etapa_actual', 'adjudicacion-aceptada');
+                $hayRechazada = $oferentes->contains(function ($o) {
+                    return str_starts_with((string)$o->etapa_actual, 'adjudicacion-rechazada');
+                });
+                $hayPendiente = $oferentes->contains(function ($o) {
+                    return str_starts_with((string)$o->etapa_actual, 'adjudicacion-pendiente');
+                });
+                $hayAceptada = $oferentes->contains(function ($o) {
+                    return str_starts_with((string)$o->etapa_actual, 'adjudicacion-aceptada');
+                });
 
-                    foreach ($oferentesAdjudicados as $oferente) {
-                        if (Evaluacion::where('id_participante', $oferente->id)->exists()) {
+                // (R) Nueva regla de rechazadas: al menos una rechazada y ninguna pendiente ni aceptada
+                $reglaRechazadas = $hayRechazada && !$hayPendiente && !$hayAceptada;
+                if ($reglaRechazadas) return true;
+
+                // (A) Casos con aceptada:
+                if (($concurso->tipo_concurso ?? '') === 'online') {
+                    // Online: basta con que exista aceptada
+                    return $hayAceptada;
+                } else {
+                    // No online: aceptada con Evaluación
+                    $aceptados = $oferentes->filter(function ($o) {
+                        return str_starts_with((string)$o->etapa_actual, 'adjudicacion-aceptada');
+                    });
+
+                    foreach ($aceptados as $oferenteAceptado) {
+                        if (Evaluacion::where('id_participante', $oferenteAceptado->id)->exists()) {
                             return true;
                         }
                     }
-
                     return false;
-                })
-            );
+                }
+            })
+        );
 
-            foreach ($concursos as $concurso) {
-                $list['ListaConcursosInformes'][] = $this->mapConcursoList($concurso);
-            }
-
-
-
+        foreach ($concursos as $concurso) {
+            $list['ListaConcursosInformes'][] = $this->mapConcursoList($concurso);
+        }
             // CANCELADOS
                 $concursos = collect();
                if ($user->type_id == 7) {
@@ -2391,47 +2435,47 @@ class ConcursoController extends BaseController
                     }
                 }
 
-$result = $this->createConcurso($params['type'], $entity);
+            $result = $this->createConcurso($params['type'], $entity);
 
-if ($result['error']) {
-    $connection->rollBack();
-    $message = $result['message'];
-    $status = 422;
-    $success = false;
-} else {
-    $connection->commit();
-    $message = 'Concurso guardado con éxito.';
-    $success = true;
+            if ($result['error']) {
+                $connection->rollBack();
+                $message = $result['message'];
+                $status = 422;
+                $success = false;
+            } else {
+                $connection->commit();
+                $message = 'Concurso guardado con éxito.';
+                $success = true;
 
-    // Enviar email de confirmación al usuario que creó el concurso
-    $user = user();
-    $concurso = $result['data']['concurso'] ?? null;
+                // Enviar email de confirmación al usuario que creó el concurso
+                $user = user();
+                $concurso = $result['data']['concurso'] ?? null;
 
-    // ✅ IMPORTANTE: asegurar que el objeto tenga los oferentes cargados
-    if ($concurso && !$concurso->relationLoaded('oferentes')) {
-        $concurso->load('oferentes.company');
-    }
+                // ✅ IMPORTANTE: asegurar que el objeto tenga los oferentes cargados
+                if ($concurso && !$concurso->relationLoaded('oferentes')) {
+                    $concurso->load('oferentes.company');
+                }
 
-    $oferentesNombres = [];
-    if ($concurso && $concurso->oferentes && $concurso->oferentes->count() > 0) {
-        foreach ($concurso->oferentes as $oferente) {
-            $oferentesNombres[] = $oferente->company->business_name ?? 'Sin nombre';
-        }
-    }
+                $oferentesNombres = [];
+                if ($concurso && $concurso->oferentes && $concurso->oferentes->count() > 0) {
+                    foreach ($concurso->oferentes as $oferente) {
+                        $oferentesNombres[] = $oferente->company->business_name ?? 'Sin nombre';
+                    }
+                }
 
-    $templateUsuario = rootPath(config('app.templates_path')) . '/email/confirmation-creation-client.tpl';
+                $templateUsuario = rootPath(config('app.templates_path')) . '/email/confirmation-creation-client.tpl';
 
-    $htmlUser = $this->fetch($templateUsuario, [
-        'user' => $user,
-        'ano' => Carbon::now()->format('Y'),
-        'concurso' => $concurso,
-        'title' => 'Confirmación de Creación de Concurso',
-        'oferentes' => $oferentesNombres, // 👈 ahora sí, se pasa al email
-    ]);
+                $htmlUser = $this->fetch($templateUsuario, [
+                    'user' => $user,
+                    'ano' => Carbon::now()->format('Y'),
+                    'concurso' => $concurso,
+                    'title' => 'Confirmación de Creación de Concurso',
+                    'oferentes' => $oferentesNombres, // 👈 ahora sí, se pasa al email
+                ]);
 
-    $emailService = new EmailService();
-    $emailService->send($htmlUser, 'Confirmación de Creación de Concurso', [$user->email], "");
-}
+                $emailService = new EmailService();
+                $emailService->send($htmlUser, 'Confirmación de Creación de Concurso', [$user->email], "");
+            }
 
             }
 
@@ -2611,7 +2655,14 @@ if ($result['error']) {
 
                             //Enviamos el mail a los oferentes que se envio Invitación
                             foreach ($oferentes as $oferente) {
-                                $users = $oferente->company->users->pluck('email');
+
+                                //Obtenemos emails de los oferentes asociados
+                                $recipients = $oferente->company
+                                    ? $oferente->company->users()->pluck('email')->filter()->unique()->values()->toArray()
+                                    : [];
+                                if (empty($recipients)) {
+                                    continue; // no hay a quién enviar, seguimos con el próximo oferente
+                                }
                                 $htmlBody['company_name'] = $oferente->company->business_name;
                                 if ($ajustdate) {
                                     if ($oferente->has_invitacion_vencida || $oferente->is_invitacion_pendiente) {
@@ -2696,7 +2747,7 @@ if ($result['error']) {
                                 $result = $emailService->send(
                                     $html,
                                     $subject,
-                                    $users,
+                                    $recipients,
                                     ""
                                 );
                             }

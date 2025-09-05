@@ -12,6 +12,8 @@ use Carbon\Carbon;
 use App\Models\OffererCompany;
 use DateTimeZone;
 use DateTime;
+use App\Models\Mailer;
+
 
 
 class DatesLimitTask extends BaseController
@@ -53,6 +55,29 @@ class DatesLimitTask extends BaseController
 
         foreach ($concursos as $concurso) {
             date_default_timezone_set($concurso->cliente->customer_company->timeZone);
+            
+            $customerCompanyId = isset($concurso->cliente) && !empty($concurso->cliente->customer_company_id)
+                ? (int)$concurso->cliente->customer_company_id
+                : null;
+
+            if (!isset($_SESSION) || !is_array($_SESSION)) { $_SESSION = []; }
+            if ($customerCompanyId) {
+                $_SESSION['customer_company_id'] = $customerCompanyId;
+            } else {
+                unset($_SESSION['customer_company_id']); // fallback a ENV/OPTUS
+            }
+
+            // Reinstanciar el servicio para que el constructor tome SMTP/From/Logo correctos
+            $this->emailService = new EmailService();
+
+            // Alias "From" opcional desde mailer (si no hay, quedará vacío y el servicio usa su default)
+            $aliasFrom = '';
+            if ($customerCompanyId) {
+                $mailerRow = Mailer::where('customer_company_id', $customerCompanyId)->first();
+                if ($mailerRow && !empty($mailerRow->alias)) {
+                    $aliasFrom = $mailerRow->alias;
+                }
+            }
 
             $concurso_id       = $concurso->id;
             $concurso_nombre   = $concurso->nombre;
