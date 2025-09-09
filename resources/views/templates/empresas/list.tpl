@@ -105,10 +105,14 @@
                                         <i class="fa fa-pencil"></i>
                                     </a>
 
-                                    <!--<a data-bind="attr: {literal}{ href: '/empresas/{/literal}{$tipo}{literal}/usuarios/' + Id()}{/literal}" class="btn btn-xs btn-warning" title="Usuarios">
-                                        Ver Usuarios 
-                                        <i class="fa fa-user"></i>
-                                     </a> -->
+                                    <a
+                                    data-bind="attr: {ldelim} href: '/empresas/{$tipo}/usuarios/' + Id() {rdelim}"
+                                    class="btn btn-xs btn-warning"
+                                    title="Usuarios">
+                                    Ver Usuarios
+                                    <i class="fa fa-user"></i>
+                                    </a>
+
                                     {if isAdmin()}
                                         <a data-bind="click: $root.Delete.bind($data, Id())" class="btn btn-xs btn-danger"
                                             title="Eliminar">
