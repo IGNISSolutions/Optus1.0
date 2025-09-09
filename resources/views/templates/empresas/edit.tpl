@@ -643,14 +643,13 @@
             };
 
             this.onCuitBlur = function () {
-            // Solo cuando un CUSTOMER crea un OFFERER nuevo
             if ('{$userType}' !== 'customer') return;
-            if (params[1] !== 'offerer') return;   // tipo en la URL
-            if (params[2] !== 'nuevo') return;     // acción en la URL
+            if (params[1] !== 'offerer') return;
+            if (params[2] !== 'nuevo') return;
 
             var raw  = self.Entity.Cuit() || '';
             var cuit = String(raw).replace(/\D/g, '');
-            if (cuit.length < 2) return;
+            if (cuit.length < 8) return; // usa 8+ para consultar; valida 11 al guardar
 
             $.blockUI();
             var url = '/empresas/offerer/by-cuit/' + cuit;
@@ -661,20 +660,14 @@
                 function (response) {
                 $.unblockUI();
 
-                // Normalizamos banderas para robustez con distintos backends
-                var exists =
-                    !!(response && response.success && response.data && response.data.id);
-
-                // already_associated puede venir como flag, code o en el message
+                // 1) Detectar "ya asociado" sin depender de success/data.id
+                var msg = (response && response.message) || '';
                 var alreadyAssociated =
-                    exists && (
-                    response.data.already_associated === true ||
-                    response.code === 'ALREADY_ASSOCIATED' ||
-                    /asociad[oa]/i.test(response.message || '')
-                    );
+                    /asociad[oa]/i.test(msg)                               // mensaje de tu backend
+                    || (response && response.data && response.data.already_associated === true)
+                    || (response && response.code === 'ALREADY_ASSOCIATED');
 
-                if (exists && alreadyAssociated) {
-                    // Caso 1: existe y ya está asociado → aviso y no continuar con alta nueva
+                if (alreadyAssociated) {
                     swal({
                     title: 'Proveedor ya asociado',
                     text: 'Este proveedor ya se encuentra asociado a tu empresa.',
@@ -687,24 +680,25 @@
                     return;
                 }
 
+                // 2) Existe proveedor (pero no está asociado)
+                var exists = !!(response && response.success && response.data && response.data.id);
                 if (exists) {
-                    // Caso 2: existe y NO está asociado → ofrecer asociar
-                    self.showOffererExistsModal(response.data);
+                    self.showOffererExistsModal(response.data); // ofrecer asociar
                     return;
                 }
 
-                // Caso 3: NO existe → seguir normalmente (NO limpiar CUIT, NO mostrar alertas)
+                // 3) No existe: seguir con el alta (no limpiar ni alertar)
                 // no-op
                 },
                 function (error) {
                 $.unblockUI();
-                // Error de red/servidor: no bloquees el alta por esto, solo informá
-                var msg = (error && error.message) ? error.message : 'No se pudo verificar el CUIT en este momento.';
-                swal('Aviso', msg, 'warning');
-                // Importante: NO limpiar el CUIT aquí
+                var emsg = (error && error.message) ? error.message : 'No se pudo verificar el CUIT en este momento.';
+                swal('Aviso', emsg, 'warning');
+                // No limpiar el CUIT en errores de red/servidor
                 }
             );
             };
+
 
 
         this.showOffererExistsModal = function(offerer) {
