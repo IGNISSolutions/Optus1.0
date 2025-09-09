@@ -350,6 +350,7 @@
                     { id: 10, text: 'Medio Ambiente' },
                     { id: 11, text: 'Oficina Técnica' },
                     { id: 12, text: 'Informática' },
+                    { id: 13, text: 'Siniestros' },
                 ]);
 
                 this.Roles = ko.observableArray([

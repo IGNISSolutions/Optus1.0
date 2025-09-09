@@ -643,49 +643,69 @@
             };
 
             this.onCuitBlur = function () {
-            // Solo corre cuando un CUSTOMER crea un OFFERER nuevo
+            // Solo cuando un CUSTOMER crea un OFFERER nuevo
             if ('{$userType}' !== 'customer') return;
             if (params[1] !== 'offerer') return;   // tipo en la URL
             if (params[2] !== 'nuevo') return;     // acción en la URL
 
-            var raw = self.Entity.Cuit() || '';
-            var cuit = String(raw).replace(/\D/g, ''); // solo dígitos
-            if (cuit.length !== 11) return;
+            var raw  = self.Entity.Cuit() || '';
+            var cuit = String(raw).replace(/\D/g, '');
+            if (cuit.length < 2) return;
 
             $.blockUI();
             var url = '/empresas/offerer/by-cuit/' + cuit;
 
-            Services.Get(url, { UserToken: User.Token },
+            Services.Get(
+                url,
+                { UserToken: User.Token },
                 function (response) {
                 $.unblockUI();
 
-                // Caso 1: existe proveedor y NO está asociado todavía → mostrar modal para asociar
-                if (response && response.success && response.data && response.data.id) {
+                // Normalizamos banderas para robustez con distintos backends
+                var exists =
+                    !!(response && response.success && response.data && response.data.id);
+
+                // already_associated puede venir como flag, code o en el message
+                var alreadyAssociated =
+                    exists && (
+                    response.data.already_associated === true ||
+                    response.code === 'ALREADY_ASSOCIATED' ||
+                    /asociad[oa]/i.test(response.message || '')
+                    );
+
+                if (exists && alreadyAssociated) {
+                    // Caso 1: existe y ya está asociado → aviso y no continuar con alta nueva
+                    swal({
+                    title: 'Proveedor ya asociado',
+                    text: 'Este proveedor ya se encuentra asociado a tu empresa.',
+                    type: 'info',
+                    confirmButtonText: 'Aceptar'
+                    }, function () {
+                    self.Entity.Cuit('');
+                    setTimeout(function(){ document.getElementById('cuit')?.focus(); }, 0);
+                    });
+                    return;
+                }
+
+                if (exists) {
+                    // Caso 2: existe y NO está asociado → ofrecer asociar
                     self.showOffererExistsModal(response.data);
                     return;
                 }
 
-                // Caso 2: cualquier otro (ya asociado, no existe, cuit inválido, etc.) → mostrar aviso
-                var msg = (response && response.message) ? response.message : 'No se pudo verificar el CUIT.';
-                swal({
-                    title: 'Aviso',
-                    text: msg,
-                    type: 'warning',
-                    confirmButtonText: 'Aceptar'
-                }, function () {
-                    // limpiamos y devolvemos foco
-                    self.Entity.Cuit('');
-                    setTimeout(function(){ document.getElementById('cuit')?.focus(); }, 0);
-                });
+                // Caso 3: NO existe → seguir normalmente (NO limpiar CUIT, NO mostrar alertas)
+                // no-op
                 },
                 function (error) {
                 $.unblockUI();
-                // Errores de red o 5xx
-                var msg = (error && error.message) ? error.message : 'Error al verificar el CUIT.';
-                swal('Error', msg, 'error');
+                // Error de red/servidor: no bloquees el alta por esto, solo informá
+                var msg = (error && error.message) ? error.message : 'No se pudo verificar el CUIT en este momento.';
+                swal('Aviso', msg, 'warning');
+                // Importante: NO limpiar el CUIT aquí
                 }
             );
             };
+
 
         this.showOffererExistsModal = function(offerer) {
             // offerer = { id, business_name, cuit, nombre, apellido, email}

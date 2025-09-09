@@ -211,7 +211,7 @@ class CompanyController extends BaseController
     {
         $cuit = preg_replace('/\D/', '', $params['cuit'] ?? '');
 
-        if (strlen($cuit) !== 11) {
+        if (strlen($cuit) < 2) {
             return $response->withJson([
                 'success' => false,
                 'message' => 'CUIT inválido'
