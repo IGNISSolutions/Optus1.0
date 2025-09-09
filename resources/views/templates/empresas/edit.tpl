@@ -649,7 +649,7 @@
 
             var raw  = self.Entity.Cuit() || '';
             var cuit = String(raw).replace(/\D/g, '');
-            if (cuit.length < 8) return; // usa 8+ para consultar; valida 11 al guardar
+            if (cuit.length < 2) return; 
 
             $.blockUI();
             var url = '/empresas/offerer/by-cuit/' + cuit;
