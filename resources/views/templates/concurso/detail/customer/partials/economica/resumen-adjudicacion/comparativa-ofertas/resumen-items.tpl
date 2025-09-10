@@ -24,8 +24,8 @@
                 <th class="vertical-align-middle dt-head-center">Cantidad Cotizada</th>
                 <th class="vertical-align-middle dt-head-center">Precio Unitario</th>
                 <th class="vertical-align-middle dt-head-center">Total</th>
-                <th data-bind="text: $root.EsAscendente() ? 'Ganancia Abs' : 'Ahorro Abs'"></th>
-                <th data-bind="text: $root.EsAscendente() ? 'Ganancia %' : 'Ahorro %'"></th>
+                <th data-bind="text: ($root.EsAscendente() || $root.EsVenta()) ? 'Ganancia Abs' : 'Ahorro Abs'"></th>
+                <th data-bind="text: ($root.EsAscendente() || $root.EsVenta()) ? 'Ganancia %' : 'Ahorro %'"></th>
                 <!-- /ko -->
                 <!-- /ko -->
             </tr>
@@ -61,14 +61,14 @@
             data-bind="number: $data.items[$parentContext.$index()].subtotal, precision: 2">
         </td>
         <td class="text-center vertical-align-middle dt-head-center"
-            data-bind="number: $root.EsAscendente()
+            data-bind="number: ($root.EsAscendente() || $root.EsVenta())
                             ? $data.items[$parentContext.$index()].ganancia_abs
                             : $data.items[$parentContext.$index()].ahorro_abs,
                     precision: 2">
         </td>
 
         <td class="text-center vertical-align-middle dt-head-center"
-            data-bind="number: $root.EsAscendente()
+            data-bind="number: ($root.EsAscendente() || $root.EsVenta())
                             ? $data.items[$parentContext.$index()].ganancia_porc
                             : $data.items[$parentContext.$index()].ahorro_porc,
                     precision: 2">

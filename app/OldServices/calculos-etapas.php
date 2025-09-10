@@ -112,16 +112,43 @@ function calcularEtapaAnalisisOfertas(&$list, $concurso_id)
         }
         
         if (count($oferenteItems) > 0) {
-            $listtotales = [];
+            // Totales válidos (> 0) para determinar el "mejor"
+            $totalesValidos = [];
             foreach ($oferenteItems as $g => $f) {
-                $listtotales[$g] = $f['total'];
+                $t = isset($f['total']) ? (float)$f['total'] : 0.0;
+                if ($t > 0) {
+                    $totalesValidos[] = $t;
+                }
             }
-            $maxtotal = min($listtotales);
-            foreach ($oferenteItems as $g => $f) {
-                if ($f['total'] == 0) {
-                    $oferenteItems[$g]['difvsmejorofert'] = 0;
-                } else {
-                    $oferenteItems[$g]['difvsmejorofert'] = round((($maxtotal - $f['total']) / $f['total']) * 100, 2);
+
+            // Venta o subasta ascendente => se maximiza; Compra/descendente => se minimiza
+            $maximize = (
+                ($concurso->is_online && $concurso->tipo_valor_ofertar === 'ascendente')
+                || ($concurso->tipo_licitacion === 'venta')
+            );
+
+            if (!empty($totalesValidos)) {
+                $best = $maximize ? max($totalesValidos) : min($totalesValidos);
+
+                foreach ($oferenteItems as $g => $f) {
+                    $total = isset($f['total']) ? (float)$f['total'] : 0.0;
+
+                    if ($total <= 0 || $best <= 0) {
+                        $oferenteItems[$g]['difvsmejorofert'] = 0.0;
+                        continue;
+                    }
+
+                    // Gap en % respecto del mejor (siempre ≥ 0)
+                    $gap = $maximize
+                        ? (($best - $total) / $best) * 100.0   // mayor es mejor (venta/asc)
+                        : (($total - $best) / $best) * 100.0;  // menor es mejor (compra/desc)
+
+                    $oferenteItems[$g]['difvsmejorofert'] = round(max($gap, 0.0), 2);
+                }
+            } else {
+                // Sin totales válidos
+                foreach ($oferenteItems as $g => $f) {
+                    $oferenteItems[$g]['difvsmejorofert'] = 0.0;
                 }
             }
             
@@ -148,14 +175,11 @@ function isMejorOferta($concurso, $total, $mejorOferta)
         return true;
     }
 
-    if (
-        $concurso->is_online &&
-        $concurso->tipo_valor_ofertar === 'ascendente'
-    ) {
-        return $total > $mejorOferta;
-    }
+    $maximize =
+        ($concurso->is_online && $concurso->tipo_valor_ofertar === 'ascendente')
+        || ($concurso->is_sobrecerrado && $concurso->tipo_licitacion === 'venta'); 
 
-    return $total < $mejorOferta;
+    return $maximize ? ($total > $mejorOferta) : ($total < $mejorOferta);
 }
 
 function getEconomicDoc($economic_proposal)
@@ -197,6 +221,7 @@ function setOferente($concurso, $oferente, $ronda)
     $totaltargetcost_solicitado = 0.0; // Σ TC * cantidad SOLICITADA (para %)
 
     $isAscendente = ($concurso->tipo_valor_ofertar === 'ascendente');
+    $isVenta = ($concurso -> tipo_licitacion === 'venta');
 
     if (!$oferente->is_concurso_rechazado) {
         $economic_proposal = $oferente->economic_proposal;
@@ -242,7 +267,7 @@ function setOferente($concurso, $oferente, $ronda)
                     // Ganancia por ÍTEM (solo ascendente, inversa del ahorro)
                     $ganancia_item_abs  = null;
                     $ganancia_item_porc = null;
-                    if ($isAscendente && $subtotaltargetcost > 0.00) {
+                    if (($isAscendente || $isVenta) && $subtotaltargetcost > 0.00) {
                         $ganancia_item_abs  = $subtotal - $subtotaltargetcost;
                         $ganancia_item_porc = ($ganancia_item_abs / $subtotaltargetcost) * 100;
                     }
@@ -281,7 +306,7 @@ function setOferente($concurso, $oferente, $ronda)
 
                 $ganancia_abs  = null;
                 $ganancia_porc = null;
-                if ($isAscendente) {
+                if ($isAscendente || $isVenta) {
                     $ganancia_abs  = $total - $totaltargetcost_ofertado;
                     $ganancia_porc = $totaltargetcost_solicitado > 0.00 ? ($ganancia_abs / $totaltargetcost_solicitado) * 100 : null;
                 }
@@ -432,7 +457,9 @@ function setMejorIntegral($concurso, $oferentes)
 
     // Usa el mismo flag que en otras partes (con fallback)
     $tipoAsc = $concurso->tipo_valor_ofertar ?? $concurso->tipo_subasta ?? null;
+    $tipoLic = $concurso->tipo_licitacion ?? null;
     $isAscendente = ($tipoAsc === 'ascendente');
+    $isVenta = ($tipoLic === 'venta');
 
     foreach ($oferentes as $oferente) {
         if (!empty($oferente['isRechazado'])) {
@@ -469,7 +496,7 @@ function setMejorIntegral($concurso, $oferentes)
     }
 
     // Recalcular ganancia del ganador desde sus ítems (robusto)
-    if ($isAscendente && !empty($items)) {
+    if (($isAscendente || $isVenta) && !empty($items)) {
         $sumSubtotal = 0.0;
         $sumTarget   = 0.0;
         foreach ($items as $it) {
@@ -511,7 +538,7 @@ function setMejorIndividual($concurso, $oferentes)
 
     // Subasta ascendente?
     $isAscendente = isset($concurso->tipo_valor_ofertar) && $concurso->tipo_valor_ofertar === 'ascendente';
-
+    $isVenta = isset($concurso->tipo_licitacion) && $concurso ->tipo_licitacion === 'venta';
     /**
      * MEJOR OFERTA INDIVIDUAL
      */
@@ -548,14 +575,20 @@ function setMejorIndividual($concurso, $oferentes)
                 ARRAY_FILTER_USE_BOTH
             );
 
+            $maximize = (
+            ($concurso->is_online && $concurso->tipo_valor_ofertar === 'ascendente')
+            || ($concurso->tipo_licitacion === 'venta') // 👈 vender = maximizar
+            );
+
             $mejores_cotizaciones = array_intersect_key($mejores_cotizaciones, $mejores_cantidades);
             $mejores_cotizaciones = array_filter(
                 $mejores_cotizaciones,
-                function ($value, $key) use ($mejores_cotizaciones, $concurso) {
-                    if ($concurso->is_online && $concurso->tipo_valor_ofertar === 'ascendente') {
-                        return $value >= max(array_filter($mejores_cotizaciones));
-                    }
-                    return $value <= min(array_filter($mejores_cotizaciones));
+                function ($value) use ($mejores_cotizaciones, $maximize) {
+                    $pool = array_filter($mejores_cotizaciones);
+                    if (!$pool) return false;
+                    return $maximize
+                        ? ($value >= max($pool))
+                        : ($value <= min($pool));
                 },
                 ARRAY_FILTER_USE_BOTH
             );
@@ -586,7 +619,7 @@ function setMejorIndividual($concurso, $oferentes)
                         // NUEVO: Ganancia por ítem (solo ascendente)
                         $ganancia_item_abs  = null;
                         $ganancia_item_porc = null;
-                        if ($isAscendente && $subtotaltargetcost > 0.00) {
+                        if (($isAscendente || $isVenta) && $subtotaltargetcost > 0.00) {
                             $ganancia_item_abs  = $subtotal - $subtotaltargetcost;
                             $ganancia_item_porc = ($ganancia_item_abs / $subtotaltargetcost) * 100;
                         }
@@ -637,7 +670,7 @@ function setMejorIndividual($concurso, $oferentes)
     // NUEVO: ganancia total (solo ascendente)
     $mejor_ganancia_abs  = null;
     $mejor_ganancia_porc = null;
-    if ($isAscendente && $total1targetcost > 0.00) {
+    if (($isAscendente || $isVenta) && $total1targetcost > 0.00) {
         $mejor_ganancia_abs  = $total1 - $total1targetcost;
         $mejor_ganancia_porc = ($mejor_ganancia_abs / $total1targetcost) * 100;
     }

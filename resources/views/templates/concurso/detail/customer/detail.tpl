@@ -480,6 +480,7 @@
             };
 
             this.EsAscendente = ko.observable(false);
+            this.EsVenta = ko.observable(false);
             this.IdConcurso = ko.observable(data.list.IdConcurso);
             this.Tipo = ko.observable(data.list.Tipo);
             this.Nombre = ko.observable(data.list.Nombre);
@@ -579,6 +580,7 @@
                 this.OferentesAInvitar = ko.observable(data.list.OferentesAInvitar);
                 this.Evaluador = ko.observable(data.list.Evaluador);
                 this.EsAscendente = ko.observable(!!data.list.EsAscendente);
+                this.EsVenta = ko.observable(!!data.list.EsVenta);
 
             } else if (params[3] === 'analisis-tecnicas') {
                 this.TechnicalEvaluations = ko.observableArray(data.list.TechnicalEvaluations);
@@ -669,6 +671,7 @@
                 this.TitleNewRound = ko.observable("Lanzar " + self.NuevaRonda());
                 this.Proveedores = ko.observableArray(data.list.Proveedores);
                 this.EsAscendente = ko.observable(!!data.list.EsAscendente);
+                this.EsVenta = ko.observable(!!data.list.EsVenta);
 
 
 

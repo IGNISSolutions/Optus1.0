@@ -278,10 +278,6 @@ class ConcursoController extends BaseController
 
         try {
             $user = user();
-
-            $txt = fopen("user.txt","w");
-            fwrite($txt, json_encode($user));
-
             
             $concursos =
                 isAdmin() ?
@@ -1315,6 +1311,10 @@ class ConcursoController extends BaseController
                 if ($concurso->is_online && strtolower(trim($concurso->tipo_valor_ofertar)) === 'ascendente') {
                     $esAscendente = true;
                 }
+                $esVenta = false;
+                if ($concurso ->is_sobrecerrado && strtolower(trim($concurso->tipo_licitacion)) === 'venta') {
+                    $esVenta = true;
+                }
 
                 // Obtener el registro de User
                 $evalUser = User::find($concurso->ficha_tecnica_usuario_evalua);
@@ -1350,6 +1350,7 @@ class ConcursoController extends BaseController
                     'OferenteAInvitar' => null,
                     'Evaluador' => $evalName,
                     'EsAscendente'=> $esAscendente,
+                    'EsVenta'=>$esVenta,
                     //'Usertype' => $user_type
                 ]));
             }
@@ -1483,8 +1484,14 @@ class ConcursoController extends BaseController
                     $esAscendente = true;
                 }
 
+                $esVenta = false;
+                if ($concurso ->is_sobrecerrado && strtolower(trim($concurso->tipo_licitacion)) === 'venta') {
+                    $esVenta = true;
+                }
+
                 $list = array_merge($list, array_merge($common_data, [
                     'EsAscendente' => $esAscendente,
+                    'EsVenta' => $esVenta,
                     'OferentesInvitados' => $oferentesInvitados,
                     'Oferentes' => $oferentes->toArray(),
                     'TipoValorOferta' => $concurso->tipo_valor_ofertar,
@@ -1783,6 +1790,7 @@ class ConcursoController extends BaseController
                 'Apu' => $create && !$is_copy ? 'no' : $concurso->apu,
                 'TecnicoOfertas' => $create && !$is_copy ? 'no' : $concurso->tecnico_ofertas,
                 'CondicionPago' => $create && !$is_copy ? 'no' : $concurso->condicion_pago,
+                'TipoLicitacion' => $create && !$is_copy ? null : $concurso->tipo_licitacion,
                 'EnvioMuestras' => $create && !$is_copy ? 'no' : $concurso->envio_muestra,
                 'nom251' => $create && !$is_copy ? 'no' : $concurso->nom251,
                 'distintivo' => $create && !$is_copy ? 'no' : $concurso->distintivo,
@@ -2663,6 +2671,7 @@ class ConcursoController extends BaseController
                                 if (empty($recipients)) {
                                     continue; // no hay a quién enviar, seguimos con el próximo oferente
                                 }
+                                
                                 $htmlBody['company_name'] = $oferente->company->business_name;
                                 if ($ajustdate) {
                                     if ($oferente->has_invitacion_vencida || $oferente->is_invitacion_pendiente) {
@@ -3857,6 +3866,7 @@ class ConcursoController extends BaseController
             'tipo_convocatoria' => 'required|exists:tipo_convocatoria,id',
             'fecha_limite' => 'required|date_format:Y-m-d H:i:s' . ($create ? ('|after_or_equal:' . Carbon::now()->addDays(1)->format('Y-m-d H:i:s')) : ''),
             'moneda' => 'required|exists:monedas,id',
+            'tipo_licitacion' => 'required|in:compra,venta',
             'finalizacion_consultas' => [
                 'required',
                 'date_format:Y-m-d H:i:s',
@@ -4239,6 +4249,7 @@ class ConcursoController extends BaseController
             'descriptionUrl' => $entity->DescripcionURL,
             'tecnico_ofertas' => $entity->TecnicoOfertas,
             'condicion_pago' => $entity->CondicionPago,
+            'tipo_licitacion' => isset($entity->TipoLicitacion) ? $entity->TipoLicitacion : null,
             'nom251' => $entity->nom251,
             'distintivo' => $entity->distintivo,
             'filtros_sanitarios' => $entity->filtros_sanitarios,
@@ -4486,6 +4497,7 @@ class ConcursoController extends BaseController
             'descriptionUrl' => $entity->DescripcionURL,
             'tecnico_ofertas' => $entity->TecnicoOfertas,
             'condicion_pago' => $entity->CondicionPago,
+            'tipo_licitacion' => isset($entity->TipoLicitacion) ? $entity->TipoLicitacion : null,
             'nom251' => $entity->nom251,
             'distintivo' => $entity->distintivo,
             'filtros_sanitarios' => $entity->filtros_sanitarios,

@@ -9,7 +9,7 @@
     <table class="table table-striped table-bordered" id="ListaSeguimientoInvitaciones">
       <thead>
         <tr>
-          <th class="text-center vertical-align-middle" data-bind="text: ($root.EsAscendente() ? 'Oferentes invitados' : 'Proveedores invitados')"></th>
+          <th class="text-center vertical-align-middle" data-bind="text: (($root.EsAscendente() || $root.EsVenta()) ? 'Oferentes invitados' : 'Proveedores invitados')"></th>
           <th class="text-center vertical-align-middle">Fecha Invitación</th>
           <th class="text-center vertical-align-middle">Fecha Aceptación / Rechazo</th>
           <th class="text-center vertical-align-middle">Invitación</th>

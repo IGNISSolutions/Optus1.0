@@ -1,6 +1,6 @@
 <div class="m-heading-1 border-default m-bordered text-left">
     <h4 class="block bold" style="margin-top:0; padding-top:0;"
-        data-bind="text: $root.EsAscendente() ? 'Resumen por oferente' : 'Resumen por proveedor'">
+        data-bind="text: ($root.EsAscendente() || $root.EsVenta()) ? 'Resumen por oferente' : 'Resumen por proveedor'">
     </h4>
 
     <div class="table-scrollable">
@@ -9,7 +9,7 @@
                 <tr style="background: #ccc;">
                     <th data-bind="text: 'Moneda: ' + $root.Moneda()"></th>
                     <th> Costo Total </th>
-                    <th data-bind="text: $root.EsAscendente() ? 'Ganancia %' : 'Ahorro %'"></th>
+                    <th data-bind="text:($root.EsAscendente() || $root.EsVenta()) ? 'Ganancia %' : 'Ahorro %'"></th>
                     <th> Dif % vs Mejor Ofert </th>
                     <th> Eval Tecnica </th>
                     <th> Plazo de Pago </th>
@@ -25,12 +25,12 @@
                     <td data-bind="number: $data.total, precision: 2, style: { background: $data.mejorOfertaIntegral ?  '#c6e0b4' : '#ffffff' }"
                         class="text-center vertical-align-middle"></td>
                     <td class="text-center vertical-align-middle"
-                        data-bind="number: $root.EsAscendente() ? $data.ganancia_porc : $data.ahorro_porc,
+                        data-bind="number: ($root.EsAscendente() || $root.EsVenta()) ? $data.ganancia_porc : $data.ahorro_porc,
                                 precision: 2, symbol: '%', after: true,
                                 style: { background: '#ffffff',
-                                            color: ($root.EsAscendente() ? $data.ganancia_porc : $data.ahorro_porc) == 0
+                                            color: (($root.EsAscendente() || $root.EsVenta()) ? $data.ganancia_porc : $data.ahorro_porc) == 0
                                                 ? 'black'
-                                                : (($root.EsAscendente() ? $data.ganancia_porc : $data.ahorro_porc) > 0 ? 'green' : 'red') }">
+                                                : ((($root.EsAscendente() || $root.EsVenta()) ? $data.ganancia_porc : $data.ahorro_porc) > 0 ? 'green' : 'red') }">
                     </td>
 
                     <td data-bind="number: $data.difvsmejorofert, precision: 2, style: { background: '#ffffff' }"

@@ -95,7 +95,8 @@
     </div>
     <div class="col-md-12">
         <div class="form-group">
-            <label class="control-label visible-ie8 visible-ie9" style="display: block;">Límite inferior para ofertas precio unitario*</label>
+            <label class="control-label visible-ie8 visible-ie9" style="display: block;">Límite inferior para ofertas
+                precio unitario*</label>
             <input class="form-control placeholder-no-fix" type="number" min="0.01" step="0.01" name=""
                 id="precio_minimo" data-bind="value: Entity.PrecioMinimo, disable: ReadOnly()" />
         </div>
@@ -110,7 +111,8 @@
     </div>
     <div class="col-md-12">
         <div class="form-group">
-            <label class="control-label visible-ie8 visible-ie9" style="display: block;">Límite superior para ofertas precio unitario*</label>
+            <label class="control-label visible-ie8 visible-ie9" style="display: block;">Límite superior para ofertas
+                precio unitario*</label>
             <input class="form-control placeholder-no-fix" type="number" min="0.01" step="0.01" name=""
                 id="precio_maximo"
                 data-bind="value: Entity.PrecioMaximo, disable: (ReadOnly() || Entity.PrecioMinimo() < 1)" />
@@ -130,17 +132,19 @@
             </div>
         </div>
     </div>
-    
+
     <div class="col-md-6">
         <div class="form-group">
-        <span>Usuario fiscalizador autoriza ver ofertas</span>
+            <span>Usuario fiscalizador autoriza ver ofertas</span>
             <div class="pull-right">
                 <label class="radio-inline">
-                <input type="radio" value="si" data-bind="checked: Entity.concurso_fiscalizado, disable: ReadOnly()">
+                    <input type="radio" value="si"
+                        data-bind="checked: Entity.concurso_fiscalizado, disable: ReadOnly()">
                     SI
                 </label>
                 <label class="radio-inline">
-                <input type="radio" value="no" data-bind="checked: Entity.concurso_fiscalizado, disable: ReadOnly()">
+                    <input type="radio" value="no"
+                        data-bind="checked: Entity.concurso_fiscalizado, disable: ReadOnly()">
                     NO
                 </label>
             </div>
@@ -158,14 +162,14 @@
     <!-- ko if: IsSobrecerrado() -->
     <div class="col-md-6">
         <div class="form-group col-md-12">
-        <span>Apertura sobres con oferentes</span>
+            <span>Apertura sobres con oferentes</span>
             <div class="pull-right">
                 <label class="radio-inline">
-                <input type="radio" value="si" data-bind="checked: Entity.Aperturasobre, disable: ReadOnly()">
+                    <input type="radio" value="si" data-bind="checked: Entity.Aperturasobre, disable: ReadOnly()">
                     SI
                 </label>
                 <label class="radio-inline">
-                <input type="radio" value="no" data-bind="checked: Entity.Aperturasobre, disable: ReadOnly()">
+                    <input type="radio" value="no" data-bind="checked: Entity.Aperturasobre, disable: ReadOnly()">
                     NO
                 </label>
             </div>
@@ -205,13 +209,11 @@
             <span>Análisis de Precio Unitario (APU)</span>
             <div class="pull-right">
                 <label class="radio-inline">
-                    <input type="radio" value="si"
-                        data-bind="checked: Entity.Apu, disable: ReadOnly() || IsGo()">
+                    <input type="radio" value="si" data-bind="checked: Entity.Apu, disable: ReadOnly() || IsGo()">
                     SI
                 </label>
                 <label class="radio-inline">
-                    <input type="radio" value="no"
-                        data-bind="checked: Entity.Apu, disable: ReadOnly() || IsGo()">
+                    <input type="radio" value="no" data-bind="checked: Entity.Apu, disable: ReadOnly() || IsGo()">
                     NO
                 </label>
             </div>
@@ -230,6 +232,22 @@
                     NO
                 </label>
             </div>
+        </div>
+        <div class="col-md-12">
+            <div class="form-group required" data-bind="validationElement: Entity.TipoLicitacion">
+                <label class="control-label visible-ie8 visible-ie9" style="display: block;">Tipo de licitación</label>
+                <div class="selectRequerido">
+                    <select data-bind="value: Entity.TipoLicitacion,
+                    valueAllowUnset: true,
+                    options: Entity.TiposLicitacion,
+                    optionsText: 'text',
+                    optionsValue: 'id',
+                    select2: { placeholder: 'Seleccionar...' },
+                    disable: ReadOnly()">
+                    </select>
+                </div>  
+            </div>
+
         </div>
 
     </div>
