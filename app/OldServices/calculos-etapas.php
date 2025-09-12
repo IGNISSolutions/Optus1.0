@@ -431,6 +431,7 @@ function setOferente($concurso, $oferente, $ronda)
             'cuit'                => $oferente->company->cuit,
             'plazoPago'           => null,
             'isRechazado'         => $oferente->is_concurso_rechazado,
+            'isVencido'           => false,
         ];
     }
 
