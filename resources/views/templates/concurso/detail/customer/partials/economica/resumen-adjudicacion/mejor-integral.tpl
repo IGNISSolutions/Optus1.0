@@ -8,9 +8,9 @@
             <th class="text-center"> Costo<br>Objetivo </th>
             <th class="text-center"> Precio<br>Unitario </th>
             <th class="text-center"> Precio<br>Total </th>
-            <th class= "text-center" data-bind="text: $root.EsAscendente() ? 'Ganancia %' : 'Ahorro %'"></th>
-            <th class= "text-center" data-bind="text: $root.EsAscendente() ? 'Ganancia abs' : 'Ahorro abs'"></th>
-            <th class= "text-center" data-bind="text: $root.EsAscendente() ? 'Oferente' : 'Proveedor'"></th>
+            <th class= "text-center" data-bind="text: ($root.EsAscendente() || $root.EsVenta()) ? 'Ganancia %' : 'Ahorro %'"></th>
+            <th class= "text-center" data-bind="text: ($root.EsAscendente() || $root.EsVenta()) ? 'Ganancia abs' : 'Ahorro abs'"></th>
+            <th class= "text-center" data-bind="text: ($root.EsAscendente() || $root.EsVenta()) ? 'Oferente' : 'Proveedor'"></th>
         </tr>
     </thead>
     <tbody data-bind="foreach: { data: ConcursoEconomicas.mejoresOfertas.mejorIntegral.items, as:'item' }">
@@ -26,19 +26,19 @@
             <!-- /ko -->
             <!-- ko if: targetcost > 0 -->
             <td class="text-center vertical-align-middle"
-                data-bind="number: $root.EsAscendente() ? ganancia_porc : ahorro_porc,
+                data-bind="number: ($root.EsAscendente() || $root.EsVenta()) ? ganancia_porc : ahorro_porc,
                         precision: 2, symbol: '%', after: true,
-                        style: { color: ($root.EsAscendente() ? ganancia_porc : ahorro_porc) == 0 
+                        style: { color: (($root.EsAscendente() || $root.EsVenta()) ? ganancia_porc : ahorro_porc) == 0 
                                         ? 'black' 
-                                        : (($root.EsAscendente() ? ganancia_porc : ahorro_porc) > 0 ? 'green' : 'red') }">
+                                        : ((($root.EsAscendente() || $root.EsVenta()) ? ganancia_porc : ahorro_porc) > 0 ? 'green' : 'red') }">
             </td>
 
             <td class="text-center vertical-align-middle"
-                data-bind="number: $root.EsAscendente() ? ganancia_abs : ahorro_abs,
+                data-bind="number: ($root.EsAscendente() || $root.EsVenta()) ? ganancia_abs : ahorro_abs,
                         precision: 2,
-                        style: { color: ($root.EsAscendente() ? ganancia_abs : ahorro_abs) == 0 
+                        style: { color: (($root.EsAscendente() || $root.EsVenta()) ? ganancia_abs : ahorro_abs) == 0 
                                         ? 'black' 
-                                        : (($root.EsAscendente() ? ganancia_abs : ahorro_abs) > 0 ? 'green' : 'red') }">
+                                        : ((($root.EsAscendente() || $root.EsVenta()) ? ganancia_abs : ahorro_abs) > 0 ? 'green' : 'red') }">
             </td>
             <!-- /ko -->
             

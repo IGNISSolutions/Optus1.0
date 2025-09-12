@@ -898,6 +898,16 @@
 
             this.Monedas = ko.observableArray(data.list.Monedas);
             this.Moneda = ko.observable(data.list.Moneda).extend({ required: true });
+            this.TipoLicitacion = ko.observable(
+                (data.list && data.list.TipoLicitacion) ? data.list.TipoLicitacion : null
+                ).extend({ required: true});
+
+            this.TiposLicitacion = ko.observableArray(
+                (data.list && data.list.TiposLicitacion) ? data.list.TiposLicitacion : [
+                    { id: 'compra', text: 'Compra' },
+                    { id: 'venta',  text: 'Venta' }
+                ]
+                );
             this.UsuarioSupervisor = ko.observable(data.list.UsuarioSupervisor);
             this.HabilitaEnvioInvitaciones = ko.observable(data.list.HabilitaEnvioInvitaciones);
             this.Countries = ko.observableArray(data.list.Countries);
@@ -1003,6 +1013,8 @@
 
             this.BloquearInvitacionOferentes = ko.observable(data.list.BloquearInvitacionOferentes);
             this.BloquearCamposTecnica = ko.observable(!!data.list.BloquearCamposTecnica);
+
+            
 
             this.FilePath = ko.observable(data.list.FilePath);
             this.ProductMeasurementList = ko.observableArray(data.list.ProductMeasurementList);
@@ -1231,7 +1243,8 @@
                         self.Entity.PlantillaTecnicaSeleccionada() ? self.Entity
                         .PlantillaTecnicaSeleccionada()
                         .total.isValid() : true
-                    )
+                    ) &&
+                    this.Entity.TipoLicitacion.isValid() 
                 );
 
             };

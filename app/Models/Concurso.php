@@ -161,7 +161,7 @@ class Concurso extends Model
         'usuario_fiscalizador',
         'total_cotizacion',
         'apu',
-
+        'tipo_licitacion',
         'entrega_doc_evaluacion', 
         'requisitos_legales', 
         'experiencia_y_referencias', 

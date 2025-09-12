@@ -7,7 +7,7 @@
   <thead class="text-center">
     <tr style="background: #ccc;">
       <th class="text-center"
-          data-bind="text: ($root.EsAscendente() ? 'Oferente' : 'Proveedor')">
+          data-bind="text: (($root.EsAscendente() || $root.EsVenta()) ? 'Oferente' : 'Proveedor')">
       </th>
       <th class="text-center">Fecha presentación</th>
       <th class="text-center">Comentario</th>

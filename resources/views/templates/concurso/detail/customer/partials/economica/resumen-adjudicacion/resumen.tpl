@@ -24,20 +24,20 @@
             <!-- /ko -->
         </tr>
         <tr>
-            <th class= "text-center" data-bind="text: $root.EsAscendente() ? 'Ganancia %' : 'Ahorro %'"></th>
+            <th class= "text-center" data-bind="text: ($root.EsAscendente() || $root.EsVenta()) ? 'Ganancia %' : 'Ahorro %'"></th>
             <!-- Mejor oferta integral (% dinámico) -->
             <td class="text-center vertical-align-middle text-bold"
-                data-bind="number: $root.EsAscendente()
+                data-bind="number: ($root.EsAscendente() || $root.EsVenta())
                                     ? ConcursoEconomicas.mejoresOfertas.mejorIntegral.ganancia_porc
                                     : ConcursoEconomicas.mejoresOfertas.mejorIntegral.ahorro_porc,
                             precision: 2, symbol: '%', after: true,
                             style: { color: (
-                                    $root.EsAscendente()
+                                    ($root.EsAscendente() || $root.EsVenta())
                                     ? ConcursoEconomicas.mejoresOfertas.mejorIntegral.ganancia_porc
                                     : ConcursoEconomicas.mejoresOfertas.mejorIntegral.ahorro_porc
                                     ) == 0 ? 'black' : (
                                     (
-                                        $root.EsAscendente()
+                                        ($root.EsAscendente() || $root.EsVenta())
                                         ? ConcursoEconomicas.mejoresOfertas.mejorIntegral.ganancia_porc
                                         : ConcursoEconomicas.mejoresOfertas.mejorIntegral.ahorro_porc
                                     ) > 0 ? 'green' : 'red'
@@ -45,17 +45,17 @@
 
             <!-- Mejor oferta individual (% dinámico) -->
             <td class="text-center vertical-align-middle text-bold"
-                data-bind="number: $root.EsAscendente()
+                data-bind="number: ($root.EsAscendente() || $root.EsVenta())
                                     ? ConcursoEconomicas.mejoresOfertas.mejorIndividual.ganancia_porc
                                     : ConcursoEconomicas.mejoresOfertas.mejorIndividual.ahorro_porc,
                             precision: 2, symbol: '%', after: true,
                             style: { color: (
-                                    $root.EsAscendente()
+                                    ($root.EsAscendente() || $root.EsVenta())
                                     ? ConcursoEconomicas.mejoresOfertas.mejorIndividual.ganancia_porc
                                     : ConcursoEconomicas.mejoresOfertas.mejorIndividual.ahorro_porc
                                     ) == 0 ? 'black' : (
                                     (
-                                        $root.EsAscendente()
+                                        ($root.EsAscendente() || $root.EsVenta())
                                         ? ConcursoEconomicas.mejoresOfertas.mejorIndividual.ganancia_porc
                                         : ConcursoEconomicas.mejoresOfertas.mejorIndividual.ahorro_porc
                                     ) > 0 ? 'green' : 'red'
@@ -67,17 +67,17 @@
             <!-- ko if: $root.ManualAdjudication().total() > 0  -->
             <!-- Manual: % dinámico (ganancia / ahorro) -->
             <td class="text-center vertical-align-middle text-bold"
-                data-bind="number: $root.EsAscendente()
+                data-bind="number: ($root.EsAscendente() || $root.EsVenta())
                                     ? $root.ManualAdjudication().GananciaRelativa()
                                     : $root.ManualAdjudication().AhorroRelativo(),
                         precision: 2, symbol: '%', after: true,
                         style: { color: (
-                                    $root.EsAscendente()
+                                    ($root.EsAscendente() || $root.EsVenta())
                                     ? $root.ManualAdjudication().GananciaRelativa()
                                     : $root.ManualAdjudication().AhorroRelativo()
                                 ) == 0 ? 'black' : (
                                     (
-                                    $root.EsAscendente()
+                                    ($root.EsAscendente() || $root.EsVenta())
                                     ? $root.ManualAdjudication().GananciaRelativa()
                                     : $root.ManualAdjudication().AhorroRelativo()
                                     ) > 0 ? 'green' : 'red'
@@ -87,20 +87,20 @@
             <!-- /ko -->
         </tr>
         <tr>
-            <th class= "text-center" data-bind="text: $root.EsAscendente() ? 'Ganancia abs' : 'Ahorro abs'"></th>
+            <th class= "text-center" data-bind="text: ($root.EsAscendente() || $root.EsVenta()) ? 'Ganancia abs' : 'Ahorro abs'"></th>
             <!-- Mejor oferta integral (abs dinámico) -->
             <td class="text-center vertical-align-middle text-bold"
-                data-bind="number: $root.EsAscendente()
+                data-bind="number:($root.EsAscendente() || $root.EsVenta())
                                     ? ConcursoEconomicas.mejoresOfertas.mejorIntegral.ganancia_abs
                                     : ConcursoEconomicas.mejoresOfertas.mejorIntegral.ahorro_abs,
                             precision: 2,
                             style: { color: (
-                                    $root.EsAscendente()
+                                    ($root.EsAscendente() || $root.EsVenta())
                                     ? ConcursoEconomicas.mejoresOfertas.mejorIntegral.ganancia_abs
                                     : ConcursoEconomicas.mejoresOfertas.mejorIntegral.ahorro_abs
                                     ) == 0 ? 'black' : (
                                     (
-                                        $root.EsAscendente()
+                                        ($root.EsAscendente() || $root.EsVenta())
                                         ? ConcursoEconomicas.mejoresOfertas.mejorIntegral.ganancia_abs
                                         : ConcursoEconomicas.mejoresOfertas.mejorIntegral.ahorro_abs
                                     ) > 0 ? 'green' : 'red'
@@ -108,17 +108,17 @@
 
             <!-- Mejor oferta individual (abs dinámico) -->
             <td class="text-center vertical-align-middle text-bold"
-                data-bind="number: $root.EsAscendente()
+                data-bind="number: ($root.EsAscendente() || $root.EsVenta())
                                     ? ConcursoEconomicas.mejoresOfertas.mejorIndividual.ganancia_abs
                                     : ConcursoEconomicas.mejoresOfertas.mejorIndividual.ahorro_abs,
                             precision: 2,
                             style: { color: (
-                                    $root.EsAscendente()
+                                    ($root.EsAscendente() || $root.EsVenta())
                                     ? ConcursoEconomicas.mejoresOfertas.mejorIndividual.ganancia_abs
                                     : ConcursoEconomicas.mejoresOfertas.mejorIndividual.ahorro_abs
                                     ) == 0 ? 'black' : (
                                     (
-                                        $root.EsAscendente()
+                                        ($root.EsAscendente() || $root.EsVenta())
                                         ? ConcursoEconomicas.mejoresOfertas.mejorIndividual.ganancia_abs
                                         : ConcursoEconomicas.mejoresOfertas.mejorIndividual.ahorro_abs
                                     ) > 0 ? 'green' : 'red'
@@ -130,17 +130,17 @@
             <!-- ko if: $root.ManualAdjudication().total() > 0  -->
             <!-- Manual: abs dinámico (ganancia / ahorro) -->
             <td class="text-center vertical-align-middle text-bold"
-                data-bind="number: $root.EsAscendente()
+                data-bind="number: ($root.EsAscendente() || $root.EsVenta())
                                     ? $root.ManualAdjudication().GananciaAbsoluta()
                                     : $root.ManualAdjudication().AhorroAbsoluto(),
                         precision: 2,
                         style: { color: (
-                                    $root.EsAscendente()
+                                    ($root.EsAscendente() || $root.EsVenta())
                                     ? $root.ManualAdjudication().GananciaAbsoluta()
                                     : $root.ManualAdjudication().AhorroAbsoluto()
                                 ) == 0 ? 'black' : (
                                     (
-                                    $root.EsAscendente()
+                                    ($root.EsAscendente() || $root.EsVenta())
                                     ? $root.ManualAdjudication().GananciaAbsoluta()
                                     : $root.ManualAdjudication().AhorroAbsoluto()
                                     ) > 0 ? 'green' : 'red'
