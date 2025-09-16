@@ -4017,8 +4017,6 @@ class ConcursoController extends BaseController
                             // if ($finalizacion_consultas->greaterThan($fecha_limite)) {
                             if ($finalizacion_consultas->diffInDays($fecha_limite_economicas, false) < 1)
                                 $fail('La fecha de Presentación Económica debe ser al menos 1 día mayor a la fecha de Muro de Consulta.');
-                            if ($fecha_limite->diffInDays($fecha_limite_economicas, false) < 3)
-                                    $fail('La fecha de Presentación Económica debe ser al menos 3 días mayor a la fecha para aceptar la invitación.');
                         }
                     },
                 ]
