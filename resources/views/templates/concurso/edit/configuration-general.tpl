@@ -99,16 +99,28 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-outline dark sbold"
-                            data-bind="click: filter.bind($data, false)">
+                                data-bind="click: filter.bind($data, false)">
                             Aplicar filtros
                         </button>
-                        <button type="button" class="btn btn-outline dark sbold" data-bind="click: clearFilters">
+
+                        <button type="button" class="btn btn-outline dark sbold"
+                                data-bind="click: clearFilters">
                             Limpiar filtros
                         </button>
+
+                        <!-- NUEVO: agrega todos los resultados filtrados al select principal -->
+                        <button type="button" class="btn btn-success"
+                                data-bind="click: addFilteredToInvite,
+                                            enable: Entity.OferentesAInvitarList().length > 0,
+                                            visible: !BloquearInvitacionOferentes()">
+                            Agregar oferentes
+                        </button>
+
                         <button type="button" class="btn btn-outline dark sbold" data-dismiss="modal">
                             Cerrar
                         </button>
-                    </div>
+                        </div>
+
 
                     <!-- tabla resultado-->
                     <div style="position: relative; height: 200px; overflow: auto; display: block;" class="portlet-body"
