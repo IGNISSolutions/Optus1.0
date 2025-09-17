@@ -118,6 +118,9 @@ class AdjudicationController extends BaseController
         $status = 200;
         $redirect_url = null;
         $error = false;
+        // 1) PONER ESTO CERCA DEL INICIO DE send(), junto a otras inits:
+        $adjudicationResult = [];       
+        $cot_tot = 0;                   
 
         try {
             $body = json_decode($request->getParsedBody()['Data']);
@@ -283,16 +286,19 @@ class AdjudicationController extends BaseController
 
             }
 
+            // 2) REEMPLAZAR COMPLETO EL IF ($type == 'manual') POR ESTO:
             if ($type == 'manual') {
                 $adjudicacion = 3;
                 $manual_adjudication = $body->Data;
-                
 
+                // Tomamos los ítems crudos desde el body (para validar cantidades > 0)
                 $itemsTemp = json_decode($request->getParsedBody()['Data'], true)['Data']['items'];
 
-                $items = array_filter($itemsTemp, function ($v, $k) {
-                    return $v['quantity'] > 0;
-                }, ARRAY_FILTER_USE_BOTH);
+                // Filtramos sólo los que tengan quantity > 0
+                $items = array_filter($itemsTemp, function ($v) {
+                    return isset($v['quantity']) && $v['quantity'] > 0;
+                });
+
                 $fields = array_merge($common_fields, [
                     'items' => $items
                 ]);
@@ -301,77 +307,108 @@ class AdjudicationController extends BaseController
 
                 if ($validation->fails()) {
                     $message = $validation->errors()->first();
-                    $status = 422;
-                    $error = true;
+                    $status  = 422;
+                    $error   = true;
                 } else {
-                    $id_productos = [];
-                    foreach ($manual_adjudication->items as $manual_item) {
-                        array_push($adjudicatedOffererIds, $concurso->oferentes->where('id', $manual_item->offerer_id)->pluck('id_offerer')->first());
-                    }
+                    // Colecciones útiles
                     $itemsAdjudicated = collect($items);
-                    $adjudicated_products = collect();
-                    $adjudicationResult = [];
-                    $oferentes = $this->getOfferers($type, $concurso, $adjudicatedOffererIds);
 
-                    foreach ($oferentes as $key => $oferente) {
-                        $proposal = $oferente->economic_proposal->where('participante_id', $oferente->id)->where('numero_ronda', $rondaActual)->where('type_id', 2)->first();
-                        $productsAdj = $itemsAdjudicated->where('offerer_id', $oferente->id)->pluck('product_id')->all();
-                        $products = $concurso->productos->whereIn('id', $productsAdj);
+                    // IDs de PARTICIPANTE que vienen en los items adjudicados
+                    $participanteIds = $itemsAdjudicated->pluck('offerer_id')->filter()->unique()->values();
 
-                        $productsOfferer = $products->map(
-                            function ($product) use ($proposal, $itemsAdjudicated) {
-                                $oferta = array_values(
-                                    array_filter(
-                                        $proposal->values,
-                                        function ($item) use ($product) {
-                                            return $item['producto'] == $product->id;
-                                        }
-                                    )
-                                )[0];
-                                $oferta['cotizacion'] = $oferta['total'];
-                                return $oferta;
+                    // Los oferentes (MODELO Participante) adjudicados salen DIRECTO del concurso
+                    // Evitamos depender de getOfferers() para no confundir id vs id_offerer
+                    $oferentes = $concurso->oferentes->whereIn('id', $participanteIds->all());
+
+                    // Para perdedores: necesitamos los id_offerer de los ganadores
+                    $adjudicatedOffererIds = $oferentes->pluck('id_offerer')->unique()->values()->all();
+
+                    // Construimos resultados de adjudicación por oferente/ítem
+                    foreach ($oferentes as $oferente) {
+                        // Propuesta económica del oferente (participante) en la ronda actual
+                        $proposal = $oferente->economic_proposal
+                            ->where('participante_id', $oferente->id)
+                            ->where('numero_ronda', $rondaActual)
+                            ->where('type_id', 2)
+                            ->first();
+
+                        // Productos adjudicados a ESTE participante
+                        $productsAdjIds = $itemsAdjudicated
+                            ->where('offerer_id', $oferente->id) // <- acá comparamos contra id de PARTICIPANTE
+                            ->pluck('product_id')
+                            ->unique()
+                            ->values()
+                            ->all();
+
+                        $products = $concurso->productos->whereIn('id', $productsAdjIds);
+
+                        // Mapear valores ofertados para cada producto del participante
+                        $productsOfferer = $products->map(function ($product) use ($proposal) {
+                            // Buscamos el renglón en proposal->values que coincide con el producto
+                            $oferta = collect($proposal->values)->first(function ($item) use ($product) {
+                                return (int)$item['producto'] === (int)$product->id;
+                            });
+
+                            // Si por alguna razón no lo encontramos, evita notice/offset
+                            if (!$oferta) {
+                                return null;
                             }
-                        );
 
-
+                            // Normalizamos "cotizacion" = "total"
+                            $oferta['cotizacion'] = $oferta['total'];
+                            return $oferta;
+                        })->filter(); // fuera nulls defensivos
 
                         foreach ($productsOfferer as $oferta) {
                             $producto = Producto::find((int) $oferta['producto']);
-                            $prodAdj = $itemsAdjudicated->where('product_id', $producto->id)->where('offerer_id', $oferente->id)->first();
-                            $cot_tot = 0; // Variable para acumular el total de cotización
-                            array_push($adjudicationResult, [
-                                'itemId' => $producto->id,
+
+                            // Cantidad adjudicada tomada del item adjudicado concreto
+                            $prodAdj = $itemsAdjudicated
+                                ->where('product_id', $producto->id)
+                                ->where('offerer_id', $oferente->id) // id de PARTICIPANTE
+                                ->first();
+
+                            $cantidadAdj = $prodAdj ? (int)$prodAdj['quantity'] : 0;
+
+                            $adjudicationResult[] = [
+                                'itemId'         => $producto->id,
                                 'itemSolicitado' => $producto->cantidad,
-                                'itemNombre' => $producto->nombre,
-                                'oferenteId' => $oferente->id_offerer,
-                                'cantidad' => $oferta['cantidad'],
-                                'cotUnitaria' => $oferta['cotUnitaria'],
-                                'cotizacion' => $oferta['cotizacion'],
-                                'cantidadCot' => $oferta['cantidadCot'],
-                                'cantidadAdj' => $prodAdj['quantity'],
-                                'total' => $oferta['total'],
-                                'moneda' => $concurso->tipo_moneda->nombre,
-                                'unidad' => $producto->unidad_medida->name,
-                                'fecha' => $oferta['fecha'],
-                            ]);
-                            $cot_tot += $oferta['total']; // Acumulamos el valor de "total"
+                                'itemNombre'     => $producto->nombre,
+                                'oferenteId'     => $oferente->id_offerer,                 // <- id_offerer para mails/filtros
+                                'cantidad'       => $oferta['cantidad'],
+                                'cotUnitaria'    => $oferta['cotUnitaria'],
+                                'cotizacion'     => $oferta['cotizacion'],
+                                'cantidadCot'    => $oferta['cantidadCot'],
+                                'cantidadAdj'    => $cantidadAdj,                          // <- manual
+                                'total'          => $oferta['total'],
+                                'moneda'         => $concurso->tipo_moneda->nombre,
+                                'unidad'         => $producto->unidad_medida->name,
+                                'fecha'          => $oferta['fecha'],
+                            ];
+
+                            // Vamos acumulando el total
+                            $cot_tot += (float)$oferta['total'];
                         }
 
+                        // Marcar propuesta y participante
                         $proposal_status = ProposalStatus::where('code', ProposalStatus::CODES['accepted'])->first();
-                        $proposal->update([
-                            'status_id' => $proposal_status->id
-                        ]);
+                        if ($proposal) {
+                            $proposal->update(['status_id' => $proposal_status->id]);
+                        }
 
                         $oferente->update([
                             'etapa_actual' => Participante::ETAPAS['adjudicacion-pendiente'],
                             'adjudicacion' => $adjudicacion
                         ]);
                     }
-                    $adjudicated_products = collect($adjudicationResult);
-                    
 
+                    // Dejamos estas colecciones listas para la fase de envío y para perdedores:
+                    $adjudicated_products = collect($adjudicationResult);
+                    // IMPORTANTE: también dejamos $oferentes definido para el envío de correos a ganadores
+                    // (ya lo tenemos arriba)
                 }
             }
+
 
             $listEconomicas = ['ConcursoEconomicas' => []];
 
