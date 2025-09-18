@@ -137,6 +137,7 @@
                 <span data-bind="text: Nombre()"></span>
             </h2>
         </div>
+        {if $tipo neq 'chat-muro-consultas'}
         <!-- ko if: IsSobrecerrado() -->
         <!-- CONTENEDOR DEL RELOJ -->
         <div class="col-md-12">
@@ -158,6 +159,7 @@
             </div>
         </div>
         <!-- /ko -->
+        {/if}
     </div>
 
     <div class="row margin-top-40">
