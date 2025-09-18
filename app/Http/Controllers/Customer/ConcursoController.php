@@ -1162,6 +1162,7 @@ class ConcursoController extends BaseController
                 'CierreMuroConsultas' => $concurso->finalizacion_consultas->format('d-m-Y'),
                 'CierreMuroConsultasHora' => $concurso->finalizacion_consultas->format('H:i:s'),
                 'PlazoVencidoEconomica' => $plazoVencidoEconomicas,
+                'FechaHoyFull' => Carbon::now()->format('Y-m-d H:i:s'),
                 'PresentacionTecnicas' =>
                     $concurso->ficha_tecnica_fecha_limite ?
                     $concurso->ficha_tecnica_fecha_limite->format('d-m-Y') :
@@ -1248,7 +1249,7 @@ class ConcursoController extends BaseController
                 'concurso_fiscalizado' => $concurso->concurso_fiscalizado,
                 'ChatEnable' => $concurso->is_sobrecerrado ? true : ($concurso->chat == 'si' ? true : false ),
                 'emailSuper' => $concurso->concurso_fiscalizado == 'si' ? $concurso->supervisor->email : null    
-
+                            
             ];
 
             $companies = OffererCompany::whereHas('associated_customers', function ($query) use ($user) {

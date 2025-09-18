@@ -25,7 +25,7 @@
     <script src="{asset('/global/plugins/jquery-inputmask/inputmask/inputmask.date.extensions.min.js')}"
         type="text/javascript"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.1/xlsx.full.min.js"></script>
-    
+
 {/block}
 
 <!-- SCRIPTS POSTERIORES A KNOCKOUT -->
@@ -125,23 +125,56 @@
     {/if}
 {/block}
 
-<!-- VISTA -->
-{block 'concurso-detail-offerer'}
-    <div class="row margin-top-40">
-        <div class="col-md-12 text-center">
 
-        {if $tipo neq 'chat-muro-consultas'}
-            <div class="row">
-                <div class="col-md-12 text-center">
-                    <a href="/concursos/oferente" class="btn btn-xl green" title="Volver al listado" style="margin-bottom: 30px;">
-                        <i class="fa fa-backward"></i> Volver al listado
-                    </a>
+{block 'concurso-detail-offerer'}
+    <div class="row margin-top-20">
+        <div class="col-md-12 text-center">
+            <h2 style="font-weight: bold; color: #555;">
+                <!-- número en azul -->
+                <span data-bind="text: '#' + IdConcurso()" style="color: #32C5D2;"></span>
+                <!-- separador y nombre en gris oscuro -->
+                <span> – </span>
+                <span data-bind="text: Nombre()"></span>
+            </h2>
+        </div>
+        <!-- ko if: IsSobrecerrado() -->
+        <!-- CONTENEDOR DEL RELOJ -->
+        <div class="col-md-12">
+            <div style="position:absolute; top:20px; right:40px; text-align:center;">
+                <div id="countdown-timer" style="background:#26C281; border-radius:6px; padding:12px 20px;
+                            display:inline-block;">
+
+                    <!-- Hora -->
+                    <div data-bind="text: CountdownEconomicas" style="font-size:20px; font-weight:bold; color:#fff;">
+                    </div>
+
+                    <!-- Mensaje -->
+                    <div data-bind="text: CountdownEconomicas() === 'Finalizado' 
+                                            ? 'La etapa económica ha finalizado.' 
+                                            : 'Para la presentación de ofertas'"
+                        style="margin-top:5px; font-size:14px; font-weight:normal; color:#fff;">
+                    </div>
                 </div>
             </div>
+        </div>
+        <!-- /ko -->
+    </div>
+
+    <div class="row margin-top-40">
+        <div class="col-md-12 text-center">
+            {if $tipo neq 'chat-muro-consultas'}
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <a href="/concursos/oferente" class="btn btn-xl green" title="Volver al listado" style="margin-bottom: 30px;">
+                            <i class="fa fa-backward"></i> Volver al listado
+                        </a>
+                    </div>
+                </div>
             {/if}
 
             <!-- STEPS -->
             {include file='concurso/detail/partials/steps.tpl'}
+
             <!-- HEADER -->
             <div class="row">
                 <div class="col-sm-12">
@@ -150,39 +183,35 @@
             </div>
 
             {if $tipo eq 'invitacion'}
-
                 {include file='concurso/detail/offerer/invitacion.tpl'}
 
             {else if $tipo eq 'chat-muro-consultas'}
-
-                <chat-component params='IdConcurso: IdConcurso(), IsClient: IsClient(), IsProv: IsProv(), ChatEnable: ChatEnable(), FechaHoy: FechaHoy(), HoraHoy: HoraHoy(), CierreMuroConsultas: CierreMuroConsultas(), CierreMuroConsultasHora: CierreMuroConsultasHora()'></chat-component>
+                <chat-component 
+                    params='IdConcurso: IdConcurso(), IsClient: IsClient(), IsProv: IsProv(), ChatEnable: ChatEnable(), 
+                            FechaHoy: FechaHoy(), HoraHoy: HoraHoy(), 
+                            CierreMuroConsultas: CierreMuroConsultas(), CierreMuroConsultasHora: CierreMuroConsultasHora()'>
+                </chat-component>
 
             {else if $tipo eq 'tecnica'}
-
                 <!-- ko if: ShowTechnical() -->
-                {include file='concurso/detail/offerer/tecnica.tpl'}
+                    {include file='concurso/detail/offerer/tecnica.tpl'}
                 <!-- /ko -->
 
             {else if $tipo eq 'economica'}
-
                 <!-- ko if: ShowEconomic() -->
-                {include file='concurso/detail/offerer/economica.tpl'}
+                    {include file='concurso/detail/offerer/economica.tpl'}
                 <!-- /ko -->
 
             {else if $tipo eq 'analisis'}
-
                 <!-- ko if: HasEconomicaPresentada() -->
-                {include file='concurso/detail/offerer/analisis.tpl'}
+                    {include file='concurso/detail/offerer/analisis.tpl'}
                 <!-- /ko -->
 
             {else if $tipo eq 'adjudicado'}
-
                 <!-- ko if: HasEconomicaPresentada() -->
-                {include file='concurso/detail/offerer/adjudicado.tpl'}
+                    {include file='concurso/detail/offerer/adjudicado.tpl'}
                 <!-- /ko -->
-
             {/if}
-
         </div>
     </div>
 
@@ -196,6 +225,7 @@
         </div>
     {/if}
 {/block}
+
 
 <!-- KNOCKOUT JS -->
 {block 'knockout' append}
@@ -253,15 +283,17 @@
             var self = this;
             // Fixed fields
             self.product_id = ko.observable(data.product_id);
-            self.product_name = ko.observable(data ? (data.product_name ? data.product_name: data["Nombre Producto"]) : null);
+            self.product_name = ko.observable(data ? (data.product_name ? data.product_name : data["Nombre Producto"]) :
+                null);
             self.product_description = ko.observable(data.product_description);
-            self.total_quantity = ko.observable(data ? (data.total_quantity ? data.total_quantity : data["Cantidad Solicitada"]) : null);
+            self.total_quantity = ko.observable(data ? (data.total_quantity ? data.total_quantity : data[
+                "Cantidad Solicitada"]) : null);
             self.minimum_quantity = ko.observable(data.minimum_quantity);
             self.currency_id = ko.observable(data.currency_id);
             self.currency_name = ko.observable(data.currency_name);
             self.measurement_id = ko.observable(data.measurement_id);
             self.measurement_name = ko.observable(data.measurement_name);
-            
+
             self.ProductSelected = ko.observable(
                 currentRound === 1 ? true : parseFloat(data.cotizacion) > 0
             );
@@ -283,7 +315,7 @@
                 }
             });
 
-            self.isValid = ko.computed(function () {
+            self.isValid = ko.computed(function() {
                 if (!self.ProductSelected()) {
                     return true; // No está seleccionado, entonces no validamos
                 }
@@ -380,49 +412,50 @@
         }
 
         var ConcursoPorEtapaOferente = function(data) {
-            var self = this; 
-            
-            this.goToChatMuroConToken = function () {
+            var self = this;
+
+            this.goToChatMuroConToken = function() {
                 $.blockUI();
                 Services.Post('/concursos/oferente/guardar-token-acceso', {
-                    UserToken: User.Token,
-                    id: self.IdConcurso()
-                }, 
-                (response) => {
-                    $.unblockUI();
-                    if (response.success) {
-                        window.location.href = self.UrlChatMuro();
-                    } else {
-                        swal('Error', 'No se pudo generar el token de acceso: ' + response.message, 'error');
-                    }
-                }, 
-                (error) => {
-                    $.unblockUI();
-                    swal('Error', error.message || 'Error generando el token de acceso.', 'error');
-                });
+                        UserToken: User.Token,
+                        id: self.IdConcurso()
+                    },
+                    (response) => {
+                        $.unblockUI();
+                        if (response.success) {
+                            window.location.href = self.UrlChatMuro();
+                        } else {
+                            swal('Error', 'No se pudo generar el token de acceso: ' + response.message,
+                            'error');
+                        }
+                    },
+                    (error) => {
+                        $.unblockUI();
+                        swal('Error', error.message || 'Error generando el token de acceso.', 'error');
+                    });
             }
 
-            self.goBackWithToken = function () {
+            self.goBackWithToken = function() {
                 $.blockUI();
 
                 Services.Post('/concursos/oferente/guardar-token-acceso', {
-                    UserToken: User.Token,
-                    id: self.IdConcurso()
-                },
-                function (response) {
-                    $.unblockUI();
+                        UserToken: User.Token,
+                        id: self.IdConcurso()
+                    },
+                    function(response) {
+                        $.unblockUI();
 
-                    if (response.success) {
-                        // Usamos history.back() después de generar el token
-                        window.history.back();
-                    } else {
-                        swal('Error', response.message, 'error');
-                    }
-                },
-                function (error) {
-                    $.unblockUI();
-                    swal('Error', error.message || 'Error generando token.', 'error');
-                });
+                        if (response.success) {
+                            // Usamos history.back() después de generar el token
+                            window.history.back();
+                        } else {
+                            swal('Error', response.message, 'error');
+                        }
+                    },
+                    function(error) {
+                        $.unblockUI();
+                        swal('Error', error.message || 'Error generando token.', 'error');
+                    });
             };
 
             this.IdConcurso = ko.observable(data.list.IdConcurso);
@@ -482,22 +515,77 @@
             this.IncluyeTecnica = ko.observable(data.list.IncluyeTecnica);
             this.PresentacionTecnicas = ko.observable(data.list.PresentacionTecnicas);
             this.PresentacionTecnicasHora = ko.observable(data.list.PresentacionTecnicasHora);
+
             this.PresentacionEconomicas = ko.observable(data.list.PresentacionEconomicas);
             this.PresentacionEconomicasHora = ko.observable(data.list.PresentacionEconomicasHora);
+            this.FechaHoyFull = ko.observable(data.FechaHoyFull); // ej: "2025-09-18 13:00:00"
+
+            this.getEconomicasDeadline = function() {
+                if (!this.PresentacionEconomicas() || !this.PresentacionEconomicasHora()) return null;
+
+                // Formato esperado: "DD-MM-YYYY HH:mm:ss"
+                var parts = this.PresentacionEconomicas().split('-'); // [18,09,2025]
+                var hora = this.PresentacionEconomicasHora().split(':'); // [15,30,00]
+
+                return new Date(
+                    parts[2], // año
+                    parts[1] - 1, // mes (0-based)
+                    parts[0], // día
+                    hora[0], hora[1], hora[2]
+                );
+            };
+
+            this.CountdownEconomicas = ko.observable("—");
+
+            function updateCountdown() {
+                var deadline = self.getEconomicasDeadline();
+                if (!deadline) {
+                    self.CountdownEconomicas("—");
+                    return;
+                }
+
+                var now = new Date();
+                var diff = deadline - now;
+
+                if (diff <= 0) {
+                    self.CountdownEconomicas("Finalizado");
+                    return;
+                }
+
+                var days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                var hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+                var minutes = Math.floor((diff / (1000 * 60)) % 60);
+                var seconds = Math.floor((diff / 1000) % 60);
+
+                var str = (days > 0 ? days + "d " : "") +
+                    (hours < 10 ? "0" + hours : hours) + ":" +
+                    (minutes < 10 ? "0" + minutes : minutes) + ":" +
+                    (seconds < 10 ? "0" + seconds : seconds);
+
+                self.CountdownEconomicas(str);
+            }
+
+
+            // Actualizar cada segundo
+            setInterval(updateCountdown, 1000);
+            updateCountdown();
+
             this.IncluyeEconomicaSegundaRonda = ko.observable(data.list.IncluyeEconomicaSegundaRonda);
             this.PresentacionEconomicasSegundaRonda = ko.observable(data.list.PresentacionEconomicasSegundaRonda);
-            this.PresentacionEconomicasSegundaRondaHora = ko.observable(data.list.PresentacionEconomicasSegundaRondaHora);
+            this.PresentacionEconomicasSegundaRondaHora = ko.observable(data.list
+                .PresentacionEconomicasSegundaRondaHora);
 
             this.IncluyeEconomicaTerceraRonda = ko.observable(data.list.IncluyeEconomicaTerceraRonda);
             this.PresentacionEconomicasTerceraRonda = ko.observable(data.list.PresentacionEconomicasTerceraRonda);
-            this.PresentacionEconomicasTerceraRondaHora = ko.observable(data.list.PresentacionEconomicasTerceraRondaHora);
+            this.PresentacionEconomicasTerceraRondaHora = ko.observable(data.list
+                .PresentacionEconomicasTerceraRondaHora);
             this.IncluyeEconomicaCuartaRonda = ko.observable(data.list.IncluyeEconomicaCuartaRonda);
             this.PresentacionEconomicasCuartaRonda = ko.observable(data.list.PresentacionEconomicasCuartaRonda);
             this.PresentacionEconomicasCuartaRondaHora = ko.observable(data.list.PresentacionEconomicasCuartaRondaHora);
             this.IncluyeEconomicaQuintaRonda = ko.observable(data.list.IncluyeEconomicaQuintaRonda);
             this.PresentacionEconomicasQuintaRonda = ko.observable(data.list.PresentacionEconomicasQuintaRonda);
             this.PresentacionEconomicasQuintaRondaHora = ko.observable(data.list.PresentacionEconomicasQuintaRondaHora);
-            
+
             this.InicioSubasta = ko.observable(data.list.InicioSubasta);
             this.InicioSubastaHora = ko.observable(data.list.InicioSubastaHora);
             this.EstadoSubasta = ko.observable(data.list.EstadoSubasta);
@@ -552,9 +640,9 @@
 
             // Formatear FechaHoy en formato dd-mm-yyyy
             this.FechaHoy = ko.observable(
-                ahora.getDate().toString().padStart(2, '0') + '-' +  // dd
-                (ahora.getMonth() + 1).toString().padStart(2, '0') + '-' +  // mm
-                ahora.getFullYear()  // yyyy
+                ahora.getDate().toString().padStart(2, '0') + '-' + // dd
+                (ahora.getMonth() + 1).toString().padStart(2, '0') + '-' + // mm
+                ahora.getFullYear() // yyyy
             );
 
 
@@ -587,7 +675,7 @@
 
                         this.EntregaDocEvaluacion = ko.observable(data.list.EntregaDocEvaluacion);
                         this.RequisitosLegales = ko.observable(data.list.RequisitosLegales);
-                        this.ExperienciaYReferencias = ko.observable(data.list.ExperienciaYReferencias); 
+                        this.ExperienciaYReferencias = ko.observable(data.list.ExperienciaYReferencias);
                         this.DocumentacionREPSE = ko.observable(data.list.DocumentacionREPSE);
                         this.Alcance = ko.observable(data.list.Alcance);
                         this.FormaPago = ko.observable(data.list.FormaPago);
@@ -836,11 +924,12 @@
                     this.Email = ko.observable(data.list.Email);
                     this.Items = ko.observable(data.list.Items);
 
-                    
+
                     this.TotalCotizaciones = ko.computed(function() {
                         var total = 0;
                         self.Resultados().forEach(function(item) {
-                            total += item.valores.cotizacion || 0; // Asegúrate de que 'cotizacion' esté definido
+                            total += item.valores.cotizacion ||
+                            0; // Asegúrate de que 'cotizacion' esté definido
                         });
                         return total;
                     });
@@ -888,8 +977,10 @@
             }
 
             this.AcceptRejectInvitation = function(action) {
-                const htmlBody = '<p>Por favor, indique la razón de su declinación de la invitación</p> <textarea rows="3" cols="50" class="form-control" style="resize: none;" id="invitationDeclination"></textarea>';
-                const title = action == 'reject' ? '¿Desea rechazar la invitación?' : '¿Desea aceptar la invitación?';
+                const htmlBody =
+                    '<p>Por favor, indique la razón de su declinación de la invitación</p> <textarea rows="3" cols="50" class="form-control" style="resize: none;" id="invitationDeclination"></textarea>';
+                const title = action == 'reject' ? '¿Desea rechazar la invitación?' :
+                    '¿Desea aceptar la invitación?';
 
                 const swalAlert = action == 'reject' ? {
                     title: title,
@@ -943,27 +1034,28 @@
                                 setTimeout(function() {
                                     // Guardar token antes de redirigir
                                     Services.Post('/concursos/oferente/guardar-token-acceso', {
-                                        UserToken: User.Token,
-                                        id: self.IdConcurso()
-                                    }, 
-                                    (responseToken) => {
-                                        if (responseToken.success) {
-                                            window.location.href = response.data.redirect;
-                                        } else {
-                                            swal('Error', 'Error generando token: ' + responseToken.message, 'error');
-                                        }
-                                    }, 
-                                    (errorToken) => {
-                                        swal('Error', errorToken.message, 'error');
-                                    });
+                                            UserToken: User.Token,
+                                            id: self.IdConcurso()
+                                        },
+                                        (responseToken) => {
+                                            if (responseToken.success) {
+                                                window.location.href = response.data.redirect;
+                                            } else {
+                                                swal('Error', 'Error generando token: ' +
+                                                    responseToken.message, 'error');
+                                            }
+                                        },
+                                        (errorToken) => {
+                                            swal('Error', errorToken.message, 'error');
+                                        });
                                 }, 500);
                             },
                             (error) => {
                                 $.unblockUI();
-                                swal('Error', typeof error.message !== 'undefined' ? error.message : error.responseJSON.message, 'error');
+                                swal('Error', typeof error.message !== 'undefined' ? error.message : error
+                                    .responseJSON.message, 'error');
                             });
-                    }
-                    :
+                    } :
                     function(result) {
                         if (result) {
                             $.blockUI();
@@ -982,24 +1074,26 @@
                                     setTimeout(function() {
                                         // Guardar token antes de redirigir
                                         Services.Post('/concursos/oferente/guardar-token-acceso', {
-                                            UserToken: User.Token,
-                                            id: self.IdConcurso()
-                                        }, 
-                                        (responseToken) => {
-                                            if (responseToken.success) {
-                                                window.location.href = response.data.redirect;
-                                            } else {
-                                                swal('Error', 'Error generando token: ' + responseToken.message, 'error');
-                                            }
-                                        }, 
-                                        (errorToken) => {
-                                            swal('Error', errorToken.message, 'error');
-                                        });
+                                                UserToken: User.Token,
+                                                id: self.IdConcurso()
+                                            },
+                                            (responseToken) => {
+                                                if (responseToken.success) {
+                                                    window.location.href = response.data.redirect;
+                                                } else {
+                                                    swal('Error', 'Error generando token: ' +
+                                                        responseToken.message, 'error');
+                                                }
+                                            },
+                                            (errorToken) => {
+                                                swal('Error', errorToken.message, 'error');
+                                            });
                                     }, 500);
                                 },
                                 (error) => {
                                     $.unblockUI();
-                                    swal('Error', typeof error.message !== 'undefined' ? error.message : error.responseJSON.message, 'error');
+                                    swal('Error', typeof error.message !== 'undefined' ? error.message : error
+                                        .responseJSON.message, 'error');
                                 });
                         }
                     };
@@ -1015,87 +1109,90 @@
                 // 1. Primero generamos el token de acceso
                 $.blockUI();
                 Services.Post('/concursos/oferente/guardar-token-acceso', {
-                    UserToken: User.Token,
-                    id: self.IdConcurso()
-                },
-                (resp) => {
-                    $.unblockUI();
-                    if (resp.success) {
+                        UserToken: User.Token,
+                        id: self.IdConcurso()
+                    },
+                    (resp) => {
+                        $.unblockUI();
+                        if (resp.success) {
 
-                        // 2. Si el token fue generado, seguimos con la lógica normal
-                        const url = isUpdate
-                            ? '/concursos/proposal/technical/update'
-                            : '/concursos/proposal/technical/send';
+                            // 2. Si el token fue generado, seguimos con la lógica normal
+                            const url = isUpdate ?
+                                '/concursos/proposal/technical/update' :
+                                '/concursos/proposal/technical/send';
 
-                        const title = isUpdate
-                            ? '¿Desea guardar los cambios?'
-                            : '¿Desea enviar propuesta técnica?';
+                            const title = isUpdate ?
+                                '¿Desea guardar los cambios?' :
+                                '¿Desea enviar propuesta técnica?';
 
-                        swal({
-                            title: title,
-                            type: 'info',
-                            closeOnClickOutside: false,
-                            showCancelButton: true,
-                            closeOnConfirm: true,
-                            confirmButtonText: 'Aceptar',
-                            confirmButtonClass: 'btn btn-success',
-                            cancelButtonText: 'Cancelar',
-                            cancelButtonClass: 'btn btn-default',
-                            buttonsStyling: false
-                        }, function(result) {
-                            if (result) {
-                                $.blockUI();
-                                Services.Post(url, {
-                                        UserToken: User.Token,
-                                        ConcursoId: self.IdConcurso(),
-                                        Entity: JSON.stringify(rondaActiva)
-                                    },
-                                    (response) => {
-                                        swal.close();
-                                        $.unblockUI();
-                                        setTimeout(function() {
-                                            swal({
-                                                title: response.message,
-                                                type: 'success',
-                                                closeOnClickOutside: false,
-                                                showCancelButton: false,
-                                                closeOnConfirm: true,
-                                                confirmButtonText: 'Aceptar',
-                                                confirmButtonClass: 'btn btn-success',
-                                                buttonsStyling: false
-                                            }, function(result) {
-                                                if (response.success) {
-                                                    if (response.data.redirect) {
-                                                        window.location.href = response.data.redirect;
-                                                    } else {
-                                                        location.reload();
+                            swal({
+                                title: title,
+                                type: 'info',
+                                closeOnClickOutside: false,
+                                showCancelButton: true,
+                                closeOnConfirm: true,
+                                confirmButtonText: 'Aceptar',
+                                confirmButtonClass: 'btn btn-success',
+                                cancelButtonText: 'Cancelar',
+                                cancelButtonClass: 'btn btn-default',
+                                buttonsStyling: false
+                            }, function(result) {
+                                if (result) {
+                                    $.blockUI();
+                                    Services.Post(url, {
+                                            UserToken: User.Token,
+                                            ConcursoId: self.IdConcurso(),
+                                            Entity: JSON.stringify(rondaActiva)
+                                        },
+                                        (response) => {
+                                            swal.close();
+                                            $.unblockUI();
+                                            setTimeout(function() {
+                                                swal({
+                                                    title: response.message,
+                                                    type: 'success',
+                                                    closeOnClickOutside: false,
+                                                    showCancelButton: false,
+                                                    closeOnConfirm: true,
+                                                    confirmButtonText: 'Aceptar',
+                                                    confirmButtonClass: 'btn btn-success',
+                                                    buttonsStyling: false
+                                                }, function(result) {
+                                                    if (response.success) {
+                                                        if (response.data
+                                                            .redirect) {
+                                                            window.location.href =
+                                                                response.data
+                                                                .redirect;
+                                                        } else {
+                                                            location.reload();
+                                                        }
                                                     }
-                                                }
-                                            });
-                                        }, 500);
-                                    },
-                                    (error) => {
-                                        swal.close();
-                                        $.unblockUI();
-                                        setTimeout(function() {
-                                            swal('Error', error.message, 'error');
-                                        }, 500);
-                                    },
-                                    null,
-                                    null
-                                );
-                            }
-                        });
+                                                });
+                                            }, 500);
+                                        },
+                                        (error) => {
+                                            swal.close();
+                                            $.unblockUI();
+                                            setTimeout(function() {
+                                                swal('Error', error.message, 'error');
+                                            }, 500);
+                                        },
+                                        null,
+                                        null
+                                    );
+                                }
+                            });
 
-                    } else {
-                        swal('Error', resp.message, 'error');
-                    }
-                },
-                (error) => {
-                    $.unblockUI();
-                    swal('Error', error.message, 'error');
-                },
-                null, null);
+                        } else {
+                            swal('Error', resp.message, 'error');
+                        }
+                    },
+                    (error) => {
+                        $.unblockUI();
+                        swal('Error', error.message, 'error');
+                    },
+                    null, null);
             };
 
 
@@ -1185,7 +1282,7 @@
                     null
                 );
             }
-        
+
             this.EconomicSend = function(isUpdate = false) {
                 // Validar campos de ítems seleccionados
                 const items = self.EconomicProposal().values();
@@ -1283,7 +1380,8 @@
                                         buttonsStyling: false
                                     }, function(result) {
                                         if (response.success) {
-                                            window.location.href = '/concursos/oferente';
+                                            window.location.href =
+                                            '/concursos/oferente';
                                         }
                                     });
                                 }, 500)
@@ -1292,7 +1390,8 @@
                                 swal.close();
                                 $.unblockUI();
                                 setTimeout(function() {
-                                    swal('Error', typeof error.message != 'undefined' ? error.message : error.responseJSON.message, 'error');
+                                    swal('Error', typeof error.message != 'undefined' ? error
+                                        .message : error.responseJSON.message, 'error');
                                 }, 500)
                             },
                             null,
@@ -1303,9 +1402,9 @@
             };
 
 
-             
 
-           
+
+
 
             // Subasta: Acciones
             this.AuctionUpdate = function(index = null, action) {
@@ -1443,10 +1542,12 @@
             this.AdjudicationSend = function(action) {
                 var title, type;
                 if (action === 'accept') {
-                    title = 'Usted está por aceptar la adjudicación de los items detallados. Esto implica su compromiso para cumplir con los pliegos, bases y condiciones del concurso, como así también el contenido de sus ofertas técnicas y económicas. ¿Desea continuar?';
+                    title =
+                        'Usted está por aceptar la adjudicación de los items detallados. Esto implica su compromiso para cumplir con los pliegos, bases y condiciones del concurso, como así también el contenido de sus ofertas técnicas y económicas. ¿Desea continuar?';
                     type = 'success';
                 } else {
-                    title = 'Usted está por rechazar la adjudicación de todos los items adjudicados a su empresa. ¿Desea continuar?';
+                    title =
+                        'Usted está por rechazar la adjudicación de todos los items adjudicados a su empresa. ¿Desea continuar?';
                     type = 'error';
                 }
 
@@ -1475,64 +1576,67 @@
                         const url = '/concursos/oferente/adjudication/send';
 
                         Services.Post(url, {
-                            UserToken: User.Token,
-                            Entity: JSON.stringify(ko.toJS(data))
-                        },
-                        (response) => {
-                            $.unblockUI();
-                            swal.close();
-                            setTimeout(() => {
-                                swal({
-                                    title: response.message,
-                                    type: 'success',
-                                    closeOnClickOutside: false,
-                                    showCancelButton: false,
-                                    closeOnConfirm: true,
-                                    confirmButtonText: 'Aceptar',
-                                    confirmButtonClass: 'btn btn-success',
-                                    buttonsStyling: false
-                                }, function () {
-                                    if (response.success && response.data.redirect) {
-                                        window.location.href = response.data.redirect;
-                                    }
-                                });
-                            }, 500);
-                        },
-                        (error) => {
-                            $.unblockUI();
-                            swal.close();
-                            setTimeout(() => {
-                                swal('Error',
-                                    typeof error.message !== 'undefined' ? error.message : error.responseJSON.message,
-                                    'error');
-                            }, 500);
-                        });
+                                UserToken: User.Token,
+                                Entity: JSON.stringify(ko.toJS(data))
+                            },
+                            (response) => {
+                                $.unblockUI();
+                                swal.close();
+                                setTimeout(() => {
+                                    swal({
+                                        title: response.message,
+                                        type: 'success',
+                                        closeOnClickOutside: false,
+                                        showCancelButton: false,
+                                        closeOnConfirm: true,
+                                        confirmButtonText: 'Aceptar',
+                                        confirmButtonClass: 'btn btn-success',
+                                        buttonsStyling: false
+                                    }, function() {
+                                        if (response.success && response.data
+                                            .redirect) {
+                                            window.location.href = response.data
+                                                .redirect;
+                                        }
+                                    });
+                                }, 500);
+                            },
+                            (error) => {
+                                $.unblockUI();
+                                swal.close();
+                                setTimeout(() => {
+                                    swal('Error',
+                                        typeof error.message !== 'undefined' ? error
+                                        .message : error.responseJSON.message,
+                                        'error');
+                                }, 500);
+                            });
                     };
 
                     //  Primero guardar el token antes de enviar adjudicación
                     Services.Post('/concursos/oferente/guardar-token-acceso', {
-                        UserToken: User.Token,
-                        id: self.IdConcurso()
-                    },
-                    (resToken) => {
-                        if (resToken.success) {
-                            postAdjudicacion();
-                        } else {
+                            UserToken: User.Token,
+                            id: self.IdConcurso()
+                        },
+                        (resToken) => {
+                            if (resToken.success) {
+                                postAdjudicacion();
+                            } else {
+                                $.unblockUI();
+                                swal('Error', 'No se pudo generar token de acceso.', 'error');
+                            }
+                        },
+                        (errToken) => {
                             $.unblockUI();
-                            swal('Error', 'No se pudo generar token de acceso.', 'error');
-                        }
-                    },
-                    (errToken) => {
-                        $.unblockUI();
-                        swal('Error', 'Error generando token: ' + errToken.message, 'error');
-                    });
+                            swal('Error', 'Error generando token: ' + errToken.message, 'error');
+                        });
                 });
             }
 
 
             /*
-            * CheckPay CheckPaySuccess function verify transaction MP
-            */
+         * CheckPay CheckPaySuccess function verify transaction MP
+         */
             this.CheckPaySuccess = function() {
                 swal({
                     title: 'Pago verificado',
@@ -1654,30 +1758,32 @@
                 });
             }
 
-            if (self.ChatEnable()){
+            if (self.ChatEnable()) {
                 var tipo = '{$tipo}';
-                if(tipo != 'chat-muro-consultas'){
+                if (tipo != 'chat-muro-consultas') {
                     const concurso_id = params[4];
-                    var query = '?concurso_id=' + concurso_id + '&user_id=' + User.Id + '&vista=concurso' + '&isClient=' + self.IsClient();
+                    var query = '?concurso_id=' + concurso_id + '&user_id=' + User.Id + '&vista=concurso' +
+                        '&isClient=' + self.IsClient();
                     var path = 'wss://' + location.host + '/wss/chat';
                     var chatConn = new WebSocket(path + query);
-                    
+
                     chatConn.onopen = function(e) {
-                        
+
                     };
 
                     chatConn.onclose = function(e) {
-                        
+
                     };
 
                     chatConn.onerror = function(e) {
-                        
+
                     };
 
                     chatConn.onmessage = function(e) {
                         data = JSON.parse(e.data)
-                        
-                        if(data.tipo == 'newMessageClient' || data.tipo == 'newMessageProvApproved' || data.tipo == 'newRespClient'){
+
+                        if (data.tipo == 'newMessageClient' || data.tipo == 'newMessageProvApproved' || data.tipo ==
+                            'newRespClient') {
                             checkRead()
                         }
                         // self.HasNewMessage(e.data)
@@ -1728,18 +1834,19 @@
             }
 
             checkRead()
-            
+
         };
 
 
-        self.DownloadEmptyExcel = function () {
+        self.DownloadEmptyExcel = function() {
             const data = [];
-            const tableRows = document.querySelectorAll("#ListaConcursosEconomicas tbody tr"); // Seleccionar las filas del tbody
+            const tableRows = document.querySelectorAll(
+            "#ListaConcursosEconomicas tbody tr"); // Seleccionar las filas del tbody
 
             // Iterar sobre cada fila y extraer los valores
             tableRows.forEach((row, index) => {
                 // Solo agregar filas que no estén en el rango de las filas 2 a 10
-                if (index < 0 || index > 21) {  // Excluir las filas 2 a 10 (índices 1 a 9)
+                if (index < 0 || index > 21) { // Excluir las filas 2 a 10 (índices 1 a 9)
                     const cells = row.querySelectorAll("td"); // Obtener las celdas de la fila
                     data.push({
                         "Item": cells[1]?.innerText.trim() || "", // Columna 1: Item
@@ -1842,14 +1949,14 @@
 
         self.uploadFile = ko.observable(null);
         self.uploadName = ko.computed(function() {
-        return !!self.uploadFile() ? self.uploadFile().name : '-';
+            return !!self.uploadFile() ? self.uploadFile().name : '-';
         });
 
         self.uploadFileclear = function() {
             self.uploadFile(null);
         };
 
-        self.uploadFileProcesar = function () {
+        self.uploadFileProcesar = function() {
             console.log("Starting uploadFileProcesar function");
 
             // Obtén el archivo seleccionado
@@ -1902,125 +2009,123 @@
 
         // Función para cargar los datos en los inputs del formulario
         function cargarDatosEnInputs(excelData) {
-    console.log("Datos a cargar en los inputs:", excelData);
+            console.log("Datos a cargar en los inputs:", excelData);
 
-    // Seleccionar el tbody de la tabla
-    const tabla = document.querySelector("#ListaConcursosEconomicasXD tbody"); 
-    if (!tabla) {
-        return;
-    }
-
-    // Seleccionar todas las filas dentro del tbody
-    const filas = tabla.querySelectorAll("tr");
-    console.log("Filas de la tabla:", filas);
-
-    // Iterar sobre los datos del Excel y las filas de la tabla
-    excelData.forEach((producto, index) => {
-        if (index < filas.length) { // Evitar errores si hay más datos que filas en la tabla
-            const fila = filas[index];
-
-            // Seleccionar los inputs dentro de esta fila por su clase
-            const inputCotizacion = fila.querySelector(".cotizacion");
-            const inputCantidad = fila.querySelector(".cantidad");
-            const inputFecha = fila.querySelector(".fecha");
-
-            // Verificar si los inputs existen y asignar los valores
-            if (inputCotizacion) {
-                inputCotizacion.value = producto["Precio Unit"] || '';
-                inputCotizacion.dispatchEvent(new Event('input')); // Disparar el evento
-                inputCotizacion.dispatchEvent(new Event('change')); // Disparar evento change
-            } else {
-                console.error("No se encontró el input de cotización en la fila", index + 1);
+            // Seleccionar el tbody de la tabla
+            const tabla = document.querySelector("#ListaConcursosEconomicasXD tbody");
+            if (!tabla) {
+                return;
             }
 
-            if (inputCantidad) {
-                // Si la cantidad es menor que la cantidad mínima, dejar el valor en blanco
-                if (parseFloat(producto["Cant Cot"]) < parseFloat(producto["Cant Min"])) {
-                    inputCantidad.value = ''; // Dejar en blanco si es menor
-                } else {
-                    inputCantidad.value = producto["Cant Cot"] || '';
-                }
-                inputCantidad.dispatchEvent(new Event('input')); // Disparar el evento
-                inputCantidad.dispatchEvent(new Event('change'));
-            } else {
-                console.error("No se encontró el input de cantidad en la fila", index + 1);
-            }
+            // Seleccionar todas las filas dentro del tbody
+            const filas = tabla.querySelectorAll("tr");
+            console.log("Filas de la tabla:", filas);
 
-            if (inputFecha) {
-                inputFecha.value = producto["Pl. Entr (días)"] || '';
-                inputFecha.dispatchEvent(new Event('change')); 
-            } else {
-                console.error("No se encontró el input de fecha en la fila", index + 1);
-            }
-        } 
-    });
-}
+            // Iterar sobre los datos del Excel y las filas de la tabla
+            excelData.forEach((producto, index) => {
+                if (index < filas.length) { // Evitar errores si hay más datos que filas en la tabla
+                    const fila = filas[index];
 
+                    // Seleccionar los inputs dentro de esta fila por su clase
+                    const inputCotizacion = fila.querySelector(".cotizacion");
+                    const inputCantidad = fila.querySelector(".cantidad");
+                    const inputFecha = fila.querySelector(".fecha");
 
-                jQuery(document).ready(function() {
-
-
-                    $('body').on('change', '#reasonDeclination', function() {
-                        // Obtén el valor del textarea
-                        var valorTextarea = $(this).val();
-
-                        // Encuentra el input con placeholder="hola" y establece su valor
-                        $(this).closest('.sweet-alert')
-                            .find('div.form-group input.form-control[placeholder="hidden"]')
-                            .val(valorTextarea);
-                    });
-                    $('body').on('change', '#invitationDeclination', function() {
-                        // Obtén el valor del textarea
-                        var valorTextarea = $(this).val();
-
-                        // Encuentra el input con placeholder="hola" y establece su valor
-                        $(this).closest('.sweet-alert')
-                            .find('div.form-group input.form-control[placeholder="hidden"]')
-                            .val(valorTextarea);
-                    });
-                    $.blockUI();
-                    
-                    var etapas = [
-                        'invitacion',
-                        'chat-muro-consultas',
-                        'tecnica',
-                        'economica',
-                        'analisis',
-                        'resultados',
-                        'adjudicado',
-                    ];
-                    if (etapas.indexOf(params[3]) >= 0) {
-                        var url = '/concursos/oferente/' + params[1] + '/' + params[3] + '/' + params[4] + '/detail';
-                        
-                        var data = {
-                            Entity: {
-                                Tipo: params[1],
-                                Etapa: params[3],
-                                Id: params[4]
-                            }
-                        };
-
-                        Services.Get(url, {
-                                UserToken: User.Token,
-                                Entity: JSON.stringify(ko.toJS(data))
-                            },
-                            (response) => {
-                                if (response.success) {
-                                    window.E = new ConcursoPorEtapaOferente(response.data);
-                                    AppOptus.Bind(E);
-                                }
-                                $.unblockUI();
-                            },
-                            (error) => {
-                                $.unblockUI();
-                                swal('Error', error.message, 'error');
-                            },
-                            null,
-                            null
-                        );
+                    // Verificar si los inputs existen y asignar los valores
+                    if (inputCotizacion) {
+                        inputCotizacion.value = producto["Precio Unit"] || '';
+                        inputCotizacion.dispatchEvent(new Event('input')); // Disparar el evento
+                        inputCotizacion.dispatchEvent(new Event('change')); // Disparar evento change
+                    } else {
+                        console.error("No se encontró el input de cotización en la fila", index + 1);
                     }
-                });
 
-            
-            </script>
-        {/block}
+                    if (inputCantidad) {
+                        // Si la cantidad es menor que la cantidad mínima, dejar el valor en blanco
+                        if (parseFloat(producto["Cant Cot"]) < parseFloat(producto["Cant Min"])) {
+                            inputCantidad.value = ''; // Dejar en blanco si es menor
+                        } else {
+                            inputCantidad.value = producto["Cant Cot"] || '';
+                        }
+                        inputCantidad.dispatchEvent(new Event('input')); // Disparar el evento
+                        inputCantidad.dispatchEvent(new Event('change'));
+                    } else {
+                        console.error("No se encontró el input de cantidad en la fila", index + 1);
+                    }
+
+                    if (inputFecha) {
+                        inputFecha.value = producto["Pl. Entr (días)"] || '';
+                        inputFecha.dispatchEvent(new Event('change'));
+                    } else {
+                        console.error("No se encontró el input de fecha en la fila", index + 1);
+                    }
+                }
+            });
+        }
+
+
+        jQuery(document).ready(function() {
+
+
+            $('body').on('change', '#reasonDeclination', function() {
+                // Obtén el valor del textarea
+                var valorTextarea = $(this).val();
+
+                // Encuentra el input con placeholder="hola" y establece su valor
+                $(this).closest('.sweet-alert')
+                    .find('div.form-group input.form-control[placeholder="hidden"]')
+                    .val(valorTextarea);
+            });
+            $('body').on('change', '#invitationDeclination', function() {
+                // Obtén el valor del textarea
+                var valorTextarea = $(this).val();
+
+                // Encuentra el input con placeholder="hola" y establece su valor
+                $(this).closest('.sweet-alert')
+                    .find('div.form-group input.form-control[placeholder="hidden"]')
+                    .val(valorTextarea);
+            });
+            $.blockUI();
+
+            var etapas = [
+                'invitacion',
+                'chat-muro-consultas',
+                'tecnica',
+                'economica',
+                'analisis',
+                'resultados',
+                'adjudicado',
+            ];
+            if (etapas.indexOf(params[3]) >= 0) {
+                var url = '/concursos/oferente/' + params[1] + '/' + params[3] + '/' + params[4] + '/detail';
+
+                var data = {
+                    Entity: {
+                        Tipo: params[1],
+                        Etapa: params[3],
+                        Id: params[4]
+                    }
+                };
+
+                Services.Get(url, {
+                        UserToken: User.Token,
+                        Entity: JSON.stringify(ko.toJS(data))
+                    },
+                    (response) => {
+                        if (response.success) {
+                            window.E = new ConcursoPorEtapaOferente(response.data);
+                            AppOptus.Bind(E);
+                        }
+                        $.unblockUI();
+                    },
+                    (error) => {
+                        $.unblockUI();
+                        swal('Error', error.message, 'error');
+                    },
+                    null,
+                    null
+                );
+            }
+        });
+    </script>
+{/block}

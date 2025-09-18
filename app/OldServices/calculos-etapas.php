@@ -623,10 +623,20 @@ function setMejorIndividual($concurso, $oferentes)
         // Plazos candidatos: de los que pasaron cantidad exacta, quedarse con el/los de menor plazo
         $plazosValidos = array_intersect_key($plazos, $cantidadesValidas);
         if (!empty($plazosValidos)) {
-            $minPlazo = min(array_filter($plazosValidos));
-            $plazosValidos = array_filter($plazosValidos, function($v) use ($minPlazo) {
-                return $v > 0 && $v <= $minPlazo;
+            // Dejar solo plazos numéricos > 0
+            $poolPlazos = array_filter($plazosValidos, function ($v) {
+                return is_numeric($v) && $v > 0;
             });
+
+            if (!empty($poolPlazos)) {
+                $minPlazo = min($poolPlazos);
+                $plazosValidos = array_filter($plazosValidos, function ($v) use ($minPlazo) {
+                    return is_numeric($v) && $v > 0 && $v <= $minPlazo;
+                });
+            } else {
+                // si no hay plazos válidos, que no gane nadie por "plazo"
+                $plazosValidos = [];
+            }
         }
 
         // Cotizaciones candidatas: de los que pasaron cantidad exacta, elegir min o max según $maximize
