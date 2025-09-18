@@ -221,7 +221,13 @@ function setOferente($concurso, $oferente, $ronda)
     $totaltargetcost_solicitado = 0.0; // Σ TC * cantidad SOLICITADA (para %)
 
     $isAscendente = ($concurso->tipo_valor_ofertar === 'ascendente');
-    $isVenta = ($concurso -> tipo_licitacion === 'venta');
+    $isVenta = ($concurso->tipo_licitacion === 'venta');
+
+    // Moneda segura (evita Notice si no hay relación)
+    $monedaNombre = null;
+    if (isset($concurso->tipo_moneda) && isset($concurso->tipo_moneda->nombre)) {
+        $monedaNombre = $concurso->tipo_moneda->nombre;
+    }
 
     if (!$oferente->is_concurso_rechazado) {
         $economic_proposal = $oferente->economic_proposal;
@@ -235,28 +241,45 @@ function setOferente($concurso, $oferente, $ronda)
             if ($economicByRound) {
                 $i = 0;
 
-                foreach ($economicByRound->values as $propuesta) {
-                    // evitar logs en la lista
+                // Aseguramos que values sea iterable
+                $valores = is_iterable($economicByRound->values) ? $economicByRound->values : [];
+                foreach ($valores as $propuesta) {
                     $i++;
                     if ($i > $concurso->productos->count()) {
                         break;
                     }
 
-                    $producto   = Producto::find($propuesta['producto']);
+                    // Validar que exista el id de producto
+                    $prodId = $propuesta['producto'] ?? null;
+                    if (!$prodId) {
+                        // si no hay producto, saltamos este ítem
+                        continue;
+                    }
+
+                    $producto = Producto::find($prodId);
+                    if (!$producto) {
+                        // Producto inexistente (borrado/cambiado). Lo omitimos para no romper.
+                        continue;
+                    }
+
                     $cotizacion = isset($propuesta['cotizacion']) ? (float)$propuesta['cotizacion'] : 0.00;
                     $cantidad   = isset($propuesta['cantidad'])   ? (int)$propuesta['cantidad']   : 0;
 
+                    // Targetcost y unidad protegidos
                     $targetcost = isset($producto->targetcost) ? (float)$producto->targetcost : 0.00;
+                    $unidad     = isset($producto->unidad_medida) && isset($producto->unidad_medida->name)
+                                    ? $producto->unidad_medida->name
+                                    : null;
 
                     $subtotal           = $cotizacion * $cantidad;
                     $subtotaltargetcost = $targetcost * $cantidad; // COTIZADO
 
-                    // Denominador "pedido" (para % totales)
-                    $prodConcurso  = $concurso->productos->find($producto->id);
+                    // Denominador "pedido" (para %)
+                    $prodConcurso  = $concurso->productos->firstWhere('id', $producto->id);
                     $qtySolicitada = $prodConcurso ? (int)$prodConcurso->cantidad : $cantidad; // fallback
                     $subTC_solicitado = $targetcost * $qtySolicitada;
 
-                    // Ahorro por ítem (como lo tenías)
+                    // Ahorro por ítem
                     $ahorro_abs  = 0.00;
                     $ahorro_porc = 0.00;
                     if ($subtotaltargetcost > 0.00) {
@@ -264,7 +287,7 @@ function setOferente($concurso, $oferente, $ronda)
                         $ahorro_porc = $targetcost > 0.00 ? (($ahorro_abs / $subtotaltargetcost) * 100) : 0.00;
                     }
 
-                    // Ganancia por ÍTEM (solo ascendente, inversa del ahorro)
+                    // Ganancia por ÍTEM (solo ascendente/venta)
                     $ganancia_item_abs  = null;
                     $ganancia_item_porc = null;
                     if (($isAscendente || $isVenta) && $subtotaltargetcost > 0.00) {
@@ -277,27 +300,27 @@ function setOferente($concurso, $oferente, $ronda)
                         'nombre'           => $producto->nombre,
                         'cotizacion'       => $cotizacion,
                         'cantidad'         => (int)$cantidad,
-                        'fecha'            => $propuesta['fecha'] ? $propuesta['fecha'] : 0,
+                        'fecha'            => $propuesta['fecha'] ?? 0,
                         'subtotal'         => $subtotal,
-                        'oferente_id'      => $oferente->company->id,
-                        'razonSocial'      => $oferente->company->business_name,
-                        'tipoAdjudicacion' => $oferente->adjudicacion,
-                        'moneda'           => $concurso->tipo_moneda->nombre,
-                        'unidad'           => $producto->unidad_medida->name ?? null,
+                        'oferente_id'      => isset($oferente->company) ? $oferente->company->id : null,
+                        'razonSocial'      => isset($oferente->company) ? $oferente->company->business_name : null,
+                        'tipoAdjudicacion' => $oferente->adjudicacion ?? null,
+                        'moneda'           => $monedaNombre,
+                        'unidad'           => $unidad,
                         'targetcost'       => $targetcost,
                         'ahorro_porc'      => $ahorro_porc,
                         'ahorro_abs'       => $ahorro_abs,
                         'ganancia_abs'     => $ganancia_item_abs,
                         'ganancia_porc'    => $ganancia_item_porc,
-                        'tipoValorOferta'  => $oferente->tipo_valor_ofertar,
+                        'tipoValorOferta'  => $oferente->tipo_valor_ofertar ?? null,
                         'isMenorCantidad'  => false,
                         'isMenorPlazo'     => false,
                         'isMejorCotizacion'=> false,
                     ];
 
-                    $total                        += $subtotal;
-                    $totaltargetcost_ofertado     += $subtotaltargetcost;
-                    $totaltargetcost_solicitado   += $subTC_solicitado;
+                    $total                      += $subtotal;
+                    $totaltargetcost_ofertado   += $subtotaltargetcost;
+                    $totaltargetcost_solicitado += $subTC_solicitado;
                 }
 
                 // Totales (abs contra OFERTADO, % contra SOLICITADO)
@@ -316,11 +339,11 @@ function setOferente($concurso, $oferente, $ronda)
 
                 $ConcursoEconomicas = [
                     'OferenteId'          => $oferente->id,
-                    'oferente_id'         => $oferente->company->id,
-                    'nombreOferente'      => $oferente->company->business_name,
-                    'razonSocial'         => $oferente->company->business_name,
-                    'tipoAdjudicacion'    => $oferente->adjudicacion,
-                    'tipoValorOferta'     => $oferente->tipo_valor_ofertar,
+                    'oferente_id'         => isset($oferente->company) ? $oferente->company->id : null,
+                    'nombreOferente'      => isset($oferente->company) ? $oferente->company->business_name : null,
+                    'razonSocial'         => isset($oferente->company) ? $oferente->company->business_name : null,
+                    'tipoAdjudicacion'    => $oferente->adjudicacion ?? null,
+                    'tipoValorOferta'     => $oferente->tipo_valor_ofertar ?? null,
                     'items'               => count($values) > 0 ? $values : [],
                     'total'               => $total,
                     'ahorro_abs'          => $totalahorro_abs,
@@ -330,26 +353,29 @@ function setOferente($concurso, $oferente, $ronda)
                     'mejorOfertaIntegral' => false,
                     'difvsmejorofert'     => 0.00,
                     'evaluationalcanzada' => $evaluationalcanzada,
-                    'file_path'           => filePath($oferente->file_path),
-                    'porpuesta_economica' => $economic_proposal ? getEconomicDoc($economicByRound) : null,
-                    'planilla_costos'     => $economic_proposal ? getCostDocument($concurso, $economicByRound) : null,
-                    'analisis_apu'        => $economic_proposal ? getApuDocument($concurso, $economicByRound) : null,
-                    'comentarios'         => $economic_proposal ? $economicByRound->comment : null,
-                    'fechaPresentacion'   => $economic_proposal ? $economicByRound->updated_at->format('d-m-Y H:i') : null,
-                    'cuit'                => $oferente->company->cuit,
+                    'file_path'           => filePath($oferente->file_path ?? null),
+                    'porpuesta_economica' => $economicByRound ? getEconomicDoc($economicByRound) : null,
+                    'planilla_costos'     => $economicByRound ? getCostDocument($concurso, $economicByRound) : null,
+                    'analisis_apu'        => $economicByRound ? getApuDocument($concurso, $economicByRound) : null,
+                    'comentarios'         => $economicByRound ? $economicByRound->comment : null,
+                    'fechaPresentacion'   => $economicByRound && isset($economicByRound->updated_at)
+                                                ? $economicByRound->updated_at->format('d-m-Y H:i')
+                                                : null,
+                    'cuit'                => isset($oferente->company) ? $oferente->company->cuit : null,
                     'plazoPago'           => $posicion !== false ? Participante::PLAZOS_PAGO[$posicion]['text'] : null,
                     'condicionPago'       => $condicionId !== false ? Participante::CONDICIONES_PAGO[$condicionId]['text'] : null,
                     'isRechazado'         => $oferente->is_concurso_rechazado,
-                    'isVencido'           => false,
+                    'isVencido'           => count($values) === 0, // si no pudo cargar items válidos, tratamos como vencido
                 ];
                 $oferenteItems = $ConcursoEconomicas;
 
             } else {
+                // No hubo propuesta para esa ronda
                 $oferenteItems = [
                     'OferenteId'          => $oferente->id,
-                    'oferente_id'         => $oferente->company->id,
-                    'nombreOferente'      => $oferente->company->business_name,
-                    'razonSocial'         => $oferente->company->business_name,
+                    'oferente_id'         => isset($oferente->company) ? $oferente->company->id : null,
+                    'nombreOferente'      => isset($oferente->company) ? $oferente->company->business_name : null,
+                    'razonSocial'         => isset($oferente->company) ? $oferente->company->business_name : null,
                     'tipoAdjudicacion'    => null,
                     'tipoValorOferta'     => null,
                     'items'               => [],
@@ -361,13 +387,13 @@ function setOferente($concurso, $oferente, $ronda)
                     'difvsmejorofert'     => null,
                     'mejorOfertaIntegral' => false,
                     'evaluationalcanzada' => null,
-                    'file_path'           => filePath($oferente->file_path),
+                    'file_path'           => filePath($oferente->file_path ?? null),
                     'porpuesta_economica' => null,
                     'planilla_costos'     => null,
                     'analisis_apu'        => null,
                     'comentarios'         => null,
                     'fechaPresentacion'   => null,
-                    'cuit'                => $oferente->company->cuit,
+                    'cuit'                => isset($oferente->company) ? $oferente->company->cuit : null,
                     'plazoPago'           => null,
                     'condicionPago'       => null,
                     'isRechazado'         => $oferente->is_concurso_rechazado,
@@ -375,11 +401,12 @@ function setOferente($concurso, $oferente, $ronda)
                 ];
             }
         } else {
+            // Sin economic_proposal
             $oferenteItems = [
                 'OferenteId'          => $oferente->id,
-                'oferente_id'         => $oferente->company->id,
-                'nombreOferente'      => $oferente->company->business_name,
-                'razonSocial'         => $oferente->company->business_name,
+                'oferente_id'         => isset($oferente->company) ? $oferente->company->id : null,
+                'nombreOferente'      => isset($oferente->company) ? $oferente->company->business_name : null,
+                'razonSocial'         => isset($oferente->company) ? $oferente->company->business_name : null,
                 'tipoAdjudicacion'    => null,
                 'tipoValorOferta'     => null,
                 'items'               => [],
@@ -391,13 +418,13 @@ function setOferente($concurso, $oferente, $ronda)
                 'difvsmejorofert'     => null,
                 'mejorOfertaIntegral' => false,
                 'evaluationalcanzada' => null,
-                'file_path'           => filePath($oferente->file_path),
+                'file_path'           => filePath($oferente->file_path ?? null),
                 'porpuesta_economica' => null,
                 'planilla_costos'     => null,
                 'analisis_apu'        => null,
                 'comentarios'         => null,
                 'fechaPresentacion'   => null,
-                'cuit'                => $oferente->company->cuit,
+                'cuit'                => isset($oferente->company) ? $oferente->company->cuit : null,
                 'plazoPago'           => null,
                 'condicionPago'       => null,
                 'isRechazado'         => $oferente->is_concurso_rechazado,
@@ -409,9 +436,9 @@ function setOferente($concurso, $oferente, $ronda)
     if ($oferente->is_concurso_rechazado) {
         $oferenteItems = [
             'OferenteId'          => $oferente->id,
-            'oferente_id'         => $oferente->company->id,
-            'nombreOferente'      => $oferente->company->business_name,
-            'razonSocial'         => $oferente->company->business_name,
+            'oferente_id'         => isset($oferente->company) ? $oferente->company->id : null,
+            'nombreOferente'      => isset($oferente->company) ? $oferente->company->business_name : null,
+            'razonSocial'         => isset($oferente->company) ? $oferente->company->business_name : null,
             'tipoAdjudicacion'    => null,
             'tipoValorOferta'     => null,
             'items'               => [],
@@ -422,13 +449,13 @@ function setOferente($concurso, $oferente, $ronda)
             'ganancia_porc'       => null,
             'mejorOfertaIntegral' => false,
             'evaluationalcanzada' => null,
-            'file_path'           => filePath($oferente->file_path),
+            'file_path'           => filePath($oferente->file_path ?? null),
             'porpuesta_economica' => null,
             'planilla_costos'     => null,
             'analisis_apu'        => null,
             'comentarios'         => null,
             'fechaPresentacion'   => null,
-            'cuit'                => $oferente->company->cuit,
+            'cuit'                => isset($oferente->company) ? $oferente->company->cuit : null,
             'plazoPago'           => null,
             'isRechazado'         => $oferente->is_concurso_rechazado,
             'isVencido'           => false,
@@ -437,6 +464,7 @@ function setOferente($concurso, $oferente, $ronda)
 
     return $oferenteItems;
 }
+
 
 
 function setMejorIntegral($concurso, $oferentes)
@@ -534,141 +562,175 @@ function setMejorIntegral($concurso, $oferentes)
 
 function setMejorIndividual($concurso, $oferentes)
 {
-    $mejorIndividual = [];
     $TipoAdjudicacion = null;
 
-    // Subasta ascendente?
     $isAscendente = isset($concurso->tipo_valor_ofertar) && $concurso->tipo_valor_ofertar === 'ascendente';
-    $isVenta = isset($concurso->tipo_licitacion) && $concurso ->tipo_licitacion === 'venta';
-    /**
-     * MEJOR OFERTA INDIVIDUAL
-     */
-    $mejorIndividual = [];
-    $i = 0;
+    $isVenta      = isset($concurso->tipo_licitacion)   && $concurso->tipo_licitacion === 'venta';
+
+    $maximize = (
+        ($concurso->is_online && $concurso->tipo_valor_ofertar === 'ascendente')
+        || ($concurso->tipo_licitacion === 'venta')
+    );
+
+    $mejorIndividualItems = [];  // clave: producto_id → mejor entrada
+    // Recorremos productos del concurso
     foreach ($concurso->productos as $producto) {
-        $mejores_plazos = [];
-        $mejores_cantidades = [];
-        $mejores_cotizaciones = [];
+        $prodId         = $producto->id;
+        $prodCantidad   = (int) $producto->cantidad;
 
-        if (count($oferentes) > 0) {
-            foreach ($oferentes as $row) {
-                if (count($row['items']) > 0) {
-                    $mejores_plazos[$row['OferenteId']]       = $row['items'][$i]['fecha'];
-                    $mejores_cantidades[$row['OferenteId']]   = $row['items'][$i]['cantidad'];
-                    $mejores_cotizaciones[$row['OferenteId']] = $row['items'][$i]['cotizacion'];
-                }
+        // Pool por oferente (solo si tiene ese producto)
+        $plazos        = []; // oferenteId => fecha
+        $cantidades    = []; // oferenteId => cantidad
+        $cotizaciones  = []; // oferenteId => cotizacion
+        $itemsRefs     = []; // oferenteId => ['rowIndex' => idx en $oferentes, 'itemIndex' => idx en items]
+
+        // Construir los pools seguro por producto_id
+        foreach ($oferentes as $rowIndex => $row) {
+            if (empty($row['items']) || !is_array($row['items'])) continue;
+
+            // Buscar el índice del ítem del producto actual dentro del array del oferente
+            $idsDeItems = array_column($row['items'], 'id');
+            $itemIndex  = array_search($prodId, $idsDeItems, true);
+            if ($itemIndex === false) continue; // este oferente no cotizó este producto
+
+            $item = $row['items'][$itemIndex];
+
+            $cotizacion = isset($item['cotizacion']) ? (float)$item['cotizacion'] : 0.00;
+            $cantidad   = isset($item['cantidad'])   ? (int)$item['cantidad']   : 0;
+            $fecha      = isset($item['fecha'])      ? $item['fecha']           : 0;
+
+            // Guardar referencias y valores
+            $itemsRefs[$row['OferenteId']] = ['rowIndex' => $rowIndex, 'itemIndex' => $itemIndex];
+
+            $cantidades[$row['OferenteId']]   = $cantidad;
+            $plazos[$row['OferenteId']]       = $fecha;
+            $cotizaciones[$row['OferenteId']] = $cotizacion;
+        }
+
+        if (empty($itemsRefs)) {
+            // Nadie cotizó este producto → pasar al siguiente producto
+            continue;
+        }
+
+        // Filtros: cantidad exacta solicitada (>0 y == cantidad del concurso)
+        $cantidadesValidas = array_filter(
+            $cantidades,
+            function ($value) use ($prodCantidad) {
+                return $value > 0 && $value == $prodCantidad;
+            }
+        );
+
+        // Plazos candidatos: de los que pasaron cantidad exacta, quedarse con el/los de menor plazo
+        $plazosValidos = array_intersect_key($plazos, $cantidadesValidas);
+        if (!empty($plazosValidos)) {
+            $minPlazo = min(array_filter($plazosValidos));
+            $plazosValidos = array_filter($plazosValidos, function($v) use ($minPlazo) {
+                return $v > 0 && $v <= $minPlazo;
+            });
+        }
+
+        // Cotizaciones candidatas: de los que pasaron cantidad exacta, elegir min o max según $maximize
+        $cotsValidas = array_intersect_key($cotizaciones, $cantidadesValidas);
+        if (!empty($cotsValidas)) {
+            $pool = array_filter($cotsValidas, function($v) {
+                return $v !== null && $v !== '' && $v >= 0;
+            });
+
+            if (!empty($pool)) {
+                $bestCot = $maximize ? max($pool) : min($pool);
+                $cotsValidas = array_filter($cotsValidas, function($v) use ($bestCot, $maximize) {
+                    return $maximize ? ($v >= $bestCot) : ($v <= $bestCot);
+                });
+            } else {
+                $cotsValidas = [];
+            }
+        }
+
+        // Marcar flags en los oferentes (solo si existe el item)
+        foreach ($itemsRefs as $oferenteKey => $ref) {
+            $rI = $ref['rowIndex'];
+            $iI = $ref['itemIndex'];
+
+            // Inicializar a false si no existen
+            if (!isset($oferentes[$rI]['items'][$iI]['isMejorCotizacion'])) $oferentes[$rI]['items'][$iI]['isMejorCotizacion'] = false;
+            if (!isset($oferentes[$rI]['items'][$iI]['isMenorCantidad']))   $oferentes[$rI]['items'][$iI]['isMenorCantidad']   = false;
+            if (!isset($oferentes[$rI]['items'][$iI]['isMenorPlazo']))      $oferentes[$rI]['items'][$iI]['isMenorPlazo']      = false;
+
+            if (isset($cotsValidas[$oferenteKey]))  $oferentes[$rI]['items'][$iI]['isMejorCotizacion'] = true;
+            if (isset($cantidadesValidas[$oferenteKey])) $oferentes[$rI]['items'][$iI]['isMenorCantidad']   = true;
+            if (isset($plazosValidos[$oferenteKey]))     $oferentes[$rI]['items'][$iI]['isMenorPlazo']      = true;
+        }
+
+        // Elegir el ganador del ítem (si hay uno con mejor cotización)
+        // Tomamos cualquiera de los mejores por cotización (si hay empate, el primero)
+        $ganadorKey = null;
+        if (!empty($cotsValidas)) {
+            foreach ($cotsValidas as $key => $_) { $ganadorKey = $key; break; }
+        }
+
+        if ($ganadorKey !== null) {
+            $ref   = $itemsRefs[$ganadorKey];
+            $rI    = $ref['rowIndex'];
+            $iI    = $ref['itemIndex'];
+            $row   = $oferentes[$rI];
+            $item  = $row['items'][$iI];
+
+            $TipoAdjudicacion = $row['tipoAdjudicacion'] ?? $TipoAdjudicacion;
+
+            $cotizacion = (float)($item['cotizacion'] ?? 0.00);
+            $cantidad   = (int)($item['cantidad'] ?? 0);
+            $subtotal   = $cotizacion * $cantidad;
+
+            $targetcost = (float)($item['targetcost'] ?? 0.00);
+            $subtotaltargetcost = $targetcost * $cantidad;
+
+            $ahorro_abs  = $subtotaltargetcost > 0.00 ? ($subtotaltargetcost - $subtotal) : 0.00;
+            $ahorro_porc = $subtotaltargetcost > 0.00 ? ($ahorro_abs / $subtotaltargetcost) * 100 : 0.00;
+
+            $ganancia_item_abs  = null;
+            $ganancia_item_porc = null;
+            if (($isAscendente || $isVenta) && $subtotaltargetcost > 0.00) {
+                $ganancia_item_abs  = $subtotal - $subtotaltargetcost;
+                $ganancia_item_porc = ($ganancia_item_abs / $subtotaltargetcost) * 100;
             }
 
-            $mejores_cantidades = array_filter(
-                $mejores_cantidades,
-                function ($value, $key) use ($mejores_cantidades, $producto) {
-                    return $value > 0 && $value == $producto->cantidad;
-                },
-                ARRAY_FILTER_USE_BOTH
-            );
-
-            $mejores_plazos = array_intersect_key($mejores_plazos, $mejores_cantidades);
-            $mejores_plazos = array_filter(
-                $mejores_plazos,
-                function ($value, $key) use ($mejores_plazos) {
-                    return $value > 0 && $value <= min(array_filter($mejores_plazos));
-                },
-                ARRAY_FILTER_USE_BOTH
-            );
-
-            $maximize = (
-            ($concurso->is_online && $concurso->tipo_valor_ofertar === 'ascendente')
-            || ($concurso->tipo_licitacion === 'venta') // 👈 vender = maximizar
-            );
-
-            $mejores_cotizaciones = array_intersect_key($mejores_cotizaciones, $mejores_cantidades);
-            $mejores_cotizaciones = array_filter(
-                $mejores_cotizaciones,
-                function ($value) use ($mejores_cotizaciones, $maximize) {
-                    $pool = array_filter($mejores_cotizaciones);
-                    if (!$pool) return false;
-                    return $maximize
-                        ? ($value >= max($pool))
-                        : ($value <= min($pool));
-                },
-                ARRAY_FILTER_USE_BOTH
-            );
-
-            foreach ($oferentes as $index => $row) {
-                if (count($row['items']) > 0) {
-                    if (!$row['items'][$i]['cotizacion']) {
-                        continue;
-                    }
-
-                    // Flags de mejor cotización/cantidad/plazo
-                    $oferentes[$index]['items'][$i]['isMejorCotizacion'] = isset($mejores_cotizaciones[$row['OferenteId']]);
-                    $oferentes[$index]['items'][$i]['isMenorCantidad']   = isset($mejores_cantidades[$row['OferenteId']]);
-                    $oferentes[$index]['items'][$i]['isMenorPlazo']      = isset($mejores_plazos[$row['OferenteId']]);
-
-                    if ($oferentes[$index]['items'][$i]['isMejorCotizacion']) {
-                        $cotizacion          = isset($row['items'][$i]['cotizacion']) ? (float)$row['items'][$i]['cotizacion'] : 0.00;
-                        $cantidad            = isset($row['items'][$i]['cantidad'])   ? (float)$row['items'][$i]['cantidad']   : 0;
-                        $targetcost          = isset($producto->targetcost)            ? (float)$producto->targetcost           : 0.00;
-
-                        $subtotal            = $cotizacion * $cantidad;
-                        $subtotaltargetcost  = $targetcost * $cantidad;
-
-                        // Ahorro (como ya lo tenías)
-                        $ahorro_abs  = $subtotaltargetcost > 0.00 ? ($subtotaltargetcost - $subtotal) : 0.00;
-                        $ahorro_porc = $subtotaltargetcost > 0.00 ? ($ahorro_abs / $subtotaltargetcost) * 100 : 0.00;
-
-                        // NUEVO: Ganancia por ítem (solo ascendente)
-                        $ganancia_item_abs  = null;
-                        $ganancia_item_porc = null;
-                        if (($isAscendente || $isVenta) && $subtotaltargetcost > 0.00) {
-                            $ganancia_item_abs  = $subtotal - $subtotaltargetcost;
-                            $ganancia_item_porc = ($ganancia_item_abs / $subtotaltargetcost) * 100;
-                        }
-
-                        $mejorIndividual[$i] = [
-                            'idOferente'         => $row['oferente_id'],
-                            'nombreOferente'     => $row['nombreOferente'],
-                            'razonSocial'        => $row['razonSocial'],
-                            'itemId'             => $row['items'][$i]['id'],
-                            'itemNombre'         => $row['items'][$i]['nombre'],
-                            'itemCotizacion'     => $cotizacion,
-                            'itemCantidad'       => $cantidad,
-                            'subTotal'           => $subtotal,
-                            'subtotaltargetcost' => $subtotaltargetcost,
-                            'targetcost'         => $targetcost,
-                            'ahorro_porc'        => $ahorro_porc,
-                            'ahorro_abs'         => $ahorro_abs,
-                            // NUEVO: ganancia por ítem
-                            'ganancia_porc'      => $ganancia_item_porc,
-                            'ganancia_abs'       => $ganancia_item_abs,
-                            //
-                            'itemFecha'          => $row['items'][$i]['fecha'],
-                            'tipoAdj'            => $row['tipoAdjudicacion'],
-                            'tipoValorOferta'    => $row['tipoValorOferta'],
-                        ];
-                    }
-                }
-            }
-
-            $i++;
+            $mejorIndividualItems[$prodId] = [
+                'idOferente'         => $row['oferente_id'] ?? null,
+                'nombreOferente'     => $row['nombreOferente'] ?? null,
+                'razonSocial'        => $row['razonSocial'] ?? null,
+                'itemId'             => $item['id'] ?? $prodId,
+                'itemNombre'         => $item['nombre'] ?? null,
+                'itemCotizacion'     => $cotizacion,
+                'itemCantidad'       => $cantidad,
+                'subTotal'           => $subtotal,
+                'subtotaltargetcost' => $subtotaltargetcost,
+                'targetcost'         => $targetcost,
+                'ahorro_porc'        => $ahorro_porc,
+                'ahorro_abs'         => $ahorro_abs,
+                'ganancia_porc'      => $ganancia_item_porc,
+                'ganancia_abs'       => $ganancia_item_abs,
+                'itemFecha'          => $item['fecha'] ?? 0,
+                'tipoAdj'            => $row['tipoAdjudicacion'] ?? null,
+                'tipoValorOferta'    => $row['tipoValorOferta'] ?? null,
+            ];
         }
     }
 
-    // Totales
-    $total1 = 0.00;
-    $total1targetcost = 0.00;
-    $idOferentes = [];
-    foreach ($mejorIndividual as $k => $v) {
-        $TipoAdjudicacion = $v['tipoAdj'];
-        $total1 += $v['subTotal'];
-        $total1targetcost += $v['subtotaltargetcost'];
-        $idOferentes[] = $v['idOferente'] . ':' . $v['itemId'];
+    // Totales del mejor individual
+    $total1            = 0.00;
+    $total1targetcost  = 0.00;
+    $idOferentesTokens = [];
+
+    foreach ($mejorIndividualItems as $v) {
+        $TipoAdjudicacion = $v['tipoAdj'] ?? $TipoAdjudicacion;
+        $total1           += (float)$v['subTotal'];
+        $total1targetcost += (float)$v['subtotaltargetcost'];
+        $idOferentesTokens[] = ($v['idOferente'] ?? '0') . ':' . ($v['itemId'] ?? '0');
     }
 
     $mejor_ahorro_abs  = $total1targetcost > 0.00 ? ($total1targetcost - $total1) : 0.00;
     $mejor_ahorro_porc = $total1targetcost > 0.00 ? ($mejor_ahorro_abs / $total1targetcost) * 100 : 0.00;
 
-    // NUEVO: ganancia total (solo ascendente)
     $mejor_ganancia_abs  = null;
     $mejor_ganancia_porc = null;
     if (($isAscendente || $isVenta) && $total1targetcost > 0.00) {
@@ -676,24 +738,21 @@ function setMejorIndividual($concurso, $oferentes)
         $mejor_ganancia_porc = ($mejor_ganancia_abs / $total1targetcost) * 100;
     }
 
-    $mejorIndividual = [
+    return [
         'mejorIndividual' => [
-            'individual'   => array_values($mejorIndividual),
-            'total1'       => $total1,
-            'ahorro_porc'  => $mejor_ahorro_porc,
-            'ahorro_abs'   => $mejor_ahorro_abs,
-            // NUEVO: ganancia total
-            'ganancia_porc'=> $mejor_ganancia_porc,
-            'ganancia_abs' => $mejor_ganancia_abs,
-            //
-            'tipoAdj'      => $TipoAdjudicacion,
-            'idOferentes'  => implode(',', $idOferentes),
+            'individual'    => array_values($mejorIndividualItems),
+            'total1'        => $total1,
+            'ahorro_porc'   => $mejor_ahorro_porc,
+            'ahorro_abs'    => $mejor_ahorro_abs,
+            'ganancia_porc' => $mejor_ganancia_porc,
+            'ganancia_abs'  => $mejor_ganancia_abs,
+            'tipoAdj'       => $TipoAdjudicacion,
+            'idOferentes'   => implode(',', $idOferentesTokens),
         ],
         'oferentes' => $oferentes
     ];
-
-    return $mejorIndividual;
 }
+
 
 
 function setMejorManual($concurso, $ConcursoEconomicas)
