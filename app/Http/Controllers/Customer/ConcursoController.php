@@ -3864,7 +3864,6 @@ class ConcursoController extends BaseController
             'tipo_convocatoria' => 'required|exists:tipo_convocatoria,id',
             'fecha_limite' => 'required|date_format:Y-m-d H:i:s' . ($create ? ('|after_or_equal:' . Carbon::now()->addDays(1)->format('Y-m-d H:i:s')) : ''),
             'moneda' => 'required|exists:monedas,id',
-            'tipo_licitacion' => 'required|in:compra,venta',
             'finalizacion_consultas' => [
                 'required',
                 'date_format:Y-m-d H:i:s',
@@ -3994,6 +3993,7 @@ class ConcursoController extends BaseController
         // SOBRECERRADO
         if ($is_sobrecerrado) {
             $conditional_rules = array_merge($conditional_rules, [
+                'tipo_licitacion' => 'required|in:compra,venta',
                 'fecha_limite_economicas' => [
                     'required',
                     'date_format:Y-m-d H:i:s',
