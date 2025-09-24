@@ -1118,18 +1118,21 @@
                     (response) => {
                         $.unblockUI();
                         if (response.success) {
-                            self.Entity.OferentesAInvitar([]);
+                            // Conservamos selecciones actuales, solo refrescamos la lista visible del modal
                             self.Entity.OferentesAInvitarList([]);
                             if (response.data.results.length > 0) {
                                 response.data.results.forEach(item => {
-                                    self.Entity.OferentesAInvitarList.push(item);
+                                self.Entity.OferentesAInvitarList.push(item);
                                 });
+                                // Solo en la primera carga (si necesitás mantener este comportamiento)
                                 if (self.FirstTimeFilter) {
-                                    self.Entity.OferentesAInvitar(data.list.OferentesAInvitar);
+                                self.Entity.OferentesAInvitar(data.list.OferentesAInvitar);
                                 }
                             }
-                        }
-                        self.FirstTimeFilter = true;
+                            }
+                            // después del primer fetch, marcamos que ya no es "primera vez"
+                            self.FirstTimeFilter = false;
+
                     },
                     (error) => {
                         $.unblockUI();
@@ -1174,6 +1177,22 @@
             this.removeAll = function() {
                 self.Entity.OferentesAInvitar([]);
             }
+
+            this.addFilteredToInvite = function () {
+                // IDs actualmente seleccionados
+                var current = self.Entity.OferentesAInvitar() || [];
+                // IDs de los resultados filtrados en el modal
+                var filtered = self.Entity.OferentesAInvitarList()
+                                .map(function (i) { return i.id; });
+
+                // Unimos sin duplicados
+                var merged = Array.from(new Set([].concat(current, filtered)));
+
+                self.Entity.OferentesAInvitar(merged);
+
+                // Cierro el modal
+                $('#modal-filtros-oferente').modal('hide');
+                };
 
             self.PersonalAmountDocument = ko.computed(function() {
                 var ops = self.Entity.DriverDocuments();

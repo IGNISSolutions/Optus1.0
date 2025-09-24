@@ -1162,6 +1162,7 @@ class ConcursoController extends BaseController
                 'CierreMuroConsultas' => $concurso->finalizacion_consultas->format('d-m-Y'),
                 'CierreMuroConsultasHora' => $concurso->finalizacion_consultas->format('H:i:s'),
                 'PlazoVencidoEconomica' => $plazoVencidoEconomicas,
+                'FechaHoyFull' => Carbon::now()->format('Y-m-d H:i:s'),
                 'PresentacionTecnicas' =>
                     $concurso->ficha_tecnica_fecha_limite ?
                     $concurso->ficha_tecnica_fecha_limite->format('d-m-Y') :
@@ -1248,7 +1249,7 @@ class ConcursoController extends BaseController
                 'concurso_fiscalizado' => $concurso->concurso_fiscalizado,
                 'ChatEnable' => $concurso->is_sobrecerrado ? true : ($concurso->chat == 'si' ? true : false ),
                 'emailSuper' => $concurso->concurso_fiscalizado == 'si' ? $concurso->supervisor->email : null    
-
+                            
             ];
 
             $companies = OffererCompany::whereHas('associated_customers', function ($query) use ($user) {
@@ -1752,7 +1753,7 @@ class ConcursoController extends BaseController
                     $concurso->oferentes->pluck('id_offerer')->toArray(),
                 //'FinalizacionConsultas' => $create ? Carbon::now()->addDays(3)->addHour(1)->format('d-m-Y H:i') : $concurso->finalizacion_consultas->format('d-m-Y H:i'),
                 'FinalizacionConsultas' => $create
-                ? Carbon::now()->addDays(3)->addHour(2)->minute(0)->second(0)->format('d-m-Y H:i')
+                ? Carbon::now()->addDays(1)->addHour(2)->minute(0)->second(0)->format('d-m-Y H:i')
                 : $concurso->finalizacion_consultas->format('d-m-Y H:i'),                
                 'AceptacionTerminos' => $create && !$is_copy ? 'no' : $concurso->aceptacion_terminos,
                 'Aperturasobre' => $create && !$is_copy ? 'no' : $concurso->aperturasobre,
@@ -1918,7 +1919,7 @@ class ConcursoController extends BaseController
             'OfertasParcialesCantidadMin' => $create && !$is_copy ? 0 : $concurso->ofertas_parciales_cantidad_min,
             'FechaLimiteEconomicas' =>
                 $create
-                    ? Carbon::now()->addDays(4)->addHour(2)->minute(0)->second(0)->format('d-m-Y H:i')
+                    ? Carbon::now()->addDays(3)->addHour(2)->minute(0)->second(0)->format('d-m-Y H:i')
                     : ($concurso->fecha_limite_economicas
                         ? $concurso->fecha_limite_economicas->minute(0)->second(0)->format('d-m-Y H:i')
                         : null),
@@ -1928,7 +1929,7 @@ class ConcursoController extends BaseController
             'ImagePath' => filePath(config('app.images_path')),
             'Portrait' => $create && !$is_copy ? null : $concurso->portrait,
             'FechaLimiteTecnica' => $create
-            ? Carbon::now()->addDays(3)->addHour(2)->minute(0)->second(0)->format('d-m-Y H:i')
+            ? Carbon::now()->addDays(2)->addHour(2)->minute(0)->second(0)->format('d-m-Y H:i')
             : ($concurso->ficha_tecnica_fecha_limite
                 ? $concurso->ficha_tecnica_fecha_limite->minute(0)->second(0)->format('d-m-Y H:i')
                 : null
@@ -1948,7 +1949,7 @@ class ConcursoController extends BaseController
    private function createOrEditAuction($create, $list, $user, $concurso, $is_copy)
     {
         return array_merge($list, [
-            'InicioSubasta' => $create ? Carbon::now()->addDays(4)->addHour(2)->minute(0)->second(0)->format('d-m-Y H:i') : $concurso->inicio_subasta->format('d-m-Y H:i'),
+            'InicioSubasta' => $create ? Carbon::now()->addDays(3)->addHour(2)->minute(0)->second(0)->format('d-m-Y H:i') : $concurso->inicio_subasta->format('d-m-Y H:i'),
             'Duracion' => $create && !$is_copy ? null : ($concurso->parsed_duracion[0] . $concurso->parsed_duracion[1]),
             'TiempoAdicional' => $create && !$is_copy ? 0 : $concurso->tiempo_adicional,
             'TiposValoresOfertar' => $this->GetTiposValoresOfertar(),
@@ -1967,11 +1968,11 @@ class ConcursoController extends BaseController
             'ImagePath' => filePath(config('app.images_path')),
             'Portrait' => $create && !$is_copy ? null : $concurso->portrait,
             'FechaLimiteTecnica' => $create
-    ? Carbon::now()->addDays(3)->addHour(2)->minute(0)->second(0)->format('d-m-Y H:i')
-    : ($concurso->ficha_tecnica_fecha_limite
-        ? $concurso->ficha_tecnica_fecha_limite->minute(0)->second(0)->format('d-m-Y H:i')
-        : null
-    ),
+            ? Carbon::now()->addDays(2)->addHour(2)->minute(0)->second(0)->format('d-m-Y H:i')
+            : ($concurso->ficha_tecnica_fecha_limite
+                ? $concurso->ficha_tecnica_fecha_limite->minute(0)->second(0)->format('d-m-Y H:i')
+                : null
+            ),
 
             'PlantillasTecnicas' => PlantillaTecnicaTipo::getList(),
             'PlantillaTecnica' => $create && !$is_copy ? null : $concurso->ficha_tecnica_plantilla,
@@ -3852,9 +3853,6 @@ class ConcursoController extends BaseController
 
     private function validate($body, $fields, $is_sobrecerrado, $is_online, $is_go, $create)
     {
-        // $txt = fopen('1.txt','w');
-        // fwrite($txt, json_encode($body));
-        // fclose($txt);
         $conditional_rules = [];
         date_default_timezone_set(user()->customer_company->timeZone);
 
@@ -3866,7 +3864,6 @@ class ConcursoController extends BaseController
             'tipo_convocatoria' => 'required|exists:tipo_convocatoria,id',
             'fecha_limite' => 'required|date_format:Y-m-d H:i:s' . ($create ? ('|after_or_equal:' . Carbon::now()->addDays(1)->format('Y-m-d H:i:s')) : ''),
             'moneda' => 'required|exists:monedas,id',
-            'tipo_licitacion' => 'required|in:compra,venta',
             'finalizacion_consultas' => [
                 'required',
                 'date_format:Y-m-d H:i:s',
@@ -3874,13 +3871,13 @@ class ConcursoController extends BaseController
                     $fecha_limite = Carbon::createFromFormat('d-m-Y H:i', $body->FechaLimite);
                     $fecha_limite_economicas = isset($body->FechaLimiteEconomicas) ? Carbon::createFromFormat('d-m-Y H:i', $body->FechaLimiteEconomicas)->format('Y-m-d H:i:s') : null;
                     $finalizacion_consultas = Carbon::createFromFormat('Y-m-d H:i:s', $value);
-                    if ($fecha_limite->diffInDays($finalizacion_consultas, false) < 1)
+                    /*if ($fecha_limite->diffInDays($finalizacion_consultas, false) < 1)
                         $fail('La fecha de Muro de Consultas debe ser al menos 1 días mayor a la fecha de Aceptación.');
-/*
+
                     if ($fecha_limite_economicas != null)
                         if ($finalizacion_consultas->diffInDays($fecha_limite_economicas, false) < 1)
                             $fail('La fecha de Muro de Consultas debe ser al menos 1 día menor a la fecha de Presentación Económica.');
-*/
+                    */
                 }
             ]
         ];
@@ -3980,8 +3977,8 @@ class ConcursoController extends BaseController
                                 $fecha_limite_economicas = isset($body->FechaLimiteEconomicas) ? Carbon::createFromFormat('d-m-Y H:i', $body->FechaLimiteEconomicas)->format('Y-m-d H:i:s') : null;
                                 $ficha_tecnica_fecha_limite = Carbon::createFromFormat('Y-m-d H:i:s', $value);
 
-                                if ($fecha_limite->diffInDays($ficha_tecnica_fecha_limite, false) < 2)
-                                    $fail('La fecha de Presentación Técnica debe ser al menos 2 días mayor a la fecha de Aceptación.');
+                                if ($fecha_limite->diffInDays($ficha_tecnica_fecha_limite, false) < 1)
+                                    $fail('La fecha de Presentación Técnica debe ser al menos 1 días mayor a la fecha de Aceptación.');
 
                                 if ($fecha_limite_economicas != null)
                                     if ($ficha_tecnica_fecha_limite->diffInDays($fecha_limite_economicas, false) < 1)
@@ -3996,6 +3993,7 @@ class ConcursoController extends BaseController
         // SOBRECERRADO
         if ($is_sobrecerrado) {
             $conditional_rules = array_merge($conditional_rules, [
+                'tipo_licitacion' => 'required|in:compra,venta',
                 'fecha_limite_economicas' => [
                     'required',
                     'date_format:Y-m-d H:i:s',
@@ -4020,8 +4018,6 @@ class ConcursoController extends BaseController
                             // if ($finalizacion_consultas->greaterThan($fecha_limite)) {
                             if ($finalizacion_consultas->diffInDays($fecha_limite_economicas, false) < 1)
                                 $fail('La fecha de Presentación Económica debe ser al menos 1 día mayor a la fecha de Muro de Consulta.');
-                            if ($fecha_limite->diffInDays($fecha_limite_economicas, false) < 3)
-                                    $fail('La fecha de Presentación Económica debe ser al menos 3 días mayor a la fecha para aceptar la invitación.');
                         }
                     },
                 ]

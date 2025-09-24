@@ -140,21 +140,21 @@
             <div class="form-group required" data-bind="validationElement: Entity.FechaLimiteEconomicas">
                 <label class="control-label visible-ie8 visible-ie9" style="display: block;">Fecha límite para presentar propuestas económicas</label>
                 <div class="input-group date form_datetime bs-datetime">
-                    <input 
-                        class="form-control" 
-                        size="16" 
-                        type="text" 
-                        data-bind="
-                            dateTimePicker: Entity.FechaLimiteEconomicas, 
-                            dateTimePickerOptions: {
-                                format: 'dd-mm-yyyy hh:ii',
-                                momentFormat: 'DD-MM-YYYY HH:mm',
-                                startDate: Entity.FechaLimiteEconomicas(),
-                                value: Entity.FechaLimiteEconomicas(),
-                                todayBtn: true
-                            },
-                            disable: !Entity.isRoundEditable(1)
-                        ">
+                    <input class="form-control" type="text"
+                    data-bind="
+                        dateTimePicker: Entity.FechaLimiteEconomicas,
+                        dateTimePickerOptions: {
+                        format: 'dd-mm-yyyy hh:ii',
+                        momentFormat: 'DD-MM-YYYY HH:mm',
+                        startDate: Entity.FinalizacionConsultas()
+                            ? moment(Entity.FinalizacionConsultas(), 'DD-MM-YYYY HH:mm').add(1, 'day').toDate()
+                            : null,
+                        value: Entity.FechaLimiteEconomicas(),
+                        todayBtn: true
+                        },
+                        disable: !Entity.isRoundEditable(1)
+                    ">
+
                     <span class="input-group-addon">
                         <button class="btn default date-set" type="button">
                             <i class="fa fa-calendar"></i>

@@ -529,6 +529,7 @@ class ConcursoController extends BaseController
                 'CierreMuroConsultas' => $concurso->finalizacion_consultas->format('d-m-Y'),
                 'CierreMuroConsultasHora' => $concurso->finalizacion_consultas->format('H:i:s'),
                 'IncluyeTecnica' => $concurso->technical_includes ? true : false,
+                'FechaHoyFull' => Carbon::now()->format('Y-m-d H:i:s'),
                 'PresentacionTecnicas' =>
                     $concurso->ficha_tecnica_fecha_limite ?
                     $concurso->ficha_tecnica_fecha_limite->format('d-m-Y') :
