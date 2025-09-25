@@ -464,107 +464,194 @@ class UserController extends BaseController
     }
 
     public function store(Request $request, Response $response, $params)
-{
-    $success = false;
-    $message = null;
-    $status = 200;
-    $list = [];
-    $redirect_url = null;
+    {
+        $success = false;
+        $message = null;
+        $status = 200;
+        $list = [];
+        $redirect_url = null;
 
-    try {
-        $capsule = dependency('db');
-        $connection = $capsule->getConnection();
-        $connection->beginTransaction();
+        try {
+            $capsule = dependency('db');
+            $connection = $capsule->getConnection();
+            $connection->beginTransaction();
 
-        $body = json_decode($request->getParsedBody()['Data']);
-        $creation = !isset($params['id']);
-        $fields = [];
-        $type = null;
+            $body = json_decode($request->getParsedBody()['Data']);
+            $creation = !isset($params['id']);
+            $fields = [];
+            $type = null;
 
-        // Relationships
-        $user_status = UserStatus::find((int) $body->Estado);
-        $user_type = UserType::find((int) $body->Tipo);
+            // =========================
+            // Normalizaciones de entrada
+            // =========================
+            $inputEmail = trim($body->Email ?? '');
+            $inputUsername = null;
+            if (isset($body->Username) && !empty(trim($body->Username))) {
+                $inputUsername = preg_replace('/\s*/', '', strtolower($body->Username));
+            }
 
-        if ($user_type->code === 'admin' || $user_type->code === 'superadmin') {
-            $type = 'admin';
-        }
-        if ($user_type->code === 'customer' || $user_type->code === 'customer-approve' || $user_type->code === 'customer-read' || $user_type->code === 'supervisor') {
-            $type = 'client';
-        }
-        if ($user_type->code === 'offerer') {
-            $type = 'offerer';
-        }
+            // =========================
+            // GUARDS de unicidad a nivel código (solo contra ACTIVOS)
+            // =========================
 
-        $company = null;
-        if ($user_type->is_offerer) {
-            $company = OffererCompany::where('id', (int) $body->Empresa)->get()->first();
-            $fields = array_merge($fields, [
-                'offerer_company_id' => $company ? $company->id : null,
-            ]);
-        } else if ($user_type->is_customer) {
-            $company = CustomerCompany::where('id', (int) $body->Empresa)->get()->first();
-            $fields = array_merge($fields, [
-                'customer_company_id' => $company ? $company->id : null,
-            ]);
-        }
-
-        $fields = array_merge($fields, [
-            'status_id' => $user_status ? $user_status->id : null,
-            'type_id' => $user_type ? $user_type->id : null,
-            'first_name' => $body->Nombre,
-            'last_name' => $body->Apellido,
-            'phone' => $body->Telefono,
-            'cellphone' => $body->Celular,
-            'email' => $body->Email,
-            'area' => $body->Area,
-            'rol' => $body->Rol
-        ]);
-
-        if ($body->Username && !empty(trim($body->Username))) {
-            $fields['username'] = preg_replace('/\s*/', '', strtolower($body->Username));
-        }
-
-        $length = 8;
-        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $charactersLength = strlen($characters);
-        $randomPassword = '';
-        for ($i = 0; $i < $length; $i++) {
-            $randomPassword .= $characters[rand(0, $charactersLength - 1)];
-        }
-
-        $username_md5 = md5($body->Username);
-        $part1 = substr($username_md5, 0, strlen($username_md5) / 2);
-        $part2 = substr($username_md5, strlen($username_md5) / 2);
-        $passwordHash = hash("sha256", $part2 . $randomPassword . $part1);
-
-        $fields['password'] = $passwordHash;
-        $fields['password_confirmation'] = $passwordHash;
-
-        $validation = $this->validate($body, $fields, $creation);
-        if ($validation->fails()) {
-            $success = false;
-            $status = 422;
-            $message = $validation->errors()->first();
-        } else {
+            // Email: activo duplicado -> bloquear
             if ($creation) {
-                $user = new User($fields);
-                $user->save();
+                $activeEmailExists = User::where('email', $inputEmail)
+                    ->whereNull('deleted_at')
+                    ->exists();
 
-                if ($user->is_admin) {
-                    $this->permisionAdmin($user->id);
-                } else if ($user->type_id === 5) {
-                    $this->permisionVisualizer($user->id);
-                } else if ($user->type_id === 8) {
-                    $this->permisionSupervisor($user->id);
-                } else if ($user->type_id === 7) {
-                    $this->permisionTech($user->id);
-                } else if ($user->is_customer) {
-                    $this->permisionClient($user->id);
-                } else {
-                    $this->permisionOfferer($user->id);
+                if ($activeEmailExists) {
+                    $connection->rollBack();
+                    return $this->json($response, [
+                        'success' => false,
+                        'message' => 'Ya existe un usuario activo con ese email.',
+                        'data' => ['redirect' => null]
+                    ], 422);
                 }
+            } else {
+                // edición: permitir el mismo email propio, bloquear si es de otro activo
+                $activeEmailExists = User::where('email', $inputEmail)
+                    ->whereNull('deleted_at')
+                    ->where('id', '!=', (int) $params['id'])
+                    ->exists();
 
-            }  else {
+                if ($activeEmailExists) {
+                    $connection->rollBack();
+                    return $this->json($response, [
+                        'success' => false,
+                        'message' => 'Ya existe otro usuario activo con ese email.',
+                        'data' => ['redirect' => null]
+                    ], 422);
+                }
+            }
+
+            // Username (si viene): activo duplicado -> bloquear
+            if ($inputUsername) {
+                if ($creation) {
+                    $activeUserExists = User::where('username', $inputUsername)
+                        ->whereNull('deleted_at')
+                        ->exists();
+
+                    if ($activeUserExists) {
+                        $connection->rollBack();
+                        return $this->json($response, [
+                            'success' => false,
+                            'message' => 'El nombre de usuario ya está en uso por una cuenta activa.',
+                            'data' => ['redirect' => null]
+                        ], 422);
+                    }
+                } else {
+                    $activeUserExists = User::where('username', $inputUsername)
+                        ->whereNull('deleted_at')
+                        ->where('id', '!=', (int) $params['id'])
+                        ->exists();
+
+                    if ($activeUserExists) {
+                        $connection->rollBack();
+                        return $this->json($response, [
+                            'success' => false,
+                            'message' => 'El nombre de usuario ya está en uso por otra cuenta activa.',
+                            'data' => ['redirect' => null]
+                        ], 422);
+                    }
+                }
+            }
+            // =========================
+            // Fin GUARDS
+            // =========================
+
+            // Relationships
+            $user_status = UserStatus::find((int) $body->Estado);
+            $user_type = UserType::find((int) $body->Tipo);
+
+            if ($user_type->code === 'admin' || $user_type->code === 'superadmin') {
+                $type = 'admin';
+            }
+            if ($user_type->code === 'customer' || $user_type->code === 'customer-approve' || $user_type->code === 'customer-read' || $user_type->code === 'supervisor') {
+                $type = 'client';
+            }
+            if ($user_type->code === 'offerer') {
+                $type = 'offerer';
+            }
+
+            $company = null;
+            if ($user_type->is_offerer) {
+                $company = OffererCompany::where('id', (int) $body->Empresa)->get()->first();
+                $fields = array_merge($fields, [
+                    'offerer_company_id' => $company ? $company->id : null,
+                ]);
+            } else if ($user_type->is_customer) {
+                $company = CustomerCompany::where('id', (int) $body->Empresa)->get()->first();
+                $fields = array_merge($fields, [
+                    'customer_company_id' => $company ? $company->id : null,
+                ]);
+            }
+
+            $fields = array_merge($fields, [
+                'status_id' => $user_status ? $user_status->id : null,
+                'type_id' => $user_type ? $user_type->id : null,
+                'first_name' => $body->Nombre,
+                'last_name' => $body->Apellido,
+                'phone' => $body->Telefono,
+                'cellphone' => $body->Celular,
+                'email' => $inputEmail,
+                'area' => $body->Area,
+                'rol' => $body->Rol
+            ]);
+
+            if ($inputUsername) {
+                $fields['username'] = $inputUsername;
+            }
+
+            // =========================
+            // Generación de contraseña (igual que tu lógica actual)
+            // =========================
+            $length = 8;
+            $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            $charactersLength = strlen($characters);
+            $randomPassword = '';
+            for ($i = 0; $i < $length; $i++) {
+                $randomPassword .= $characters[rand(0, $charactersLength - 1)];
+            }
+
+            // Evitar null en el seed del hash
+            $seedForMd5 = $inputUsername ?: $inputEmail;
+            $username_md5 = md5($seedForMd5);
+            $part1 = substr($username_md5, 0, strlen($username_md5) / 2);
+            $part2 = substr($username_md5, strlen($username_md5) / 2);
+            $passwordHash = hash("sha256", $part2 . $randomPassword . $part1);
+
+            $fields['password'] = $passwordHash;
+            $fields['password_confirmation'] = $passwordHash;
+
+            // Validación (ya ignora Id y chequea solo contra activos por whereNull('deleted_at'))
+            $validation = $this->validate($body, $fields, $creation);
+            if ($validation->fails()) {
+                $success = false;
+                $status = 422;
+                $message = $validation->errors()->first();
+            } else {
+                if ($creation) {
+                    // Crear nuevo usuario (si hubiera soft-deleted con ese email/username NO bloquea)
+                    $user = new User($fields);
+                    $user->save();
+
+                    if ($user->is_admin) {
+                        $this->permisionAdmin($user->id);
+                    } else if ($user->type_id === 5) {
+                        $this->permisionVisualizer($user->id);
+                    } else if ($user->type_id === 8) {
+                        $this->permisionSupervisor($user->id);
+                    } else if ($user->type_id === 7) {
+                        $this->permisionTech($user->id);
+                    } else if ($user->is_customer) {
+                        $this->permisionClient($user->id);
+                    } else {
+                        $this->permisionOfferer($user->id);
+                    }
+
+                } else {
+                    // Edición
                     $user = User::find((int) $params['id']);
                     if ($user) {
                         $tipoAnterior = $user->type_id;
@@ -593,47 +680,47 @@ class UserController extends BaseController
                     }
                 }
 
+                $connection->commit();
 
-            $connection->commit();
+                $redirect_url = route('usuarios.serveList', ['type' => $type ?? 'client']);
+                $success = true;
+                $message = 'Usuario guardado con éxito.';
 
-            $redirect_url = route('usuarios.serveList', ['type' => $type ?? 'client']);
-            $success = true;
-            $message = 'Usuario guardado con éxito.';
+                if ($creation) {
+                    $emailService = new EmailService();
+                    $subject = 'Nuevo usuario Optus';
+                    $alias = 'Optus';
+                    $template = rootPath(config('app.templates_path')) . '/email/new-user.tpl';
+                    $url = 'portal.optus.com.ar/login';
 
-            if ($creation) {
-                $emailService = new EmailService();
-                $subject = 'Nuevo usuario Optus';
-                $alias = 'Optus';
-                $template = rootPath(config('app.templates_path')) . '/email/new-user.tpl';
-                $url = 'portal.optus.com.ar/login';
+                    $html = $this->fetch($template, [
+                        'title' => $subject,
+                        'ano' => Carbon::now()->format('Y'),
+                        'user' => $user,
+                        'password' => $randomPassword,
+                        'url' => $url
+                    ]);
 
-                $html = $this->fetch($template, [
-                    'title' => $subject,
-                    'ano' => Carbon::now()->format('Y'),
-                    'user' => $user,
-                    'password' => $randomPassword,
-                    'url' => $url
-                ]);
-
-                $emailService->send($html, $subject, [$user->email], $alias);
+                    $emailService->send($html, $subject, [$user->email], $alias);
+                }
             }
+
+        } catch (\Exception $e) {
+            $connection->rollBack();
+            $success = false;
+            $message = $e->getMessage();
+            $status = method_exists($e, 'getStatusCode') ? $e->getStatusCode() : (method_exists($e, 'getCode') ? $e->getCode() : 500);
         }
 
-    } catch (\Exception $e) {
-        $connection->rollBack();
-        $success = false;
-        $message = $e->getMessage();
-        $status = method_exists($e, 'getStatusCode') ? $e->getStatusCode() : (method_exists($e, 'getCode') ? $e->getCode() : 500);
+        return $this->json($response, [
+            'success' => $success,
+            'message' => $message,
+            'data' => [
+                'redirect' => $redirect_url
+            ]
+        ], $status);
     }
 
-    return $this->json($response, [
-        'success' => $success,
-        'message' => $message,
-        'data' => [
-            'redirect' => $redirect_url
-        ]
-    ], $status);
-}
 
     public function delete(Request $request, Response $response, $params)
     {
