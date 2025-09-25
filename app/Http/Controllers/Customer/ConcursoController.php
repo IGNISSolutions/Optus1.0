@@ -3317,11 +3317,11 @@ class ConcursoController extends BaseController
         return [
             [
                 'id' => 'ascendente',
-                'text' => 'Ascendente'
+                'text' => 'Ascendente - Para venta'
             ],
             [
                 'id' => 'descendente',
-                'text' => 'Descendente'
+                'text' => 'Descendente - Para compra'
             ]
         ];
     }
