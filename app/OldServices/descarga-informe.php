@@ -1413,7 +1413,19 @@ class InformePDF extends TCPDF
 $dataInforme = new DataInforme($_GET['Id']);
 // dd($dataInforme->obtenerInformacion());
 $data = $dataInforme->obtenerInformacion();
-
+// === NUEVO: armar nombre de archivo {Id}_Informe_{Nombre}_{fecha}.pdf ===
+$concursoId = abs(intval($_GET['Id']));
+$sanitize = function ($text) {
+    $text = (string)$text;
+    $t = @iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $text);
+    if ($t === false) { $t = $text; }
+    $t = preg_replace('/[^A-Za-z0-9]+/', '_', $t);
+    $t = trim(preg_replace('/_+/', '_', $t), '_');
+    return $t !== '' ? strtolower($t) : 'concurso';
+};
+$safeConcursoName = $sanitize($data['nombreConcurso'] ?? 'concurso');
+$timestamp = date('Ymd-His');
+$archivo = "{$concursoId}_Informe_{$safeConcursoName}_{$timestamp}.pdf";
 
 
 $informe = new InformePDF([
@@ -1442,18 +1454,23 @@ foreach ($data as $index => $seccion) {
 //TCPDF ERROR: Some data has already been output, can't send PDF file
 ob_end_clean();
 
-//$informe->Output('Infome_' . date('Ymd-His') . '.pdf', 'D');
+// ==== Paths y guardado ====
+$basepath    = rootPath() . filePath(config('app.files_tmp')); // debe terminar con "/"
+if (!is_dir($basepath)) {
+    @mkdir($basepath, 0777, true);
+}
+$real_path   = $basepath . $archivo;
+$public_path = filePath(config('app.files_tmp') . $archivo, true);
 
+// Guardar el PDF en disco
+$informe->Output($real_path, 'F');
 
-$archivo = 'Infome_' . date('Ymd-His') . '.pdf';
-$real_path      = filePath(config('app.files_tmp') . $archivo);
-$public_path    = filePath(config('app.files_tmp') . $archivo, true);
-
-$informe->Output($_SERVER['DOCUMENT_ROOT'] . '../storage/tmp/' . $archivo, 'F');
-// $informe->Output('Infome_' . date('Ymd-His') . '.pdf', 'D');
-//return $public_path . $archivo;
-
-return json_encode(['data'      => [
-        'real_path'      => filePath(config('app.files_tmp') . $archivo),
-        'public_path'    => filePath(config('app.files_tmp') . $archivo, true)
-    ]]);
+// Devolver JSON con filename sugerido
+echo json_encode([
+    'data' => [
+        'real_path'          => filePath(config('app.files_tmp') . $archivo),
+        'public_path'        => $public_path,
+        'suggested_filename' => $archivo,
+    ]
+]);
+return;

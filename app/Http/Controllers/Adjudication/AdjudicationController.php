@@ -283,7 +283,6 @@ class AdjudicationController extends BaseController
                     $adjudicated_products = collect($adjudicationResult);
                     $oferentes = $this->getOfferers($type, $concurso, $adjudicatedOffererIds);
                 }
-
             }
 
             // 2) REEMPLAZAR COMPLETO EL IF ($type == 'manual') POR ESTO:
@@ -409,10 +408,7 @@ class AdjudicationController extends BaseController
                 }
             }
 
-
-            $listEconomicas = ['ConcursoEconomicas' => []];
-
-
+                $listEconomicas = ['ConcursoEconomicas' => []];
 
             if (!$error) {
                 $concurso->update([
@@ -439,9 +435,8 @@ class AdjudicationController extends BaseController
                         }
                     }
                 }
-
             }
-
+            
             if (!$error && $result['success']) {
                 if($concurso->is_sobrecerrado){
                     $losers = $concurso->oferentes
@@ -581,7 +576,6 @@ class AdjudicationController extends BaseController
                 'concurso' => $concurso,
                 'company_name' => $oferente->company->business_name
             ]);
-
             $result = $emailService->send(
                 $html,
                 $subject,

@@ -664,6 +664,25 @@
                 this.TechnicalEvaluations = ko.observableArray(data.list.TechnicalEvaluations);
                 this.TechnicalProposals = ko.observableArray(data.list.TechnicalProposals);
             } else if (params[3] === 'analisis-ofertas') {
+                // Helpers inline (sin backticks, compatibles)
+                var sanitizeFilename = function (str) {
+                    if (!str) return 'concurso';
+                    try { str = String(str).normalize('NFD').replace(/[\u0300-\u036f]/g, ''); } catch(e) {}
+                    return str.replace(/[^A-Za-z0-9]+/g, '_').replace(/_+/g, '_').replace(/^_|_$/g, '');
+                };
+
+                var idConcurso = params[4];
+                // Evitá optional chaining por compatibilidad
+                var nombreVM = (this.Nombre && ko.unwrap(this.Nombre)) ||
+                            (this.nombre && ko.unwrap(this.nombre)) ||
+                            (this.NombreConcurso && ko.unwrap(this.NombreConcurso)) ||
+                            (typeof $root !== 'undefined' && $root.Nombre && ko.unwrap($root.Nombre)) ||
+                            'concurso';
+
+                var nombreConcurso = sanitizeFilename(nombreVM);
+                // SIN template literal:
+                var excelFilename = idConcurso + '_Comparativa de precios_' + nombreConcurso;
+
                 this.configDataTables = {
                     layout: {
                         topStart: {
@@ -671,37 +690,31 @@
                                 extend: 'excelHtml5',
                                 className: 'btn btn-primary',
                                 text: 'Exportar a Excel',
+                                filename: excelFilename,      // ← nombre final
+                                title: 'Comparativa de precios',
                                 exportOptions: {
                                     format: {
-                                        body: function(data, row, column, node) {
-                                            // Si estamos en la columna 0 o 1, devolvemos el dato tal cual
-                                            if (column === 0 || column === 1 || column === 2) {
-                                                return data;
-                                            }
-
-                                            // Si no, aplicamos la conversión
+                                        body: function (data, row, column, node) {
+                                            if (column === 0 || column === 1 || column === 2) return data;
                                             if (typeof data === 'string') {
-                                                data = data.replace(/\./g, ''); // Sacar puntos de miles
-                                                data = data.replace(/,/g,
-                                                '.'); // Cambiar coma decimal a punto decimal
+                                                data = data.replace(/\./g, ''); // miles
+                                                data = data.replace(/,/g, '.');  // decimal
                                             }
                                             return data;
                                         }
                                     }
                                 }
                             }]
-                        },
+                        }
                     },
                     deferRender: true,
                     paging: false,
                     searching: false,
-                    fixedColumns: {
-                        start: 3
-                    },
+                    fixedColumns: { start: 3 },
                     scrollY: 500,
                     scrollCollapse: true,
-                    autoWidth: true,
-                }
+                    autoWidth: true
+                };
                 this.Countdown = ko.observable('');
                 this.CountdownSeconds = ko.observable(data.list.Countdown);
                 this.Timeleft = ko.observable('');
@@ -1984,9 +1997,7 @@
                     var url = '/media/file/zip/download';
                     Services.Post(url, {
                             UserToken: User.Token,
-                            Entity: {
-                                Id: params[4],
-                            }
+                            Entity: { Id: params[4] }
                         },
                         (response) => {
                             $.unblockUI();
@@ -1995,17 +2006,17 @@
                                 setTimeout(function() {
                                     swal('Hecho', response.message, 'success');
                                 }, 500);
-                                //window.open(response.data.public_path);
 
                                 var file_path = response.data.public_path;
+                                var suggested = response.data.suggested_filename || 'concurso.zip';
+
                                 var a = document.createElement('A');
                                 a.href = file_path;
-                                a.download = file_path.substr(file_path.lastIndexOf('/') + 1);
+                                // ⬇️ fuerza el nombre idconcurso_nombreconcurso.zip
+                                a.download = suggested;
                                 document.body.appendChild(a);
                                 a.click();
                                 document.body.removeChild(a);
-
-                                {* self.rollbackFile(response.data.real_path); *}
                             }
                         },
                         (error) => {
@@ -2014,11 +2025,11 @@
                             setTimeout(function() {
                                 swal('Error', error.message, 'error');
                             }, 500);
-                        },
-                        null,
-                        null);
+                        }
+                    );
                 });
             }
+
 
             this.downloadReport = function() {
                 swal({

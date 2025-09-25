@@ -34,6 +34,8 @@
                     uploadExtraData: {
                         UserToken: User.Token,
                         path: $parent.FilePathOferente(),
+                        concurso_id: $root.IdConcurso(),
+                        concurso_nombre: $root.Nombre() 
                     },
                     
                     initialPreview: filename() ? [$parent.FilePathOferente() + filename()] : [],
@@ -103,26 +105,30 @@
           
 
         </tbody>
-        <tbody>
-            <td><span style="display: block; text-align: center;">Importación Excel</span></td>
+        <tbody data-bind="css: { 'disabled-section': !EnableEconomic() }">
+            <td>
+                <span style="display: block; text-align: center;">Importación Excel</span>
+            </td>
             <td colspan="3" class="text-left">
-            <div class="btn-group" role="group" aria-label="Botones de Excel" style="display: flex; justify-content: flex-start; gap: 5px;">
-                <button data-bind="click: DownloadEmptyExcel" class="btn btn-xl green" style="border-radius: 5px;" id="EmptyExcelButton">Descargar Excel
-                <i class="fa fa-download"> </i>
-                </button>
-                <input type="file" data-bind="fileUploadExcel: uploadFile" class="btn default btn-file" style="border-radius: 5px;" >
-                <a data-bind="click: uploadFileProcesar" download class="btn btn-xl green" title="Procesar" style="border-radius: 5px;">
-                    Importar
-                    <i class="fa fa-download"></i>
-                </a>
-                <a data-bind="click: uploadFileclear" download class="btn btn-default btn-secondary fileinput-remove fileinput-remove-button limpiar-btn" title="Quitar" style="border-radius: 5px;">
-                    Quitar
-                    <i class="glyphicon glyphicon-trash"></i>
-                </a>
-            </div>
-        </td>
-            
-        </tr>
+                <div class="btn-group" role="group" aria-label="Botones de Excel" style="display: flex; justify-content: flex-start; gap: 5px;">
+                    <button data-bind="click: DownloadEmptyExcel, enable: EnableEconomic" class="btn btn-xl green" style="border-radius: 5px;" id="EmptyExcelButton">
+                        Descargar Excel
+                        <i class="fa fa-download"> </i>
+                    </button>
+
+                    <input type="file" data-bind="fileUploadExcel: uploadFile, enable: EnableEconomic" class="btn default btn-file" style="border-radius: 5px;">
+
+                    <a data-bind="click: uploadFileProcesar, enable: EnableEconomic" class="btn btn-xl green" title="Procesar" style="border-radius: 5px;">
+                        Importar
+                        <i class="fa fa-download"></i>
+                    </a>
+
+                    <a data-bind="click: uploadFileclear, enable: EnableEconomic" class="btn btn-default btn-secondary fileinput-remove fileinput-remove-button limpiar-btn" title="Quitar" style="border-radius: 5px;">
+                        Quitar
+                        <i class="glyphicon glyphicon-trash"></i>
+                    </a>
+                </div>
+            </td>
         </tbody>
 
         <tr>

@@ -30,18 +30,59 @@ class MediaController extends BaseController
                 $status = 422;
                 $results['error'] = 'Error al recuperar los archivos.';
             } else {
-                $filepath = $body['path'];
-                $extension = pathinfo($file->getClientFilename(), PATHINFO_EXTENSION);
-                $filename = md5(Carbon::now()->format('Y-m-d H:i:s.v')) . '.' . $extension;
+                $filepath = $body['path']; // viene del TPL
+                $originalClientName = $file->getClientFilename();
 
-                $relative_file = $filepath . DIRECTORY_SEPARATOR . $filename;
-                $absolute_path = rootPath() . DIRECTORY_SEPARATOR . $filepath;
+                // Info del concurso (viene del TPL)
+                $concursoId = isset($body['concurso_id']) ? (int)$body['concurso_id'] : null;
+                $concursoNombre = isset($body['concurso_nombre']) ? (string)$body['concurso_nombre'] : null;
 
+                // Si no viene en el body, podés intentar inferirlo por el path o buscarlo por oferente, etc.
+                // (opcional) fallback:
+                if (!$concursoId || !$concursoNombre) {
+                    // ejemplo: intentar por path u otras reglas tuyas
+                    // $concurso = ...;
+                    // $concursoId = $concurso->id ?? $concursoId;
+                    // $concursoNombre = $concurso->nombre ?? $concursoNombre;
+                }
+
+                // Sanitizar partes
+                $originalSan = $this->sanitizeFilename($originalClientName); // mantiene ext
+                $ext = pathinfo($originalSan, PATHINFO_EXTENSION);
+                $baseOriginal = pathinfo($originalSan, PATHINFO_FILENAME);
+
+                // ConcursoNombre en MAYÚSCULAS sin espacios (o a tu gusto)
+                $nombreConcursoPart = $concursoNombre ? strtoupper(preg_replace('/\s+/', '', $concursoNombre)) : null;
+
+                // Armar prefijo: id + nombreconcurso (si existen)
+                $prefixParts = [];
+                if (!empty($concursoId))         $prefixParts[] = $concursoId;
+                if (!empty($nombreConcursoPart)) $prefixParts[] = $nombreConcursoPart;
+
+                // Nombre final: <prefijo>_<original>
+                $finalBase = $baseOriginal;
+                if (!empty($prefixParts)) {
+                    $finalBase = implode('_', $prefixParts) . '_' . $baseOriginal;
+                }
+
+                // Reconstruir con extensión
+                $finalCandidate = $ext ? "{$finalBase}.{$ext}" : $finalBase;
+
+                // Directorios
+                $relative_dir = rtrim($filepath, DIRECTORY_SEPARATOR);
+                $absolute_path = rtrim(rootPath() . DIRECTORY_SEPARATOR . $relative_dir, DIRECTORY_SEPARATOR);
                 if (!is_dir($absolute_path)) {
                     mkdir($absolute_path, 0777, true);
                 }
 
-                $file->moveTo($absolute_path . DIRECTORY_SEPARATOR . $filename);
+                // Evitar colisiones
+                $finalFilename = $this->uniqueFilename($absolute_path, $this->sanitizeFilename($finalCandidate));
+
+                $relative_file = $relative_dir . DIRECTORY_SEPARATOR . $finalFilename;
+                $absolute_file = $absolute_path . DIRECTORY_SEPARATOR . $finalFilename;
+
+                // Mover
+                $file->moveTo($absolute_file);
 
                 if ($file->getError()) {
                     $results['error'] = $file->getError();
@@ -49,10 +90,10 @@ class MediaController extends BaseController
                 } else {
                     $results['initialPreview'][] = $relative_file;
                     $results['initialPreviewConfig'][] = [
-                        'key' => Carbon::now()->timestamp,
-                        'caption' => $filename,
+                        'key' => \Carbon\Carbon::now()->timestamp,
+                        'caption' => $finalFilename,     // muestra el nuevo nombre
                         'size' => $file->getSize(),
-                        'downloadUrl' => $relative_file,
+                        'downloadUrl' => $relative_file, // descarga con el nuevo nombre
                         'url' => route('media.file.delete'),
                         'extra' => [
                             'path' => $relative_file
@@ -69,6 +110,64 @@ class MediaController extends BaseController
 
         return $this->json($response, $results, $status);
     }
+
+
+
+    /**
+     * Limpia el nombre de archivo: quita rutas, normaliza caracteres y limita longitud.
+     */
+    private function sanitizeFilename(string $name, int $maxLength = 150): string
+    {
+        // Nos quedamos solo con el basename por seguridad
+        $name = basename($name);
+
+        // Opcional: normalizar unicode (si tenés ext-intl): 
+        // $name = \Normalizer::normalize($name, \Normalizer::FORM_KD);
+
+        // Reemplazar caracteres no permitidos (mantener letras, números, espacio, punto, guion y guion bajo)
+        $name = preg_replace('/[^\w\-. ]+/u', '_', $name);
+
+        // Evitar nombres vacíos
+        if ($name === '' || $name === '.' || $name === '..') {
+            $name = 'archivo';
+        }
+
+        // Separar nombre y extensión
+        $ext = pathinfo($name, PATHINFO_EXTENSION);
+        $base = pathinfo($name, PATHINFO_FILENAME);
+
+        // Limitar longitud total preservando extensión
+        if (mb_strlen($name) > $maxLength) {
+            $maxBase = $maxLength - (mb_strlen($ext) ? (mb_strlen($ext) + 1) : 0);
+            $base = mb_substr($base, 0, max(1, $maxBase));
+        }
+
+        return $ext ? "{$base}.{$ext}" : $base;
+    }
+
+    /**
+     * Si existe un archivo con el mismo nombre, agrega sufijo " (1)", " (2)", etc.
+     */
+    private function uniqueFilename(string $dir, string $filename): string
+    {
+        $ext = pathinfo($filename, PATHINFO_EXTENSION);
+        $base = pathinfo($filename, PATHINFO_FILENAME);
+
+        $candidate = $filename;
+        $i = 1;
+        while (file_exists($dir . DIRECTORY_SEPARATOR . $candidate)) {
+            $suffix = " ({$i})";
+            $candidate = $ext ? "{$base}{$suffix}.{$ext}" : "{$base}{$suffix}";
+            $i++;
+            // Evitar loops raros
+            if ($i > 999) {
+                $candidate = uniqid($base . '_', true) . ($ext ? ".{$ext}" : '');
+                break;
+            }
+        }
+        return $candidate;
+    }
+
 
     public function deleteFile(Request $request, Response $response)
     {
@@ -196,111 +295,132 @@ class MediaController extends BaseController
     }
 
     public function downloadZip(Request $request, Response $response)
-    {
-        $body = $request->getParsedBody();
-        $success = false;
-        $message = null;
-        $status = 200;
-        $results = [];
+{
+    $body = $request->getParsedBody();
+    $success = false;
+    $message = null;
+    $status = 200;
 
-        try {
-            $concurso = Concurso::find($body['Entity']['Id']);
-            $basepath = rootPath() . filePath(config('app.files_tmp'));
-            $filename = md5(Carbon::now()->format('Y-m-d H:i:s.v')) . '.zip';
-            $filepath = $basepath . $filename;
-
-            if (!is_dir($basepath)) {
-                @mkdir($basepath, 0777, true);
-            }
-
-            $zip = new \ZipArchive();
-            if ($zip->open($filepath, \ZipArchive::CREATE)) {
-                // Archivos Concurso
-                $attachments_concurso = $concurso->attachments;
-                if ($attachments_concurso) {
-                    foreach ($attachments_concurso as $attachment) {
-                        switch ($attachment->name) {
-                            case 'imagen':
-                                $folder = 'concurso/imagen/';
-                                break;
-                            case 'pliego':
-                                $folder = 'concurso/pliegos/';
-                                break;
-                            default:
-                                $folder = '';
-                                break;
-                        }
-                        $attachment_path = rootPath() . $attachment->path;
-                        if (file_exists($attachment_path)) {
-                            $zip->addFile($attachment_path, $folder . $attachment->filename);
-                        }
-                    }
-                }
-
-                // Archivos Oferentes
-                $oferentes = $concurso->oferentes;
-
-                if ($concurso->fecha_alta && $oferentes) {
-                    foreach ($oferentes as $oferente) {
-                        $file_path = filePath('/' . $oferente->file_path);
-                        // TÉCNICA
-                        $technical_proposal = $oferente->technical_proposal;
-                        if (isset($technical_proposal->documents)) {
-                            foreach ($technical_proposal->documents as $document) {
-                                $folder = 'oferentes/' . $oferente->company->business_name . '/tecnica/';
-                                $zip->addEmptyDir($folder);
-                                $attachment_path = rootPath() . $file_path . $document->filename;
-                                if (file_exists($attachment_path)) {
-                                    $zip->addFile($attachment_path, $folder . $document->filename);
-                                }
-                            }
-                        }
-                        // ECONÓMICA
-                        $economic_proposal = $oferente->economic_proposal;
-                        if (isset($economic_proposal->documents)) {
-                            foreach ($economic_proposal->documents as $document) {
-                                $folder = 'oferentes/' . $oferente->company->business_name . '/economica/';
-                                $zip->addEmptyDir($folder);
-                                $attachment_path = rootPath() . $file_path . $document->filename;
-                                if (file_exists($attachment_path)) {
-                                    $zip->addFile($attachment_path, $folder . $document->filename);
-                                }
-                            }
-                        }
-                    }
-                    $error = $zip->numFiles == 0 ? true : false;
-
-                    $zip->close();
-
-                    if (!$error) {
-                        $status = 200;
-                        $success = true;
-                        $message = 'Archivo generado con éxito.';
-                    } else {
-                        $status = 500;
-                        $success = false;
-                        $message = 'No pudo generarse el archivo.';
-                    }
-                }
-            } else {
-                $status = 500;
-                $success = false;
-                $message = 'No pudo generarse el archivo.';
-            }
-
-        } catch (\Exception $e) {
-            $success = false;
-            $message = $e->getMessage();
-            $status = method_exists($e, 'getStatusCode') ? $e->getStatusCode() : (method_exists($e, 'getCode') ? $e->getCode() : 500);
+    try {
+        $concurso = Concurso::find($body['Entity']['Id']);
+        if (!$concurso) {
+            throw new \RuntimeException('Concurso no encontrado.');
         }
 
-        return $this->json($response, [
-            'success' => $success,
-            'message' => $message,
-            'data' => [
-                'real_path' => filePath(config('app.files_tmp') . $filename),
-                'public_path' => filePath(config('app.files_tmp') . $filename, true)
-            ]
-        ], $status);
+        // Sanitizador para nombres de archivo y carpetas
+        $sanitize = function ($text) {
+            $text = (string)$text;
+            $t = @iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $text);
+            if ($t === false) { $t = $text; }
+            $t = preg_replace('/[^A-Za-z0-9]+/', '_', $t);
+            $t = trim(preg_replace('/_+/', '_', $t), '_');
+            return $t !== '' ? strtolower($t) : 'concurso';
+        };
+
+        $safeConcursoName = $sanitize($concurso->nombre ?? $concurso->Nombre ?? 'concurso');
+        $filename = "{$concurso->id}_{$safeConcursoName}.zip";
+
+        $basepath = rootPath() . filePath(config('app.files_tmp')); // Debe terminar en '/'
+        if (!is_dir($basepath)) {
+            @mkdir($basepath, 0777, true);
+        }
+
+        $filepath = $basepath . $filename;
+
+        $zip = new \ZipArchive();
+        if ($zip->open($filepath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) !== true) {
+            throw new \RuntimeException('No pudo abrirse el archivo ZIP para escritura.');
+        }
+
+        $filesAdded = 0;
+
+        // ====== Archivos del Concurso ======
+        $attachments_concurso = $concurso->attachments ?? [];
+        foreach ($attachments_concurso as $attachment) {
+            switch ($attachment->name) {
+                case 'imagen': $folder = 'concurso/imagen/'; break;
+                case 'pliego': $folder = 'concurso/pliegos/'; break;
+                default:       $folder = 'concurso/otros/';   break;
+            }
+            $safeInnerName = $sanitize(pathinfo($attachment->filename, PATHINFO_BASENAME));
+            $attachment_path = rootPath() . $attachment->path;
+            if (is_file($attachment_path)) {
+                $zip->addFile($attachment_path, $folder . $safeInnerName);
+                $filesAdded++;
+            }
+        }
+
+        // ====== Archivos de Oferentes ======
+        $oferentes = $concurso->oferentes ?? [];
+        foreach ($oferentes as $oferente) {
+            $companyName = $sanitize($oferente->company->business_name ?? 'oferente');
+            $baseOffererFolder = "oferentes/{$companyName}/";
+
+            // Por si hay prefijo de ruta en BD
+            $file_path_prefix = filePath('/' . ($oferente->file_path ?? ''));
+
+            // Técnica
+            $technical_proposal = $oferente->technical_proposal;
+            if (isset($technical_proposal->documents)) {
+                $folder = $baseOffererFolder . 'tecnica/';
+                foreach ($technical_proposal->documents as $document) {
+                    $attachment_path = rootPath() . $file_path_prefix . $document->filename;
+                    $safeDocName = $sanitize(pathinfo($document->filename, PATHINFO_BASENAME));
+                    if (is_file($attachment_path)) {
+                        // Opcional: sólo crear directorio lógico, ZipArchive lo maneja al agregar archivo
+                        $zip->addFile($attachment_path, $folder . $safeDocName);
+                        $filesAdded++;
+                    }
+                }
+            }
+
+            // Económica
+            $economic_proposal = $oferente->economic_proposal;
+            if (isset($economic_proposal->documents)) {
+                $folder = $baseOffererFolder . 'economica/';
+                foreach ($economic_proposal->documents as $document) {
+                    $attachment_path = rootPath() . $file_path_prefix . $document->filename;
+                    $safeDocName = $sanitize(pathinfo($document->filename, PATHINFO_BASENAME));
+                    if (is_file($attachment_path)) {
+                        $zip->addFile($attachment_path, $folder . $safeDocName);
+                        $filesAdded++;
+                    }
+                }
+            }
+        }
+
+        // Cerrar ZIP SIEMPRE
+        $zip->close();
+
+        if ($filesAdded > 0 && is_file($filepath)) {
+            $success = true;
+            $message = 'Archivo generado con éxito.';
+            $status = 200;
+        } else {
+            // Sin contenido: eliminar ZIP vacío para no dejar basura
+            if (is_file($filepath)) { @unlink($filepath); }
+            $success = false;
+            $message = 'No hay archivos para descargar.';
+            $status = 400;
+        }
+
+    } catch (\Exception $e) {
+        $success = false;
+        $message = $e->getMessage();
+        $status = method_exists($e, 'getStatusCode') ? $e->getStatusCode() : (method_exists($e, 'getCode') ? $e->getCode() : 500);
     }
+
+    // Rutas que verá el front
+    return $this->json($response, [
+        'success' => $success,
+        'message' => $message,
+        'data' => [
+            'real_path'          => filePath(config('app.files_tmp') . ($success ? $filename : '')),
+            'public_path'        => filePath(config('app.files_tmp') . ($success ? $filename : ''), true),
+            'suggested_filename' => $success ? $filename : null,
+        ]
+    ], $status);
+}
+
+
 }

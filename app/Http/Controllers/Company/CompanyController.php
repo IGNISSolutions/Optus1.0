@@ -240,7 +240,7 @@ class CompanyController extends BaseController
             return $response->withJson([
                 'success' => false,
                 'message' => 'Ya estás asociado a este proveedor.',
-                'data'    => ['already_associated' => true] // 👈
+                'data'    => ['already_associated' => true]
             ]);
         }
 
