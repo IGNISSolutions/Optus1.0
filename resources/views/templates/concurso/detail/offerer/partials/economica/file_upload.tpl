@@ -263,26 +263,27 @@
                             optionsText: 'text', 
                             optionsValue: 'id', 
                             disable: !$root.EnableEconomic() || $root.CondicionPago() === 'no',
-                            select2: { placeholder: 'Seleccionar...' }">
+                            select2: { placeholder: 'Seleccionar...' },
+                            disable: !EnableEconomic()">
                         </select>
                     </div>
                 </div>
-
                 <div class="col-md-3">
-                    <label class="control-label visible-ie8 visible-ie9" style="display: block;">Plazo de pago
+                    <label class="control-label visible-ie8 visible-ie9" style="display: block;">
+                        Plazo de pago
                     </label>
                     <div class="selectRequerido">
                         <select data-bind="
-                            value:  EconomicProposal().PlazoPago, 
+                            value: EconomicProposal().PlazoPago, 
                             valueAllowUnset: true, 
                             options: EconomicProposal().PlazosPago, 
                             optionsText: 'text', 
                             optionsValue: 'id', 
-                            select2: { placeholder: 'Seleccionar...' }">
+                            select2: { placeholder: 'Seleccionar...' },
+                            disable: !EnableEconomic()">
                         </select>
                     </div>
                 </div>
-            
                 <div style="display: flex; justify-content: flex-end; margin-top: 15px;">
                     <div style="width: 253px;">
                         <label class="control-label" style="display: block;">
