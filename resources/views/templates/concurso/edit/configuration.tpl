@@ -12,8 +12,8 @@
         </div>
     </div>
     <div class="col-md-12">
-        <div class="form-group">
-            <label class="control-label visible-ie8 visible-ie9" style="display: block;">Tipo de subasta *</label>
+        <div class="form-group required">
+            <label class="control-label visible-ie8 visible-ie9" style="display: block;">Tipo de subasta</label>
             <select
                 data-bind="value: Entity.TipoValorOfertar, valueAllowUnset: true, options: Entity.TiposValoresOfertar, optionsText: 'text', optionsValue: 'id', select2: { placeholder: 'Seleccionar...' }, disable: ReadOnly()">
             </select>
@@ -94,25 +94,25 @@
         </div>
     </div>
     <div class="col-md-12">
-        <div class="form-group">
+        <div class="form-group required">
             <label class="control-label visible-ie8 visible-ie9" style="display: block;">Límite inferior para ofertas
-                precio unitario*</label>
+                precio unitario</label>
             <input class="form-control placeholder-no-fix" type="number" min="0.01" step="0.01" name=""
                 id="precio_minimo" data-bind="value: Entity.PrecioMinimo, disable: ReadOnly()" />
         </div>
     </div>
     <div class="col-md-12">
-        <div class="form-group">
+        <div class="form-group required">
             <label class="control-label visible-ie8 visible-ie9" style="display: block;">Unidad mínima para mejorar
-                oferta *</label>
+                oferta</label>
             <input class="form-control placeholder-no-fix" type="number" min="0.01" step="0.01" name=""
                 id="unidad_minima" data-bind="value: Entity.UnidadMinima, disable: ReadOnly()" />
         </div>
     </div>
     <div class="col-md-12">
-        <div class="form-group">
+        <div class="form-group required">
             <label class="control-label visible-ie8 visible-ie9" style="display: block;">Límite superior para ofertas
-                precio unitario*</label>
+                precio unitario</label>
             <input class="form-control placeholder-no-fix" type="number" min="0.01" step="0.01" name=""
                 id="precio_maximo"
                 data-bind="value: Entity.PrecioMaximo, disable: (ReadOnly() || Entity.PrecioMinimo() < 1)" />

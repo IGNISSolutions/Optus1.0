@@ -315,6 +315,8 @@
                                         uploadExtraData: {
                                             UserToken: User.Token,
                                             path: $root.FilePathOferente(),
+                                            concurso_id: $root.IdConcurso(),
+                                            concurso_nombre: $root.Nombre() 
                                         },
                                         initialPreview: filename() ? [$root.FilePathOferente() + filename()] : [],
                                         allowedFileExtensions: ['jpg', 'jpeg', 'png', 'pdf', 'zip', 'rar', 'doc', 'docx', 'xls', 'xlsx', 'dwg']

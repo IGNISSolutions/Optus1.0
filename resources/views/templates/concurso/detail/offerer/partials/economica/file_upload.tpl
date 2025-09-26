@@ -34,6 +34,8 @@
                     uploadExtraData: {
                         UserToken: User.Token,
                         path: $parent.FilePathOferente(),
+                        concurso_id: $root.IdConcurso(),
+                        concurso_nombre: $root.Nombre() 
                     },
                     
                     initialPreview: filename() ? [$parent.FilePathOferente() + filename()] : [],
@@ -103,26 +105,30 @@
           
 
         </tbody>
-        <tbody>
-            <td><span style="display: block; text-align: center;">Importación Excel</span></td>
+        <tbody data-bind="css: { 'disabled-section': !EnableEconomic() }">
+            <td>
+                <span style="display: block; text-align: center;">Importación Excel</span>
+            </td>
             <td colspan="3" class="text-left">
-            <div class="btn-group" role="group" aria-label="Botones de Excel" style="display: flex; justify-content: flex-start; gap: 5px;">
-                <button data-bind="click: DownloadEmptyExcel" class="btn btn-xl green" style="border-radius: 5px;" id="EmptyExcelButton">Descargar Excel
-                <i class="fa fa-download"> </i>
-                </button>
-                <input type="file" data-bind="fileUploadExcel: uploadFile" class="btn default btn-file" style="border-radius: 5px;" >
-                <a data-bind="click: uploadFileProcesar" download class="btn btn-xl green" title="Procesar" style="border-radius: 5px;">
-                    Importar
-                    <i class="fa fa-download"></i>
-                </a>
-                <a data-bind="click: uploadFileclear" download class="btn btn-default btn-secondary fileinput-remove fileinput-remove-button limpiar-btn" title="Quitar" style="border-radius: 5px;">
-                    Quitar
-                    <i class="glyphicon glyphicon-trash"></i>
-                </a>
-            </div>
-        </td>
-            
-        </tr>
+                <div class="btn-group" role="group" aria-label="Botones de Excel" style="display: flex; justify-content: flex-start; gap: 5px;">
+                    <button data-bind="click: DownloadEmptyExcel, enable: EnableEconomic" class="btn btn-xl green" style="border-radius: 5px;" id="EmptyExcelButton">
+                        Descargar Excel
+                        <i class="fa fa-download"> </i>
+                    </button>
+
+                    <input type="file" data-bind="fileUploadExcel: uploadFile, enable: EnableEconomic" class="btn default btn-file" style="border-radius: 5px;">
+
+                    <a data-bind="click: uploadFileProcesar, enable: EnableEconomic" class="btn btn-xl green" title="Procesar" style="border-radius: 5px;">
+                        Importar
+                        <i class="fa fa-download"></i>
+                    </a>
+
+                    <a data-bind="click: uploadFileclear, enable: EnableEconomic" class="btn btn-default btn-secondary fileinput-remove fileinput-remove-button limpiar-btn" title="Quitar" style="border-radius: 5px;">
+                        Quitar
+                        <i class="glyphicon glyphicon-trash"></i>
+                    </a>
+                </div>
+            </td>
         </tbody>
 
         <tr>
@@ -257,26 +263,27 @@
                             optionsText: 'text', 
                             optionsValue: 'id', 
                             disable: !$root.EnableEconomic() || $root.CondicionPago() === 'no',
-                            select2: { placeholder: 'Seleccionar...' }">
+                            select2: { placeholder: 'Seleccionar...' },
+                            disable: !EnableEconomic()">
                         </select>
                     </div>
                 </div>
-
                 <div class="col-md-3">
-                    <label class="control-label visible-ie8 visible-ie9" style="display: block;">Plazo de pago
+                    <label class="control-label visible-ie8 visible-ie9" style="display: block;">
+                        Plazo de pago
                     </label>
                     <div class="selectRequerido">
                         <select data-bind="
-                            value:  EconomicProposal().PlazoPago, 
+                            value: EconomicProposal().PlazoPago, 
                             valueAllowUnset: true, 
                             options: EconomicProposal().PlazosPago, 
                             optionsText: 'text', 
                             optionsValue: 'id', 
-                            select2: { placeholder: 'Seleccionar...' }">
+                            select2: { placeholder: 'Seleccionar...' },
+                            disable: !EnableEconomic()">
                         </select>
                     </div>
                 </div>
-            
                 <div style="display: flex; justify-content: flex-end; margin-top: 15px;">
                     <div style="width: 253px;">
                         <label class="control-label" style="display: block;">

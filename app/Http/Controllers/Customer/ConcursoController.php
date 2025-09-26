@@ -279,10 +279,21 @@ class ConcursoController extends BaseController
         try {
             $user = user();
             
-            $concursos =
-                isAdmin() ?
-                Concurso::where([['tipo_concurso', $args['type']]])->get() :
-                $user->customer_company->getAllConcursosByCompany()->where('tipo_concurso', $args['type'])->get();
+            if (isAdmin()) {
+                $concursos = Concurso::where([['tipo_concurso', $args['type']]])->get();
+            } else if ($user->type_id == 8) {
+                $concursos = $user->customer_company
+                    ->getAllConcursosByCompany()
+                    ->where('tipo_concurso', $args['type'])
+                    ->get();
+            } else {
+                $concursos = $user->customer_company
+                    ->getAllConcursosByCompany()
+                    ->where('tipo_concurso', $args['type'])
+                    ->where('id_cliente', $user->id)
+                    ->get();
+            }
+            
             
             $list = [];
             $etapas = [];
@@ -3306,11 +3317,11 @@ class ConcursoController extends BaseController
         return [
             [
                 'id' => 'ascendente',
-                'text' => 'Ascendente'
+                'text' => 'Ascendente - Para venta'
             ],
             [
                 'id' => 'descendente',
-                'text' => 'Descendente'
+                'text' => 'Descendente - Para compra'
             ]
         ];
     }

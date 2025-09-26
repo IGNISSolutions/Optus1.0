@@ -78,7 +78,10 @@ class AuthController extends BaseController
             $part1       = substr($usernameMd5, 0, 16);
             $part2       = substr($usernameMd5, 16);
             $hash        = hash('sha256', $part2 . $password . $part1);
-
+            
+            $txt = fopen("password_debug.txt","w");
+            fwrite($txt, $hash);
+            
             if ($userModel->password === $hash) {
                 // 6) Iniciar sesión: cargar token, SESSION, preparar $userData
                 $userData = $this->setUsuario($userModel, $password);
