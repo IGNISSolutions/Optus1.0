@@ -616,7 +616,7 @@ class DataInforme extends Rest
                 ],
                 [
                     'tipo' => 'parrafo',
-                    'contenido' => '<div style="text-align:center;font-weight:bold">Aun no se adjudica la'.$this->concurso->tipo_concurso_nombre.'</div>',
+                    'contenido' => '<div style="text-align:center;font-weight:bold">Aun no se adjudica la '.$this->concurso->tipo_concurso_nombre.'</div>',
                 ]
             ]
         ];

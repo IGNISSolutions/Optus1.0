@@ -45,7 +45,23 @@
                         {include file='concurso/detail/customer/partials/economica/resumen-adjudicacion/resumen.tpl'}
                     </div>
                     <!-- /ko -->
-               
+                    <!-- Bloque de Informes -->
+                    <div class="m-heading-1 border-default m-bordered text-left"
+                        style="display:flex; flex-direction:column; gap:8px;">
+                        <h4 class="block bold" style="margin:0;">Informes</h4>
+
+                        <p class="text-muted" style="margin:0;">
+                            El informe se generará con la información obtenida hasta el momento de su descarga.
+                        </p>
+
+                        <div>
+                            <a class="btn btn-success"
+                            data-bind="click: $root.downloadReport"
+                            download>
+                                Descargar <i class="fa fa-download"></i>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
