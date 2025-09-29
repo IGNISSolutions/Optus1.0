@@ -585,18 +585,27 @@ class ConcursoController extends BaseController
             // CONVOCATORIA OFERENTES
             $concursos = collect($created)
                 ->filter(function ($concurso) {
-                    // Oferentes que llegaron a la etapa de convocatoria
-                    $pendientes = $concurso->oferentes_etapa_convocatoria->count();
-                    // Oferentes que ya aceptaron invitación
-                    $aceptadas = $concurso->oferentes
-                        ->where('has_invitacion_aceptada', true)
+                    // Mismo universo para ambos contadores (ej.: excluir seleccionados si aplica)
+                    $oferentesBase = $concurso->oferentes->where('is_seleccionado', false);
+
+                    // Pendientes: exactamente en 'invitacion-pendiente'
+                    $pendientes = $oferentesBase
+                        ->where('etapa_actual', 'invitacion-pendiente')
                         ->count();
 
-                    // Sólo incluimos si hay pendientes Y cero aceptadas
+                    // Aceptadas: por etapa_actual o flag legacy (por si conviven ambos)
+                    $aceptadas = $oferentesBase
+                        ->filter(function ($o) {
+                            return ($o->etapa_actual === 'invitacion-aceptada')
+                                || ((bool)$o->has_invitacion_aceptada === true);
+                        })
+                        ->count();
+
+                    // Mostrar solo si hay pendientes y ninguna aceptada
                     return $pendientes > 0 && $aceptadas === 0;
                 })
                 ->sortBy('id');
-                    
+
             foreach ($concursos as $concurso) {
                 $oferentes = $concurso->oferentes->where('is_seleccionado', false);
 
@@ -605,7 +614,10 @@ class ConcursoController extends BaseController
                     [
                         'CantidadOferentes'      => $oferentes->count(),
                         'CantidadPresentaciones' => $oferentes
-                            ->where('has_invitacion_aceptada', true)
+                            ->filter(function ($o) {
+                                return ($o->etapa_actual === 'invitacion-aceptada')
+                                    || ((bool)$o->has_invitacion_aceptada === true);
+                            })
                             ->count(),
                     ]
                 );
