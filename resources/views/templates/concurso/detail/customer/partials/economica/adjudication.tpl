@@ -45,22 +45,36 @@
                         {include file='concurso/detail/customer/partials/economica/resumen-adjudicacion/resumen.tpl'}
                     </div>
                     <!-- /ko -->
-                    <!-- Bloque de Informes -->
+                    <!-- Bloque único de Informes y Archivos -->
                     <div class="m-heading-1 border-default m-bordered text-left"
-                        style="display:flex; flex-direction:column; gap:8px;">
-                        <h4 class="block bold" style="margin:0;">Informes</h4>
+                        style="display:flex; flex-direction:column; gap:16px;">
 
-                        <p class="text-muted" style="margin:0;">
-                            El informe se generará con la información obtenida hasta el momento de su descarga.
-                        </p>
-
-                        <div>
-                            <a class="btn btn-success"
-                            data-bind="click: $root.downloadReport"
-                            download>
-                                Descargar <i class="fa fa-download"></i>
-                            </a>
+                        <!-- Informe de trazabilidad -->
+                        <div style="display:flex; flex-direction:column; gap:8px;">
+                            <h4 class="block bold" style="margin:0;">Informe de trazabilidad</h4>
+                            <div>
+                                <a class="btn btn-success"
+                                data-bind="click: $root.downloadReport"
+                                download>
+                                    Descargar <i class="fa fa-download"></i>
+                                </a>
+                            </div>
                         </div>
+
+                        <!-- Archivos concurso -->
+                        <div style="display:flex; flex-direction:column; gap:8px;">
+                            <h4 class="block bold" style="margin:0;">Archivos concurso</h4>
+                            <div>
+                                <a class="btn btn-success"
+                                data-bind="click: $root.downloadZip"
+                                download>
+                                    Descargar <i class="fa fa-download"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <p class="text-muted" style="margin:0;">
+                            <b>ACLARACIÓN:</b> Tanto el informe como los archivos se generarán con la información obtenida y disponible hasta el momento de su descarga.
+                        </p>
                     </div>
                 </div>
             </div>
