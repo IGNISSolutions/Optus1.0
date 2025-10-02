@@ -1009,7 +1009,7 @@
             this.Duracion = ko.observable(data.list.Duracion).extend({ required: true });
             this.TiempoAdicional = ko.observable(data.list.TiempoAdicional).extend({ required: true });
             this.TiposValoresOfertar = ko.observableArray(data.list.TiposValoresOfertar);
-            this.TipoValorOfertar = ko.observable(data.list.TipoValorOfertar);
+            this.TipoValorOfertar = ko.observable(data.list.TipoValorOfertar).extend({ required: true });
             this.Chat = ko.observable(data.list.Chat);
             this.VerNumOferentesParticipan = ko.observable(data.list.VerNumOferentesParticipan);
             this.VerOfertaGanadora = ko.observable(data.list.VerOfertaGanadora);
@@ -1017,11 +1017,11 @@
             this.VerTiempoRestante = ko.observable(data.list.VerTiempoRestante);
             this.PermitirAnularOferta = ko.observable(data.list.PermitirAnularOferta);
             this.SubastaVistaCiega = ko.observable(data.list.SubastaVistaCiega);
-            this.PrecioMinimo = ko.observable(data.list.PrecioMinimo);
-            this.PrecioMaximo = ko.observable(data.list.PrecioMaximo);
+            this.PrecioMinimo = ko.observable(data.list.PrecioMinimo).extend({ required: true });
+            this.PrecioMaximo = ko.observable(data.list.PrecioMaximo).extend({ required: true });
             this.SoloOfertasMejores = ko.observable(data.list.SoloOfertasMejores);
             this.UnidadesMinimas = ko.observable(data.list.UnidadesMinimas);
-            this.UnidadMinima = ko.observable(data.list.UnidadMinima);
+            this.UnidadMinima = ko.observable(data.list.UnidadMinima).extend({ required: true });
 
             /**
          * GO
@@ -1330,6 +1330,10 @@
                     this.Entity.PlantillaTecnica.isValid() &&
                     this.Entity.UsuarioEvaluaTecnica.isValid() &&
                     this.Entity.Moneda.isValid() &&
+                    this.Entity.TipoValorOfertar.isValid() &&
+                    this.PrecioMaximo.isValid() &&
+                    this.PrecioMinimo.isValid() &&
+                    this.UnidadMinima.isValid() &&
                     (
                         self.Entity.PlantillaTecnicaSeleccionada() ? self.Entity
                         .PlantillaTecnicaSeleccionada()

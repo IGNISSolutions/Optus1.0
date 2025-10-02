@@ -11,12 +11,16 @@
             </div>
         </div>
     </div>
+    <!-- Tipo de subasta -->
     <div class="col-md-12">
-        <div class="form-group required">
+        <div class="form-group required" data-bind="validationElement: Entity.TipoValorOfertar">
             <label class="control-label visible-ie8 visible-ie9" style="display: block;">Tipo de subasta</label>
-            <select
-                data-bind="value: Entity.TipoValorOfertar, valueAllowUnset: true, options: Entity.TiposValoresOfertar, optionsText: 'text', optionsValue: 'id', select2: { placeholder: 'Seleccionar...' }, disable: ReadOnly()">
-            </select>
+            <div class="selectRequerido">
+                <select data-bind="value: Entity.TipoValorOfertar, valueAllowUnset: true, options: Entity.TiposValoresOfertar,
+                    optionsText: 'text', optionsValue: 'id',
+                    select2: { placeholder: 'Seleccionar...' }, disable: ReadOnly()">
+                </select>
+            </div>
         </div>
     </div>
     <div class="col-md-12">
@@ -93,28 +97,32 @@
             NO <input type="radio" value="no" data-bind="checked: Entity.SoloOfertasMejores, disable: ReadOnly()">
         </div>
     </div>
+    <!-- Límite inferior -->
     <div class="col-md-12">
-        <div class="form-group required">
+        <div class="form-group required" data-bind="validationElement: Entity.PrecioMinimo">
             <label class="control-label visible-ie8 visible-ie9" style="display: block;">Límite inferior para ofertas
                 precio unitario</label>
-            <input class="form-control placeholder-no-fix" type="number" min="0.01" step="0.01" name=""
-                id="precio_minimo" data-bind="value: Entity.PrecioMinimo, disable: ReadOnly()" />
+            <input class="form-control placeholder-no-fix" type="number" min="0.01" step="0.01" id="precio_minimo"
+                data-bind="value: Entity.PrecioMinimo, disable: ReadOnly()" />
         </div>
     </div>
+
+    <!-- Unidad mínima -->
     <div class="col-md-12">
-        <div class="form-group required">
+        <div class="form-group required" data-bind="validationElement: Entity.UnidadMinima">
             <label class="control-label visible-ie8 visible-ie9" style="display: block;">Unidad mínima para mejorar
                 oferta</label>
-            <input class="form-control placeholder-no-fix" type="number" min="0.01" step="0.01" name=""
-                id="unidad_minima" data-bind="value: Entity.UnidadMinima, disable: ReadOnly()" />
+            <input class="form-control placeholder-no-fix" type="number" min="0.01" step="0.01" id="unidad_minima"
+                data-bind="value: Entity.UnidadMinima, disable: ReadOnly()" />
         </div>
     </div>
+
+    <!-- Límite superior -->
     <div class="col-md-12">
-        <div class="form-group required">
+        <div class="form-group required" data-bind="validationElement: Entity.PrecioMaximo">
             <label class="control-label visible-ie8 visible-ie9" style="display: block;">Límite superior para ofertas
                 precio unitario</label>
-            <input class="form-control placeholder-no-fix" type="number" min="0.01" step="0.01" name=""
-                id="precio_maximo"
+            <input class="form-control placeholder-no-fix" type="number" min="0.01" step="0.01" id="precio_maximo"
                 data-bind="value: Entity.PrecioMaximo, disable: (ReadOnly() || Entity.PrecioMinimo() < 1)" />
         </div>
     </div>
@@ -245,7 +253,7 @@
                     select2: { placeholder: 'Seleccionar...' },
                     disable: ReadOnly()">
                     </select>
-                </div>  
+                </div>
             </div>
 
         </div>
