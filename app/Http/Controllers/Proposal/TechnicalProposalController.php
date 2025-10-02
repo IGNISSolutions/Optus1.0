@@ -1004,7 +1004,7 @@ class TechnicalProposalController extends BaseController
                // 'technical_documents.44.filename.required' => 'El Tiempo de Fabricación es obligatorio ',
                 'technical_documents.45.filename.required' => 'La Ficha Técnica es obligatorio ',
                // 'technical_documents.46.filename.required' => 'Garantias es obligatorio '
-
+                    
 
 
         

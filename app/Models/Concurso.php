@@ -170,8 +170,29 @@ class Concurso extends Model
         'forma_pago', 
         'tiempo_fabricacion', 
         'ficha_tecnica',
-        'garantias' 
-
+        'garantias',
+        // ===== NUEVOS CAMPOS PLANTILLA 7 =====
+        'propuesta_tecnica',
+        'plan_mantenimiento_preventivo',
+        'nda_firmado',
+        'inventario_equipos',
+        'acreditaciones_permisos',
+        'requerimientos_tecnologicos',
+        'requisitos_personal',
+        'organigrama_equipo',
+        'valor_agregado',
+        'acuerdos_nivel_servicio',
+        'hseq_anexo2',
+        'referencias_comerciales',
+        'riesgo_financiero',
+        // ===== NUEVOS CAMPOS PLANTILLA 8 =====
+        'ficha_especificaciones',
+        'msds_hojas_seguridad',
+        'garantia_tecnica',
+        'cronograma_entrega',
+        'carta_representante_marca',
+        'soporte_post_venta',        
+        'lugar_forma_entrega',
 
     ];
 

@@ -8,7 +8,7 @@
         <div class="tab-pane fade"
             data-bind="attr: { id: refRound() }, css: { in: active() ? 'in' : '', active: active() ? 'active' : '' }">
             <!-- ko if: active() -->
-            
+
             <!-- ko if: !$root.EnableTechnical() -->
             <!-- ko ifnot: presented() -->
             <div class="m-heading-1 border-default m-bordered text-center"
@@ -32,7 +32,8 @@
             </div>
             <table class="table table-striped table-bordered">
                 <tbody data-bind="foreach: documents()">
-                    <tr> <!---agregra el nombre que tiene en base de datos de los nuevos cosos para el coso (copiar lista sub contra<tista)-->
+                    <tr>
+                        <!---agregra el nombre que tiene en base de datos de los nuevos cosos para el coso (copiar lista sub contra<tista)-->
                         <!-- ko if: 
                         (
                             name() !== 'Lista de sub contratistas' && 
@@ -47,7 +48,7 @@
                             name() !== 'Forma de pago' &&
                             name() !== 'Tiempo de fabricación e instalación de cocinas' &&
                             name() !== 'Ficha técnica. (Materiales, especificaciones y características de la propuesta)' &&
-                            
+
 
                             name() !== 'Certificado de visita de obra' &&
 
@@ -85,7 +86,28 @@
                             name() !== 'Organigrama previsto para la obra' &&
                             name() !== 'Listado de subcontratistas por rubro' &&
                             name() !== 'Gestión de H&S (incluir indicadores, procedimientos, detalle de personal, etc.)' &&
-                            name() !== 'Listado de máquinas y equipos a utilizar' 
+                            name() !== 'Listado de máquinas y equipos a utilizar' &&
+                            name() !== 'TÉCNICA - Propuesta Técnica / Procedimientos / Metodologías / Técnicas aplicadas' &&
+                            name() !== 'TÉCNICA - Plan de mantenimiento preventivo, correctivo, soporte, evolutivo' &&
+                            name() !== 'TÉCNICA - Inventario de equipos, herramientas, vehículos y/o maquinarias' &&
+                            name() !== 'TÉCNICA - Acreditaciones, Permisos, Autorizaciones' &&
+                            name() !== 'TÉCNICA - Requerimientos tecnológicos de hardware, software y/o conectividad' &&
+                            name() !== 'TÉCNICA - Requisitos del personal, calificaciones, CV, certificaciones, experiencia, capacitación, etc' &&
+                            name() !== 'TÉCNICA - Organigrama / Equipo de Trabajo / Niveles de escalamiento' &&
+                            name() !== 'TÉCNICA - Valor agregado' &&
+                            name() !== 'TÉCNICA - Acuerdos de nivel de servicio' &&
+                            name() !== 'HSEQ - Requisitos matriz HSEQ según Anexo 2' &&
+                            name() !== 'ECONÓMICA - Referencias comerciales / Acreditación experiencia' &&
+                            
+                            name() !== 'ECONÓMICA - Evaluación riesgo financiero' &&
+                            name() !== 'TÉCNICA - Ficha de Especificaciones Técnicas' &&
+                            name() !== 'TÉCNICA - Hojas de seguridad / MSDS' &&
+                            name() !== 'TÉCNICA - Garantía' &&
+                            name() !== 'TÉCNICA - Envío de muestra' &&
+                            name() !== 'TÉCNICA - Cronograma de entrega / Plazo de entrega' &&
+                            name() !== 'TÉCNICA - Carta de representante de la marca y/o distribuidor autorizado' &&
+                            name() !== 'TÉCNICA - Soporte Post Venta' &&
+                            name() !== 'TÉCNICA - Lugar y forma de entrega'
 
 
 
@@ -98,8 +120,8 @@
 
                         (name() === 'Lista de sub contratistas' && $root.ListaProveedores() === 'si') ||
                         (name() === 'Certificado de visita de obra' && $root.CertificadoVisitaObra() === 'si') ||
- 
-                        
+
+
                         (name() === 'Entrega de documentación para evaluación y Alta de proveedor' && $root.EntregaDocEvaluacion() === 'si') ||
                         (name() === 'Cumplimiento de requisitos legales y reglamentos aplicables' && $root.RequisitosLegales() === 'si') ||
                         (name() === 'Experiencia y referencias comerciales' && $root.ExperienciaYReferencias() === 'si') ||
@@ -144,8 +166,33 @@
                         (name() === 'Organigrama previsto para la obra' && $root.edificio_organigrama_obra() === 'si') ||
                         (name() === 'Listado de subcontratistas por rubro' && $root.edificio_subcontratistas() === 'si') ||
                         (name() === 'Gestión de H&S (incluir indicadores, procedimientos, detalle de personal, etc.)' && $root.edificio_gestion() === 'si') ||
-                        (name() === 'Listado de máquinas y equipos a utilizar' && $root.edificio_maquinas() === 'si') 
+                        (name() === 'Listado de máquinas y equipos a utilizar' && $root.edificio_maquinas() === 'si') ||
+                        (name() === 'TÉCNICA - Propuesta Técnica / Procedimientos / Metodologías / Técnicas aplicadas' && $root.PropuestaTecnica() === 'si') ||
+                        (name() === 'TÉCNICA - Plan de mantenimiento preventivo, correctivo, soporte, evolutivo' && $root.PlanMantenimientoPreventivo() === 'si') ||
+                        (name() === 'TÉCNICA - Inventario de equipos, herramientas, vehículos y/o maquinarias' && $root.InventarioEquipos() === 'si') ||
+                        (name() === 'TÉCNICA - Acreditaciones, Permisos, Autorizaciones' && $root.AcreditacionesPermisos() === 'si') ||
+                        (name() === 'TÉCNICA - Requerimientos tecnológicos de hardware, software y/o conectividad' && $root.RequerimientosTecnologicos() === 'si') ||
+                        (name() === 'TÉCNICA - Requisitos del personal, calificaciones, CV, certificaciones, experiencia, capacitación, etc' && $root.RequisitosPersonal() === 'si') ||
+                        (name() === 'TÉCNICA - Organigrama / Equipo de Trabajo / Niveles de escalamiento' && $root.OrganigramaEquipo() === 'si') ||
+                        (name() === 'TÉCNICA - Valor agregado' && $root.ValorAgregado() === 'si') ||
+                        (name() === 'TÉCNICA - Acuerdos de nivel de servicio' && $root.AcuerdosNivelServicio() === 'si') ||
+
+                        (name() === 'HSEQ - Requisitos matriz HSEQ según Anexo 2' && $root.HseqAnexo2() === 'si') ||
+
+                        (name() === 'ECONÓMICA - Referencias comerciales / Acreditación experiencia' && $root.ReferenciasComerciales() === 'si') ||
                         
+                        (name() === 'ECONÓMICA - Evaluación riesgo financiero' && $root.RiesgoFinanciero() === 'si') ||
+
+                        (name() === 'TÉCNICA - Ficha de Especificaciones Técnicas' && $root.FichaEspecificaciones() === 'si') ||
+                        (name() === 'TÉCNICA - Hojas de seguridad / MSDS' && $root.MsdsHojasSeguridad() === 'si') ||
+                        (name() === 'TÉCNICA - Garantía' && $root.Garantia() === 'si') ||
+                        (name() === 'TÉCNICA - Envío de muestra' && $root.EnvioMuestra() === 'si') ||
+                        (name() === 'TÉCNICA - Cronograma de entrega / Plazo de entrega' && $root.CronogramaEntrega() === 'si') ||
+                        (name() === 'TÉCNICA - Carta de representante de la marca y/o distribuidor autorizado' && $root.CartaRepresentanteMarca() === 'si') ||
+                        (name() === 'TÉCNICA - Soporte Post Venta' && $root.SoportePostVenta() === 'si') ||
+                        (name() === 'TÉCNICA - Lugar y forma de entrega' && $root.LugarFormaEntrega() === 'si')
+
+
 
 
 
@@ -240,13 +287,35 @@
                             name() !== 'Organigrama previsto para la obra' &&
                             name() !== 'Listado de subcontratistas por rubro' &&
                             name() !== 'Gestión de H&S (incluir indicadores, procedimientos, detalle de personal, etc.)' &&
-                            name() !== 'Listado de máquinas y equipos a utilizar' 
+                            name() !== 'Listado de máquinas y equipos a utilizar' &&
+                            name() !== 'TÉCNICA - Propuesta Técnica / Procedimientos / Metodologías / Técnicas aplicadas' &&
+                            name() !== 'TÉCNICA - Plan de mantenimiento preventivo, correctivo, soporte, evolutivo' &&
+                            name() !== 'TÉCNICA - Inventario de equipos, herramientas, vehículos y/o maquinarias' &&
+                            name() !== 'TÉCNICA - Acreditaciones, Permisos, Autorizaciones' &&
+                            name() !== 'TÉCNICA - Requerimientos tecnológicos de hardware, software y/o conectividad' &&
+                            name() !== 'TÉCNICA - Requisitos del personal, calificaciones, CV, certificaciones, experiencia, capacitación, etc' &&
+                            name() !== 'TÉCNICA - Organigrama / Equipo de Trabajo / Niveles de escalamiento' &&
+                            name() !== 'TÉCNICA - Valor agregado' &&
+                            name() !== 'TÉCNICA - Acuerdos de nivel de servicio' &&
+                            name() !== 'HSEQ - Requisitos matriz HSEQ según Anexo 2' &&
+                            name() !== 'ECONÓMICA - Referencias comerciales / Acreditación experiencia' &&
+                            
+                            name() !== 'ECONÓMICA - Evaluación riesgo financiero' &&
+                            name() !== 'TÉCNICA - Ficha de Especificaciones Técnicas' &&
+                            name() !== 'TÉCNICA - Hojas de seguridad / MSDS' &&
+                            name() !== 'TÉCNICA - Garantía' &&
+                            name() !== 'TÉCNICA - Envío de muestra' &&
+                            name() !== 'TÉCNICA - Cronograma de entrega / Plazo de entrega' &&
+                            name() !== 'TÉCNICA - Carta de representante de la marca y/o distribuidor autorizado' &&
+                            name() !== 'TÉCNICA - Soporte Post Venta' &&
+                            name() !== 'TÉCNICA - Lugar y forma de entrega'
+
 
 
 
                         ) || 
 
-                        
+
 
                         (name() === 'Lista de sub contratistas' && $root.ListaProveedores() === 'si') ||
                         (name() === 'Certificado de visita de obra' && $root.CertificadoVisitaObra() === 'si') ||
@@ -265,7 +334,7 @@
 
 
                         (name() === 'Diagrama de Gantt' && $root.DiagramaGant() === 'si') || 
-                            
+
                         (name() === 'Seguro de Caución' && $root.SeguroCaucion() === 'si') ||
 
                         (name() === 'Bases y condiciones Firmado' && $root.BaseCondiciones() === 'si') ||
@@ -300,7 +369,31 @@
                         (name() === 'Organigrama previsto para la obra' && $root.edificio_organigrama_obra() === 'si') ||
                         (name() === 'Listado de subcontratistas por rubro' && $root.edificio_subcontratistas() === 'si') ||
                         (name() === 'Gestión de H&S (incluir indicadores, procedimientos, detalle de personal, etc.)' && $root.edificio_gestion() === 'si') ||
-                        (name() === 'Listado de máquinas y equipos a utilizar' && $root.edificio_maquinas() === 'si') 
+                        (name() === 'Listado de máquinas y equipos a utilizar' && $root.edificio_maquinas() === 'si') ||
+                        (name() === 'TÉCNICA - Propuesta Técnica / Procedimientos / Metodologías / Técnicas aplicadas' && $root.PropuestaTecnica() === 'si') ||
+                        (name() === 'TÉCNICA - Plan de mantenimiento preventivo, correctivo, soporte, evolutivo' && $root.PlanMantenimientoPreventivo() === 'si') ||
+                        (name() === 'TÉCNICA - Inventario de equipos, herramientas, vehículos y/o maquinarias' && $root.InventarioEquipos() === 'si') ||
+                        (name() === 'TÉCNICA - Acreditaciones, Permisos, Autorizaciones' && $root.AcreditacionesPermisos() === 'si') ||
+                        (name() === 'TÉCNICA - Requerimientos tecnológicos de hardware, software y/o conectividad' && $root.RequerimientosTecnologicos() === 'si') ||
+                        (name() === 'TÉCNICA - Requisitos del personal, calificaciones, CV, certificaciones, experiencia, capacitación, etc' && $root.RequisitosPersonal() === 'si') ||
+                        (name() === 'TÉCNICA - Organigrama / Equipo de Trabajo / Niveles de escalamiento' && $root.OrganigramaEquipo() === 'si') ||
+                        (name() === 'TÉCNICA - Valor agregado' && $root.ValorAgregado() === 'si') ||
+                        (name() === 'TÉCNICA - Acuerdos de nivel de servicio' && $root.AcuerdosNivelServicio() === 'si') ||
+
+                        (name() === 'HSEQ - Requisitos matriz HSEQ según Anexo 2' && $root.HseqAnexo2() === 'si') ||
+
+                        (name() === 'ECONÓMICA - Referencias comerciales / Acreditación experiencia' && $root.ReferenciasComerciales() === 'si') ||
+                        (name() === 'ECONÓMICA - Evaluación riesgo financiero' && $root.RiesgoFinanciero() === 'si') ||
+
+                        (name() === 'TÉCNICA - Ficha de Especificaciones Técnicas' && $root.FichaEspecificaciones() === 'si') ||
+                        (name() === 'TÉCNICA - Hojas de seguridad / MSDS' && $root.MsdsHojasSeguridad() === 'si') ||
+                        (name() === 'TÉCNICA - Garantía' && $root.Garantia() === 'si') ||
+                        (name() === 'TÉCNICA - Envío de muestra' && $root.EnvioMuestra() === 'si') ||
+                        (name() === 'TÉCNICA - Cronograma de entrega / Plazo de entrega' && $root.CronogramaEntrega() === 'si') ||
+                        (name() === 'TÉCNICA - Carta de representante de la marca y/o distribuidor autorizado' && $root.CartaRepresentanteMarca() === 'si') ||
+                        (name() === 'TÉCNICA - Soporte Post Venta' && $root.SoportePostVenta() === 'si') ||
+                        (name() === 'TÉCNICA - Lugar y forma de entrega' && $root.LugarFormaEntrega() === 'si')
+
 
 
 
@@ -457,7 +550,29 @@
                             name() !== 'Organigrama previsto para la obra' &&
                             name() !== 'Listado de subcontratistas por rubro' &&
                             name() !== 'Gestión de H&S (incluir indicadores, procedimientos, detalle de personal, etc.)' &&
-                            name() !== 'Listado de máquinas y equipos a utilizar' 
+                            name() !== 'Listado de máquinas y equipos a utilizar' &&
+                            name() !== 'TÉCNICA - Propuesta Técnica / Procedimientos / Metodologías / Técnicas aplicadas' &&
+                            name() !== 'TÉCNICA - Plan de mantenimiento preventivo, correctivo, soporte, evolutivo' &&
+                            name() !== 'TÉCNICA - Inventario de equipos, herramientas, vehículos y/o maquinarias' &&
+                            name() !== 'TÉCNICA - Acreditaciones, Permisos, Autorizaciones' &&
+                            name() !== 'TÉCNICA - Requerimientos tecnológicos de hardware, software y/o conectividad' &&
+                            name() !== 'TÉCNICA - Requisitos del personal, calificaciones, CV, certificaciones, experiencia, capacitación, etc' &&
+                            name() !== 'TÉCNICA - Organigrama / Equipo de Trabajo / Niveles de escalamiento' &&
+                            name() !== 'TÉCNICA - Valor agregado' &&
+                            name() !== 'TÉCNICA - Acuerdos de nivel de servicio' &&
+                            name() !== 'HSEQ - Requisitos matriz HSEQ según Anexo 2' &&
+                            name() !== 'ECONÓMICA - Referencias comerciales / Acreditación experiencia' &&
+                            
+                            name() !== 'ECONÓMICA - Evaluación riesgo financiero' &&
+                            name() !== 'TÉCNICA - Ficha de Especificaciones Técnicas' &&
+                            name() !== 'TÉCNICA - Hojas de seguridad / MSDS' &&
+                            name() !== 'TÉCNICA - Garantía' &&
+                            name() !== 'TÉCNICA - Envío de muestra' &&
+                            name() !== 'TÉCNICA - Cronograma de entrega / Plazo de entrega' &&
+                            name() !== 'TÉCNICA - Carta de representante de la marca y/o distribuidor autorizado' &&
+                            name() !== 'TÉCNICA - Soporte Post Venta' &&
+                            name() !== 'TÉCNICA - Lugar y forma de entrega'
+
 
 
                         ) || 
@@ -513,7 +628,32 @@
                         (name() === 'Organigrama previsto para la obra' && $root.edificio_organigrama_obra() === 'si') ||
                         (name() === 'Listado de subcontratistas por rubro' && $root.edificio_subcontratistas() === 'si') ||
                         (name() === 'Gestión de H&S (incluir indicadores, procedimientos, detalle de personal, etc.)' && $root.edificio_gestion() === 'si') ||
-                        (name() === 'Listado de máquinas y equipos a utilizar' && $root.edificio_maquinas() === 'si')
+                        (name() === 'Listado de máquinas y equipos a utilizar' && $root.edificio_maquinas() === 'si') ||
+                        (name() === 'TÉCNICA - Propuesta Técnica / Procedimientos / Metodologías / Técnicas aplicadas' && $root.PropuestaTecnica() === 'si') ||
+                        (name() === 'TÉCNICA - Plan de mantenimiento preventivo, correctivo, soporte, evolutivo' && $root.PlanMantenimientoPreventivo() === 'si') ||
+                        (name() === 'TÉCNICA - Inventario de equipos, herramientas, vehículos y/o maquinarias' && $root.InventarioEquipos() === 'si') ||
+                        (name() === 'TÉCNICA - Acreditaciones, Permisos, Autorizaciones' && $root.AcreditacionesPermisos() === 'si') ||
+                        (name() === 'TÉCNICA - Requerimientos tecnológicos de hardware, software y/o conectividad' && $root.RequerimientosTecnologicos() === 'si') ||
+                        (name() === 'TÉCNICA - Requisitos del personal, calificaciones, CV, certificaciones, experiencia, capacitación, etc' && $root.RequisitosPersonal() === 'si') ||
+                        (name() === 'TÉCNICA - Organigrama / Equipo de Trabajo / Niveles de escalamiento' && $root.OrganigramaEquipo() === 'si') ||
+                        (name() === 'TÉCNICA - Valor agregado' && $root.ValorAgregado() === 'si') ||
+                        (name() === 'TÉCNICA - Acuerdos de nivel de servicio' && $root.AcuerdosNivelServicio() === 'si') ||
+
+                        (name() === 'HSEQ - Requisitos matriz HSEQ según Anexo 2' && $root.HseqAnexo2() === 'si') ||
+
+                        (name() === 'ECONÓMICA - Referencias comerciales / Acreditación experiencia' && $root.ReferenciasComerciales() === 'si') ||
+                        
+                        (name() === 'ECONÓMICA - Evaluación riesgo financiero' && $root.RiesgoFinanciero() === 'si') ||
+
+                        (name() === 'TÉCNICA - Ficha de Especificaciones Técnicas' && $root.FichaEspecificaciones() === 'si') ||
+                        (name() === 'TÉCNICA - Hojas de seguridad / MSDS' && $root.MsdsHojasSeguridad() === 'si') ||
+                        (name() === 'TÉCNICA - Garantía' && $root.Garantia() === 'si') ||
+                        (name() === 'TÉCNICA - Envío de muestra' && $root.EnvioMuestra() === 'si') ||
+                        (name() === 'TÉCNICA - Cronograma de entrega / Plazo de entrega' && $root.CronogramaEntrega() === 'si') ||
+                        (name() === 'TÉCNICA - Carta de representante de la marca y/o distribuidor autorizado' && $root.CartaRepresentanteMarca() === 'si') ||
+                        (name() === 'TÉCNICA - Soporte Post Venta' && $root.SoportePostVenta() === 'si') ||
+                        (name() === 'TÉCNICA - Lugar y forma de entrega' && $root.LugarFormaEntrega() === 'si')
+
 
 
 

@@ -672,6 +672,27 @@
                         this.SeguroCaucion = ko.observable(data.list.SeguroCaucion);
                         this.DiagramaGant = ko.observable(data.list.DiagramaGant);
 
+                        this.PropuestaTecnica = ko.observable(data.list.PropuestaTecnica);
+                        this.PlanMantenimientoPreventivo = ko.observable(data.list.PlanMantenimientoPreventivo);
+                        this.NdaFirmado = ko.observable(data.list.NdaFirmado);
+                        this.InventarioEquipos = ko.observable(data.list.InventarioEquipos);
+                        this.AcreditacionesPermisos = ko.observable(data.list.AcreditacionesPermisos);
+                        this.RequerimientosTecnologicos = ko.observable(data.list.RequerimientosTecnologicos);
+                        this.RequisitosPersonal = ko.observable(data.list.RequisitosPersonal);
+                        this.OrganigramaEquipo = ko.observable(data.list.OrganigramaEquipo);
+                        this.ValorAgregado = ko.observable(data.list.ValorAgregado);
+                        this.AcuerdosNivelServicio = ko.observable(data.list.AcuerdosNivelServicio);
+                        this.HseqAnexo2 = ko.observable(data.list.HseqAnexo2);
+                        this.ReferenciasComerciales = ko.observable(data.list.ReferenciasComerciales);
+                        this.RiesgoFinanciero = ko.observable(data.list.RiesgoFinanciero);
+                        this.FichaEspecificaciones = ko.observable(data.list.FichaEspecificaciones);
+                        this.MsdsHojasSeguridad = ko.observable(data.list.MsdsHojasSeguridad);
+                        this.Garantia = ko.observable(data.list.Garantia);
+                        this.EnvioMuestras = ko.observable(data.list.EnvioMuestras);
+                        this.CronogramaEntrega = ko.observable(data.list.CronogramaEntrega);
+                        this.CartaRepresentanteMarca = ko.observable(data.list.CartaRepresentanteMarca);
+                        this.SoportePostVenta = ko.observable(data.list.SoportePostVenta);
+                        this.LugarFormaEntrega = ko.observable(data.list.LugarFormaEntrega);
                         this.ListaProveedores = ko.observable(data.list.ListaProveedores);
                         this.CertificadoVisitaObra = ko.observable(data.list.CertificadoVisitaObra);
 

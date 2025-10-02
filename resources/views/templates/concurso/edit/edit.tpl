@@ -605,6 +605,33 @@
             this.edificio_maquinas = ko.observable(data.list.edificio_maquinas);
             this.concurso_fiscalizado = ko.observable(data.list.concurso_fiscalizado);
             
+            this.PropuestaTecnica = ko.observable(data.list.PropuestaTecnica);
+            this.PlanMantenimientoPreventivo = ko.observable(data.list.PlanMantenimientoPreventivo);
+            this.NdaFirmado = ko.observable(data.list.NdaFirmado);
+            this.InventarioEquipos = ko.observable(data.list.InventarioEquipos);
+            this.AcreditacionesPermisos = ko.observable(data.list.AcreditacionesPermisos);
+            this.RequerimientosTecnologicos = ko.observable(data.list.RequerimientosTecnologicos);
+            this.RequisitosPersonal = ko.observable(data.list.RequisitosPersonal);
+            this.OrganigramaEquipo = ko.observable(data.list.OrganigramaEquipo);
+            this.ValorAgregado = ko.observable(data.list.ValorAgregado);
+            this.AcuerdosNivelServicio = ko.observable(data.list.AcuerdosNivelServicio);
+            this.HseqAnexo2 = ko.observable(data.list.HseqAnexo2);
+            this.ReferenciasComerciales = ko.observable(data.list.ReferenciasComerciales);
+            this.FormaPago = ko.observable(data.list.FormaPago);
+            this.RiesgoFinanciero = ko.observable(data.list.RiesgoFinanciero);
+
+            this.FichaEspecificaciones = ko.observable(data.list.FichaEspecificaciones);
+            this.MsdsHojasSeguridad = ko.observable(data.list.MsdsHojasSeguridad);
+            this.Garantia = ko.observable(data.list.Garantia);
+            this.EnvioMuestras = ko.observable(data.list.EnvioMuestras);
+            this.CronogramaEntrega = ko.observable(data.list.CronogramaEntrega);
+            this.CartaRepresentanteMarca = ko.observable(data.list.CartaRepresentanteMarca);
+            this.SoportePostVenta = ko.observable(data.list.SoportePostVenta);
+            this.LugarFormaEntrega = ko.observable(data.list.LugarFormaEntrega);
+
+
+
+
             this.OferentesAInvitar = ko.observableArray([]).extend({ required: true });
             this.OferentesAInvitarList = ko.observableArray([]);
             this.UsuarioCalificaReputacion = ko.observableArray([]);
@@ -803,6 +830,51 @@
                                 self.obras_cronograma('no')
                                 self.obras_memoria('no')
                                 self.obras_antecedentes('no')
+                            }
+                            if (value == 7) {
+                                // Técnica
+                                self.PropuestaTecnica('no');
+                                self.PlanMantenimientoPreventivo('no');
+                                self.DiagramaGant('no');
+                                self.NdaFirmado('no');
+                                self.InventarioEquipos('no');
+                                self.AcreditacionesPermisos('no');
+                                self.RequerimientosTecnologicos('no');
+                                self.RequisitosPersonal('no');
+                                self.OrganigramaEquipo('no');
+                                self.ValorAgregado('no');
+                                self.AcuerdosNivelServicio('no');
+
+                                // HSEQ
+                                self.HseqAnexo2('no');
+
+                                // Económica
+                                self.ReferenciasComerciales('no');
+                                self.FormaPago('no');
+                                self.RiesgoFinanciero('no');
+                            }
+
+                            // Plantilla 8 (segunda planilla técnica)
+                            if (value == 8) {
+                                // Técnica
+                                self.FichaEspecificaciones('no');
+                                self.MsdsHojasSeguridad('no');
+                                self.Garantia('no');
+                                self.EnvioMuestras('no');
+                                self.CronogramaEntrega('no');
+                                self.CartaRepresentanteMarca('no');
+                                self.SoportePostVenta('no');
+                                self.LugarFormaEntrega('no');
+                                self.ValorAgregado('no');          // reutilizado
+                                self.AcuerdosNivelServicio('no');   // reutilizado
+
+                                // HSEQ
+                                self.HseqAnexo2('no');              // reutilizado
+
+                                // Económica
+                                self.ReferenciasComerciales('no');  // reutilizado
+                                self.FormaPago('no');               // reutilizado
+                                self.RiesgoFinanciero('no');        // reutilizado
                             }
                             if (response.data.list.PlantillaTecnicaSeleccionada.length > 0) {
                                 self.PlantillaTecnicaSeleccionada(new TechnicalPayroll(response.data
