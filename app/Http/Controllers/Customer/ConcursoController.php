@@ -1775,7 +1775,7 @@ class ConcursoController extends BaseController
                 'IsSobrecerrado' => $is_sobrecerrado,
                 'IsOnline' => $is_online,
                 'ReadOnly' => $create ? false : $isReadOnly,
-                'Visible'  => $create ? false : $isVisible,
+                'Visible'  => $create ? true : $isVisible,
                 'BloquearCamposTecnica' => $create ? false : $bloquearCamposTecnica,
                 'BloquearInvitacionOferentes' => $bloquearInvitacionOferentes,
                 'Nombre' => $create && !$is_copy ? '' : $concurso->nombre,
