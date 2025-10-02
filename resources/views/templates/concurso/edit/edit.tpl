@@ -1248,6 +1248,7 @@
 
             this.removeAll = function() {
                 self.Entity.OferentesAInvitar([]);
+                self.clearFilters();
             }
 
             this.addFilteredToInvite = function () {
