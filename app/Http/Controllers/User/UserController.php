@@ -786,12 +786,25 @@ class UserController extends BaseController
         
         if ($creation) {
             $conditional_rules = array_merge($conditional_rules, [
-                'username' => 'required|string|max:50|unique:users,username',
+                'username' => [
+                'required',
+                'string',
+                'max:50',
+                Rule::unique('users', 'username')
+                    ->whereNull('deleted_at'),
+                ],
                 'password' => 'required|string|confirmed|min:8'
             ]);
         } else {
             $conditional_rules = array_merge($conditional_rules, [
-                'username' => 'nullable|string|max:50|unique:users,username,' . $body->Id . ',id',
+                'username' => [
+                'nullable',
+                'string',
+                'max:50',
+                Rule::unique('users', 'username')
+                    ->ignore($body->Id, 'id')
+                    ->whereNull('deleted_at'),
+                ],      
                 'password' => 'nullable|string|confirmed|min:8'
             ]);
         }
