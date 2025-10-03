@@ -1025,37 +1025,37 @@ class TechnicalProposalController extends BaseController
         // ===================== Plantilla 8 =====================
         if ($concurso->ficha_especificaciones === 'si') {
             $conditional_rules = array_merge($conditional_rules, [
-                'technical_documents.52.filename' => 'required'
+                'technical_documents.61.filename' => 'required'
             ]);
         }
         if ($concurso->msds_hojas_seguridad === 'si') {
             $conditional_rules = array_merge($conditional_rules, [
-                'technical_documents.53.filename' => 'required'
+                'technical_documents.62.filename' => 'required'
             ]);
         }
         if ($concurso->garantia_tecnica === 'si') {
             $conditional_rules = array_merge($conditional_rules, [
-                'technical_documents.54.filename' => 'required'
+                'technical_documents.63.filename' => 'required'
             ]);
         }
         if ($concurso->cronograma_entrega === 'si') {
             $conditional_rules = array_merge($conditional_rules, [
-                'technical_documents.55.filename' => 'required'
+                'technical_documents.64.filename' => 'required'
             ]);
         }
         if ($concurso->carta_representante_marca === 'si') {
             $conditional_rules = array_merge($conditional_rules, [
-                'technical_documents.56.filename' => 'required'
+                'technical_documents.65.filename' => 'required'
             ]);
         }
         if ($concurso->soporte_post_venta === 'si') {
             $conditional_rules = array_merge($conditional_rules, [
-                'technical_documents.57.filename' => 'required'
+                'technical_documents.66.filename' => 'required'
             ]);
         }
         if ($concurso->lugar_forma_entrega === 'si') {
             $conditional_rules = array_merge($conditional_rules, [
-                'technical_documents.58.filename' => 'required'
+                'technical_documents.67.filename' => 'required'
             ]);
         }
 

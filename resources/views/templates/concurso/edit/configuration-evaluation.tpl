@@ -1071,6 +1071,116 @@
                 </label>
             </div>
         </div>
+        <div class="form-group col-md-6">
+            <span>Lugar y forma de entrega</span>
+            <div class="pull-right">
+                <label class="radio-inline">
+                    <input type="radio" value="si"
+                        data-bind="checked: Entity.LugarFormaEntrega, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    SI
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" value="no"
+                        data-bind="checked: Entity.LugarFormaEntrega, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    NO
+                </label>
+            </div>
+        </div>
+        <div class="form-group col-md-6">
+            <span>Valor agregado</span>
+            <div class="pull-right">
+                <label class="radio-inline">
+                    <input type="radio" value="si"
+                        data-bind="checked: Entity.ValorAgregado, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    SI
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" value="no"
+                        data-bind="checked: Entity.ValorAgregado, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    NO
+                </label>
+            </div>
+        </div>
+
+        <div class="form-group col-md-6">
+            <span>Acuerdos de nivel de servicio</span>
+            <div class="pull-right">
+                <label class="radio-inline">
+                    <input type="radio" value="si"
+                        data-bind="checked: Entity.AcuerdosNivelServicio, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    SI
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" value="no"
+                        data-bind="checked: Entity.AcuerdosNivelServicio, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    NO
+                </label>
+            </div>
+        </div>
+
+        <div class="form-group col-md-6">
+            <span>Requisitos matriz HSEQ según Anexo 2</span>
+            <div class="pull-right">
+                <label class="radio-inline">
+                    <input type="radio" value="si"
+                        data-bind="checked: Entity.HseqAnexo2, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    SI
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" value="no"
+                        data-bind="checked: Entity.HseqAnexo2, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    NO
+                </label>
+            </div>
+        </div>
+
+        <div class="form-group col-md-6">
+            <span>Referencias comerciales / Acreditación experiencia</span>
+            <div class="pull-right">
+                <label class="radio-inline">
+                    <input type="radio" value="si"
+                        data-bind="checked: Entity.ReferenciasComerciales, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    SI
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" value="no"
+                        data-bind="checked: Entity.ReferenciasComerciales, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    NO
+                </label>
+            </div>
+        </div>
+
+        <div class="form-group col-md-6">
+            <span>Forma de pago</span>
+            <div class="pull-right">
+                <label class="radio-inline">
+                    <input type="radio" value="si"
+                        data-bind="checked: Entity.FormaPago, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    SI
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" value="no"
+                        data-bind="checked: Entity.FormaPago, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    NO
+                </label>
+            </div>
+        </div>
+
+        <div class="form-group col-md-6">
+            <span>Evaluación riesgo financiero</span>
+            <div class="pull-right">
+                <label class="radio-inline">
+                    <input type="radio" value="si"
+                        data-bind="checked: Entity.RiesgoFinanciero, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    SI
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" value="no"
+                        data-bind="checked: Entity.RiesgoFinanciero, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    NO
+                </label>
+            </div>
+        </div>
     </div>
     <!-- /ko -->
 
