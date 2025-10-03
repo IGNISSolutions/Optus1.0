@@ -51,7 +51,7 @@ class TechnicalProposalController extends BaseController
                 ]);
                 $fields = [];
             } else {
-                $etapa = $rondaTecnicaOferente == 1 ? Participante::ETAPA_TECNICA_PRESENTADA['tecnica-presentada']:Participante::ETAPA_TECNICA_PRESENTADA['tecnica-presentada-'.$rondaTecnicaOferente];
+                $etapa = $rondaTecnicaOferente == 1 ? Participante::ETAPA_TECNICA_PRESENTADA['tecnica-presentada'] : Participante::ETAPA_TECNICA_PRESENTADA['tecnica-presentada-' . $rondaTecnicaOferente];
             }
 
             if (!$concurso->is_go) {
@@ -103,7 +103,7 @@ class TechnicalProposalController extends BaseController
                         $fechaCampo = 'fecha_quinta_ronda_tecnica';
                         break;
                 }
-                
+
                 if ($fechaCampo && !$oferente->$fechaCampo) {
                     $oferente->$fechaCampo = Carbon::now()->format('Y-m-d H:i:s');
                     $oferente->save();
@@ -124,7 +124,7 @@ class TechnicalProposalController extends BaseController
                 $oferente->refresh();
 
                 $result = $this->updateDocuments($concurso, $oferente, $body);
-                
+
                 if ($result['success']) {
                     // Genera los mensajes desde los templates
                     $template1 = rootPath(config('app.templates_path')) . '/email/proposal-send.tpl';
@@ -136,7 +136,7 @@ class TechnicalProposalController extends BaseController
                         'proveedor' => $user->offerer_company->business_name,
                         'nuevaRonda' => Participante::RONDAS[$oferente->ronda_tecnica] . ' Técnica',
                     ]);
-                
+
                     $template2 = rootPath(config('app.templates_path')) . '/email/technical-confirmation.tpl';
                     $message2 = $this->fetch($template2, [
                         'concurso' => $concurso,
@@ -145,7 +145,7 @@ class TechnicalProposalController extends BaseController
                         'cliente' => $concurso->cliente->customer_company->business_name,
                         'proveedor' => $user->offerer_company->business_name,
                     ]);
-                
+
                     // Prepara los correos
                     $emails = [
                         [
@@ -164,10 +164,10 @@ class TechnicalProposalController extends BaseController
                             'alias' => '',
                         ],
                     ];
-                
+
                     // Envía los correos
                     $results = $emailService->sendMultiple($emails);
-                
+
                     // Manejo de resultados
                     foreach ($results as $res) {
                         if (!$res['success']) {
@@ -177,15 +177,15 @@ class TechnicalProposalController extends BaseController
                             break;
                         }
                     }
-                
+
                     $success = true;
                 } else {
                     $success = false;
                     $message = $result['message'];
                     $status = 422;
                 }
-                
-                
+
+
             }
 
             if ($success) {
@@ -235,7 +235,7 @@ class TechnicalProposalController extends BaseController
             $user = user();
             $concurso = Concurso::find($concursoId);
             $oferente = $concurso->oferentes->where('id_offerer', $user->offerer_company_id)->first();
-            
+
 
             if ($concurso->is_go) {
                 $redirect_url = route('concursos.oferente.serveDetail', [
@@ -256,7 +256,7 @@ class TechnicalProposalController extends BaseController
             }
 
             $validator = $this->validate($body, $fields);
-            
+
             if ($validator->fails()) {
                 $success = false;
                 $message = $validator->errors()->first();
@@ -277,7 +277,7 @@ class TechnicalProposalController extends BaseController
                 }
                 $technical_proposal->update($fields);
                 $oferente->refresh();
-                
+
                 $fechaCampo = null;
                 switch ((int) $oferente->ronda_tecnica) {
                     case 1:
@@ -296,12 +296,12 @@ class TechnicalProposalController extends BaseController
                         $fechaCampo = 'fecha_quinta_ronda_tecnica';
                         break;
                 }
-                
+
                 if ($fechaCampo && !$oferente->$fechaCampo) {
                     $oferente->$fechaCampo = Carbon::now()->format('Y-m-d H:i:s');
                     $oferente->save();
                 }
-                
+
                 $result = $this->updateDocuments($concurso, $oferente, $body);
 
                 if ($result['success']) {
@@ -669,7 +669,7 @@ class TechnicalProposalController extends BaseController
             ]);
         }
 
-        
+
 
         if ($concurso->seguro_caucion === 'si') {
             $conditional_rules = array_merge($conditional_rules, [
@@ -803,7 +803,7 @@ class TechnicalProposalController extends BaseController
                 'technical_documents.26.filename' => 'required'
             ]);
         }
-        
+
         if ($concurso->edificio_balance === 'si') {
             $conditional_rules = array_merge($conditional_rules, [
                 'technical_documents.27.filename' => 'required'
@@ -862,7 +862,7 @@ class TechnicalProposalController extends BaseController
 
 
 
-               // if ($concurso->entrega_doc_evaluacion === 'si') {
+        // if ($concurso->entrega_doc_evaluacion === 'si') {
         //     $conditional_rules = array_merge($conditional_rules, [
         //         'technical_documents.38.filename' => 'required'
         //     ]);
@@ -916,7 +916,7 @@ class TechnicalProposalController extends BaseController
         //     ]);
         // }
 
-        
+
 
         /*if ($concurso->lista_prov === 'si') {
             $conditional_rules = array_merge($conditional_rules, [
@@ -933,7 +933,7 @@ class TechnicalProposalController extends BaseController
                 ],
             ]);
         }
-    
+
         if ($concurso->cert_visita === 'si') {
             $conditional_rules = array_merge($conditional_rules, [
                 'technical_documents.*.filename' => [
@@ -949,6 +949,116 @@ class TechnicalProposalController extends BaseController
                 ],
             ]);
         }*/
+
+        // ===================== Plantilla 7 (incluye Propuesta Técnica) =====================
+        if ($concurso->propuesta_tecnica === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.47.filename' => 'required'
+            ]);
+        }
+        if ($concurso->plan_mantenimiento_preventivo === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.48.filename' => 'required'
+            ]);
+        }
+        if ($concurso->nda_firmado === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.49.filename' => 'required'
+            ]);
+        }
+        if ($concurso->inventario_equipos === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.50.filename' => 'required'
+            ]);
+        }
+        if ($concurso->acreditaciones_permisos === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.51.filename' => 'required'
+            ]);
+        }
+        if ($concurso->requerimientos_tecnologicos === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.52.filename' => 'required'
+            ]);
+        }
+        if ($concurso->requisitos_personal === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.53.filename' => 'required'
+            ]);
+        }
+        if ($concurso->organigrama_equipo === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.54.filename' => 'required'
+            ]);
+        }
+        if ($concurso->valor_agregado === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.55.filename' => 'required'
+            ]);
+        }
+        if ($concurso->acuerdos_nivel_servicio === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.56.filename' => 'required'
+            ]);
+        }
+        if ($concurso->hseq_anexo2 === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.57.filename' => 'required'
+            ]);
+        }
+        if ($concurso->referencias_comerciales === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.58.filename' => 'required'
+            ]);
+        }
+        if ($concurso->forma_pago === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.59.filename' => 'required'
+            ]);
+        }
+        if ($concurso->riesgo_financiero === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.60.filename' => 'required'
+            ]);
+        }
+
+        // ===================== Plantilla 8 =====================
+        if ($concurso->ficha_especificaciones === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.52.filename' => 'required'
+            ]);
+        }
+        if ($concurso->msds_hojas_seguridad === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.53.filename' => 'required'
+            ]);
+        }
+        if ($concurso->garantia_tecnica === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.54.filename' => 'required'
+            ]);
+        }
+        if ($concurso->cronograma_entrega === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.55.filename' => 'required'
+            ]);
+        }
+        if ($concurso->carta_representante_marca === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.56.filename' => 'required'
+            ]);
+        }
+        if ($concurso->soporte_post_venta === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.57.filename' => 'required'
+            ]);
+        }
+        if ($concurso->lugar_forma_entrega === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.58.filename' => 'required'
+            ]);
+        }
+
 
         return validator(
             $data = $fields,
@@ -992,7 +1102,7 @@ class TechnicalProposalController extends BaseController
                 'technical_documents.35.filename.required' => 'Las Máquinas del Edificio son obligatorias.',
                 'technical_documents.36.filename.required' => 'La Lista de Sub Contratistas es obligatoria.',
                 'technical_documents.37.filename.required' => 'El Certificado de Visita es obligatorio.',
-                
+
                 'technical_documents.38.filename.required' => 'El Documento Evaluacion es obligatoria.',
 
                 'technical_documents.39.filename.required' => 'Los Requisitos Legales son obligatorios',
@@ -1000,14 +1110,38 @@ class TechnicalProposalController extends BaseController
                 'technical_documents.41.filename.required' => 'La Documentación REPSE es obligatoria',
 
                 'technical_documents.42.filename.required' => 'Alcance es obligatorio',
-                'technical_documents.43.filename.required' => 'La Forma de Pago es obligatoria',
-               // 'technical_documents.44.filename.required' => 'El Tiempo de Fabricación es obligatorio ',
+                //'technical_documents.43.filename.required' => 'La Forma de Pago es obligatoria',
+                // 'technical_documents.44.filename.required' => 'El Tiempo de Fabricación es obligatorio ',
                 'technical_documents.45.filename.required' => 'La Ficha Técnica es obligatorio ',
-               // 'technical_documents.46.filename.required' => 'Garantias es obligatorio '
-                    
+                // 'technical_documents.46.filename.required' => 'Garantias es obligatorio '
+                // ===================== Plantilla 7 =====================
+                'technical_documents.47.filename.required' => 'La Propuesta Técnica / Procedimientos / Metodologías / Técnicas aplicadas es obligatoria.',
+                'technical_documents.48.filename.required' => 'El Plan de mantenimiento preventivo/correctivo/soporte/evolutivo es obligatorio.',
+                'technical_documents.49.filename.required' => 'El Acuerdo de confidencialidad (NDA) es obligatorio.',
+                'technical_documents.50.filename.required' => 'El Inventario de equipos/herramientas/vehículos/maquinarias es obligatorio.',
+                'technical_documents.51.filename.required' => 'Las Acreditaciones/Permisos/Autorizaciones son obligatorias.',
+                'technical_documents.52.filename.required' => 'Los Requerimientos tecnológicos (hardware/software/conectividad) son obligatorios.',
+                'technical_documents.53.filename.required' => 'Los Requisitos del personal (calificaciones/CV/certificaciones/experiencia/capacitación) son obligatorios.',
+                'technical_documents.54.filename.required' => 'El Organigrama/Equipo de trabajo/Niveles de escalamiento es obligatorio.',
+                'technical_documents.55.filename.required' => 'El documento de Valor agregado es obligatorio.',
+                'technical_documents.56.filename.required' => 'Los Acuerdos de nivel de servicio son obligatorios.',
+                'technical_documents.57.filename.required' => 'Los Requisitos matriz HSEQ (Anexo 2) son obligatorios.',
+                'technical_documents.58.filename.required' => 'Las Referencias comerciales/Acreditación de experiencia son obligatorias.',
+                'technical_documents.59.filename.required' => 'La Forma de pago es obligatoria.',
+                'technical_documents.60.filename.required' => 'La Evaluación de riesgo financiero es obligatoria.',
+
+                // ===================== Plantilla 8 =====================
+                'technical_documents.61.filename.required' => 'La Ficha de Especificaciones Técnicas es obligatoria.',
+                'technical_documents.62.filename.required' => 'Las Hojas de seguridad / MSDS son obligatorias.',
+                'technical_documents.63.filename.required' => 'La Garantía es obligatoria.',
+                'technical_documents.64.filename.required' => 'El Cronograma/Plazo de entrega es obligatorio.',
+                'technical_documents.65.filename.required' => 'La Carta de representante de la marca y/o distribuidor autorizado es obligatoria.',
+                'technical_documents.66.filename.required' => 'El Soporte Post Venta es obligatorio.',
+                'technical_documents.67.filename.required' => 'El documento de Lugar y forma de entrega es obligatorio.',
 
 
-        
+
+
             ]
         );
     }
@@ -1097,7 +1231,7 @@ class TechnicalProposalController extends BaseController
                 ]);
 
                 $proveedor->refresh();
-                
+
                 $emailService = new EmailService();
 
                 // Email send
@@ -1105,18 +1239,18 @@ class TechnicalProposalController extends BaseController
                 $subject = $concurso->nombre . ' - ' . $title;
                 $template = rootPath(config('app.templates_path')) . '/email/technical-new-round.tpl';
                 $users = User::where('offerer_company_id', $proveedor->id_offerer)->pluck('email');
-                
+
                 $html = $this->fetch($template, [
                     'title' => $title,
                     'ano' => Carbon::now()->format('Y'),
                     'concurso' => $concurso,
                     'company_name' => $proveedor->company->business_name,
                     'comentario' => $comentarioRonda,
-                    'nuevaRonda' => Participante::RONDAS[$rondaTechNueva].' Técnica'
+                    'nuevaRonda' => Participante::RONDAS[$rondaTechNueva] . ' Técnica'
                 ]);
-                
+
                 $result = $emailService->send($html, $subject, $users, "");
-                
+
                 if (!$result['success']) {
                     $error = true;
                     $status = 422;
@@ -1126,7 +1260,7 @@ class TechnicalProposalController extends BaseController
 
                 if ($result['success']) {
                     $success = true;
-                    $message = Participante::RONDAS[$rondaTechNueva].' Técnica enviada con éxito.';
+                    $message = Participante::RONDAS[$rondaTechNueva] . ' Técnica enviada con éxito.';
                     $connection->commit();
                 }
             }
