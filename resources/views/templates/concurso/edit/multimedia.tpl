@@ -13,7 +13,7 @@
 
                         <!-- Deshabilito SOLO la celda del input -->
                         <td class="col-md-5 vertical-align-middle">
-                        <fieldset data-bind="attr: { disabled: $root.Visible }" style="border:0;margin:0;padding:0;">
+                        <fieldset data-bind="attr: { disabled: !$root.Visible() }" style="border:0;margin:0;padding:0;">
                             <input
                             name="file[]"
                             type="file"

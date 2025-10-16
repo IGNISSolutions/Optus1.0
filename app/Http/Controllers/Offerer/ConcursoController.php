@@ -766,6 +766,35 @@ class ConcursoController extends BaseController
                         'TechnicalProposal' => $oferente->parsed_technical_proposal,
                         'SeguroCaucion' => isset($concurso->seguro_caucion) ? $concurso->seguro_caucion : 'no',
                         'DiagramaGant' => isset($concurso->diagrama_gant) ? $concurso->diagrama_gant : 'no',
+                        // =====================
+                        // PLANTILLA 7 (TÉCNICA/HSEQ/ECONÓMICA)
+                        // =====================
+                        'PropuestaTecnica'        => isset($concurso->propuesta_tecnica) ? $concurso->propuesta_tecnica : 'no',
+                        'PlanMantenimientoPreventivo' => isset($concurso->plan_mantenimiento_preventivo) ? $concurso->plan_mantenimiento_preventivo : 'no',
+                        'NdaFirmado'              => isset($concurso->nda_firmado) ? $concurso->nda_firmado : 'no',
+                        'InventarioEquipos'       => isset($concurso->inventario_equipos) ? $concurso->inventario_equipos : 'no',
+                        'AcreditacionesPermisos'  => isset($concurso->acreditaciones_permisos) ? $concurso->acreditaciones_permisos : 'no',
+                        'RequerimientosTecnologicos' => isset($concurso->requerimientos_tecnologicos) ? $concurso->requerimientos_tecnologicos : 'no',
+                        'RequisitosPersonal'      => isset($concurso->requisitos_personal) ? $concurso->requisitos_personal : 'no',
+                        'OrganigramaEquipo'       => isset($concurso->organigrama_equipo) ? $concurso->organigrama_equipo : 'no',
+                        'ValorAgregado'           => isset($concurso->valor_agregado) ? $concurso->valor_agregado : 'no',
+                        'AcuerdosNivelServicio'   => isset($concurso->acuerdos_nivel_servicio) ? $concurso->acuerdos_nivel_servicio : 'no',
+
+                        'HseqAnexo2'              => isset($concurso->hseq_anexo2) ? $concurso->hseq_anexo2 : 'no',
+
+                        'ReferenciasComerciales'  => isset($concurso->referencias_comerciales) ? $concurso->referencias_comerciales : 'no',
+                        'RiesgoFinanciero'        => isset($concurso->riesgo_financiero) ? $concurso->riesgo_financiero : 'no',
+
+                        // =====================
+                        // PLANTILLA 8 (TÉCNICA)
+                        // =====================
+                        'FichaEspecificaciones'   => isset($concurso->ficha_especificaciones) ? $concurso->ficha_especificaciones : 'no',
+                        'MsdsHojasSeguridad'      => isset($concurso->msds_hojas_seguridad) ? $concurso->msds_hojas_seguridad : 'no',
+                        'Garantia'                => isset($concurso->garantia_tecnica) ? $concurso->garantia_tecnica : 'no',
+                        'CronogramaEntrega'       => isset($concurso->cronograma_entrega) ? $concurso->cronograma_entrega : 'no',
+                        'CartaRepresentanteMarca' => isset($concurso->carta_representante_marca) ? $concurso->carta_representante_marca : 'no',
+                        'SoportePostVenta'        => isset($concurso->soporte_post_venta) ? $concurso->soporte_post_venta : 'no',
+                        'LugarFormaEntrega'       => isset($concurso->lugar_forma_entrega) ? $concurso->lugar_forma_entrega : 'no',
 
                         'ListaProveedores' => isset($concurso->lista_prov) ? $concurso->lista_prov : 'no',
                         'CertificadoVisitaObra' => isset($concurso->cert_visita) ? $concurso->cert_visita : 'no',

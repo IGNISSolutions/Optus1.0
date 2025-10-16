@@ -585,18 +585,27 @@ class ConcursoController extends BaseController
             // CONVOCATORIA OFERENTES
             $concursos = collect($created)
                 ->filter(function ($concurso) {
-                    // Oferentes que llegaron a la etapa de convocatoria
-                    $pendientes = $concurso->oferentes_etapa_convocatoria->count();
-                    // Oferentes que ya aceptaron invitación
-                    $aceptadas = $concurso->oferentes
-                        ->where('has_invitacion_aceptada', true)
+                    // Mismo universo para ambos contadores (ej.: excluir seleccionados si aplica)
+                    $oferentesBase = $concurso->oferentes->where('is_seleccionado', false);
+
+                    // Pendientes: exactamente en 'invitacion-pendiente'
+                    $pendientes = $oferentesBase
+                        ->where('etapa_actual', 'invitacion-pendiente')
                         ->count();
 
-                    // Sólo incluimos si hay pendientes Y cero aceptadas
+                    // Aceptadas: por etapa_actual o flag legacy (por si conviven ambos)
+                    $aceptadas = $oferentesBase
+                        ->filter(function ($o) {
+                            return ($o->etapa_actual === 'invitacion-aceptada')
+                                || ((bool)$o->has_invitacion_aceptada === true);
+                        })
+                        ->count();
+
+                    // Mostrar solo si hay pendientes y ninguna aceptada
                     return $pendientes > 0 && $aceptadas === 0;
                 })
                 ->sortBy('id');
-                    
+
             foreach ($concursos as $concurso) {
                 $oferentes = $concurso->oferentes->where('is_seleccionado', false);
 
@@ -605,7 +614,10 @@ class ConcursoController extends BaseController
                     [
                         'CantidadOferentes'      => $oferentes->count(),
                         'CantidadPresentaciones' => $oferentes
-                            ->where('has_invitacion_aceptada', true)
+                            ->filter(function ($o) {
+                                return ($o->etapa_actual === 'invitacion-aceptada')
+                                    || ((bool)$o->has_invitacion_aceptada === true);
+                            })
                             ->count(),
                     ]
                 );
@@ -1685,7 +1697,36 @@ class ConcursoController extends BaseController
                 if ($is_sobrecerrado) {
                     $isReadOnly = ($is_revisado && $concurso->ronda_actual == 1) || $concurso->ronda_actual > 1;
                     $bloquearInvitacionOferentes = $invitacionesExistentes;
-                    $isVisible = $fechaEconomicaLicitacion < $fechaActual;
+                    
+                    // --- NO venció (hoy < fecha económica) ---
+                    $noVencio = false;
+                    if (!empty($fechaEconomicaLicitacion) && !empty($fechaActual)) {
+                        $noVencio = strtotime($fechaActual) < strtotime($fechaEconomicaLicitacion);
+                    }
+
+                    // --- Todos los oferentes en 'seleccionado' ---
+                    $total = ($concurso->oferentes) ? $concurso->oferentes->count() : 0;
+
+                    // true solo si hay oferentes y ninguno está distinto de 'seleccionado'
+                    $todosSeleccionados = ($total > 0)
+                        && ($concurso->oferentes->where('etapa_actual', '!=', 'seleccionado')->count() === 0);
+
+                    // --- Regla final: visible si NO venció O todos seleccionados ---
+                    $isVisible = $noVencio || $todosSeleccionados;
+
+                    
+                    $txt1 = fopen("NoVencio.txt", "w");
+                    fwrite($txt1, $noVencio ? "true" . PHP_EOL : "false" . PHP_EOL);
+                    fclose($txt1);
+
+                    $txt2 = fopen("TodoSelect.txt", "w");
+                    fwrite($txt2, $todosSeleccionados ? "true" . PHP_EOL : "false" . PHP_EOL);
+                    fclose($txt2);
+
+                    $txt3 = fopen("Visible.txt", "w");
+                    fwrite($txt3, $isVisible ? "true" . PHP_EOL : "false" . PHP_EOL);
+                    fclose($txt3);
+
                     
                 } elseif ($is_online) {
                     $isReadOnly = ($fechasubasta < $fechaActual); // Asegúrate de usar ">" en lugar de ">="
@@ -1734,7 +1775,7 @@ class ConcursoController extends BaseController
                 'IsSobrecerrado' => $is_sobrecerrado,
                 'IsOnline' => $is_online,
                 'ReadOnly' => $create ? false : $isReadOnly,
-                'Visible'  => $create ? false : $isVisible,
+                'Visible'  => $create ? true : $isVisible,
                 'BloquearCamposTecnica' => $create ? false : $bloquearCamposTecnica,
                 'BloquearInvitacionOferentes' => $bloquearInvitacionOferentes,
                 'Nombre' => $create && !$is_copy ? '' : $concurso->nombre,
@@ -1774,9 +1815,30 @@ class ConcursoController extends BaseController
                 : $concurso->fecha_limite->format('d-m-Y H:i'),               
                 'SeguroCaucion' => $create && !$is_copy ? 'no' : $concurso->seguro_caucion,
                 'DiagramaGant' => $create && !$is_copy ? 'no' : $concurso->diagrama_gant,
-
                 'CertificadoVisitaObra' => $create && !$is_copy ? 'no' : $concurso->cert_visita,
                 'ListaProveedores' => $create && !$is_copy ? 'no' : $concurso->lista_prov,
+
+                'PropuestaTecnica'         => $create && !$is_copy ? 'no' : ($concurso->propuesta_tecnica ?? 'no'),
+                'PlanMantenimientoPreventivo' => $create && !$is_copy ? 'no' : ($concurso->plan_mantenimiento_preventivo ?? 'no'),
+                'NdaFirmado'               => $create && !$is_copy ? 'no' : ($concurso->nda_firmado ?? $concurso->acuerdo_confidencialidad ?? 'no'),
+                'InventarioEquipos'        => $create && !$is_copy ? 'no' : ($concurso->inventario_equipos ?? 'no'),
+                'AcreditacionesPermisos'   => $create && !$is_copy ? 'no' : ($concurso->acreditaciones_permisos ?? 'no'),
+                'RequerimientosTecnologicos'=> $create && !$is_copy ? 'no' : ($concurso->requerimientos_tecnologicos ?? 'no'),
+                'RequisitosPersonal'       => $create && !$is_copy ? 'no' : ($concurso->requisitos_personal ?? 'no'),
+                'OrganigramaEquipo'        => $create && !$is_copy ? 'no' : ($concurso->organigrama_equipo ?? 'no'),
+                'ValorAgregado'            => $create && !$is_copy ? 'no' : ($concurso->valor_agregado ?? 'no'),
+                'AcuerdosNivelServicio'    => $create && !$is_copy ? 'no' : ($concurso->acuerdos_nivel_servicio ?? 'no'),
+                'HseqAnexo2'               => $create && !$is_copy ? 'no' : ($concurso->hseq_anexo2 ?? 'no'),
+                'ReferenciasComerciales'   => $create && !$is_copy ? 'no' : ($concurso->referencias_comerciales ?? $concurso->referencias_comerciales ?? 'no'),
+                'FormaPago'                => $create && !$is_copy ? 'no' : ($concurso->forma_pago ?? $concurso->forma_pago ?? 'no'),
+                'FichaEspecificaciones'    => $create && !$is_copy ? 'no' : ($concurso->ficha_especificaciones ?? 'no'),
+                'MsdsHojasSeguridad'       => $create && !$is_copy ? 'no' : ($concurso->msds_hojas_seguridad ?? 'no'),
+                'Garantia'                 => $create && !$is_copy ? 'no' : ($concurso->garantia_tecnica ?? 'no'),
+                'CronogramaEntrega'        => $create && !$is_copy ? 'no' : ($concurso->cronograma_entrega ?? 'no'),
+                'CartaRepresentanteMarca'  => $create && !$is_copy ? 'no' : ($concurso->carta_representante_marca ?? 'no'),
+                'SoportePostVenta'         => $create && !$is_copy ? 'no' : ($concurso->soporte_post_venta ?? $concurso->soporte_postventa ?? 'no'),
+                'LugarFormaEntrega'        => $create && !$is_copy ? 'no' : ($concurso->lugar_forma_entrega ?? 'no'),
+                'RiesgoFinanciero'         => $create && !$is_copy ? 'no' : ($concurso->riesgo_financiero ?? 'no'),
 
                 'UsuariosCalificanReputacion' => $user->getEvaluadoresTecnicaList(),
                 'UsuariosSupervisores' => $user->getSupervisoresList(),
@@ -4239,6 +4301,36 @@ class ConcursoController extends BaseController
             'cert_visita' => $entity->CertificadoVisitaObra,
 
             'diagrama_gant' => $entity->DiagramaGant,
+            'propuesta_tecnica'            => $entity->PropuestaTecnica,
+            'plan_mantenimiento_preventivo'=> $entity->PlanMantenimientoPreventivo,
+            'nda_firmado'                  => $entity->NdaFirmado,
+            'inventario_equipos'           => $entity->InventarioEquipos,
+            'acreditaciones_permisos'      => $entity->AcreditacionesPermisos,
+            'requerimientos_tecnologicos'  => $entity->RequerimientosTecnologicos,
+            'requisitos_personal'          => $entity->RequisitosPersonal,
+            'organigrama_equipo'           => $entity->OrganigramaEquipo,
+            'valor_agregado'               => $entity->ValorAgregado,
+            'acuerdos_nivel_servicio'      => $entity->AcuerdosNivelServicio,
+
+            'hseq_anexo2'                  => $entity->HseqAnexo2,
+
+            'referencias_comerciales'      => $entity->ReferenciasComerciales,
+            'forma_pago'                   => $entity->FormaPago,
+            'riesgo_financiero'            => $entity->RiesgoFinanciero,
+
+            // =====================
+            // PLANTILLA 8 (técnica) + reutilizados
+            // =====================
+            'ficha_especificaciones'       => $entity->FichaEspecificaciones,
+            'msds_hojas_seguridad'         => $entity->MsdsHojasSeguridad,
+            'garantia_tecnica'             => $entity->Garantia,            
+            'envio_muestra'                => $entity->EnvioMuestras,        
+            'cronograma_entrega'           => $entity->CronogramaEntrega,
+            'carta_representante_marca'    => $entity->CartaRepresentanteMarca,
+            'soporte_post_venta'           => $entity->SoportePostVenta,
+            'lugar_forma_entrega'          => $entity->LugarFormaEntrega,
+
+
             'base_condiciones_firmado' => $entity->BaseCondicionesFirmado,
             'condiciones_generales' => $entity->CondicionesGenerales,
             'pliego_tecnico' => $entity->PliegoTecnico,
@@ -4486,6 +4578,34 @@ class ConcursoController extends BaseController
             'cert_visita' => $entity->CertificadoVisitaObra,
 
             'diagrama_gant' => $entity->DiagramaGant,
+            'propuesta_tecnica'            => $entity->PropuestaTecnica,
+            'plan_mantenimiento_preventivo'=> $entity->PlanMantenimientoPreventivo,
+            'nda_firmado'                  => $entity->NdaFirmado,
+            'inventario_equipos'           => $entity->InventarioEquipos,
+            'acreditaciones_permisos'      => $entity->AcreditacionesPermisos,
+            'requerimientos_tecnologicos'  => $entity->RequerimientosTecnologicos,
+            'requisitos_personal'          => $entity->RequisitosPersonal,
+            'organigrama_equipo'           => $entity->OrganigramaEquipo,
+            'valor_agregado'               => $entity->ValorAgregado,
+            'acuerdos_nivel_servicio'      => $entity->AcuerdosNivelServicio,
+
+            'hseq_anexo2'                  => $entity->HseqAnexo2,
+
+            'referencias_comerciales'      => $entity->ReferenciasComerciales,
+            'forma_pago'                   => $entity->FormaPago,
+            'riesgo_financiero'            => $entity->RiesgoFinanciero,
+
+            // =====================
+            // PLANTILLA 8 (técnica) + reutilizados
+            // =====================
+            'ficha_especificaciones'       => $entity->FichaEspecificaciones,
+            'msds_hojas_seguridad'         => $entity->MsdsHojasSeguridad,
+            'garantia_tecnica'             => $entity->Garantia,                 
+            'cronograma_entrega'           => $entity->CronogramaEntrega,
+            'carta_representante_marca'    => $entity->CartaRepresentanteMarca,
+            'soporte_post_venta'           => $entity->SoportePostVenta,
+            'lugar_forma_entrega'          => $entity->LugarFormaEntrega,
+
             'base_condiciones_firmado' => $entity->BaseCondicionesFirmado,
             'condiciones_generales' => $entity->CondicionesGenerales,
             'pliego_tecnico' => $entity->PliegoTecnico,
@@ -4758,7 +4878,31 @@ class ConcursoController extends BaseController
 
             'lista_prov' => 'Lista de proveedores',
             'cert_visita' => 'Certificado de visita de obra',
+            'propuesta_tecnica'           => 'Propuesta Técnica / Procedimientos / Metodologías / Técnicas aplicadas',
+            'plan_mantenimiento_preventivo'=> 'Plan de mantenimiento preventivo, correctivo, soporte, evolutivo',
+            'nda_firmado'                 => 'Acuerdo de confidencialidad FIRMADO',
+            'inventario_equipos'          => 'Inventario de equipos, herramientas, vehículos y/o maquinarias',
+            'acreditaciones_permisos'     => 'Acreditaciones, Permisos, Autorizaciones',
+            'requerimientos_tecnologicos' => 'Requerimientos tecnológicos de hardware, software y/o conectividad',
+            'requisitos_personal'         => 'Requisitos del personal, calificaciones, CV, certificaciones, experiencia, capacitación, etc',
+            'organigrama_equipo'          => 'Organigrama / Equipo de Trabajo / Niveles de escalamiento',
+            'valor_agregado'              => 'Valor agregado',
+            'acuerdos_nivel_servicio'     => 'Acuerdos de nivel de servicio',
 
+            'hseq_anexo2'                 => 'HSEQ - Requisitos matriz HSEQ según Anexo 2',
+
+            'referencias_comerciales'     => 'ECONÓMICA - Referencias comerciales / Acreditación experiencia',
+            'forma_pago'                  => 'ECONÓMICA - Forma de pago',
+            'riesgo_financiero'           => 'ECONÓMICA - Evaluación riesgo financiero',
+
+            // ===== Plantilla 8 (TÉCNICA) =====
+            'ficha_especificaciones'      => 'Ficha de Especificaciones Técnicas',
+            'msds_hojas_seguridad'        => 'Hojas de seguridad / MSDS',
+            'garantia_tecnica'            => 'Garantía',
+            'cronograma_entrega'          => 'Cronograma de entrega / Plazo de entrega',
+            'carta_representante_marca'   => 'Carta de representante de la marca y/o distribuidor autorizado',
+            'soporte_post_venta'          => 'Soporte Post Venta',
+            'lugar_forma_entrega'         => 'Lugar y forma de entrega',
             'diagrama_gant' => 'Diagrama de Gantt/Cronograma de trabajo',
             'condiciones_generales' => 'Condiciones generales FIRMADO',
             'base_condiciones_firmado' => 'Base y condiciones FIRMADO',

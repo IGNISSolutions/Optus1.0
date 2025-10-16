@@ -263,8 +263,7 @@
                             optionsText: 'text', 
                             optionsValue: 'id', 
                             disable: !$root.EnableEconomic() || $root.CondicionPago() === 'no',
-                            select2: { placeholder: 'Seleccionar...' },
-                            disable: !EnableEconomic()">
+                            select2: { placeholder: 'Seleccionar...' }">
                         </select>
                     </div>
                 </div>
