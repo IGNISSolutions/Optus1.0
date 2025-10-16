@@ -153,7 +153,24 @@ function calcularEtapaAnalisisOfertas(&$list, $concurso_id)
             }
             
             $mejorIntegral = setMejorIntegral($concurso, $oferenteItems);
-            $posicion = array_search($mejorIntegral['idOferente'], array_column($oferenteItems, 'oferente_id'));
+            $posicion = array_search(
+                $mejorIntegral['idOferente'],
+                array_column($oferenteItems, 'oferente_id'),
+                true // <--- búsqueda estricta
+            );
+
+            // Fallback por si en algún flujo el id que guardaste es el de Participante
+            if ($posicion === false) {
+                $posicion = array_search(
+                    $mejorIntegral['idOferente'],
+                    array_column($oferenteItems, 'OferenteId'),
+                    true
+                );
+            }
+
+            if ($posicion !== false) {
+                $oferenteItems[$posicion]['mejorOfertaIntegral'] = true;
+            }
             $oferenteItems[$posicion]['mejorOfertaIntegral'] = true;
             $mejorIndividual = setMejorIndividual($concurso, $oferenteItems);
             $oferenteItems = $mejorIndividual['oferentes'];
@@ -175,9 +192,9 @@ function isMejorOferta($concurso, $total, $mejorOferta)
         return true;
     }
 
-    $maximize =
+     $maximize =
         ($concurso->is_online && $concurso->tipo_valor_ofertar === 'ascendente')
-        || ($concurso->is_sobrecerrado && $concurso->tipo_licitacion === 'venta'); 
+        || ($concurso->tipo_licitacion === 'venta');
 
     return $maximize ? ($total > $mejorOferta) : ($total < $mejorOferta);
 }
@@ -469,66 +486,86 @@ function setOferente($concurso, $oferente, $ronda)
 
 function setMejorIntegral($concurso, $oferentes)
 {
-    $idOferente = 0;
-    $mejorOfertaIntegral = 0.00;
-    $nombreOferente = '';
-    $razonSocial = '';
-    $items = [];
-    $TipoAdjudicacion = '';
     $productos = $concurso->productos;
 
-    $mejor_ahorro_porc = 0.00;
-    $mejor_ahorro_abs  = 0.00;
+    // Criterio unificado (igual que en calcularEtapaAnalisisOfertas)
+    $maximize = (
+        ($concurso->is_online && $concurso->tipo_valor_ofertar === 'ascendente')
+        || ($concurso->tipo_licitacion === 'venta')
+    );
 
-    // Ganancia integral (se recalcula desde ítems del ganador)
-    $mejor_ganancia_abs  = null;
-    $mejor_ganancia_porc = null;
-
-    // Usa el mismo flag que en otras partes (con fallback)
-    $tipoAsc = $concurso->tipo_valor_ofertar ?? $concurso->tipo_subasta ?? null;
-    $tipoLic = $concurso->tipo_licitacion ?? null;
-    $isAscendente = ($tipoAsc === 'ascendente');
-    $isVenta = ($tipoLic === 'venta');
-
+    // ---------- 1) Construir candidatos ESTRICTOS ----------
+    $candidatos = [];
     foreach ($oferentes as $oferente) {
-        if (!empty($oferente['isRechazado'])) {
-            continue; // no abortar el bucle
-        }
+        if (!empty($oferente['isRechazado'])) continue;
+        if (empty($oferente['items']) || !is_array($oferente['items'])) continue;
 
-        // Debe cotizar todos los ítems con la cantidad exacta
-        $oferIsEnable = true;
+        // Debe cotizar todos los ítems con cantidad EXACTA solicitada
+        $ok = true;
         foreach ($oferente['items'] as $item) {
-            $prod = $productos->find($item['id']);
-            if (!($item['cotizacion'] > 0.00 && $prod && $item['cantidad'] == $prod->cantidad)) {
-                $oferIsEnable = false;
-                break;
+            $prod = $productos->find($item['id'] ?? null);
+            $cot  = (float)($item['cotizacion'] ?? 0);
+            $qty  = (int)($item['cantidad'] ?? 0);
+            if (!($cot > 0.0 && $prod && $qty === (int)$prod->cantidad)) {
+                $ok = false; break;
             }
         }
-        if (!$oferIsEnable) continue;
+        if (!$ok) continue;
 
-        $total       = isset($oferente['total']) ? (float)$oferente['total'] : 0.00;
-        $ahorro_porc = isset($oferente['ahorro_porc']) ? (float)$oferente['ahorro_porc'] : 0.00;
-        $ahorro_abs  = isset($oferente['ahorro_abs'])  ? (float)$oferente['ahorro_abs']  : 0.00;
+        $total = (float)($oferente['total'] ?? 0.0);
+        if ($total <= 0.0) continue;
 
-        if (isMejorOferta($concurso, $total, $mejorOfertaIntegral) || $mejorOfertaIntegral === 0.00) {
-            $idOferente          = $oferente['oferente_id'];
-            $mejorOfertaIntegral = $total;
+        $candidatos[] = $oferente;
+    }
 
-            $mejor_ahorro_porc   = $ahorro_porc;
-            $mejor_ahorro_abs    = $ahorro_abs;
-
-            $TipoAdjudicacion    = $oferente['tipoAdjudicacion'];
-            $items               = $oferente['items'];
-            $nombreOferente      = $oferente['nombreOferente'];
-            $razonSocial         = $oferente['razonSocial'];
+    // ---------- 2) Fallback si no hubo estrictos: cualquiera con total>0 ----------
+    if (empty($candidatos)) {
+        foreach ($oferentes as $oferente) {
+            if (!empty($oferente['isRechazado'])) continue;
+            $total = (float)($oferente['total'] ?? 0.0);
+            if ($total <= 0.0) continue;
+            $candidatos[] = $oferente;
         }
     }
 
-    // Recalcular ganancia del ganador desde sus ítems (robusto)
-    if (($isAscendente || $isVenta) && !empty($items)) {
+    // Si sigue sin haber candidatos, devolvemos valores neutros
+    if (empty($candidatos)) {
+        return [
+            'idOferente'       => 0,
+            'nombreOferente'   => '',
+            'razonSocial'      => '',
+            'tipoAdjudicacion' => '',
+            'total'            => 0.00,
+            'ahorro_porc'      => 0.00,
+            'ahorro_abs'       => 0.00,
+            'ganancia_abs'     => null,
+            'ganancia_porc'    => null,
+            'items'            => [],
+        ];
+    }
+
+    // ---------- 3) Elegir el mejor según min/max ----------
+    $bestIndex = 0;
+    $bestTotal = (float)$candidatos[0]['total'];
+
+    foreach ($candidatos as $i => $of) {
+        $t = (float)$of['total'];
+        $isBetter = $maximize ? ($t > $bestTotal) : ($t < $bestTotal);
+        if ($isBetter) {
+            $bestIndex = $i;
+            $bestTotal = $t;
+        }
+    }
+
+    $win = $candidatos[$bestIndex];
+
+    // Recalcular ganancia integral solo para venta / ascendente
+    $ganancia_abs  = null;
+    $ganancia_porc = null;
+    if ($maximize && !empty($win['items'])) {
         $sumSubtotal = 0.0;
         $sumTarget   = 0.0;
-        foreach ($items as $it) {
+        foreach ($win['items'] as $it) {
             $sub = isset($it['subtotal'])
                 ? (float)$it['subtotal']
                 : ((float)($it['cotizacion'] ?? 0) * (float)($it['cantidad'] ?? 0));
@@ -536,28 +573,24 @@ function setMejorIntegral($concurso, $oferentes)
             $sumTarget   += (float)($it['targetcost'] ?? 0) * (float)($it['cantidad'] ?? 0);
         }
         if ($sumTarget > 0.0) {
-            $mejor_ganancia_abs  = $sumSubtotal - $sumTarget;
-            $mejor_ganancia_porc = ($mejor_ganancia_abs / $sumTarget) * 100;
-        } else {
-            // sin targetcost no aplica ganancia
-            $mejor_ganancia_abs = $mejor_ganancia_porc = null;
+            $ganancia_abs  = $sumSubtotal - $sumTarget;
+            $ganancia_porc = ($ganancia_abs / $sumTarget) * 100;
         }
     }
 
     return [
-        'idOferente'       => $idOferente,
-        'nombreOferente'   => $nombreOferente,
-        'razonSocial'      => $razonSocial,
-        'tipoAdjudicacion' => $TipoAdjudicacion,
-        'total'            => $mejorOfertaIntegral,
-        'ahorro_porc'      => $mejor_ahorro_porc,
-        'ahorro_abs'       => $mejor_ahorro_abs,
-        'ganancia_abs'     => $mejor_ganancia_abs,
-        'ganancia_porc'    => $mejor_ganancia_porc,
-        'items'            => $items,
+        'idOferente'       => $win['oferente_id'] ?? ($win['OferenteId'] ?? 0), // company_id preferente
+        'nombreOferente'   => $win['nombreOferente'] ?? '',
+        'razonSocial'      => $win['razonSocial'] ?? '',
+        'tipoAdjudicacion' => $win['tipoAdjudicacion'] ?? '',
+        'total'            => (float)($win['total'] ?? 0.0),
+        'ahorro_porc'      => (float)($win['ahorro_porc'] ?? 0.0),
+        'ahorro_abs'       => (float)($win['ahorro_abs']  ?? 0.0),
+        'ganancia_abs'     => $ganancia_abs,
+        'ganancia_porc'    => $ganancia_porc,
+        'items'            => $win['items'] ?? [],
     ];
 }
-
 
 
 function setMejorIndividual($concurso, $oferentes)
