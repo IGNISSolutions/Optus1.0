@@ -318,6 +318,12 @@
                     Guardar Datos
                 </button>
             </div>
+            <div class="form-group pull-right" style="margin: 0 10px;">
+                <button type="button" class="btn btn-primary" data-bind="click: storeDraft">
+                    Guardar borrador
+                </button>
+            </div>
+            
         </div>
     </div>
 {/block}
@@ -1430,6 +1436,53 @@
                         } else {
                             $.unblockUI();
                             swal('Error', error.message || 'Se produjo un error inesperado.', 'error');
+                        }
+                    },
+                    (error) => {
+                        $.unblockUI();
+                        swal('Error', error.message || 'Se produjo un error inesperado.', 'error');
+                    },
+                    null,
+                    null
+                );
+            };
+
+            /**
+             * GUARDA BORRADOR DEL CONCURSO
+             * Solo valida que el nombre sea obligatorio, guarda todo lo demás sin validaciones
+             */
+            self.storeDraft = function() {
+                // Validar solo el nombre
+                if (!self.Entity.Nombre() || self.Entity.Nombre().trim() === '') {
+                    swal('Atención', 'El nombre de la licitación es obligatorio para guardar el borrador.', 'warning');
+                    return;
+                }
+
+                $.blockUI();
+                var url = '/concursos/' + params[1] + '/save-draft' + (params[3] ? '/' + params[3] : '');
+                var data = {
+                    UserToken: User.Token,
+                    Entity: JSON.stringify(ko.toJS(self.Entity))
+                };
+                
+                Services.Post(url, data,
+                    (response) => {
+                        if (response.success) {
+                            $.unblockUI();
+                            swal({
+                                title: 'Hecho',
+                                text: response.message || 'Borrador guardado exitosamente.',
+                                type: 'success',
+                                closeOnClickOutside: false,
+                                closeOnConfirm: true,
+                                confirmButtonText: 'Aceptar',
+                                confirmButtonClass: 'btn btn-success'
+                            }, function(result) {
+                                window.history.back();
+                            });
+                        } else {
+                            $.unblockUI();
+                            swal('Error', response.message || 'Se produjo un error inesperado.', 'error');
                         }
                     },
                     (error) => {

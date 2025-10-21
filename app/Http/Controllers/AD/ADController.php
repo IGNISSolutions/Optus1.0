@@ -149,7 +149,7 @@ class ADController extends BaseController
         
         $code  = $queryParams['code'];
         $state = $queryParams['state'];
-
+        
         // Verificar el estado de la sesión
         if ($state !== session_id()) {
             // Registrar error en logs

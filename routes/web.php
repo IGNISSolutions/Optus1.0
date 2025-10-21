@@ -15,6 +15,10 @@ app()->get('/ad/login/TLC', 'App\Http\Controllers\AD\ADController:loginTLC')->se
 app()->post('/logout', 'App\Http\Controllers\Auth\AuthController:logout')->add(new AuthMiddleware())->setName('logout');
 app()->post('/send', 'App\Http\Controllers\Auth\AuthController:sendRecover')->setName('sendRecover');
 
+// AUTH0
+app()->get('/a0/login/SCR', 'App\Http\Controllers\A0\A0Controller:loginSCR')->setName('login.scr');
+app()->get('/a0/callback', 'App\Http\Controllers\A0\A0Controller:callback')->setName('a0.callback');
+
 //2FA
 app()->post('/send-code', 'App\Http\Controllers\Auth\AuthController:sendResetCode')->setName('sendResetCode'); 
 app()->get('/verify-code', 'App\Http\Controllers\Auth\AuthController:serverTwoFA')->setName('serverTwoFA');
@@ -158,6 +162,8 @@ app()->group('/concursos', function () {
     $this->get('/{type}/{action}[/{id}]', 'App\Http\Controllers\Customer\ConcursoController:editOrCreate')->add(new AuthMiddleware())->setName('concursos.cliente.editOrCreate');
     // Guardar
     $this->post('/{type}/save[/{id}]', 'App\Http\Controllers\Customer\ConcursoController:store')->add(new AuthMiddleware())->setName('concursos.cliente.store');
+    // Guardar Borrador
+    $this->post('/{type}/save-draft[/{id}]', 'App\Http\Controllers\Customer\ConcursoController:storeDraft')->add(new AuthMiddleware())->setName('concursos.cliente.storeDraft');
     // Eliminar
     $this->post('/delete/{id}', 'App\Http\Controllers\Customer\ConcursoController:delete')->add(new AuthMiddleware())->setName('concursos.cliente.delete');
     $this->post('/verOfertas/{id}', 'App\Http\Controllers\Customer\ConcursoController:verOfertas')->add(new AuthMiddleware())->setName('concursos.cliente.verOfertas');

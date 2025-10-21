@@ -871,6 +871,13 @@ class ConcursoController extends BaseController
                         $array[$i]['fecha'] = $valores['fecha'] ?? 0;
                         $array[$i]['creado'] = $valores['creado'] ?? null;
                     }
+                    // Preserve 'selected' from the original economic proposal values if present.
+                    // If items_map provides a 'selected' value, prefer it; otherwise keep the existing one.
+                    if (isset($producto['selected'])) {
+                        $array[$i]['selected'] = $producto['selected'];
+                    } elseif (isset($valores) && isset($valores['selected'])) {
+                        $array[$i]['selected'] = $valores['selected'];
+                    }
                     $array[$i]['maximum_cotizacion'] = null;
                 }
 

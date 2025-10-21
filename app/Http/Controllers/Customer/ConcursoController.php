@@ -569,7 +569,8 @@ class ConcursoController extends BaseController
             )->sortBy('id');
             foreach ($concursos as $concurso) {
                 $oferentes = $concurso->oferentes;
-                $enable_invitations = $concurso->productos->count() > 0 && $oferentes->where('is_seleccionado', true)->count() > 0;
+                // Verificar si el concurso está completo para habilitar el envío de invitaciones
+                $enable_invitations = $this->isConcursoComplete($concurso);
 
                 array_push(
                     $list['ListaConcursosEnPreparacion'],
@@ -1001,32 +1002,38 @@ class ConcursoController extends BaseController
 
                 $concurso->delete();
 
-                // Marcar como rechazados a los oferentes
+                // Marcar como rechazados a los oferentes (solo si hay oferentes)
                 $companiesInvited = $concurso->oferentes->pluck('id_offerer');
-                $companies = OffererCompany::with('users')->whereIn('id', $companiesInvited)->get();
-                $offerersTable = (new Participante())->getTable();
-                DB::table($offerersTable)
-                    ->where('id_concurso', $concurso->id)
-                    ->whereIn('id_offerer', $companiesInvited)
-                    ->update(['rechazado' => true]);
+                
+                if ($companiesInvited->count() > 0) {
+                    $companies = OffererCompany::with('users')->whereIn('id', $companiesInvited)->get();
+                    $offerersTable = (new Participante())->getTable();
+                    DB::table($offerersTable)
+                        ->where('id_concurso', $concurso->id)
+                        ->whereIn('id_offerer', $companiesInvited)
+                        ->update(['rechazado' => true]);
 
-                // Enviar mails a los oferentes
-                $title = 'Concurso Cancelado';
-                $subject = $concurso->nombre . ' - ' . $title;
-                $templateOferentes = rootPath(config('app.templates_path')) . '/email/cancellation.tpl';
+                    // Enviar mails a los oferentes
+                    $title = 'Concurso Cancelado';
+                    $subject = $concurso->nombre . ' - ' . $title;
+                    $templateOferentes = rootPath(config('app.templates_path')) . '/email/cancellation.tpl';
 
-                foreach ($companies as $company) {
-                    $users = $company->users->pluck('email');
-                    $html = $this->fetch($templateOferentes, [
-                        'title' => $title,
-                        'ano' => Carbon::now()->format('Y'),
-                        'concurso' => $concurso,
-                        'company_name' => $company->business_name
-                    ]);
+                    foreach ($companies as $company) {
+                        $users = $company->users->pluck('email');
+                        $html = $this->fetch($templateOferentes, [
+                            'title' => $title,
+                            'ano' => Carbon::now()->format('Y'),
+                            'concurso' => $concurso,
+                            'company_name' => $company->business_name
+                        ]);
 
-                    $result = $emailService->send($html, $subject, $users, "");
-                    $success = $result['success'];
-                    if (!$success) break;
+                        $result = $emailService->send($html, $subject, $users, "");
+                        $success = $result['success'];
+                        if (!$success) break;
+                    }
+                } else {
+                    // Si no hay oferentes, se considera exitoso directamente
+                    $success = true;
                 }
 
                 // Enviar mail al usuario que canceló el concurso
@@ -1066,6 +1073,112 @@ class ConcursoController extends BaseController
                 'redirect' => $redirect_url
             ]
         ], $status);
+    }
+
+    /**
+     * Verifica si un concurso tiene todos los campos obligatorios completos
+     * para poder enviar invitaciones a oferentes
+     */
+    private function isConcursoComplete($concurso)
+    {
+        // Campos comunes obligatorios
+        $requiredCommonFields = [
+            'nombre',
+            'area_sol',
+            'tipo_operacion',
+            'tipo_convocatoria',
+            'fecha_limite',
+            'moneda',
+            'finalizacion_consultas'
+        ];
+
+        // Verificar campos comunes
+        foreach ($requiredCommonFields as $field) {
+            if (empty($concurso->$field)) {
+                return false;
+            }
+        }
+
+        // Debe tener al menos un producto
+        if ($concurso->productos->count() === 0) {
+            return false;
+        }
+
+        // Debe tener al menos un oferente seleccionado
+        if ($concurso->oferentes->where('is_seleccionado', true)->count() === 0) {
+            return false;
+        }
+
+        // Validaciones específicas para SOBRECERRADO
+        if ($concurso->is_sobrecerrado) {
+            if (empty($concurso->tipo_licitacion)) {
+                return false;
+            }
+            if (empty($concurso->fecha_limite_economicas)) {
+                return false;
+            }
+        }
+
+        // Validaciones específicas para ONLINE
+        if ($concurso->is_online) {
+            $requiredOnlineFields = [
+                'tipo_valor_ofertar',
+                'duracion',
+                'tiempo_adicional',
+                'precio_minimo',
+                'unidad_minima',
+                'precio_maximo',
+                'inicio_subasta'
+            ];
+
+            foreach ($requiredOnlineFields as $field) {
+                if (empty($concurso->$field)) {
+                    return false;
+                }
+            }
+        }
+
+        // Validaciones específicas para GO
+        if ($concurso->is_go) {
+            if (!$concurso->go) {
+                return false;
+            }
+
+            $requiredGoFields = [
+                'type_id',
+                'load_type_id',
+                'peso',
+                'ancho',
+                'largo',
+                'alto',
+                'unidades_bultos',
+                'payment_method_id',
+                'plazo_pago',
+                'fecha_desde',
+                'fecha_hasta',
+                'calle_desde',
+                'calle_hasta',
+                'numeracion_desde',
+                'numeracion_hasta',
+                'ciudad_desde_id',
+                'ciudad_hasta_id',
+                'provincia_desde_id',
+                'provincia_hasta_id'
+            ];
+
+            foreach ($requiredGoFields as $field) {
+                if (empty($concurso->go->$field)) {
+                    return false;
+                }
+            }
+
+            if (empty($concurso->fecha_limite_economicas)) {
+                return false;
+            }
+        }
+
+        // Si llegamos aquí, el concurso está completo
+        return true;
     }
 
     private function mapConcursoList($concurso)
@@ -2141,349 +2254,6 @@ class ConcursoController extends BaseController
         ]);
     }
 
-    // public function store(Request $request, Response $response, $params)
-    // {
-    //     $entity = json_decode($request->getParsedBody()['Entity'], false);
-
-    //     $success = false;
-    //     $message = null;
-    //     $status = 200;
-    //     $error = false;
-
-    //     $create = (bool) !(isset($params['id']));
-
-    //     // validamos que se hace, crear o editar
-    //     try {
-    //         $capsule = dependency('db');
-    //         $connection = $capsule->getConnection();
-    //         $connection->beginTransaction();
-
-    //         if ($create) {
-    //             // Validar si el usuario fiscalizador está habilitado
-    //             if ($entity->concurso_fiscalizado == 'no') {
-    //                 // Si no se requiere fiscalizador, asegúrate de que no se esté validando
-    //                 $entity->UsuarioSupervisor = null; // O manejarlo según tu lógica
-    //             } else {
-    //                 // Validar si el usuario fiscalizador está habilitado
-    //                 if (!$entity->UsuarioSupervisor) {
-    //                     return [
-    //                         'success' => false,
-    //                         'message' => 'Debe seleccionar un fiscalizador si se habilita la opción.',
-    //                         'status' => 422
-    //                     ];
-    //                 }
-    //             }
-
-    //             $result = $this->createConcurso($params['type'], $entity);
-
-    //             if ($result['error']) {
-    //                 $connection->rollBack();
-    //                 $message = $result['message'];
-    //                 $status = 422;
-    //                 $success = false;
-    //             } else {
-    //                 $connection->commit();
-    //                 $message = 'Concurso guardado con éxito.';
-    //                 $success = true;
-    //             }
-    //         }
-
-    //         if (!$create) {
-
-                
-    //             // Validar si el usuario fiscalizador está habilitado
-    //             if ($entity->concurso_fiscalizado == 'no') {
-    //                 // Si no se requiere fiscalizador, asegúrate de que no se esté validando
-    //                 $entity->UsuarioSupervisor = null; // O manejarlo según tu lógica
-    //             } else {
-    //                 // Validar si el usuario fiscalizador está habilitado
-    //                 if (!$entity->UsuarioSupervisor) {
-    //                     return [
-    //                         'success' => false,
-    //                         'message' => 'Debe seleccionar un fiscalizador si se habilita la opción.',
-    //                         'status' => 422
-    //                     ];
-    //                 }
-    //             }
-                
-    //             $result = $this->editConcurso($params['type'], $params['id'], $entity);
-
-    //             if ($result['error']) {
-    //                 $connection->rollBack();
-    //                 $status = 422;
-    //                 $success = false;
-    //                 $message = $result['message'];
-    //             } else {
-    //                 $concurso = $result['data']['concurso'];
-    //                 $oferentes = [];
-    //                 foreach ($concurso->oferentes as $oferente) {
-    //                     if (!$oferente->is_concurso_rechazado && !$oferente->is_seleccionado) {
-    //                         array_push($oferentes, $oferente);
-    //                     }
-    //                 }
-
-    //                 if (count($oferentes) === 0) {
-    //                     $result = [
-    //                         'success' => true
-    //                     ];
-    //                 }
-
-    //                 if (count($oferentes) > 0) {
-
-    //                     $ajustdate = $result['data']['ajustdate'];
-    //                     $documentChange = $result['data']['documentsChanged']['documentChange'];
-    //                     $documentDeleted = $result['data']['documentsChanged']['documentDeleted'];
-    //                     $productsDeleted = $result['data']['products_results']['productsDeleted'];
-    //                     $productsUpdated = $result['data']['products_results']['productsUpdated'];
-    //                     $productsNew = $result['data']['products_results']['productsNew'];
-
-    //                     if (isset($result['data']['payroll_results'])) {
-    //                         $technicalAdded = $result['data']['payroll_results']['technicalAdded'];
-    //                         $technicalDeleted = $result['data']['payroll_results']['technicalDeleted'];
-    //                         $technicalChanged = $result['data']['payroll_results']['technicalChanged'];
-    //                     } else {
-    //                         $technicalAdded = false;
-    //                         $technicalDeleted = false;
-    //                         $technicalChanged = false;
-    //                     }
-
-    //                     $tecnicalDocuments = $result['data']['tecnicalDocuments'];
-    //                     $ajustDocumentsEconomica = $result['data']['ajustDocumentsEconomica'];
-
-    //                     if (
-    //                         !$ajustdate && !$documentChange && !$documentDeleted && !$technicalAdded && !$technicalDeleted && !$technicalChanged && count($productsDeleted) == 0 &&
-    //                         count($productsUpdated) == 0 && count($productsNew) == 0 && count($tecnicalDocuments) == 0 && count($ajustDocumentsEconomica) == 0
-    //                     ) {
-    //                         $result = [
-    //                             'success' => true
-    //                         ];
-    //                     } else {
-    //                         $tipoConcurso = null;
-    //                         if ($concurso->is_sobrecerrado)
-    //                             $tipoConcurso = 'Licitación';
-    //                         if ($concurso->is_online)
-    //                             $tipoConcurso = 'Subasta';
-    //                         if ($concurso->is_go)
-    //                             $tipoConcurso = 'Go';
-    //                         $title = 'Ajustes en ' . $tipoConcurso;
-    //                         $subject = $concurso->nombre . ' - ' . $title;
-    //                         $htmlBody = [
-    //                             'title' => $title,
-    //                             'ano' => Carbon::now()->format('Y'),
-    //                             'concurso' => $concurso,
-    //                             'tipoConcurso' => $tipoConcurso,
-    //                             'ajustdates' => false,
-    //                             'documentChange' => false,
-    //                             'documentDeleted' => false,
-    //                             'technicalAdded' => false,
-    //                             'technicalDeleted' => false,
-    //                             'technicalChanged' => false,
-    //                             'productsDeleted' => false,
-    //                             'productsUpdated' => false,
-    //                             'productsNew' => false,
-    //                             'tecnicalDocuments' => false,
-    //                             'ajustDocumentsEconomica' => false,
-    //                             'listProductsDeleted' => [],
-    //                             'listProductsUpdated' => [],
-    //                             'listProductsNew' => [],
-    //                             'listTecnicalDocuments' => [],
-    //                             'listDocumentsEconomica' => [],
-    //                             'fecha_tecnica' => $concurso->technical_includes ? $concurso->ficha_tecnica_fecha_limite->format('d-m-Y H:i') : 'No aplica',
-    //                             'company_name' => null
-
-    //                         ];
-
-
-    //                         $template = rootPath(config('app.templates_path')) . '/email/date-change.tpl';
-
-    //                         if ($ajustdate) {
-    //                             $htmlBody['ajustdates'] = true;
-    //                         }
-
-    //                         if ($documentChange) {
-    //                             $htmlBody['documentChange'] = true;
-    //                         }
-
-    //                         if ($documentDeleted) {
-    //                             $htmlBody['documentDeleted'] = true;
-    //                         }
-
-    //                         if ($technicalAdded) {
-    //                             $htmlBody['technicalAdded'] = true;
-    //                         }
-
-    //                         if ($technicalDeleted) {
-    //                             $htmlBody['technicalDeleted'] = true;
-    //                         }
-
-    //                         if ($technicalChanged) {
-    //                             $htmlBody['technicalChanged'] = true;
-    //                         }
-
-    //                         if (count($productsDeleted) > 0) {
-    //                             $listProductsDeleted = [];
-    //                             foreach ($productsDeleted as $value) {
-    //                                 $listProductsDeleted[] = $value->toArray();
-    //                             }
-    //                             $htmlBody['productsDeleted'] = true;
-    //                             $htmlBody['listProductsDeleted'] = $listProductsDeleted;
-    //                         }
-
-    //                         if (count($productsUpdated) > 0) {
-    //                             $listProductsUpdated = [];
-    //                             foreach ($productsUpdated as $value) {
-    //                                 $listProductsUpdated[] = $value;
-    //                             }
-    //                             $htmlBody['productsUpdated'] = true;
-    //                             $htmlBody['listProductsUpdated'] = $listProductsUpdated;
-    //                         }
-
-    //                         if (count($productsNew) > 0) {
-    //                             $listProductsNew = [];
-    //                             foreach ($productsNew as $value) {
-    //                                 $listProductsNew[] = $value;
-    //                             }
-    //                             $htmlBody['productsNew'] = true;
-    //                             $htmlBody['listProductsNew'] = $listProductsNew;
-    //                         }
-
-    //                         if (count($tecnicalDocuments) > 0) {
-    //                             $htmlBody['tecnicalDocuments'] = true;
-    //                             $htmlBody['listTecnicalDocuments'] = $tecnicalDocuments;
-    //                         }
-
-    //                         if (count($ajustDocumentsEconomica) > 0) {
-    //                             $htmlBody['ajustDocumentsEconomica'] = true;
-    //                             $htmlBody['listDocumentsEconomica'] = $ajustDocumentsEconomica;
-    //                         }
-
-
-
-    //                         $emailService = new EmailService();
-
-
-    //                         //Enviamos el mail a los oferentes que se envio Invitación
-    //                         foreach ($oferentes as $oferente) {
-    //                             $users = $oferente->company->users->pluck('email');
-    //                             $htmlBody['company_name'] = $oferente->company->business_name;
-    //                             if ($ajustdate) {
-    //                                 if ($oferente->has_invitacion_vencida || $oferente->is_invitacion_pendiente) {
-    //                                     $invitation = $oferente->invitation;
-    //                                     $invitation_status = InvitationStatus::where('code', InvitationStatus::CODES['pending'])->first();
-    //                                     $invitation->update([
-    //                                         'status_id' => $invitation_status->id
-    //                                     ]);
-    //                                 }
-    //                             }
-
-    //                             // si se elimina la etapa tecnica los proveedores pasan a etapa economica
-    //                             if ($technicalDeleted) {
-    //                                 if ($oferente->has_invitacion_aceptada && !$oferente->has_tecnica_rechazada) {
-    //                                     $oferente->update([
-    //                                         'etapa_actual' => Participante::ETAPAS['economica-pendiente']
-    //                                     ]);
-    //                                     $technical_proposal = $oferente->technical_proposal;
-    //                                     if ($technical_proposal) {
-    //                                         $technical_proposal->delete();
-    //                                         $technical_proposal->refresh();
-    //                                     }
-    //                                     $oferente->refresh();
-    //                                 }
-    //                             }
-
-    //                             // si se edita y los proveedores estan en etapa economica se pasan a tecnica
-    //                             if ($technicalAdded || $technicalChanged) {
-    //                                 if ($oferente->has_invitacion_aceptada && !$oferente->has_tecnica_rechazada) {
-    //                                     $oferente->update([
-    //                                         'etapa_actual' => Participante::ETAPAS['tecnica-pendiente']
-    //                                     ]);
-    //                                     $technical_proposal = $oferente->technical_proposal;
-    //                                     if ($technical_proposal) {
-    //                                         $technical_proposal->delete();
-    //                                         $technical_proposal->refresh();
-    //                                     }
-    //                                     $oferente->refresh();
-    //                                 }
-    //                             }
-
-    //                             // si se edita los documentos de la tecnica y los proveedores estan en etapa economica se pasan a tecnica
-    //                             if (count($tecnicalDocuments) > 0) {
-    //                                 if ($oferente->has_invitacion_aceptada && !$oferente->has_tecnica_rechazada) {
-    //                                     $oferente->update([
-    //                                         'etapa_actual' => Participante::ETAPAS['tecnica-pendiente']
-    //                                     ]);
-    //                                     $technical_proposal = $oferente->technical_proposal;
-    //                                     if ($technical_proposal) {
-    //                                         $technical_proposal->delete();
-    //                                         $technical_proposal->refresh();
-    //                                     }
-    //                                     $oferente->refresh();
-    //                                 }
-    //                             }
-
-    //                             if (count($productsDeleted) > 0 || count($productsUpdated) > 0 || count($productsNew) > 0) {
-    //                                 if (
-    //                                     $oferente->has_invitacion_aceptada &&
-    //                                     (
-    //                                         $concurso->technical_includes && $oferente->has_tecnica_aprobada
-    //                                     ) ||
-    //                                     (
-    //                                         !$concurso->technical_includes &&
-    //                                         (
-    //                                             $oferente->has_economica_presentada || $oferente->has_economica_revisada
-    //                                         )
-    //                                     )
-    //                                 ) {
-    //                                     $oferente->update([
-    //                                         'etapa_actual' => Participante::ETAPAS['economica-pendiente']
-    //                                     ]);
-    //                                     $economic_proposal = $oferente->economic_proposal;
-    //                                     if ($economic_proposal) {
-    //                                         $economic_proposal->delete();
-    //                                         $economic_proposal->refresh();
-    //                                     }
-    //                                     $oferente->refresh();
-    //                                 }
-    //                             }
-    //                             $html = $this->fetch($template, $htmlBody);
-    //                             $result = $emailService->send(
-    //                                 $html,
-    //                                 $subject,
-    //                                 $users,
-    //                                 ""
-    //                             );
-    //                         }
-    //                     }
-    //                 }
-
-    //                 if ($result['success']) {
-    //                     $connection->commit();
-    //                     $message = 'Concurso guardado con éxito.';
-    //                     $success = true;
-    //                 } else {
-    //                     $connection->rollBack();
-    //                     $message = 'Ha ocurrido un error al enviar las notificaciones';
-    //                     $success = false;
-    //                 }
-    //             }
-    //         }
-    //     } catch (Exception $e) {
-    //         $connection->rollBack();
-    //         $success = false;
-    //         $message = $e->getMessage();
-    //         $status = method_exists($e, 'getStatusCode') ? $e->getStatusCode() : (method_exists($e, 'getCode') ? $e->getCode() : 500);
-    //         //$status = 500;
-    //     }
-    //     $result = [
-    //         'success' => $success,
-    //         'message' => $message,
-    //         'data' => [
-    //             'redirect' => ''
-    //         ]
-    //     ];
-
-    //     return $this->json($response, $result, $status);
-    // }
     public function store(Request $request, Response $response, $params)
     {
         $entity = json_decode($request->getParsedBody()['Entity'], false);
@@ -3019,6 +2789,197 @@ class ConcursoController extends BaseController
         ]);
     }
 
+    /**
+     * GUARDA BORRADOR DEL CONCURSO
+     * Similar a store() pero sin validaciones estrictas de campos obligatorios
+     * Solo valida que el nombre esté presente
+     */
+    public function storeDraft(Request $request, Response $response, $params)
+    {
+        $entity = json_decode($request->getParsedBody()['Entity'], false);
+
+        $success = false;
+        $message = null;
+        $status = 200;
+        $error = false;
+
+        $create = (bool) !(isset($params['id']));
+
+        // Validar solo el nombre (obligatorio incluso para borrador)
+        if (empty($entity->Nombre) || trim($entity->Nombre) === '') {
+            return $response->withJson([
+                'success' => false,
+                'message' => 'El nombre de la licitación es obligatorio para guardar el borrador.',
+                'status' => 422
+            ], 422);
+        }
+
+        // ESTABLECER VALORES POR DEFECTO SEGUROS PARA TODOS LOS CAMPOS POTENCIALMENTE OBLIGATORIOS
+        // Esto permite que el borrador se guarde sin completar el formulario
+        
+        // Campos de texto/select que pueden estar vacíos
+        $defaultFields = [
+            'Moneda' => null,  // Dejar vacío para que el usuario lo complete
+            'TipoLicitacion' => null,  // Dejar vacío para que el usuario lo complete
+            'UsuarioSupervisor' => null,
+            'TipoValorOfertar' => 'descendente',
+            'IncluyePrecalifTecnica' => 'no',
+            'FechaLimiteTecnica' => null,
+            'PlantillaTecnica' => null,
+            'UsuarioEvaluaTecnica' => null,
+            'UsuarioCalificaReputacion' => null,
+            'TecnicoOfertas' => 'no',
+            'CondicionPago' => null,
+            'concurso_fiscalizado' => 'no',
+            // Campos geográficos
+            'Pais' => null,
+            'Provincia' => null,
+            'Localidad' => null,
+            'Direccion' => null,
+            'Cp' => null,
+            'Latitud' => null,
+            'Longitud' => null,
+            // Campos de texto generales
+            'Resena' => null,
+            'AreaUsr' => null,
+            'TipoConvocatoria' => null,
+            'DescripcionTitle' => null,
+            'DescripcionDescription' => null,
+            'DescripcionURL' => null,
+            // Campos de fechas
+            'FechaAlta' => null,
+            'FechaLimite' => null,
+            'FinalizacionConsultas' => null,
+            'Tipo' => null,
+            // Campos que suelen ser 'no' por defecto
+            'SeguroCaucion' => 'no',
+            'ListaProveedores' => 'no',
+            'CertificadoVisitaObra' => 'no',
+            'DiagramaGant' => 'no',
+            'PropuestaTecnica' => 'no',
+            'PlanMantenimientoPreventivo' => 'no',
+            'NdaFirmado' => 'no',
+            'InventarioEquipos' => 'no',
+            'AcreditacionesPermisos' => 'no',
+            'RequerimientosTecnologicos' => 'no',
+            'RequisitosPersonal' => 'no',
+            'OrganigramaEquipo' => 'no',
+            'ValorAgregado' => 'no',
+            'AcuerdosNivelServicio' => 'no',
+            'HseqAnexo2' => 'no',
+            'ReferenciasComerciales' => 'no',
+            'FormaPago' => 'no',
+            'RiesgoFinanciero' => 'no',
+            'FichaEspecificaciones' => 'no',
+            'MsdsHojasSeguridad' => 'no',
+            'Garantia' => 'no',
+            'EnvioMuestras' => 'no',
+            'CronogramaEntrega' => 'no',
+            'CartaRepresentanteMarca' => 'no',
+            'SoportePostVenta' => 'no',
+            'LugarFormaEntrega' => 'no',
+            'BaseCondicionesFirmado' => 'no',
+            'CondicionesGenerales' => 'no',
+            'PliegoTecnico' => 'no',
+            'AcuerdoConfidencialidad' => 'no',
+            'LegajoImpositivo' => 'no',
+            'AntecedentesReferencias' => 'no',
+            'ReporteAccidentes' => 'no',
+            'EstructuraCostos' => 'no',
+            'Apu' => 'no',
+            'nom251' => 'no',
+            'distintivo' => 'no',
+            'filtros_sanitarios' => 'no',
+            'repse' => 'no',
+            'poliza' => 'no',
+            'primariesgo' => 'no',
+            'obras_referencias' => 'no',
+            'obras_organigrama' => 'no',
+            'obras_equipos' => 'no',
+            'obras_cronograma' => 'no',
+            'obras_memoria' => 'no',
+            'obras_antecedentes' => 'no',
+            'tarima_ficha_tecnica' => 'no',
+            'tarima_licencia' => 'no',
+            'tarima_nom_144' => 'no',
+            'tarima_acreditacion' => 'no',
+            'edificio_balance' => 'no',
+            'edificio_iva' => 'no',
+            'edificio_cuit' => 'no',
+            'edificio_brochure' => 'no',
+            'edificio_organigrama' => 'no',
+            'edificio_organigrama_obra' => 'no',
+            'edificio_subcontratistas' => 'no',
+            'edificio_gestion' => 'no',
+            'edificio_maquinas' => 'no',
+            'AceptacionTerminos' => 'no',
+            'Aperturasobre' => 'no',
+        ];
+
+        // Aplicar valores por defecto solo si el campo no existe o está vacío
+        foreach ($defaultFields as $field => $defaultValue) {
+            if (!isset($entity->$field) || $entity->$field === '' || $entity->$field === null) {
+                $entity->$field = $defaultValue;
+            }
+        }
+
+        // Asegurar que arrays existan
+        if (!isset($entity->Products) || !is_array($entity->Products)) {
+            $entity->Products = [];
+        }
+
+        if (!isset($entity->OferentesAInvitar) || !is_array($entity->OferentesAInvitar)) {
+            $entity->OferentesAInvitar = [];
+        }
+
+        try {
+            $capsule = dependency('db');
+            $connection = $capsule->getConnection();
+            $connection->beginTransaction();
+
+            if ($create) {
+                // Crear nuevo concurso como borrador
+                $result = $this->createConcurso($params['type'], $entity, true);
+
+                if ($result['error']) {
+                    $connection->rollBack();
+                    $message = $result['message'];
+                    $status = 422;
+                    $success = false;
+                } else {
+                    $connection->commit();
+                    $message = 'Borrador guardado con éxito.';
+                    $success = true;
+                }
+            } else {
+                // Editar concurso existente como borrador
+                $result = $this->editConcurso($params['type'], $params['id'], $entity, true);
+
+                if ($result['error']) {
+                    $connection->rollBack();
+                    $status = 422;
+                    $success = false;
+                    $message = $result['message'];
+                } else {
+                    $connection->commit();
+                    $message = 'Borrador actualizado con éxito.';
+                    $success = true;
+                }
+            }
+        } catch (\Exception $e) {
+            $connection->rollBack();
+            $error = true;
+            $message = $e->getMessage();
+            $status = 500;
+        }
+
+        return $response->withJson([
+            'success' => $success,
+            'message' => $message,
+            'error' => $error
+        ], $status);
+    }
+
     //This comment is there so you can find the funtion for new rounds!
     //I know, this should be sendNewRound(), but we didnt have time to fix the routes.
     public function sendSecondRound(Request $request, Response $response)
@@ -3533,7 +3494,7 @@ class ConcursoController extends BaseController
         ], $status);
     }
 
-    private function storeProducts($concurso, $body)
+    private function storeProducts($concurso, $body, $isDraft = false)
     {
 
         try {
@@ -3564,6 +3525,13 @@ class ConcursoController extends BaseController
                     'unidad' => $product->measurement_id,
                     'targetcost' => isset($product->targetcost) ? $product->targetcost : 0
                 ];
+            }
+
+            // Si es borrador y no hay productos, simplemente retornar success
+            if ($isDraft && empty($fields['products'])) {
+                $results['success'] = true;
+                $results['message'] = 'Borrador sin productos';
+                return $results;
             }
 
             $validator = $this->validateProducts($body, $fields, $concurso->is_sobrecerrado, $concurso->is_online);
@@ -4252,7 +4220,7 @@ class ConcursoController extends BaseController
         }
     }
 
-    private function createConcurso($type, $entity)
+    private function createConcurso($type, $entity, $isDraft = false)
     {
         $concurso = null;
         $is_go = $type == Concurso::TYPES['go'];
@@ -4341,7 +4309,7 @@ class ConcursoController extends BaseController
             'estructura_costos' => $entity->EstructuraCostos,
             'apu' => $entity->Apu,
             'usuario_califica_reputacion' => isset($entity->UsuarioCalificaReputacion) ? implode(',', $entity->UsuarioCalificaReputacion) : null,
-            'moneda' => $entity->Moneda,
+            'moneda' => isset($entity->Moneda) ? $entity->Moneda : null,
             'ficha_tecnica_incluye' => $entity->IncluyePrecalifTecnica,
             'descriptionTitle' => $entity->DescripcionTitle,
             'descriptionDescription' => $entity->DescripcionDescription,
@@ -4431,22 +4399,25 @@ class ConcursoController extends BaseController
         // Validar
         $fields = array_merge($common_fields, $extra_fields, $gos);
 
-        $validator = $this->validate(
-            $entity,
-            $fields,
-            $is_sobrecerrado,
-            $is_online,
-            $is_go,
-            true
-        );
+        // Si es borrador, saltar validaciones
+        if (!$isDraft) {
+            $validator = $this->validate(
+                $entity,
+                $fields,
+                $is_sobrecerrado,
+                $is_online,
+                $is_go,
+                true
+            );
 
-        if ($validator->fails()) {
-            return [
-                'success' => false,
-                'error' => true,
-                'message' => $validator->errors()->first(),
-                'status' => 422
-            ];
+            if ($validator->fails()) {
+                return [
+                    'success' => false,
+                    'error' => true,
+                    'message' => $validator->errors()->first(),
+                    'status' => 422
+                ];
+            }
         }
 
         $concurso = new Concurso(array_merge($common_fields, $extra_fields));
@@ -4486,7 +4457,7 @@ class ConcursoController extends BaseController
         $documentsChanged = $this->storeSheets($concurso, $entity);
 
         // Productos
-        $products_results = $this->storeProducts($concurso, $entity);
+        $products_results = $this->storeProducts($concurso, $entity, $isDraft);
 
         if (!$products_results['success']) {
             return [
@@ -4500,7 +4471,7 @@ class ConcursoController extends BaseController
         // Plantilla Técnica
         $payroll_results = $this->storePayroll($concurso, $entity, 'create');
 
-        if (!$payroll_results['success']) {
+        if (!$isDraft && !$payroll_results['success']) {
             return [
                 'success' => false,
                 'error' => true,
@@ -4510,7 +4481,7 @@ class ConcursoController extends BaseController
         }
 
         // Oferentes
-        if (!$this->storeParticipantes($concurso, $entity)) {
+        if (!$isDraft && !$this->storeParticipantes($concurso, $entity)) {
             return [
                 'success' => false,
                 'error' => true,
@@ -4518,6 +4489,10 @@ class ConcursoController extends BaseController
                 'status' => 422
             ];
         } else {
+            // Si es borrador, intentamos guardar los participantes pero no fallamos si no hay
+            if ($isDraft) {
+                $this->storeParticipantes($concurso, $entity);
+            }
             $concurso->refresh();
         }
 
@@ -4535,7 +4510,7 @@ class ConcursoController extends BaseController
         ];
     }
 
-    private function editConcurso($tipo, $concurso_id, $entity)
+    private function editConcurso($tipo, $concurso_id, $entity, $isDraft = false)
     {
         $concurso = Concurso::find($concurso_id);
 
@@ -4617,7 +4592,7 @@ class ConcursoController extends BaseController
             'apu' => $entity->Apu,
             'envio_muestra' => $entity->EnvioMuestras,
             'usuario_califica_reputacion' => isset($entity->UsuarioCalificaReputacion) ? implode(',', $entity->UsuarioCalificaReputacion) : null,
-            'moneda' => $entity->Moneda,
+            'moneda' => isset($entity->Moneda) ? $entity->Moneda : null,
             'ficha_tecnica_incluye' => $entity->IncluyePrecalifTecnica,
             'descriptionTitle' => $entity->DescripcionTitle,
             'descriptionDescription' => $entity->DescripcionDescription,
@@ -4678,12 +4653,7 @@ class ConcursoController extends BaseController
 
             $fechaFinConsultasEdit =
                 $concurso->finalizacion_consultas->format('Y-m-d H:i:s') != $common_fields['finalizacion_consultas'] ? true : false;
-/*
-                $fechaTecnicaLimitEdit =
-                $concurso->ficha_tecnica_fecha_limite != $extra_fields['ficha_tecnica_fecha_limite'] ? true : false;
-            $fechaEconomicLimitEdit =
-                $concurso->fecha_limite_economicas != $extra_fields['fecha_limite_economicas'] ? true : false;
-*/
+
             $ajustdate =
                 ($fechaInvitacionEdit || $fechaFinConsultasEdit || $cambio_fechas /*|| $fechaTecnicaLimitEdit || $fechaEconomicLimitEdit*/) ? true : false;
 
@@ -4753,23 +4723,25 @@ class ConcursoController extends BaseController
         // Validar
         $fields = array_merge($common_fields, $extra_fields, $gos);
 
-        $validator = $this->validate(
-            $entity,
-            $fields,
-            $concurso->is_sobrecerrado,
-            $concurso->is_online,
-            $concurso->is_go,
-            false
-        );
+        // Si es borrador, saltar validaciones
+        if (!$isDraft) {
+            $validator = $this->validate(
+                $entity,
+                $fields,
+                $concurso->is_sobrecerrado,
+                $concurso->is_online,
+                $concurso->is_go,
+                false
+            );
 
-        if ($validator->fails()) {
-            return [
-                'success' => false,
-                'error' => true,
-                'message' => $validator->errors()->first(),
-                'status' => 422
-            ];
-
+            if ($validator->fails()) {
+                return [
+                    'success' => false,
+                    'error' => true,
+                    'message' => $validator->errors()->first(),
+                    'status' => 422
+                ];
+            }
         }
 
         // Guardar concurso
@@ -4813,10 +4785,10 @@ class ConcursoController extends BaseController
         $documentsChanged = $this->storeSheets($concurso, $entity);
 
         // Productos
-        $products_results = $this->storeProducts($concurso, $entity);
+        $products_results = $this->storeProducts($concurso, $entity, $isDraft);
 
 
-        if (!$products_results['success']) {
+        if (!$isDraft && !$products_results['success']) {
             return [
                 'success' => true,
                 'error' => true,
@@ -4829,7 +4801,7 @@ class ConcursoController extends BaseController
         // Plantilla Técnica
             $payroll_results = $this->storePayroll($concurso, $entity, 'edit');
 
-            if (!$payroll_results['success']) {
+            if (!$isDraft && !$payroll_results['success']) {
                 return [
                     'success' => true,
                     'error' => true,
@@ -4839,13 +4811,18 @@ class ConcursoController extends BaseController
             }
 
         // Oferentes
-        if (!$this->storeParticipantes($concurso, $entity)) {
+        if (!$isDraft && !$this->storeParticipantes($concurso, $entity)) {
             return [
                 'success' => false,
                 'error' => true,
                 'message' => 'Debe invitar al menos un oferente al concurso.',
                 'status' => 422
             ];
+        } else {
+            // Si es borrador, intentamos guardar los participantes pero no fallamos si no hay
+            if ($isDraft) {
+                $this->storeParticipantes($concurso, $entity);
+            }
         }
 
         return [

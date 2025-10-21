@@ -535,6 +535,7 @@ class DataInforme extends Rest
                 ];
             } else {
                 $ep = $oferente->economic_proposal
+                    ->where('type_id', 2)
                     ->where('participante_id', $oferente->id)
                     ->where('numero_ronda', $i)
                     ->first();
@@ -585,7 +586,6 @@ class DataInforme extends Rest
         ];
     }
 
-    
 
     private function seccionAdjudicacion() 
     {

@@ -816,13 +816,16 @@ class Participante extends Model
     {
         $concurso = $this->concurso;
         $ronda = $concurso->ronda_actual;
-        $economic = $this->economic_proposal;
 
-        if ($economic) {
-            $proposal = $economic->where('participante_id', $this->id)->where('numero_ronda', $ronda)->where('type_id', 2)->first();
-        } else {
-            $proposal = $economic;
-        }
+        // Seleccionar la última propuesta económica no eliminada (deleted_at IS NULL)
+        // para este participante y ronda. Antes se tomaba la "first" (más antigua),
+        // lo que provocaba que al haber varias filas la UI pudiera leer datos mezclados.
+        $proposal = Proposal::where('participante_id', $this->id)
+            ->where('type_id', 2)
+            ->where('numero_ronda', $ronda)
+            ->whereNull('deleted_at')
+            ->orderBy('id', 'desc')
+            ->first();
 
         $result = new \StdClass();
         $result->comment = $proposal ? $proposal->comment : null;
@@ -882,6 +885,8 @@ class Participante extends Model
                 'cantidad' => $values ? $values['cantidad'] : null,
                 'fecha' => $values ? $values['fecha'] : null,
                 'creado' => $values ? (isset($values['creado']) ? $values['creado'] : null) : null,
+                // Persistir estado del switch si existe
+                'selected' => $values && array_key_exists('selected', $values) ? (bool) $values['selected'] : null,
             ]);
         }
 
