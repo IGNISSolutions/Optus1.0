@@ -317,6 +317,12 @@
                     <li><strong>Guardar Borrador:</strong> Guarda tu progreso en cualquier momento. Solo necesitas ingresar el <strong>nombre de la licitación</strong>. Podrás continuar editando después.</li>
                     <li><strong>Guardar Datos:</strong> Completa y valida el concurso. El sistema te indicará si falta algún campo obligatorio.<strong> Obligatorio para que se habilite el envio de invitaciones</strong></li>
                 </ul>
+                <hr style="margin: 10px 0;">
+                <strong>Aclaración:</strong>
+                <ul style="margin-top: 5px; margin-bottom: 5px;">
+                    <li>El borrador solo aparecerá en el monitor una vez se haya seleccionado el/los proveedores a invitar</li>
+                    <li>Si se ha seleccionado proveedor, podrá buscar su borrador en el apartado de licitaciones/subastas por ID o Nombre</li>
+                </ul>
             </div>
             
             <div class="form-group pull-right">
@@ -1549,8 +1555,6 @@
                                 closeOnConfirm: true,
                                 confirmButtonText: 'Aceptar',
                                 confirmButtonClass: 'btn btn-success'
-                            }, function(result) {
-                                window.history.back();
                             });
                         } else {
                             $.unblockUI();
