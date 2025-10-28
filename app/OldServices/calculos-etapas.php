@@ -547,13 +547,29 @@ function setMejorIntegral($concurso, $oferentes)
     // ---------- 3) Elegir el mejor según min/max ----------
     $bestIndex = 0;
     $bestTotal = (float)$candidatos[0]['total'];
+    $bestFecha = $candidatos[0]['fechaPresentacion'] ?? null;
 
     foreach ($candidatos as $i => $of) {
         $t = (float)$of['total'];
+        $f = $of['fechaPresentacion'] ?? null;
+        
         $isBetter = $maximize ? ($t > $bestTotal) : ($t < $bestTotal);
+        
+        // Si hay empate en el total, gana el que presentó primero (fecha más antigua)
+        if ($t == $bestTotal && $f !== null && $bestFecha !== null) {
+            // Convertir fechas a timestamp para comparar
+            $fechaActual = strtotime($f);
+            $fechaMejor = strtotime($bestFecha);
+            
+            if ($fechaActual !== false && $fechaMejor !== false && $fechaActual < $fechaMejor) {
+                $isBetter = true;
+            }
+        }
+        
         if ($isBetter) {
             $bestIndex = $i;
             $bestTotal = $t;
+            $bestFecha = $f;
         }
     }
 
@@ -705,10 +721,33 @@ function setMejorIndividual($concurso, $oferentes)
         }
 
         // Elegir el ganador del ítem (si hay uno con mejor cotización)
-        // Tomamos cualquiera de los mejores por cotización (si hay empate, el primero)
+        // Si hay empate, tomamos el que presentó primero (fecha más antigua)
         $ganadorKey = null;
         if (!empty($cotsValidas)) {
-            foreach ($cotsValidas as $key => $_) { $ganadorKey = $key; break; }
+            $fechaMejor = null;
+            foreach ($cotsValidas as $key => $_) {
+                if ($ganadorKey === null) {
+                    $ganadorKey = $key;
+                    // Obtener la fecha de presentación del oferente ganador inicial
+                    $ref = $itemsRefs[$key];
+                    $fechaMejor = $oferentes[$ref['rowIndex']]['fechaPresentacion'] ?? null;
+                } else {
+                    // Si hay otro con la misma cotización, comparar por fecha de presentación
+                    $ref = $itemsRefs[$key];
+                    $fechaActual = $oferentes[$ref['rowIndex']]['fechaPresentacion'] ?? null;
+                    
+                    if ($fechaActual !== null && $fechaMejor !== null) {
+                        $timestampActual = strtotime($fechaActual);
+                        $timestampMejor = strtotime($fechaMejor);
+                        
+                        // Si la fecha actual es anterior (menor), es mejor
+                        if ($timestampActual !== false && $timestampMejor !== false && $timestampActual < $timestampMejor) {
+                            $ganadorKey = $key;
+                            $fechaMejor = $fechaActual;
+                        }
+                    }
+                }
+            }
         }
 
         if ($ganadorKey !== null) {

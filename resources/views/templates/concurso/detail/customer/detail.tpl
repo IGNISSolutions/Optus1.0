@@ -572,7 +572,6 @@
                 self.CountdownEconomicas(str);
             }
 
-
             // Actualizar cada segundo
             setInterval(updateCountdown, 1000);
             updateCountdown();
