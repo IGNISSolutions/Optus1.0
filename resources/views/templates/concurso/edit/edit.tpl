@@ -307,20 +307,38 @@
             <div class="form-group pull-left">
                 Todos los campos marcados con <b>*</b> son oblgatorios para poder enviar las invitaciones.
             </div>
+            <div class="clearfix"></div>
+            
+            <!-- Mensaje informativo sobre cómo usar los botones -->
+            <div class="alert alert-info" style="margin-top: 10px; margin-bottom: 15px;">
+                <i class="fa fa-info-circle"></i>
+                <strong>¿Cómo guardar tu licitación?</strong>
+                <ul style="margin-top: 10px; margin-bottom: 5px;">
+                    <li><strong>Guardar Borrador:</strong> Guarda tu progreso en cualquier momento. Solo necesitas ingresar el <strong>nombre de la licitación</strong>. Podrás continuar editando después.</li>
+                    <li><strong>Guardar Datos:</strong> Completa y valida el concurso. El sistema te indicará si falta algún campo obligatorio.<strong> Obligatorio para que se habilite el envio de invitaciones</strong></li>
+                </ul>
+            </div>
+            
             <div class="form-group pull-right">
                 <button type="button" class="btn btn-success"
                     data-bind="click: sendInvitations, disable: !Entity.HabilitaEnvioInvitaciones()">
                     Enviar Invitaciones
                 </button>
             </div>
+            
             <div class="form-group pull-right" style="margin: 0 10px;">
-                <button type="button" class="btn btn-primary" data-bind="click: store">
-                    Guardar Datos
+                <button type="button" class="btn btn-success" 
+                    data-bind="click: store"
+                    title="Valida y guarda todos los campos obligatorios">
+                    <i class="fa fa-check"></i> Guardar Datos
                 </button>
             </div>
             <div class="form-group pull-right" style="margin: 0 10px;">
-                <button type="button" class="btn btn-primary" data-bind="click: storeDraft">
-                    Guardar borrador
+                <button type="button" class="btn btn-default" 
+                    data-bind="click: storeDraft"
+                    title="Guarda tu progreso sin validar campos obligatorios. Solo requiere el nombre de la licitación."
+                    style="border: 1px solid #ddd;">
+                    <i class="fa fa-save"></i> Guardar Borrador
                 </button>
             </div>
             
@@ -1016,13 +1034,13 @@
             this.TiempoAdicional = ko.observable(data.list.TiempoAdicional).extend({ required: true });
             this.TiposValoresOfertar = ko.observableArray(data.list.TiposValoresOfertar);
             this.TipoValorOfertar = ko.observable(data.list.TipoValorOfertar).extend({ required: true });
-            this.Chat = ko.observable(data.list.Chat);
-            this.VerNumOferentesParticipan = ko.observable(data.list.VerNumOferentesParticipan);
-            this.VerOfertaGanadora = ko.observable(data.list.VerOfertaGanadora);
-            this.VerRanking = ko.observable(data.list.VerRanking);
-            this.VerTiempoRestante = ko.observable(data.list.VerTiempoRestante);
-            this.PermitirAnularOferta = ko.observable(data.list.PermitirAnularOferta);
-            this.SubastaVistaCiega = ko.observable(data.list.SubastaVistaCiega);
+            this.Chat = ko.observable(data.list.Chat || 'no');
+            this.VerNumOferentesParticipan = ko.observable(data.list.VerNumOferentesParticipan || 'no');
+            this.VerOfertaGanadora = ko.observable(data.list.VerOfertaGanadora || 'no');
+            this.VerRanking = ko.observable(data.list.VerRanking || 'no');
+            this.VerTiempoRestante = ko.observable(data.list.VerTiempoRestante || 'no');
+            this.PermitirAnularOferta = ko.observable(data.list.PermitirAnularOferta || 'no');
+            this.SubastaVistaCiega = ko.observable(data.list.SubastaVistaCiega || 'no');
             this.PrecioMinimo = ko.observable(data.list.PrecioMinimo).extend({ required: true });
             this.PrecioMaximo = ko.observable(data.list.PrecioMaximo).extend({ required: true });
             this.SoloOfertasMejores = ko.observable(data.list.SoloOfertasMejores);
@@ -1327,28 +1345,166 @@
             });
 
             this.validarform = function() {
+                // Objeto para almacenar el estado de cada validación
+                var validationStatus = {
+                    campos_basicos: {},
+                    campos_tecnicos: {},
+                    campos_precios: {},
+                    resumen: {
+                        basicos_validos: true,
+                        tecnicos_validos: true,
+                        precios_validos: true
+                    }
+                };
 
-                return (
-                    this.Entity.Nombre.isValid() &&
-                    this.Entity.OferentesAInvitar.isValid() &&
-                    this.Entity.FechaLimite.isValid() &&
-                    this.Entity.FinalizacionConsultas.isValid() &&
-                    this.Entity.FechaLimiteTecnica.isValid() &&
-                    this.Entity.PlantillaTecnica.isValid() &&
-                    this.Entity.UsuarioEvaluaTecnica.isValid() &&
-                    this.Entity.Moneda.isValid() &&
-                    this.Entity.TipoValorOfertar.isValid() &&
-                    this.PrecioMaximo.isValid() &&
-                    this.PrecioMinimo.isValid() &&
-                    this.UnidadMinima.isValid() &&
-                    (
-                        self.Entity.PlantillaTecnicaSeleccionada() ? self.Entity
-                        .PlantillaTecnicaSeleccionada()
-                        .total.isValid() : true
-                    ) &&
-                    this.Entity.TipoLicitacion.isValid() 
+                // Validaciones básicas siempre requeridas
+                validationStatus.campos_basicos.nombre = this.Entity.Nombre.isValid();
+                validationStatus.campos_basicos.oferentes = this.Entity.OferentesAInvitar.isValid();
+                validationStatus.campos_basicos.fecha_limite = this.Entity.FechaLimite.isValid();
+                validationStatus.campos_basicos.fin_consultas = this.Entity.FinalizacionConsultas.isValid();
+                validationStatus.campos_basicos.moneda = this.Entity.Moneda.isValid();
+                validationStatus.campos_basicos.tipo_licitacion = this.Entity.TipoLicitacion.isValid();
+
+                // Tipo de valor a ofertar solo es obligatorio para subastas (IsOnline)
+                var esSub = self.Entity.IsOnline && self.Entity.IsOnline();
+                validationStatus.es_subasta = esSub ? 'SÍ' : 'NO';
+                
+                var tipoValorValido = true;
+                if (esSub) {
+                    validationStatus.campos_basicos.tipo_valor_ofertar = this.Entity.TipoValorOfertar.isValid();
+                    tipoValorValido = validationStatus.campos_basicos.tipo_valor_ofertar;
+                } else {
+                    validationStatus.campos_basicos.tipo_valor_ofertar_nota = 'No aplica - Solo para subastas';
+                }
+
+                var isBasicValid = (
+                    validationStatus.campos_basicos.nombre &&
+                    validationStatus.campos_basicos.oferentes &&
+                    validationStatus.campos_basicos.fecha_limite &&
+                    validationStatus.campos_basicos.fin_consultas &&
+                    validationStatus.campos_basicos.moneda &&
+                    validationStatus.campos_basicos.tipo_licitacion &&
+                    tipoValorValido
                 );
+                validationStatus.resumen.basicos_validos = isBasicValid;
 
+                // Validaciones técnicas solo si está habilitada la precalificación técnica
+                var isTechnicalValid = true;
+                validationStatus.incluye_tecnica = self.Entity.IncluyePrecalifTecnica ? self.Entity.IncluyePrecalifTecnica() : 'no';
+                
+                if (self.Entity.IncluyePrecalifTecnica && self.Entity.IncluyePrecalifTecnica() === 'si') {
+                    validationStatus.campos_tecnicos.fecha_limite_tecnica = this.Entity.FechaLimiteTecnica.isValid();
+                    validationStatus.campos_tecnicos.plantilla_tecnica = this.Entity.PlantillaTecnica.isValid();
+                    validationStatus.campos_tecnicos.usuario_evalua = this.Entity.UsuarioEvaluaTecnica.isValid();
+                    validationStatus.campos_tecnicos.plantilla_total = self.Entity.PlantillaTecnicaSeleccionada() ? 
+                        self.Entity.PlantillaTecnicaSeleccionada().total.isValid() : 
+                        true;
+
+                    isTechnicalValid = (
+                        validationStatus.campos_tecnicos.fecha_limite_tecnica &&
+                        validationStatus.campos_tecnicos.plantilla_tecnica &&
+                        validationStatus.campos_tecnicos.usuario_evalua &&
+                        validationStatus.campos_tecnicos.plantilla_total
+                    );
+                } else {
+                    validationStatus.campos_tecnicos.nota = 'No aplica - Precalificación técnica deshabilitada';
+                }
+                validationStatus.resumen.tecnicos_validos = isTechnicalValid;
+
+                // Validaciones de precios solo si aplican al tipo de licitación
+                var isPriceValid = true;
+                
+                // Para subastas, los campos de precio y configuración son obligatorios
+                if (esSub) {
+                    validationStatus.campos_subasta = {};
+                    validationStatus.campos_subasta.inicio_subasta = this.Entity.InicioSubasta.isValid();
+                    validationStatus.campos_subasta.duracion = this.Entity.Duracion.isValid();
+                    validationStatus.campos_subasta.tiempo_adicional = this.Entity.TiempoAdicional.isValid();
+                    validationStatus.campos_subasta.precio_maximo = this.PrecioMaximo.isValid();
+                    validationStatus.campos_subasta.precio_minimo = this.PrecioMinimo.isValid();
+                    validationStatus.campos_subasta.unidad_minima = this.UnidadMinima.isValid();
+
+                    isPriceValid = (
+                        validationStatus.campos_subasta.inicio_subasta &&
+                        validationStatus.campos_subasta.duracion &&
+                        validationStatus.campos_subasta.tiempo_adicional &&
+                        validationStatus.campos_subasta.precio_maximo &&
+                        validationStatus.campos_subasta.precio_minimo &&
+                        validationStatus.campos_subasta.unidad_minima
+                    );
+                } else {
+                    // Para licitaciones normales, los precios pueden ser opcionales
+                    if (this.PrecioMaximo && this.PrecioMinimo && this.UnidadMinima) {
+                        validationStatus.campos_precios.precio_maximo = this.PrecioMaximo.isValid();
+                        validationStatus.campos_precios.precio_minimo = this.PrecioMinimo.isValid();
+                        validationStatus.campos_precios.unidad_minima = this.UnidadMinima.isValid();
+
+                        isPriceValid = (
+                            validationStatus.campos_precios.precio_maximo &&
+                            validationStatus.campos_precios.precio_minimo &&
+                            validationStatus.campos_precios.unidad_minima
+                        );
+                    } else {
+                        validationStatus.campos_precios.nota = 'No aplica o no están definidos';
+                    }
+                }
+                validationStatus.resumen.precios_validos = isPriceValid;
+
+                // Resultado final
+                var resultadoFinal = isBasicValid && isTechnicalValid && isPriceValid;
+                validationStatus.resultado_final = resultadoFinal;
+                validationStatus.boton_habilitado = resultadoFinal ? 'SÍ ✅' : 'NO ❌';
+
+                // Log en consola con formato claro
+                console.group('🔍 VALIDACIÓN GUARDAR DATOS');
+                console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+                console.log('🎯 Tipo de Concurso:', validationStatus.es_subasta === 'SÍ' ? '🔥 SUBASTA' : '📄 LICITACIÓN');
+                console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+                
+                console.group('📋 Campos Básicos (siempre requeridos)');
+                Object.keys(validationStatus.campos_basicos).forEach(function(key) {
+                    if (key === 'tipo_valor_ofertar_nota') {
+                        console.log('ℹ️ TIPO VALOR OFERTAR:', validationStatus.campos_basicos[key]);
+                    } else {
+                        var status = validationStatus.campos_basicos[key];
+                        console.log(status ? '✅' : '❌', key.replace(/_/g, ' ').toUpperCase() + ':', status ? 'VÁLIDO' : 'FALTA COMPLETAR');
+                    }
+                });
+                console.groupEnd();
+
+                console.group('🔧 Campos Técnicos');
+                console.log('Incluye Precalif. Técnica:', validationStatus.incluye_tecnica);
+                if (validationStatus.campos_tecnicos.nota) {
+                    console.log('ℹ️', validationStatus.campos_tecnicos.nota);
+                } else {
+                    Object.keys(validationStatus.campos_tecnicos).forEach(function(key) {
+                        var status = validationStatus.campos_tecnicos[key];
+                        console.log(status ? '✅' : '❌', key.replace(/_/g, ' ').toUpperCase() + ':', status ? 'VÁLIDO' : 'FALTA COMPLETAR');
+                    });
+                }
+                console.groupEnd();
+
+                // Solo mostrar campos de subasta si es una subasta
+                if (esSub && validationStatus.campos_subasta) {
+                    console.group('🔥 Campos de Subasta (obligatorios)');
+                    Object.keys(validationStatus.campos_subasta).forEach(function(key) {
+                        var status = validationStatus.campos_subasta[key];
+                        console.log(status ? '✅' : '❌', key.replace(/_/g, ' ').toUpperCase() + ':', status ? 'VÁLIDO' : 'FALTA COMPLETAR');
+                    });
+                    console.groupEnd();
+                }
+
+                console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+                console.log('📊 RESUMEN:');
+                console.log('  • Campos básicos:', validationStatus.resumen.basicos_validos ? '✅ OK' : '❌ FALTAN');
+                console.log('  • Campos técnicos:', validationStatus.resumen.tecnicos_validos ? '✅ OK' : '❌ FALTAN');
+                console.log('  • Configuración adicional:', validationStatus.resumen.precios_validos ? '✅ OK' : '❌ FALTAN');
+                console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+                console.log('🎯 BOTÓN "GUARDAR DATOS":', validationStatus.boton_habilitado);
+                console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+                console.groupEnd();
+
+                return resultadoFinal;
             };
 
             this.validarformProduct = function() {
