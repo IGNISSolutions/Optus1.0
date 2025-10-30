@@ -140,7 +140,7 @@ class ReportsController extends BaseController
                 'ahorroRel'  => $ahorroRelF,
                 'plazoP'     => $plazoP,
                 'plazoE'     => $adj['fecha'],
-                'prov'       => $adj['razonSocial'],
+                'prov'       => $oferente->company->business_name ?? '',
                 'aceptAdj'   => $aceptAdj ? 'SI' : 'NO',
                 'FechaAdj'   => $fechaAdj,
                 'tipo'       => $concurso->getAdjudicationTypeAttribute(),
