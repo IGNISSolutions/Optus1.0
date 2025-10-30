@@ -18,6 +18,21 @@
         #ListaConcursosCancelados_wrapper div.row {
             display: none;
         }
+        
+        /* Estilo para botón deshabilitado */
+        .btn-disabled {
+            background-color: #95a5a6 !important;
+            border-color: #7f8c8d !important;
+            color: #ecf0f1 !important;
+            cursor: not-allowed !important;
+            opacity: 0.6;
+        }
+        
+        .btn-disabled:hover {
+            background-color: #95a5a6 !important;
+            border-color: #7f8c8d !important;
+            color: #ecf0f1 !important;
+        }
     </style>
 {/block}
 
@@ -130,8 +145,18 @@
                                         <i class="fa fa-edit"></i>
                                     </a>
 
-                                    <a data-bind="click: $root.sendInvitations.bind($data, Id()), attr: {literal}{ data: Id(), 'disabled': !HabilitaEnvioInvitaciones() }{/literal}"
-                                        class="btn btn-xs purple" title="Enviar invitaciones">
+                                    <a data-bind="
+                                        click: HabilitaEnvioInvitaciones() ? $root.sendInvitations.bind($data, Id()) : function(){}, 
+                                        attr: {literal}{ 
+                                            'disabled': !HabilitaEnvioInvitaciones(),
+                                            'title': HabilitaEnvioInvitaciones() ? 'Enviar invitaciones' : 'Complete todos los campos obligatorios antes de enviar invitaciones'
+                                        }{/literal},
+                                        css: {literal}{ 
+                                            'btn-disabled': !HabilitaEnvioInvitaciones(),
+                                            'purple': HabilitaEnvioInvitaciones()
+                                        }{/literal}"
+                                        class="btn btn-xs" 
+                                        style="cursor: pointer;">
                                         Enviar invitaciones
                                         <i class="fa fa-send"></i>
                                     </a>

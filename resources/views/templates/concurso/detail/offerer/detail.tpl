@@ -138,27 +138,27 @@
             </h2>
         </div>
         {if $tipo neq 'chat-muro-consultas'}
-        <!-- ko if: IsSobrecerrado() -->
-        <!-- CONTENEDOR DEL RELOJ -->
-        <div class="col-md-12">
-            <div style="position:absolute; top:20px; right:40px; text-align:center;">
-                <div id="countdown-timer" style="background:#26C281; border-radius:6px; padding:12px 20px;
+            <!-- ko if: IsSobrecerrado() -->
+            <!-- CONTENEDOR DEL RELOJ -->
+            <div class="col-md-12">
+                <div style="position:absolute; top:20px; right:40px; text-align:center;">
+                    <div id="countdown-timer" style="background:#26C281; border-radius:6px; padding:12px 20px;
                             display:inline-block;">
 
-                    <!-- Hora -->
-                    <div data-bind="text: CountdownEconomicas" style="font-size:20px; font-weight:bold; color:#fff;">
-                    </div>
+                        <!-- Hora -->
+                        <div data-bind="text: CountdownEconomicas" style="font-size:20px; font-weight:bold; color:#fff;">
+                        </div>
 
-                    <!-- Mensaje -->
-                    <div data-bind="text: CountdownEconomicas() === 'Finalizado' 
+                        <!-- Mensaje -->
+                        <div data-bind="text: CountdownEconomicas() === 'Finalizado' 
                                             ? 'La etapa económica ha finalizado.' 
                                             : 'Para la presentación de ofertas'"
-                        style="margin-top:5px; font-size:14px; font-weight:normal; color:#fff;">
+                            style="margin-top:5px; font-size:14px; font-weight:normal; color:#fff;">
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <!-- /ko -->
+            <!-- /ko -->
         {/if}
     </div>
 
@@ -167,7 +167,8 @@
             {if $tipo neq 'chat-muro-consultas'}
                 <div class="row">
                     <div class="col-md-12 text-center">
-                        <a href="/concursos/oferente" class="btn btn-xl green" title="Volver al listado" style="margin-bottom: 30px;">
+                        <a href="/concursos/oferente" class="btn btn-xl green" title="Volver al listado"
+                            style="margin-bottom: 30px;">
                             <i class="fa fa-backward"></i> Volver al listado
                         </a>
                     </div>
@@ -188,7 +189,7 @@
                 {include file='concurso/detail/offerer/invitacion.tpl'}
 
             {else if $tipo eq 'chat-muro-consultas'}
-                <chat-component 
+                <chat-component
                     params='IdConcurso: IdConcurso(), IsClient: IsClient(), IsProv: IsProv(), ChatEnable: ChatEnable(), 
                             FechaHoy: FechaHoy(), HoraHoy: HoraHoy(), 
                             CierreMuroConsultas: CierreMuroConsultas(), CierreMuroConsultasHora: CierreMuroConsultasHora()'>
@@ -196,22 +197,22 @@
 
             {else if $tipo eq 'tecnica'}
                 <!-- ko if: ShowTechnical() -->
-                    {include file='concurso/detail/offerer/tecnica.tpl'}
+                {include file='concurso/detail/offerer/tecnica.tpl'}
                 <!-- /ko -->
 
             {else if $tipo eq 'economica'}
                 <!-- ko if: ShowEconomic() -->
-                    {include file='concurso/detail/offerer/economica.tpl'}
+                {include file='concurso/detail/offerer/economica.tpl'}
                 <!-- /ko -->
 
             {else if $tipo eq 'analisis'}
                 <!-- ko if: HasEconomicaPresentada() -->
-                    {include file='concurso/detail/offerer/analisis.tpl'}
+                {include file='concurso/detail/offerer/analisis.tpl'}
                 <!-- /ko -->
 
             {else if $tipo eq 'adjudicado'}
                 <!-- ko if: HasEconomicaPresentada() -->
-                    {include file='concurso/detail/offerer/adjudicado.tpl'}
+                {include file='concurso/detail/offerer/adjudicado.tpl'}
                 <!-- /ko -->
             {/if}
         </div>
@@ -296,8 +297,18 @@
             self.measurement_id = ko.observable(data.measurement_id);
             self.measurement_name = ko.observable(data.measurement_name);
 
+            // Inicializar el switch: si el backend provee 'selected', usarlo; si no, usar la lógica anterior
+            var initialSelected = null;
+            try {
+                if (typeof data.selected !== 'undefined' && data.selected !== null) {
+                    initialSelected = Boolean(data.selected);
+                }
+            } catch (e) {
+                initialSelected = null;
+            }
+
             self.ProductSelected = ko.observable(
-                currentRound === 1 ? true : parseFloat(data.cotizacion) > 0
+                initialSelected !== null ? initialSelected : (currentRound === 1 ? true : parseFloat(data.cotizacion) > 0)
             );
             self.cotizacion = ko.observable(data.cotizacion);
             self.maximum_cotizacion = ko.observable(data.maximum_cotizacion);
@@ -428,7 +439,7 @@
                             window.location.href = self.UrlChatMuro();
                         } else {
                             swal('Error', 'No se pudo generar el token de acceso: ' + response.message,
-                            'error');
+                                'error');
                         }
                     },
                     (error) => {
@@ -952,7 +963,7 @@
                         var total = 0;
                         self.Resultados().forEach(function(item) {
                             total += item.valores.cotizacion ||
-                            0; // Asegúrate de que 'cotizacion' esté definido
+                                0; // Asegúrate de que 'cotizacion' esté definido
                         });
                         return total;
                     });
@@ -1307,59 +1318,58 @@
             }
 
             this.EconomicSend = function(isUpdate = false) {
-                // Validar campos de ítems seleccionados
                 const items = self.EconomicProposal().values();
 
-                // Separar errores de fecha
-                const erroresFecha = items.filter(item => {
-                    if (!item.ProductSelected()) return false;
-
-                    const fec = parseInt(item.fecha());
-                    return self.IsSobrecerrado() && (isNaN(fec) || fec < 1 || fec > 365);
-                });
-
-                // Validar todos los campos
-                const itemsInvalidos = items.filter(item => {
-                    if (!item.ProductSelected()) return false;
-
-                    const cot = parseFloat(item.cotizacion());
-                    const cant = parseFloat(item.cantidad());
-                    const fec = parseInt(item.fecha());
-
-                    return (
-                        isNaN(cot) || cot <= 0 ||
-                        isNaN(cant) || cant <= 0 ||
-                        (self.IsSobrecerrado() && (isNaN(fec) || fec <= 0 || fec > 365))
-                    );
-                });
-
-                // Mensaje específico si hay errores en la fecha
-                if (erroresFecha.length > 0) {
-                    swal({
-                        title: "Plazo de entrega inválido",
-                        text: "El campo 'Plazo de entrega' debe estar entre 1 y 365 días.",
-                        type: "error",
-                        confirmButtonText: "Aceptar",
-                        confirmButtonClass: 'btn btn-danger',
-                        buttonsStyling: false
+                // ⚠️ Solo validar si es envío definitivo
+                if (!isUpdate) {
+                    // Separar errores de fecha
+                    const erroresFecha = items.filter(item => {
+                        if (!item.ProductSelected()) return false;
+                        const fec = parseInt(item.fecha());
+                        return self.IsSobrecerrado() && (isNaN(fec) || fec < 1 || fec > 365);
                     });
-                    return;
+
+                    if (erroresFecha.length > 0) {
+                        swal({
+                            title: "Plazo de entrega inválido",
+                            text: "El campo 'Plazo de entrega' debe estar entre 1 y 365 días.",
+                            type: "error",
+                            confirmButtonText: "Aceptar",
+                            confirmButtonClass: 'btn btn-danger',
+                            buttonsStyling: false
+                        });
+                        return;
+                    }
+
+                    // Validar restantes campos
+                    const itemsInvalidos = items.filter(item => {
+                        if (!item.ProductSelected()) return false;
+
+                        const cot = parseFloat(item.cotizacion());
+                        const cant = parseFloat(item.cantidad());
+                        const fec = parseInt(item.fecha());
+
+                        return (
+                            isNaN(cot) || cot <= 0 ||
+                            isNaN(cant) || cant <= 0 ||
+                            (self.IsSobrecerrado() && (isNaN(fec) || fec <= 0 || fec > 365))
+                        );
+                    });
+
+                    if (itemsInvalidos.length > 0) {
+                        swal({
+                            title: "Error",
+                            text: "Existen ítems seleccionados con campos obligatorios incompletos o inválidos. Por favor, complete la información requerida o deseleccione esos ítems.",
+                            type: "error",
+                            confirmButtonText: "Aceptar",
+                            confirmButtonClass: 'btn btn-danger',
+                            buttonsStyling: false
+                        });
+                        return;
+                    }
                 }
 
-                // Mensaje genérico si hay otros errores
-                if (itemsInvalidos.length > 0) {
-                    swal({
-                        title: "Error",
-                        text: "Existen ítems seleccionados con campos obligatorios incompletos o inválidos. Por favor, complete la información requerida o deseleccione esos ítems.",
-                        type: "error",
-                        confirmButtonText: "Aceptar",
-                        confirmButtonClass: 'btn btn-danger',
-                        buttonsStyling: false
-                    });
-                    return;
-                }
-
-                // Continuar con envío si todo está válido
+                // Continuar con envío/guardado
                 var url = isUpdate ? '/concursos/proposal/economic/update' : '/concursos/proposal/economic/send';
                 var title = isUpdate ? '¿Desea guardar los cambios?' : '¿Desea enviar propuesta económica?';
 
@@ -1401,7 +1411,7 @@
                                         confirmButtonText: 'Aceptar',
                                         confirmButtonClass: 'btn btn-success',
                                         buttonsStyling: false
-                                    }, function(result) {
+                                    }, function() {
                                         if (response.success) {
                                             window.location.href =
                                             '/concursos/oferente';
@@ -1423,11 +1433,6 @@
                     }
                 });
             };
-
-
-
-
-
 
             // Subasta: Acciones
             this.AuctionUpdate = function(index = null, action) {
@@ -1864,7 +1869,7 @@
         self.DownloadEmptyExcel = function() {
             const data = [];
             const tableRows = document.querySelectorAll(
-            "#ListaConcursosEconomicas tbody tr"); // Seleccionar las filas del tbody
+                "#ListaConcursosEconomicas tbody tr"); // Seleccionar las filas del tbody
 
             // Iterar sobre cada fila y extraer los valores
             tableRows.forEach((row, index) => {

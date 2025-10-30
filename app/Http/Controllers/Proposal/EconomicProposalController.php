@@ -43,17 +43,19 @@ class EconomicProposalController extends BaseController
                 : Participante::CONDICIONES_PAGO[0]['id'];
 
             $fields = [
-                'comment'           => $body->EconomicProposal->comment,
-                'payment_deadline'  => isset($body->EconomicProposal->PlazoPago) ? $body->EconomicProposal->PlazoPago : '',
+                'comment' => $body->EconomicProposal->comment,
+                'payment_deadline' => isset($body->EconomicProposal->PlazoPago) ? $body->EconomicProposal->PlazoPago : '',
                 'payment_condition' => $condicionPago,
                 'values' => array_map(function ($item) use ($user) {
                     return [
-                        'producto'    => $item->product_id,
-                        'cotizacion'  => $item->cotizacion,
-                        'cantidad'    => $item->cantidad,
-                        'fecha'       => $item->fecha,
-                        'unidad'      => $item->measurement_name,
-                        'id_offerer'  => $user->offerer_company_id
+                        'producto' => $item->product_id,
+                        'cotizacion' => $item->cotizacion,
+                        'cantidad' => $item->cantidad,
+                        'fecha' => $item->fecha,
+                        'unidad' => $item->measurement_name,
+                        'id_offerer' => $user->offerer_company_id,
+                        // persistimos el estado del switch si viene del front
+                        'selected' => isset($item->ProductSelected) ? (bool) $item->ProductSelected : (isset($item->selected) ? (bool)$item->selected : null),
                     ];
                 }, $body->EconomicProposal->values)
             ];
@@ -63,11 +65,11 @@ class EconomicProposalController extends BaseController
             $validation_fields['values'] = array_filter($fields['values'], function ($item) use ($concurso) {
                 if ($concurso->is_go) {
                     return ($item['cotizacion'] && !empty($item['cotizacion'])) ||
-                        ($item['cantidad']   && !empty($item['cantidad']));
+                        ($item['cantidad'] && !empty($item['cantidad']));
                 } else {
                     return ($item['cotizacion'] && !empty($item['cotizacion'])) ||
-                        ($item['cantidad']   && !empty($item['cantidad']))   ||
-                        ($item['fecha']      && !empty($item['fecha']));
+                        ($item['cantidad'] && !empty($item['cantidad'])) ||
+                        ($item['fecha'] && !empty($item['fecha']));
                 }
             });
 
@@ -103,9 +105,9 @@ class EconomicProposalController extends BaseController
                 if (!$economic_proposal) {
                     $economic_proposal = new Proposal([
                         'participante_id' => $oferente->id,
-                        'status_id'       => $pendingStatus->id,
-                        'type_id'         => $proposal_type->id,
-                        'numero_ronda'    => $concurso->ronda_actual
+                        'status_id' => $pendingStatus->id,
+                        'type_id' => $proposal_type->id,
+                        'numero_ronda' => $concurso->ronda_actual
                     ]);
                     $economic_proposal->save();
                     $economic_proposal->refresh();
@@ -138,35 +140,35 @@ class EconomicProposalController extends BaseController
                     // Emails
                     $template1 = rootPath(config('app.templates_path')) . '/email/economic-send.tpl';
                     $message1 = $this->fetch($template1, [
-                        'concurso'  => $concurso,
-                        'title'     => 'Propuesta Económica',
-                        'ano'       => Carbon::now()->format('Y'),
-                        'cliente'   => $concurso->cliente->customer_company->business_name,
+                        'concurso' => $concurso,
+                        'title' => 'Propuesta Económica',
+                        'ano' => Carbon::now()->format('Y'),
+                        'cliente' => $concurso->cliente->customer_company->business_name,
                         'proveedor' => $user->offerer_company->business_name,
-                        'hora'      => Carbon::now()->subHours(3)->format('d/m/Y H:i:s'),
+                        'hora' => Carbon::now()->subHours(3)->format('d/m/Y H:i:s'),
                     ]);
 
                     $template2 = rootPath(config('app.templates_path')) . '/email/economic-confirmation.tpl';
                     $message2 = $this->fetch($template2, [
-                        'concurso'  => $concurso,
-                        'title'     => 'Confirmacion propuesta economica',
-                        'ano'       => Carbon::now()->format('Y'),
-                        'cliente'   => $concurso->cliente->customer_company->business_name,
+                        'concurso' => $concurso,
+                        'title' => 'Confirmacion propuesta economica',
+                        'ano' => Carbon::now()->format('Y'),
+                        'cliente' => $concurso->cliente->customer_company->business_name,
                         'proveedor' => $user->offerer_company->business_name,
                     ]);
 
                     $emails = [
                         [
-                            'message'   => $message1,
-                            'subject'   => $concurso->nombre . ' - Propuesta Económica',
-                            'email_to'  => [$concurso->cliente->email],
-                            'alias'     => '',
+                            'message' => $message1,
+                            'subject' => $concurso->nombre . ' - Propuesta Económica',
+                            'email_to' => [$concurso->cliente->email],
+                            'alias' => '',
                         ],
                         [
-                            'message'   => $message2,
-                            'subject'   => $concurso->nombre . ' - Confirmacion propuesta economica',
-                            'email_to'  => [$user->email],
-                            'alias'     => '',
+                            'message' => $message2,
+                            'subject' => $concurso->nombre . ' - Confirmacion propuesta economica',
+                            'email_to' => [$user->email],
+                            'alias' => '',
                         ]
                     ];
 
@@ -176,7 +178,7 @@ class EconomicProposalController extends BaseController
                         if (!$res['success']) {
                             $success = false;
                             $message = $res['message'];
-                            $status  = 422;
+                            $status = 422;
                             break;
                         }
                     }
@@ -187,7 +189,7 @@ class EconomicProposalController extends BaseController
                 } else {
                     $success = false;
                     $message = $result['message'];
-                    $status  = 422;
+                    $status = 422;
                 }
             }
 
@@ -217,118 +219,99 @@ class EconomicProposalController extends BaseController
 
 
     public function update(Request $request, Response $response)
-{
-    // "Guardar sin enviar" SIEMPRE CREA una nueva fila (borrador) en la MISMA ronda
-    $success = false;
-    $message = null;
-    $status = 200;
-    $result = [];
-    $redirect_url = null;
+    {
+        // Guardar sin enviar (borrador) — SIN VALIDACIONES
+        $success = false;
+        $message = null;
+        $status = 200;
+        $result = [];
+        $redirect_url = null;
 
-    try {
-        $body = json_decode($request->getParsedBody()['Data']);
+        try {
+            $body = json_decode($request->getParsedBody()['Data']);
 
-        $capsule = dependency('db');
-        $connection = $capsule->getConnection();
-        $connection->beginTransaction();
+            $capsule = dependency('db');
+            $connection = $capsule->getConnection();
+            $connection->beginTransaction();
 
-        $user = user();
-        $concurso = Concurso::find(intval($body->IdConcurso));
-        $oferente = $concurso->oferentes->where('id_offerer', $user->offerer_company_id)->first();
+            $user = user();
+            $concurso = Concurso::find(intval($body->IdConcurso));
+            $oferente = $concurso->oferentes->where('id_offerer', $user->offerer_company_id)->first();
 
-        $condicionPago = $concurso->condicion_pago == 'si'
-            ? (isset($body->EconomicProposal->CondicionPago) ? $body->EconomicProposal->CondicionPago : '')
-            : Participante::CONDICIONES_PAGO[0]['id'];
+            $condicionPago = $concurso->condicion_pago == 'si'
+                ? (isset($body->EconomicProposal->CondicionPago) ? $body->EconomicProposal->CondicionPago : '')
+                : Participante::CONDICIONES_PAGO[0]['id'];
 
-        $fields = [
-            'comment'           => $body->EconomicProposal->comment,
-            'payment_deadline'  => isset($body->EconomicProposal->PlazoPago) ? $body->EconomicProposal->PlazoPago : '',
-            'payment_condition' => $condicionPago,
-            'values' => array_map(function ($item) use ($user) {
+            // Tomar lo que venga (permitir nulos/vacíos)
+            $values = array_map(function ($item) use ($user) {
                 return [
-                    'producto'    => $item->product_id,
-                    'cotizacion'  => $item->cotizacion,
-                    'cantidad'    => $item->cantidad,
-                    'fecha'       => $item->fecha,
-                    'unidad'      => $item->measurement_name,
-                    'id_offerer'  => $user->offerer_company_id
+                    'producto' => isset($item->product_id) ? $item->product_id : null,
+                    'cotizacion' => isset($item->cotizacion) ? $item->cotizacion : null,
+                    'cantidad' => isset($item->cantidad) ? $item->cantidad : null,
+                    'fecha' => isset($item->fecha) ? $item->fecha : null,
+                    'unidad' => isset($item->measurement_name) ? $item->measurement_name : null,
+                    'id_offerer' => $user->offerer_company_id,
+                    // 👇 NUEVO: persistimos el switch
+                    'selected' => isset($item->ProductSelected) ? (bool) $item->ProductSelected : (isset($item->selected) ? (bool)$item->selected : null)
                 ];
-            }, $body->EconomicProposal->values)
-        ];
+            }, isset($body->EconomicProposal->values) ? $body->EconomicProposal->values : []);
 
-        // ===== Validación =====
-        $validation_fields = $fields;
-        $validation_fields['values'] = array_filter($fields['values'], function ($item) use ($concurso) {
-            if ($concurso->is_go) {
-                return ($item['cotizacion'] && !empty($item['cotizacion'])) ||
-                       ($item['cantidad']   && !empty($item['cantidad']));
-            } else {
-                return ($item['cotizacion'] && !empty($item['cotizacion'])) ||
-                       ($item['cantidad']   && !empty($item['cantidad']))   ||
-                       ($item['fecha']      && !empty($item['fecha']));
-            }
-        });
+            $fields = [
+                'comment' => isset($body->EconomicProposal->comment) ? $body->EconomicProposal->comment : '',
+                'payment_deadline' => isset($body->EconomicProposal->PlazoPago) ? $body->EconomicProposal->PlazoPago : '',
+                'payment_condition' => $condicionPago,
+                'values' => $values
+            ];
 
-        $validator = $this->validate($body, $concurso, $validation_fields);
-        if ($validator->fails()) {
-            $success = false;
-            $message = $validator->errors()->first();
-            $status  = 422;
-        } else {
-            // ===== Crear SIEMPRE un nuevo borrador en la MISMA ronda =====
+            // Crear SIEMPRE un nuevo borrador (pending) en la misma ronda
             $proposal_type = ProposalType::where('code', ProposalType::CODES['economic'])->first();
             $pendingStatus = ProposalStatus::where('code', ProposalStatus::CODES['pending'])->first();
 
-            // Crear la nueva propuesta-borrador con numero_ronda
             $economic_proposal = new Proposal([
                 'participante_id' => $oferente->id,
-                'status_id'       => $pendingStatus->id,
-                'type_id'         => $proposal_type->id,
-                'numero_ronda'    => $concurso->ronda_actual,
-                'comment'         => $fields['comment'],
-                'payment_deadline'=> $fields['payment_deadline'],
-                'payment_condition'=> $fields['payment_condition'],
-                'values'          => json_encode($fields['values']),
+                'status_id' => $pendingStatus->id,
+                'type_id' => $proposal_type->id,
+                'numero_ronda' => $concurso->ronda_actual,
+                'comment' => $fields['comment'],
+                'payment_deadline' => $fields['payment_deadline'],
+                'payment_condition' => $fields['payment_condition'],
+                'values' => json_encode($fields['values']),
             ]);
             $economic_proposal->save();
             $economic_proposal->refresh();
-
             $oferente->refresh();
 
-            // Adjuntos (si corresponde)
-            $result = $this->updateDocuments($concurso, $oferente, $body, $economic_proposal);
-            if ($result['success']) {
-                $success = true;
-            } else {
-                $success = false;
-                $message = $result['message'];
-                $status  = 422;
+            // Adjuntos: modo NO ESTRICTO
+            $result = $this->updateDocuments($concurso, $oferente, $body, $economic_proposal, false);
+            if (!$result['success']) {
+                // En guardado parcial NO bloqueamos por faltantes de adjuntos
+                // Podés loguear si querés: logger()->warning('Guardar parcial económica', $result);
             }
-        }
 
-        if ($success) {
-            $connection->commit();
-            $message = $concurso->is_go ? 'Cotización guardada con éxito.' : 'Propuesta guardada con éxito.';
-        } else {
+            $success = true;
+
+            if ($success) {
+                $connection->commit();
+                $message = $concurso->is_go ? 'Cotización guardada parcialmente.' : 'Propuesta guardada parcialmente.';
+            } else {
+                $connection->rollBack();
+            }
+
+        } catch (\Exception $e) {
             $connection->rollBack();
+            $success = false;
+            $message = $e->getMessage();
+            $status = method_exists($e, 'getStatusCode') ? $e->getStatusCode() : (method_exists($e, 'getCode') ? $e->getCode() : 500);
         }
 
-    } catch (\Exception $e) {
-        $connection->rollBack();
-        $success = false;
-        $message = $e->getMessage();
-        $status = method_exists($e, 'getStatusCode') ? $e->getStatusCode() : (method_exists($e, 'getCode') ? $e->getCode() : 500);
+        return $this->json($response, [
+            'success' => $success,
+            'message' => $message,
+            'data' => [
+                'redirect' => $redirect_url
+            ]
+        ], $status);
     }
-
-    return $this->json($response, [
-        'success' => $success,
-        'message' => $message,
-        'data' => [
-            'redirect' => $redirect_url
-        ]
-    ], $status);
-}
-
 
 
     public function auctionCotizar(Request $request, Response $response)
@@ -369,11 +352,13 @@ class EconomicProposalController extends BaseController
                     $oferta_new = [
                         'producto' => $producto->id,
                         'unidad' => $producto->unidad_medida->name,
-                        'cotizacion' => isset($ofertas_old[$i]) && $ofertas_old[$i]['cotizacion'] ? $ofertas_old[$i]['cotizacion'] : null,
-                        'creado' => isset($ofertas_old[$i]) && $ofertas_old[$i]['creado'] ? $ofertas_old[$i]['creado'] : null,
-                        'fecha' => isset($ofertas_old[$i]) && $ofertas_old[$i]['fecha'] ? $ofertas_old[$i]['fecha'] : null,
-                        'cantidad' => isset($ofertas_old[$i]) && $ofertas_old[$i]['cantidad'] ? $ofertas_old[$i]['cantidad'] : null,
-                        'anulada' => isset($ofertas_old[$i]) && $ofertas_old[$i]['anulada'] ? $ofertas_old[$i]['anulada'] : false
+                        'cotizacion' => isset($ofertas_old[$i]) && isset($ofertas_old[$i]['cotizacion']) ? $ofertas_old[$i]['cotizacion'] : null,
+                        'creado' => isset($ofertas_old[$i]) && isset($ofertas_old[$i]['creado']) ? $ofertas_old[$i]['creado'] : null,
+                        'fecha' => isset($ofertas_old[$i]) && isset($ofertas_old[$i]['fecha']) ? $ofertas_old[$i]['fecha'] : null,
+                        'cantidad' => isset($ofertas_old[$i]) && isset($ofertas_old[$i]['cantidad']) ? $ofertas_old[$i]['cantidad'] : null,
+                        'anulada' => isset($ofertas_old[$i]) && isset($ofertas_old[$i]['anulada']) ? $ofertas_old[$i]['anulada'] : false,
+                        // preservamos el estado del switch si estaba presente
+                        'selected' => isset($ofertas_old[$i]) && array_key_exists('selected', $ofertas_old[$i]) ? (bool)$ofertas_old[$i]['selected'] : null
                     ];
 
                     if ($i == $body->Index) {
@@ -500,11 +485,12 @@ class EconomicProposalController extends BaseController
                     $oferta_new = [
                         'producto' => $producto->id,
                         'unidad' => $producto->unidad_medida->name,
-                        'cotizacion' => isset($ofertas_old[$i]) && $ofertas_old[$i]['cotizacion'] ? $ofertas_old[$i]['cotizacion'] : null,
-                        'creado' => isset($ofertas_old[$i]) && $ofertas_old[$i]['creado'] ? $ofertas_old[$i]['creado'] : null,
-                        'fecha' => isset($ofertas_old[$i]) && $ofertas_old[$i]['fecha'] ? $ofertas_old[$i]['fecha'] : null,
-                        'cantidad' => isset($ofertas_old[$i]) && $ofertas_old[$i]['cantidad'] ? $ofertas_old[$i]['cantidad'] : null,
-                        'anulada' => isset($ofertas_old[$i]) && $ofertas_old[$i]['anulada'] ? $ofertas_old[$i]['anulada'] : null
+                        'cotizacion' => isset($ofertas_old[$i]) && isset($ofertas_old[$i]['cotizacion']) ? $ofertas_old[$i]['cotizacion'] : null,
+                        'creado' => isset($ofertas_old[$i]) && isset($ofertas_old[$i]['creado']) ? $ofertas_old[$i]['creado'] : null,
+                        'fecha' => isset($ofertas_old[$i]) && isset($ofertas_old[$i]['fecha']) ? $ofertas_old[$i]['fecha'] : null,
+                        'cantidad' => isset($ofertas_old[$i]) && isset($ofertas_old[$i]['cantidad']) ? $ofertas_old[$i]['cantidad'] : null,
+                        'anulada' => isset($ofertas_old[$i]) && isset($ofertas_old[$i]['anulada']) ? $ofertas_old[$i]['anulada'] : null,
+                        'selected' => isset($ofertas_old[$i]) && array_key_exists('selected', $ofertas_old[$i]) ? (bool)$ofertas_old[$i]['selected'] : null
                     ];
 
                     if ($i == $body->Index) {
@@ -731,7 +717,7 @@ class EconomicProposalController extends BaseController
         return $errores;
     }
 
-    private function updateDocuments($concurso, $oferente, $body, $economic_proposal)
+    private function updateDocuments($concurso, $oferente, $body, $economic_proposal, $strict = true)
     {
         $success = false;
         $message = null;
@@ -741,57 +727,62 @@ class EconomicProposalController extends BaseController
             $absolute_path = filePath($oferente->file_path, true);
 
             $documents = collect();
-            $documents = $documents->merge($body->EconomicProposal->documents);
-            
-            $validator = $this->validateDocuments($body, $concurso, [
-                'economic_documents' => $documents->map(
-                    function ($item) {
+            $documents = $documents->merge(isset($body->EconomicProposal->documents) ? $body->EconomicProposal->documents : []);
+
+            // Validación SOLO si $strict === true
+            if ($strict) {
+                $validator = $this->validateDocuments($body, $concurso, [
+                    'economic_documents' => $documents->map(function ($item) {
                         return (array) $item;
-                    }
-                )->toArray()
-            ]);
+                    })->toArray()
+                ]);
 
-            if ($validator->fails()) {
-                $status = 422;
-                $message = $validator->errors()->first();
-                $success = false;
-            } else {
-                foreach ($documents as $document) {
-                    switch ($document->action) {
-                        case 'upload':
-                            // Si había un archivo previo, lo eliminamos.
-                            if ($document->id) {
-                                $to_delete = ProposalDocument::find($document->id);
-                                @unlink($absolute_path . DIRECTORY_SEPARATOR . $to_delete->filename);
-                                $to_delete->delete();
-                            }
-                            
-                            // Guardamos el nuevo archivo
-                            $new_document = new ProposalDocument([
-                                'proposal_id' => $economic_proposal->id,
-                                'type_id' => (int) $document->type_id,
-                                'filename' => $document->filename
-                            ]);
-
-                            $new_document->save();
-                            break;
-                        case 'clear':
-                        case 'delete':
-                            // Si el archivo ya estaba guardado
-                            if ($document->id) {
-                                $to_delete = ProposalDocument::find($document->id);
-                                @unlink($absolute_path . DIRECTORY_SEPARATOR . $to_delete->filename);
-                                $to_delete->delete();
-                            }
-                        default:
-                            //continue;
-                            break;
-                    }
+                if ($validator->fails()) {
+                    return [
+                        'success' => false,
+                        'message' => $validator->errors()->first()
+                    ];
                 }
-
-                $success = true;
             }
 
+            foreach ($documents as $document) {
+                $action = isset($document->action) ? $document->action : null;
+
+                switch ($action) {
+                    case 'upload':
+                        // Si había un archivo previo, lo eliminamos.
+                        if (!empty($document->id)) {
+                            $to_delete = ProposalDocument::find($document->id);
+                            @unlink($absolute_path . DIRECTORY_SEPARATOR . $to_delete->filename);
+                            $to_delete->delete();
+                        }
+
+                        // Guardamos el nuevo archivo
+                        $new_document = new ProposalDocument([
+                            'proposal_id' => $economic_proposal->id,
+                            'type_id' => (int) (isset($document->type_id) ? $document->type_id : 0),
+                            'filename' => isset($document->filename) ? $document->filename : ''
+                        ]);
+                        $new_document->save();
+                        break;
+
+                    case 'clear':
+                    case 'delete':
+                        // Si el archivo ya estaba guardado
+                        if (!empty($document->id)) {
+                            $to_delete = ProposalDocument::find($document->id);
+                            @unlink($absolute_path . DIRECTORY_SEPARATOR . $to_delete->filename);
+                            $to_delete->delete();
+                        }
+                        break;
+
+                    default:
+                        // noop
+                        break;
+                }
+            }
+
+            $success = true;
 
         } catch (\Exception $e) {
             $success = false;
@@ -805,6 +796,7 @@ class EconomicProposalController extends BaseController
         ];
     }
 
+
     private function validate($body, $concurso, $fields)
     {
         $conditional_rules = [];
@@ -814,7 +806,7 @@ class EconomicProposalController extends BaseController
                 'max:5000',
                 'nullable'
             ],
-            'payment_deadline' =>[
+            'payment_deadline' => [
                 'required'
             ],
             'values' => [
@@ -835,7 +827,7 @@ class EconomicProposalController extends BaseController
             ]
         ];
 
-        if($concurso->condicion_pago == 'si'){
+        if ($concurso->condicion_pago == 'si') {
             $conditional_rules = array_merge($conditional_rules, [
                 'payment_condition' => [
                     'required'
@@ -865,7 +857,7 @@ class EconomicProposalController extends BaseController
                     } else {
                         if ((int) $product->oferta_minima == (int) $product->cantidad) {
                             if ((int) $value['cantidad'] <> (int) $product->cantidad) {
-                                $fail('La Cantidad Cotizada de "'. $product->nombre .'" debe ser igual a ' . $product->cantidad . '.');
+                                $fail('La Cantidad Cotizada de "' . $product->nombre . '" debe ser igual a ' . $product->cantidad . '.');
                             }
                         } else {
                             if ((int) $value['cantidad'] < (int) $product->oferta_minima || $value['cantidad'] > (int) $product->cantidad) {
@@ -874,7 +866,7 @@ class EconomicProposalController extends BaseController
                                 // Validación extra si está dentro del rango
                                 if (Carbon::now()->gt(Carbon::parse($concurso->fecha_limite_economicas))) {
                                     $fail('La Fecha de envio de Propuesta ya ha terminado.');
-                                } 
+                                }
                             }
                         }
                     }

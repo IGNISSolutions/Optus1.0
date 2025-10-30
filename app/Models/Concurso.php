@@ -35,6 +35,7 @@ class Concurso extends Model
         'finalizacion_consultas',
         'fecha_limite',
         'fecha_limite_economicas',
+        'email_economica_enviado_at',
         'segunda_ronda_fecha_limite',
         'ficha_tecnica_fecha_limite',
         'inicio_subasta',

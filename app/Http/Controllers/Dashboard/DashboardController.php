@@ -64,7 +64,7 @@ class DashboardController extends BaseController
                         $list['Invitaciones'][] = [
                             'id'     => $concurso->id,
                             'nombre' => $concurso->nombre,
-                            'fecha'  => $concurso->fecha_limite->format('Y-m-d'),
+                            'fecha'  => $concurso->fecha_limite ? $concurso->fecha_limite->format('Y-m-d') : date('Y-m-d'),
                             'class'  => 'invitacion-color',
                             'etapa'  => Participante::ETAPAS_NOMBRES['invitacion-pendiente'],
                             'tipo_concurso'  => $concurso->tipo_concurso,
@@ -82,7 +82,7 @@ class DashboardController extends BaseController
                         $list['Consultas'][] = [
                             'id'     => $concurso->id,
                             'nombre' => $concurso->nombre,
-                            'fecha'  => $concurso->finalizacion_consultas->format('Y-m-d'),
+                            'fecha'  => $concurso->finalizacion_consultas ? $concurso->finalizacion_consultas->format('Y-m-d') : date('Y-m-d'),
                             'class'  => 'muro-color',
                             'etapa'  => 'Finalizacion Muro de Consulta',
                             'tipo_concurso'  => $concurso->tipo_concurso,
@@ -117,7 +117,7 @@ class DashboardController extends BaseController
                         $list['Tecnicas'][] = [
                             'id'     => $concurso->id,
                             'nombre' => $concurso->nombre,
-                            'fecha'  => $concurso->ficha_tecnica_fecha_limite->format('Y-m-d'),
+                            'fecha'  => $concurso->ficha_tecnica_fecha_limite ? $concurso->ficha_tecnica_fecha_limite->format('Y-m-d') : date('Y-m-d'),
                             'class'  => 'tecnica-color',
                             'etapa'  => 'Evaluación Técnica',
                             'tipo_concurso'  => $concurso->tipo_concurso,
@@ -146,12 +146,14 @@ class DashboardController extends BaseController
                         ->get();
 
                     foreach ($concursosEconomicaPendiente as $concurso) {
+                        $fechaEconomica = $concurso->is_online
+                            ? ($concurso->inicio_subasta ? $concurso->inicio_subasta->format('Y-m-d') : date('Y-m-d'))
+                            : ($concurso->fecha_limite_economicas ? $concurso->fecha_limite_economicas->format('Y-m-d') : date('Y-m-d'));
+                        
                         $list['Economicas'][] = [
                             'id'     => $concurso->id,
                             'nombre' => $concurso->nombre,
-                            'fecha'  => $concurso->is_online
-                                        ? $concurso->inicio_subasta->format('Y-m-d')
-                                        : $concurso->fecha_limite_economicas->format('Y-m-d'),
+                            'fecha'  => $fechaEconomica,
                             'class'  => 'economica-color',
                             'etapa'  => Participante::ETAPAS_NOMBRES['economica-pendiente'],
                             'tipo_concurso'  => $concurso->tipo_concurso,
@@ -170,7 +172,7 @@ class DashboardController extends BaseController
                         $list['PorAdjudicar'][] = [
                             'id'     => $concurso->id,
                             'nombre' => $concurso->nombre,
-                            'fecha'  => $concurso->fecha_limite->format('Y-m-d'),
+                            'fecha'  => $concurso->fecha_limite ? $concurso->fecha_limite->format('Y-m-d') : date('Y-m-d'),
                             'class'  => 'adjudicacion-color',
                             'etapa'  => Participante::ETAPAS_NOMBRES['adjudicacion-pendiente'],
                             'tipo_concurso'  => $concurso->tipo_concurso,
@@ -202,7 +204,7 @@ class DashboardController extends BaseController
                     $list['Invitaciones'][] = [
                         'id'     => $concurso->id,
                         'nombre' => $concurso->nombre,
-                        'fecha'  => $concurso->fecha_limite->format('Y-m-d'),
+                        'fecha'  => $concurso->fecha_limite ? $concurso->fecha_limite->format('Y-m-d') : date('Y-m-d'),
                         'class'  => 'invitacion-color',
                         'etapa'  => Participante::ETAPAS_NOMBRES['invitacion-pendiente'],
                         'tipo_concurso'  => $concurso->tipo_concurso,
@@ -228,7 +230,7 @@ class DashboardController extends BaseController
                     $list['Consultas'][] = [
                         'id'     => $concurso->id,
                         'nombre' => $concurso->nombre,
-                        'fecha'  => $concurso->finalizacion_consultas->format('Y-m-d'),
+                        'fecha'  => $concurso->finalizacion_consultas ? $concurso->finalizacion_consultas->format('Y-m-d') : date('Y-m-d'),
                         'class'  => 'muro-color',
                         'etapa'  => 'Finalizacion Muro de Consulta',
                         'tipo_concurso'  => $concurso->tipo_concurso,
@@ -255,7 +257,7 @@ class DashboardController extends BaseController
                     $list['Tecnicas'][] = [
                         'id'     => $concurso->id,
                         'nombre' => $concurso->nombre,
-                        'fecha'  => $concurso->ficha_tecnica_fecha_limite->format('Y-m-d'),
+                        'fecha'  => $concurso->ficha_tecnica_fecha_limite ? $concurso->ficha_tecnica_fecha_limite->format('Y-m-d') : date('Y-m-d'),
                         'class'  => 'tecnica-color',
                         'etapa'  => Participante::ETAPAS_NOMBRES['tecnica-pendiente'],
                         'tipo_concurso'  => $concurso->tipo_concurso,
@@ -289,13 +291,14 @@ class DashboardController extends BaseController
                 ->get();
 
                 foreach ($concursosEconomicaPendiente as $concurso) {
+                    $fechaEconomica = $concurso->is_online
+                        ? ($concurso->inicio_subasta ? $concurso->inicio_subasta->format('Y-m-d H:i:s') : date('Y-m-d H:i:s'))
+                        : ($concurso->fecha_limite_economicas ? $concurso->fecha_limite_economicas->format('Y-m-d H:i:s') : date('Y-m-d H:i:s'));
 
                     $list['Economicas'][] = [
                         'id'     => $concurso->id,
                         'nombre' => $concurso->nombre,
-                        'fecha'  => $concurso->is_online 
-                                    ? $concurso->inicio_subasta->format('Y-m-d H:i:s') 
-                                    : $concurso->fecha_limite_economicas->format('Y-m-d H:i:s'),
+                        'fecha'  => $fechaEconomica,
                         'class'  => 'economica-color',
                         'etapa'  => Participante::ETAPAS_NOMBRES['economica-pendiente'],
                         'tipo_concurso'  => $concurso->tipo_concurso,
@@ -322,7 +325,7 @@ class DashboardController extends BaseController
                     $list['PorAdjudicar'][] = [
                         'id'     => $concurso->id,
                         'nombre' => $concurso->nombre,
-                        'fecha'  => $concurso->fecha_limite->format('Y-m-d'),
+                        'fecha'  => $concurso->fecha_limite ? $concurso->fecha_limite->format('Y-m-d') : date('Y-m-d'),
                         'class'  => 'adjudicacion-color',
                         'etapa'  => Participante::ETAPAS_NOMBRES['adjudicacion-pendiente'],
                         'tipo_concurso'  => $concurso->tipo_concurso,

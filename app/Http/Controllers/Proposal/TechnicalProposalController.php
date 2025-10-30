@@ -228,6 +228,7 @@ class TechnicalProposalController extends BaseController
         try {
             $body = json_decode($request->getParsedBody()['Entity']);
             $concursoId = json_decode($request->getParsedBody()['ConcursoId']);
+
             $capsule = dependency('db');
             $connection = $capsule->getConnection();
             $connection->beginTransaction();
@@ -235,7 +236,6 @@ class TechnicalProposalController extends BaseController
             $user = user();
             $concurso = Concurso::find($concursoId);
             $oferente = $concurso->oferentes->where('id_offerer', $user->offerer_company_id)->first();
-
 
             if ($concurso->is_go) {
                 $redirect_url = route('concursos.oferente.serveDetail', [
@@ -245,80 +245,69 @@ class TechnicalProposalController extends BaseController
                 ]);
             }
 
-            if ($concurso->is_go) {
-                $fields = [
-                    'comment' => ''
-                ];
-            } else {
-                $fields = [
-                    'comment' => $body->comentario
-                ];
+            // Guardado parcial: SIN VALIDACIONES
+            $fields = [];
+            if (!$concurso->is_go) {
+                if (is_object($body) && property_exists($body, 'comentario')) {
+                    $fields['comment'] = $body->comentario;
+                }
             }
 
-            $validator = $this->validate($body, $fields);
+            // Crear/recuperar proposal técnica
+            $technical_proposal = $oferente->technical_proposal;
+            if (!$technical_proposal) {
+                $proposal_status = ProposalStatus::where('code', ProposalStatus::CODES['pending'])->first();
+                $proposal_type = ProposalType::where('code', ProposalType::CODES['technical'])->first();
+                $technical_proposal = new Proposal([
+                    'participante_id' => $oferente->id,
+                    'status_id' => $proposal_status->id,
+                    'type_id' => $proposal_type->id,
+                    'ronda_tecnica' => $oferente->ronda_tecnica
+                ]);
+                $technical_proposal->save();
+                $technical_proposal->refresh();
+            }
 
-            if ($validator->fails()) {
-                $success = false;
-                $message = $validator->errors()->first();
-                $status = 422;
-            } else {
-                $technical_proposal = $oferente->technical_proposal;
-                if (!$technical_proposal) {
-                    $proposal_status = ProposalStatus::where('code', ProposalStatus::CODES['pending'])->first();
-                    $proposal_type = ProposalType::where('code', ProposalType::CODES['technical'])->first();
-                    $technical_proposal = new Proposal([
-                        'participante_id' => $oferente->id,
-                        'status_id' => $proposal_status->id,
-                        'type_id' => $proposal_type->id,
-                        'ronda_tecnica' => $oferente->ronda_tecnica
-                    ]);
-                    $technical_proposal->save();
-                    $technical_proposal->refresh();
-                }
+            if (!empty($fields)) {
                 $technical_proposal->update($fields);
-                $oferente->refresh();
-
-                $fechaCampo = null;
-                switch ((int) $oferente->ronda_tecnica) {
-                    case 1:
-                        $fechaCampo = 'fecha_primera_ronda_tecnica';
-                        break;
-                    case 2:
-                        $fechaCampo = 'fecha_segunda_ronda_tecnica';
-                        break;
-                    case 3:
-                        $fechaCampo = 'fecha_tercera_ronda_tecnica';
-                        break;
-                    case 4:
-                        $fechaCampo = 'fecha_cuarta_ronda_tecnica';
-                        break;
-                    case 5:
-                        $fechaCampo = 'fecha_quinta_ronda_tecnica';
-                        break;
-                }
-
-                if ($fechaCampo && !$oferente->$fechaCampo) {
-                    $oferente->$fechaCampo = Carbon::now()->format('Y-m-d H:i:s');
-                    $oferente->save();
-                }
-
-                $result = $this->updateDocuments($concurso, $oferente, $body);
-
-                if ($result['success']) {
-                    $success = true;
-                } else {
-                    $success = false;
-                    $message = $result['message'];
-                    $status = 422;
-                }
             }
+            $oferente->refresh();
+
+            // Marca de tiempo de ronda técnica (si no estaba)
+            $fechaCampo = null;
+            switch ((int) $oferente->ronda_tecnica) {
+                case 1:
+                    $fechaCampo = 'fecha_primera_ronda_tecnica';
+                    break;
+                case 2:
+                    $fechaCampo = 'fecha_segunda_ronda_tecnica';
+                    break;
+                case 3:
+                    $fechaCampo = 'fecha_tercera_ronda_tecnica';
+                    break;
+                case 4:
+                    $fechaCampo = 'fecha_cuarta_ronda_tecnica';
+                    break;
+                case 5:
+                    $fechaCampo = 'fecha_quinta_ronda_tecnica';
+                    break;
+            }
+            if ($fechaCampo && !$oferente->$fechaCampo) {
+                $oferente->$fechaCampo = Carbon::now()->format('Y-m-d H:i:s');
+                $oferente->save();
+            }
+
+            // Documentos en modo NO ESTRICTO
+            $result = $this->updateDocuments($concurso, $oferente, $body, false);
+
+            // Guardado parcial: aunque $result['success'] fuera false por faltantes NO bloqueamos.
+            $success = true;
 
             if ($success) {
                 $connection->commit();
-                $message =
-                    $concurso->is_go ?
-                    'Documentación actualizada con éxito.' :
-                    'Propuesta actualizada con éxito.';
+                $message = $concurso->is_go
+                    ? 'Documentación guardada parcialmente.'
+                    : 'Propuesta guardada parcialmente.';
             } else {
                 $connection->rollBack();
             }
@@ -327,17 +316,18 @@ class TechnicalProposalController extends BaseController
             $connection->rollBack();
             $success = false;
             $message = $e->getMessage();
-            $status = method_exists($e, 'getStatusCode') ? $e->getStatusCode() : (method_exists($e, 'getCode') ? $e->getCode() : 500);
+            $status = method_exists($e, 'getStatusCode') ? $e->getStatusCode()
+                : (method_exists($e, 'getCode') ? $e->getCode() : 500);
         }
 
         return $this->json($response, [
             'success' => $success,
             'message' => $message,
-            'data' => [
-                'redirect' => $redirect_url
-            ]
+            'data' => ['redirect' => $redirect_url]
         ], $status);
     }
+
+
 
     public function acceptOrReject(Request $request, Response $response)
     {
@@ -468,7 +458,7 @@ class TechnicalProposalController extends BaseController
         ], $status);
     }
 
-    private function updateDocuments($concurso, $oferente, $body)
+    private function updateDocuments($concurso, $oferente, $body, $strict = true)
     {
         $success = false;
         $message = null;
@@ -476,160 +466,171 @@ class TechnicalProposalController extends BaseController
 
         try {
             $absolute_path = filePath($oferente->file_path, true);
+
+            // ======================
             // GO
+            // ======================
             if ($concurso->is_go) {
 
                 $documents = collect();
                 $documentsAdditional = collect();
-                $documents = $documents->merge($body->DriverNoGcgDocuments);
-                $documentsAdditional = $documentsAdditional->merge($body->AdditionalDriverDocuments);
-                $documentsAdditional = $documentsAdditional->merge($body->AdditionalVehicleDocuments);
 
-                $validator = $this->validateGoDocuments($body, $concurso, [
-                    'go_documents' => $documents->map(
-                        function ($item) {
-                            return (array) $item;
-                        }
-                    )->toArray(),
-                    'go_additional_documents' => $documents->map(
-                        function ($item) {
-                            return (array) $item;
-                        }
-                    )->toArray()
-                ]);
+                // Entradas desde el body (manejar nulos)
+                $documents = $documents->merge(isset($body->DriverNoGcgDocuments) ? $body->DriverNoGcgDocuments : []);
+                $documentsAdditional = $documentsAdditional->merge(isset($body->AdditionalDriverDocuments) ? $body->AdditionalDriverDocuments : []);
+                $documentsAdditional = $documentsAdditional->merge(isset($body->AdditionalVehicleDocuments) ? $body->AdditionalVehicleDocuments : []);
 
-                if ($validator->fails()) {
-                    $status = 422;
-                    $message = $validator->errors()->first();
-                    $success = false;
-                } else {
-                    foreach ($documents as $document) {
-                        switch ($document->action) {
-                            case 'upload':
-                                // Si había un archivo previo, lo eliminamos.
-                                if ($document->id) {
-                                    $to_delete = ParticipanteGoDocument::find($document->id);
-                                    @unlink($absolute_path . DIRECTORY_SEPARATOR . $to_delete->filename);
-                                    $to_delete->delete();
-                                }
+                // Validación SOLO si $strict === true
+                if ($strict) {
+                    $validator = $this->validateGoDocuments($body, $concurso, [
+                        'go_documents' => $documents->map(function ($i) {
+                            return (array) $i;
+                        })->toArray(),
+                        'go_additional_documents' => $documentsAdditional->map(function ($i) {
+                            return (array) $i;
+                        })->toArray(),
+                    ]);
 
-                                // Guardamos el nuevo archivo
-                                $new_document = new ParticipanteGoDocument([
-                                    'participante_id' => $oferente->id,
-                                    'id_go_document' => (int) $document->document_id,
-                                    'filename' => $document->filename
-                                ]);
-
-                                $new_document->save();
-                                break;
-                            case 'clear':
-                            case 'delete':
-                                // Si el archivo ya estaba guardado
-                                if ($document->id) {
-                                    $to_delete = ParticipanteGoDocument::find($document->id);
-                                    @unlink($absolute_path . DIRECTORY_SEPARATOR . $to_delete->filename);
-                                    $to_delete->delete();
-                                }
-                            default:
-                                //continue;
-                                break;
-                        }
+                    if ($validator->fails()) {
+                        return [
+                            'success' => false,
+                            'message' => $validator->errors()->first(),
+                            'status' => 422
+                        ];
                     }
-
-                    foreach ($documentsAdditional as $document) {
-                        switch ($document->action) {
-                            case 'upload':
-                                // Si había un archivo previo, lo eliminamos.
-                                if ($document->id) {
-                                    $to_delete = ParticipanteGoDocument::find($document->id);
-                                    @unlink($absolute_path . DIRECTORY_SEPARATOR . $to_delete->filename);
-                                    $to_delete->delete();
-                                }
-
-                                // Guardamos el nuevo archivo
-                                $new_document = new ParticipanteGoDocument([
-                                    'participante_id' => $oferente->id,
-                                    'id_go_document_additional' => (int) $document->document_id,
-                                    'filename' => $document->filename
-                                ]);
-
-                                $new_document->save();
-                                break;
-                            case 'clear':
-                            case 'delete':
-                                // Si el archivo ya estaba guardado
-                                if ($document->id) {
-                                    $to_delete = ParticipanteGoDocument::find($document->id);
-                                    @unlink($absolute_path . DIRECTORY_SEPARATOR . $to_delete->filename);
-                                    $to_delete->delete();
-                                }
-                            default:
-                                //continue;
-                                break;
-                        }
-                    }
-
-                    $success = true;
                 }
-                // NO-GO
+
+                // Procesamiento (parcial si $strict=false)
+                foreach ($documents as $document) {
+                    $action = isset($document->action) ? $document->action : null;
+                    switch ($action) {
+                        case 'upload':
+                            if (!empty($document->id)) {
+                                $to_delete = ParticipanteGoDocument::find($document->id);
+                                @unlink($absolute_path . DIRECTORY_SEPARATOR . $to_delete->filename);
+                                $to_delete->delete();
+                            }
+                            $new_document = new ParticipanteGoDocument([
+                                'participante_id' => $oferente->id,
+                                'id_go_document' => (int) (isset($document->document_id) ? $document->document_id : 0),
+                                'filename' => isset($document->filename) ? $document->filename : '',
+                            ]);
+                            $new_document->save();
+                            break;
+
+                        case 'clear':
+                        case 'delete':
+                            if (!empty($document->id)) {
+                                $to_delete = ParticipanteGoDocument::find($document->id);
+                                @unlink($absolute_path . DIRECTORY_SEPARATOR . $to_delete->filename);
+                                $to_delete->delete();
+                            }
+                            break;
+
+                        default:
+                            // noop
+                            break;
+                    }
+                }
+
+                foreach ($documentsAdditional as $document) {
+                    $action = isset($document->action) ? $document->action : null;
+                    switch ($action) {
+                        case 'upload':
+                            if (!empty($document->id)) {
+                                $to_delete = ParticipanteGoDocument::find($document->id);
+                                @unlink($absolute_path . DIRECTORY_SEPARATOR . $to_delete->filename);
+                                $to_delete->delete();
+                            }
+                            $new_document = new ParticipanteGoDocument([
+                                'participante_id' => $oferente->id,
+                                'id_go_document_additional' => (int) (isset($document->document_id) ? $document->document_id : 0),
+                                'filename' => isset($document->filename) ? $document->filename : '',
+                            ]);
+                            $new_document->save();
+                            break;
+
+                        case 'clear':
+                        case 'delete':
+                            if (!empty($document->id)) {
+                                $to_delete = ParticipanteGoDocument::find($document->id);
+                                @unlink($absolute_path . DIRECTORY_SEPARATOR . $to_delete->filename);
+                                $to_delete->delete();
+                            }
+                            break;
+
+                        default:
+                            // noop
+                            break;
+                    }
+                }
+
+                $success = true;
+
+                // ======================
+                // NO-GO (técnica)
+                // ======================
             } else {
-                $documents = collect();
-                $documents = $documents->merge($body->documents);
 
-                $validator = $this->validateDocuments($body, $concurso, [
-                    'technical_documents' => $documents->map(
-                        function ($item) {
-                            return (array) $item;
-                        }
-                    )->toArray()
-                ]);
+                $documents = collect(isset($body->documents) ? $body->documents : []);
 
-                if ($validator->fails()) {
-                    $status = 422;
-                    $message = $validator->errors()->first();
-                    $success = false;
-                } else {
-                    foreach ($documents as $document) {
-                        switch ($document->action) {
-                            case 'upload':
-                                // Si había un archivo previo, lo eliminamos.
-                                if ($document->id) {
-                                    $to_delete = ProposalDocument::find($document->id);
-                                    @unlink($absolute_path . DIRECTORY_SEPARATOR . $to_delete->filename);
-                                    $to_delete->delete();
-                                }
+                // Validación SOLO si $strict === true
+                if ($strict) {
+                    $validator = $this->validateDocuments($body, $concurso, [
+                        'technical_documents' => $documents->map(function ($i) {
+                            return (array) $i;
+                        })->toArray()
+                    ]);
 
-                                // Guardamos el nuevo archivo
-                                $new_document = new ProposalDocument([
-                                    'proposal_id' => $oferente->technical_proposal->id,
-                                    'type_id' => (int) $document->type_id,
-                                    'filename' => $document->filename
-                                ]);
-
-                                $new_document->save();
-                                break;
-                            case 'clear':
-                            case 'delete':
-                                // Si el archivo ya estaba guardado
-                                if ($document->id) {
-                                    $to_delete = ProposalDocument::find($document->id);
-                                    @unlink($absolute_path . DIRECTORY_SEPARATOR . $to_delete->filename);
-                                    $to_delete->delete();
-                                }
-                            default:
-                                //continue;
-                                break;
-                        }
+                    if ($validator->fails()) {
+                        return [
+                            'success' => false,
+                            'message' => $validator->errors()->first(),
+                            'status' => 422
+                        ];
                     }
-
-                    $success = true;
                 }
+
+                foreach ($documents as $document) {
+                    $action = isset($document->action) ? $document->action : null;
+                    switch ($action) {
+                        case 'upload':
+                            if (!empty($document->id)) {
+                                $to_delete = ProposalDocument::find($document->id);
+                                @unlink($absolute_path . DIRECTORY_SEPARATOR . $to_delete->filename);
+                                $to_delete->delete();
+                            }
+                            $new_document = new ProposalDocument([
+                                'proposal_id' => $oferente->technical_proposal->id,
+                                'type_id' => (int) (isset($document->type_id) ? $document->type_id : 0),
+                                'filename' => isset($document->filename) ? $document->filename : '',
+                            ]);
+                            $new_document->save();
+                            break;
+
+                        case 'clear':
+                        case 'delete':
+                            if (!empty($document->id)) {
+                                $to_delete = ProposalDocument::find($document->id);
+                                @unlink($absolute_path . DIRECTORY_SEPARATOR . $to_delete->filename);
+                                $to_delete->delete();
+                            }
+                            break;
+
+                        default:
+                            // noop
+                            break;
+                    }
+                }
+
+                $success = true;
             }
 
         } catch (\Exception $e) {
             $success = false;
             $message = $e->getMessage();
-            $status = method_exists($e, 'getStatusCode') ? $e->getStatusCode() : (method_exists($e, 'getCode') ? $e->getCode() : 500);
+            $status = method_exists($e, 'getStatusCode') ? $e->getStatusCode()
+                : (method_exists($e, 'getCode') ? $e->getCode() : 500);
         }
 
         return [
@@ -638,6 +639,7 @@ class TechnicalProposalController extends BaseController
             'status' => $status
         ];
     }
+
 
     private function validate($body, $fields)
     {

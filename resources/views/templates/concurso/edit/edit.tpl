@@ -307,17 +307,47 @@
             <div class="form-group pull-left">
                 Todos los campos marcados con <b>*</b> son oblgatorios para poder enviar las invitaciones.
             </div>
+            <div class="clearfix"></div>
+            
+            <!-- Mensaje informativo sobre cómo usar los botones -->
+            <div class="alert alert-info" style="margin-top: 10px; margin-bottom: 15px;">
+                <i class="fa fa-info-circle"></i>
+                <strong>¿Cómo guardar tu licitación?</strong>
+                <ul style="margin-top: 10px; margin-bottom: 5px;">
+                    <li><strong>Guardar Borrador:</strong> Guarda tu progreso en cualquier momento. Solo necesitas ingresar el <strong>nombre de la licitación</strong>. Podrás continuar editando después.</li>
+                    <li><strong>Guardar Datos:</strong> Completa y valida el concurso. El sistema te indicará si falta algún campo obligatorio.<strong> Obligatorio para que se habilite el envio de invitaciones</strong></li>
+                </ul>
+                <hr style="margin: 10px 0;">
+                <strong>Aclaración:</strong>
+                <ul style="margin-top: 5px; margin-bottom: 5px;">
+                    <li>El borrador solo aparecerá en el monitor una vez se haya seleccionado el/los proveedores a invitar</li>
+                    <li>Si se ha seleccionado proveedor, podrá buscar su borrador en el apartado de licitaciones/subastas por ID o Nombre</li>
+                </ul>
+            </div>
+            
             <div class="form-group pull-right">
                 <button type="button" class="btn btn-success"
                     data-bind="click: sendInvitations, disable: !Entity.HabilitaEnvioInvitaciones()">
                     Enviar Invitaciones
                 </button>
             </div>
+            
             <div class="form-group pull-right" style="margin: 0 10px;">
-                <button type="button" class="btn btn-primary" data-bind="click: store">
-                    Guardar Datos
+                <button type="button" class="btn btn-success" 
+                    data-bind="click: store"
+                    title="Valida y guarda todos los campos obligatorios">
+                    <i class="fa fa-check"></i> Guardar Datos
                 </button>
             </div>
+            <div class="form-group pull-right" style="margin: 0 10px;">
+                <button type="button" class="btn btn-default" 
+                    data-bind="click: storeDraft"
+                    title="Guarda tu progreso sin validar campos obligatorios. Solo requiere el nombre de la licitación."
+                    style="border: 1px solid #ddd;">
+                    <i class="fa fa-save"></i> Guardar Borrador
+                </button>
+            </div>
+            
         </div>
     </div>
 {/block}
@@ -1010,13 +1040,13 @@
             this.TiempoAdicional = ko.observable(data.list.TiempoAdicional).extend({ required: true });
             this.TiposValoresOfertar = ko.observableArray(data.list.TiposValoresOfertar);
             this.TipoValorOfertar = ko.observable(data.list.TipoValorOfertar).extend({ required: true });
-            this.Chat = ko.observable(data.list.Chat);
-            this.VerNumOferentesParticipan = ko.observable(data.list.VerNumOferentesParticipan);
-            this.VerOfertaGanadora = ko.observable(data.list.VerOfertaGanadora);
-            this.VerRanking = ko.observable(data.list.VerRanking);
-            this.VerTiempoRestante = ko.observable(data.list.VerTiempoRestante);
-            this.PermitirAnularOferta = ko.observable(data.list.PermitirAnularOferta);
-            this.SubastaVistaCiega = ko.observable(data.list.SubastaVistaCiega);
+            this.Chat = ko.observable(data.list.Chat || 'no');
+            this.VerNumOferentesParticipan = ko.observable(data.list.VerNumOferentesParticipan || 'no');
+            this.VerOfertaGanadora = ko.observable(data.list.VerOfertaGanadora || 'no');
+            this.VerRanking = ko.observable(data.list.VerRanking || 'no');
+            this.VerTiempoRestante = ko.observable(data.list.VerTiempoRestante || 'no');
+            this.PermitirAnularOferta = ko.observable(data.list.PermitirAnularOferta || 'no');
+            this.SubastaVistaCiega = ko.observable(data.list.SubastaVistaCiega || 'no');
             this.PrecioMinimo = ko.observable(data.list.PrecioMinimo).extend({ required: true });
             this.PrecioMaximo = ko.observable(data.list.PrecioMaximo).extend({ required: true });
             this.SoloOfertasMejores = ko.observable(data.list.SoloOfertasMejores);
@@ -1321,28 +1351,82 @@
             });
 
             this.validarform = function() {
+                // Validaciones básicas siempre requeridas
+                var nombreValido = this.Entity.Nombre.isValid();
+                var oferentesValido = this.Entity.OferentesAInvitar.isValid();
+                var fechaLimiteValido = this.Entity.FechaLimite.isValid();
+                var finConsultasValido = this.Entity.FinalizacionConsultas.isValid();
+                var monedaValido = this.Entity.Moneda.isValid();
+                var tipoLicitacionValido = this.Entity.TipoLicitacion.isValid();
 
-                return (
-                    this.Entity.Nombre.isValid() &&
-                    this.Entity.OferentesAInvitar.isValid() &&
-                    this.Entity.FechaLimite.isValid() &&
-                    this.Entity.FinalizacionConsultas.isValid() &&
-                    this.Entity.FechaLimiteTecnica.isValid() &&
-                    this.Entity.PlantillaTecnica.isValid() &&
-                    this.Entity.UsuarioEvaluaTecnica.isValid() &&
-                    this.Entity.Moneda.isValid() &&
-                    this.Entity.TipoValorOfertar.isValid() &&
-                    this.PrecioMaximo.isValid() &&
-                    this.PrecioMinimo.isValid() &&
-                    this.UnidadMinima.isValid() &&
-                    (
-                        self.Entity.PlantillaTecnicaSeleccionada() ? self.Entity
-                        .PlantillaTecnicaSeleccionada()
-                        .total.isValid() : true
-                    ) &&
-                    this.Entity.TipoLicitacion.isValid() 
+                // Tipo de valor a ofertar solo es obligatorio para subastas (IsOnline)
+                var esSub = self.Entity.IsOnline && self.Entity.IsOnline();
+                var tipoValorValido = true;
+                if (esSub) {
+                    tipoValorValido = this.Entity.TipoValorOfertar.isValid();
+                }
+
+                var isBasicValid = (
+                    nombreValido &&
+                    oferentesValido &&
+                    fechaLimiteValido &&
+                    finConsultasValido &&
+                    monedaValido &&
+                    tipoLicitacionValido &&
+                    tipoValorValido
                 );
 
+                // Validaciones técnicas solo si está habilitada la precalificación técnica
+                var isTechnicalValid = true;
+                if (self.Entity.IncluyePrecalifTecnica && self.Entity.IncluyePrecalifTecnica() === 'si') {
+                    var fechaTecnicaValido = this.Entity.FechaLimiteTecnica.isValid();
+                    var plantillaValido = this.Entity.PlantillaTecnica.isValid();
+                    var usuarioEvaluaValido = this.Entity.UsuarioEvaluaTecnica.isValid();
+                    var plantillaTotalValido = self.Entity.PlantillaTecnicaSeleccionada() ? 
+                        self.Entity.PlantillaTecnicaSeleccionada().total.isValid() : 
+                        true;
+
+                    isTechnicalValid = (
+                        fechaTecnicaValido &&
+                        plantillaValido &&
+                        usuarioEvaluaValido &&
+                        plantillaTotalValido
+                    );
+                }
+
+                // Validaciones de precios solo si aplican al tipo de licitación
+                var isPriceValid = true;
+                
+                // Para subastas, los campos de precio y configuración son obligatorios
+                if (esSub) {
+                    var inicioSubastaValido = this.Entity.InicioSubasta.isValid();
+                    var duracionValido = this.Entity.Duracion.isValid();
+                    var tiempoAdicionalValido = this.Entity.TiempoAdicional.isValid();
+                    var precioMaximoValido = this.Entity.PrecioMaximo.isValid();
+                    var precioMinimoValido = this.Entity.PrecioMinimo.isValid();
+                    var unidadMinimaValido = this.Entity.UnidadMinima.isValid();
+
+                    isPriceValid = (
+                        inicioSubastaValido &&
+                        duracionValido &&
+                        tiempoAdicionalValido &&
+                        precioMaximoValido &&
+                        precioMinimoValido &&
+                        unidadMinimaValido
+                    );
+                } else {
+                    // Para licitaciones normales, los precios pueden ser opcionales
+                    if (this.Entity.PrecioMaximo && this.Entity.PrecioMinimo && this.Entity.UnidadMinima) {
+                        isPriceValid = (
+                            this.Entity.PrecioMaximo.isValid() &&
+                            this.Entity.PrecioMinimo.isValid() &&
+                            this.Entity.UnidadMinima.isValid()
+                        );
+                    }
+                }
+
+                // Resultado final
+                return isBasicValid && isTechnicalValid && isPriceValid;
             };
 
             this.validarformProduct = function() {
@@ -1430,6 +1514,51 @@
                         } else {
                             $.unblockUI();
                             swal('Error', error.message || 'Se produjo un error inesperado.', 'error');
+                        }
+                    },
+                    (error) => {
+                        $.unblockUI();
+                        swal('Error', error.message || 'Se produjo un error inesperado.', 'error');
+                    },
+                    null,
+                    null
+                );
+            };
+
+            /**
+             * GUARDA BORRADOR DEL CONCURSO
+             * Solo valida que el nombre sea obligatorio, guarda todo lo demás sin validaciones
+             */
+            self.storeDraft = function() {
+                // Validar solo el nombre
+                if (!self.Entity.Nombre() || self.Entity.Nombre().trim() === '') {
+                    swal('Atención', 'El nombre de la licitación es obligatorio para guardar el borrador.', 'warning');
+                    return;
+                }
+
+                $.blockUI();
+                var url = '/concursos/' + params[1] + '/save-draft' + (params[3] ? '/' + params[3] : '');
+                var data = {
+                    UserToken: User.Token,
+                    Entity: JSON.stringify(ko.toJS(self.Entity))
+                };
+                
+                Services.Post(url, data,
+                    (response) => {
+                        if (response.success) {
+                            $.unblockUI();
+                            swal({
+                                title: 'Hecho',
+                                text: response.message || 'Borrador guardado exitosamente.',
+                                type: 'success',
+                                closeOnClickOutside: false,
+                                closeOnConfirm: true,
+                                confirmButtonText: 'Aceptar',
+                                confirmButtonClass: 'btn btn-success'
+                            });
+                        } else {
+                            $.unblockUI();
+                            swal('Error', response.message || 'Se produjo un error inesperado.', 'error');
                         }
                     },
                     (error) => {

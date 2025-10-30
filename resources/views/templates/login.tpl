@@ -82,11 +82,7 @@ License: You must have a valid license purchased only from themeforest(the above
                         <a href="#" onclick="forgot()" id="forget-password">{$l['login_forgot'][2]}</a> {$l['login_forgot'][3]}
                     </p>
                 </div>
-                <div class="create-account">
-                    <p> {$l['login_new'][0]}&nbsp;
-                        <a href="javascript:;" id="register-btn"> {$l['login_new'][1]} </a>
-                    </p>
-                </div>
+                
             </div>
             <!-- END LOGIN FORM -->
             <!-- BEGIN FORGOT PASSWORD FORM -->
@@ -429,6 +425,8 @@ License: You must have a valid license purchased only from themeforest(the above
         <!-- BEGIN PAGE LEVEL PLUGINS -->
         <script src="{asset('/global/plugins/select2/js/select2.full.min.js')}" type="text/javascript"></script>
         <!-- END PAGE LEVEL PLUGINS -->
+        
+
         <!-- BEGIN THEME GLOBAL SCRIPTS -->
     <script type="text/javascript">
         var HOST = '{env('APP_SITE_URL')}';
@@ -436,8 +434,8 @@ License: You must have a valid license purchased only from themeforest(the above
     <script src="{asset('/global/scripts/app.min.js')}" type="text/javascript"></script>
     <script src="{asset('/global/scripts/knockout.js')}" type="text/javascript"></script>
     <script src="{asset('/global/scripts/knockout.validation/knockout.validation.js')}" type="text/javascript"></script>
-    <script src="{asset('/global/scripts/knockout.validation/localization/es-ES.js')}" type="text/javascript"></script>'
-    <script src="{asset('/global/scripts/knockout.validation/localization/en-US.js')}" type="text/javascript"></script>'    
+    <script src="{asset('/global/scripts/knockout.validation/localization/es-ES.js')}" type="text/javascript"></script>
+    <script src="{asset('/global/scripts/knockout.validation/localization/en-US.js')}" type="text/javascript"></script>    
     <script src="{asset('/js/services.js')}" type="text/javascript"></script>
     <script src="{asset('/js/app.js')}" type="text/javascript"></script>
     <!-- END THEME GLOBAL SCRIPTS -->

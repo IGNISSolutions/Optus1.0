@@ -30,7 +30,7 @@ class AuthMiddleware
     public function __invoke(Request $request, Response $response, $next)
     {
         $route = $request->getAttribute('route');
-        if ($route && !in_array($route->getName(), ['login', 'login.send', 'login.lg', 'login.tlc', 'login.callback', 'sendRecover', 'serverReset', 'updatePassword', 'sendResetCode', 'serverTwoFA', 'serverTwoFAAdvice'])) {
+        if ($route && !in_array($route->getName(), ['login', 'login.send', 'login.lg', 'login.tlc', 'login.callback', 'sendRecover', 'serverReset', 'updatePassword', 'sendResetCode', 'serverTwoFA', 'serverTwoFAAdvice', 'login.scr', 'a0.callback', 'a0.p    ong'])) {
             // Validate Token
             if (!$this->checkToken($request)) {
                 if ($request->isXhr()) {

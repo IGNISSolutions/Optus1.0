@@ -50,7 +50,18 @@ class EmailService
             $this->mail->CharSet = 'UTF-8';
             $this->mail->SMTPKeepAlive = true;
 
-            $this->mail->AddEmbeddedImage(publicPath(asset('/global/img/logo-small.png')), 'front', $logo);
+            // Manejar logo embebido - compatible con CLI y HTTP
+            $logo_path = publicPath(asset('/global/img/logo-small.png'));
+            
+            // Si publicPath devuelve false (contexto CLI), usar ruta absoluta
+            if ($logo_path === false || !file_exists($logo_path)) {
+                $logo_path = __DIR__ . '/../../public/global/img/logo-small.png';
+            }
+            
+            // Solo agregar imagen si el archivo existe
+            if (file_exists($logo_path)) {
+                $this->mail->AddEmbeddedImage($logo_path, 'front', $logo);
+            }
         } else {
             $lst = Mailer::where(
                 function ($query) use ($customer_company_id) {
@@ -90,7 +101,19 @@ class EmailService
                 $this->mail->IsHTML(true);
                 $this->mail->CharSet = 'UTF-8';
                 $this->mail->SMTPKeepAlive = true;
-                $this->mail->AddEmbeddedImage(publicPath(asset($lst['logosmall'])), 'front');
+                
+                // Manejar logo embebido - compatible con CLI y HTTP
+                $logo_path = publicPath(asset($lst['logosmall']));
+                
+                // Si publicPath devuelve false (contexto CLI), usar ruta absoluta
+                if ($logo_path === false || !file_exists($logo_path)) {
+                    $logo_path = __DIR__ . '/../../public' . $lst['logosmall'];
+                }
+                
+                // Solo agregar imagen si el archivo existe
+                if (file_exists($logo_path)) {
+                    $this->mail->AddEmbeddedImage($logo_path, 'front');
+                }
             } else {
                 $this->mail->Host = env('MAIL_HOST');
                 $this->mail->Port = env('MAIL_PORT');
@@ -116,7 +139,18 @@ class EmailService
                 $this->mail->CharSet = 'UTF-8';
                 $this->mail->SMTPKeepAlive = true;
 
-                $this->mail->AddEmbeddedImage(publicPath(asset('/global/img/logo-small.png')), 'front', $logo);
+                // Manejar logo embebido - compatible con CLI y HTTP
+                $logo_path = publicPath(asset('/global/img/logo-small.png'));
+                
+                // Si publicPath devuelve false (contexto CLI), usar ruta absoluta
+                if ($logo_path === false || !file_exists($logo_path)) {
+                    $logo_path = __DIR__ . '/../../public/global/img/logo-small.png';
+                }
+                
+                // Solo agregar imagen si el archivo existe
+                if (file_exists($logo_path)) {
+                    $this->mail->AddEmbeddedImage($logo_path, 'front', $logo);
+                }
             }
         }
     }

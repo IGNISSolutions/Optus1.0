@@ -8,6 +8,7 @@
             <thead>
                 <tr style="background: #ccc;">
                     <th data-bind="text: 'Moneda: ' + $root.Moneda()"></th>
+                    <th> Fecha presentación </th>
                     <th> Costo Total </th>
                     <th data-bind="text:($root.EsAscendente() || $root.EsVenta()) ? 'Ganancia %' : 'Ahorro %'"></th>
                     <th> Dif % vs Mejor Ofert </th>
@@ -22,6 +23,7 @@
                 <tr>
                     <td class="text-center" data-bind="text: $data.razonSocial">
                     </td>
+                    <td class="text-center vertical-align-middle" data-bind="text: $data.fechaPresentacion"></td>
                     <td data-bind="number: $data.total, precision: 2, style: { background: $data.mejorOfertaIntegral ?  '#c6e0b4' : '#ffffff' }"
                         class="text-center vertical-align-middle"></td>
                     <td class="text-center vertical-align-middle"
