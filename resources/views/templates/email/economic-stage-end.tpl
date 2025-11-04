@@ -12,6 +12,9 @@
                 <strong style="color:#2B3643;">Concurso:</strong><br/>
                 <span style="font-size:16px; color:#26C281;">{$nombre_concurso}</span>
                 <br><br>
+                <strong style="color:#2B3643;">Ronda Económica:</strong><br/>
+                <span style="font-size:16px; color:#2B3643;">{$ronda_economica}</span>
+                <br><br>
                 <strong style="color:#2B3643;">Fecha y hora de finalización:</strong><br/>
                 <span style="font-size:16px; color:#2B3643;">{$fecha_finalizacion}</span>
             </td>

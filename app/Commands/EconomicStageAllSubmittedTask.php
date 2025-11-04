@@ -3,14 +3,16 @@
 namespace App\Commands;
 
 use App\Models\Concurso;
+use App\Models\Participante;
 use App\Models\User;
 use App\Services\EmailService;
 use Carbon\Carbon;
 
-class EconomicStageEndTask
+class EconomicStageAllSubmittedTask
 {
     /**
-     * Verificar concursos cuya etapa económica haya finalizado y enviar emails
+     * Verificar concursos donde TODOS los participantes presentaron su propuesta económica
+     * antes de la fecha límite y enviar email al cliente
      */
     public function execute()
     {
@@ -18,68 +20,97 @@ class EconomicStageEndTask
             $now = Carbon::now();
             
             echo "\n===========================================\n";
-            echo "Buscando concursos finalizados...\n";
+            echo "Verificando propuestas económicas completadas...\n";
             echo "Fecha actual: " . $now->format('Y-m-d H:i:s') . "\n";
             echo "===========================================\n\n";
             
-            // Buscar concursos cuya fecha_limite_economicas haya expirado
-            // y que aún no se les haya enviado el email de finalización
+            // Buscar concursos con fecha económica vigente (aún no vencida)
+            // y que NO hayan enviado email aún
             $concursos = Concurso::whereNotNull('fecha_limite_economicas')
-                ->where('fecha_limite_economicas', '<', $now)
-                ->whereNull('email_economica_enviado_at')
+                ->where('fecha_limite_economicas', '>', $now) // Fecha NO vencida
+                ->whereNull('email_economica_enviado_at') // Email NO enviado
                 ->get();
 
-            echo "Estadísticas:\n";
-            echo "   - Total concursos con fecha económica: " . Concurso::whereNotNull('fecha_limite_economicas')->count() . "\n";
-            echo "   - Concursos finalizados: " . Concurso::whereNotNull('fecha_limite_economicas')->where('fecha_limite_economicas', '<', $now)->count() . "\n";
-            echo "   - Sin email enviado: " . $concursos->count() . "\n\n";
+            echo "📊 Estadísticas:\n";
+            echo "   - Concursos con fecha económica vigente: " . $concursos->count() . "\n\n";
 
             if ($concursos->isEmpty()) {
-                echo "No se encontraron concursos que requieran envío de email\n\n";
-                
-                // Mostrar algunos concursos para debugging
-                echo "--- DEBUGGING: Últimos 5 concursos con fecha económica ---\n";
-                $debug = Concurso::whereNotNull('fecha_limite_economicas')
-                    ->orderBy('fecha_limite_economicas', 'desc')
-                    ->take(5)
-                    ->get(['id', 'nombre', 'fecha_limite_economicas', 'email_economica_enviado_at']);
-                    
-                foreach ($debug as $d) {
-                    echo "ID: {$d->id} | {$d->nombre}\n";
-                    echo " Fecha límite: {$d->fecha_limite_economicas}\n";
-                    echo " Email enviado: " . ($d->email_economica_enviado_at ?? 'NO') . "\n";
-                    $expirado = Carbon::parse($d->fecha_limite_economicas)->lt($now);
-                    echo " ¿Expirado?: " . ($expirado ? 'SÍ' : 'NO') . "\n\n";
-                }
+                echo "ℹ️  No hay concursos con etapa económica vigente\n\n";
+                return ['success' => true, 'procesados' => 0, 'enviados' => 0, 'errores' => 0];
             }
 
             $enviados = 0;
             $errores = 0;
+            $revisados = 0;
 
             foreach ($concursos as $concurso) {
+                $revisados++;
+                
+                // Obtener todos los participantes del concurso
+                $participantes = Participante::where('id_concurso', $concurso->id)
+                    ->get();
+
+                // Si no hay participantes, saltar
+                if ($participantes->isEmpty()) {
+                    continue;
+                }
+
+                // Filtrar participantes que están/estaban en etapa económica pendiente
+                $participantesEconomicos = $participantes->filter(function ($p) {
+                    return preg_match('/^economica-pendiente(-\d+)?$/', $p->etapa_actual) ||
+                           preg_match('/^economica-presentada(-\d+)?$/', $p->etapa_actual) ||
+                           preg_match('/^economica-rechazada(-\d+)?$/', $p->etapa_actual);
+                });
+
+                // Si no hay participantes en etapa económica, saltar
+                if ($participantesEconomicos->isEmpty()) {
+                    continue;
+                }
+
+                // Verificar si hay alguno TODAVÍA pendiente
+                $hayPendientes = $participantesEconomicos->filter(function ($p) {
+                    return preg_match('/^economica-pendiente(-\d+)?$/', $p->etapa_actual);
+                })->isNotEmpty();
+
+                // Si aún hay pendientes, este concurso NO está completo
+                if ($hayPendientes) {
+                    continue;
+                }
+
+                // TODOS presentaron! Verificar que al menos uno esté en "presentada"
+                $hayPresentadas = $participantesEconomicos->filter(function ($p) {
+                    return preg_match('/^economica-presentada(-\d+)?$/', $p->etapa_actual);
+                })->isNotEmpty();
+
+                if (!$hayPresentadas) {
+                    continue; // No hay presentadas (tal vez todos rechazados)
+                }
+
+                // Este concurso cumple las condiciones: todos presentaron antes del cierre
                 try {
                     echo "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
-                    echo "Procesando Concurso #{$concurso->id}\n";
+                    echo "📝 Concurso #{$concurso->id} - ¡Todos presentaron!\n";
                     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
                     echo "Nombre: {$concurso->nombre}\n";
                     echo "Fecha límite: {$concurso->fecha_limite_economicas}\n";
+                    echo "Participantes económicos: " . $participantesEconomicos->count() . "\n";
                     echo "ID Cliente: {$concurso->id_cliente}\n";
                     
                     // Obtener el cliente (creador del concurso)
                     $cliente = User::find($concurso->id_cliente);
                     
                     if (!$cliente || !$cliente->email) {
-                        echo "ERROR: Cliente no encontrado o sin email\n";
+                        echo " ERROR: Cliente no encontrado o sin email\n";
                         $errores++;
                         continue;
                     }
 
-                    echo "Cliente: {$cliente->email}\n";
+                    echo " Cliente: {$cliente->email}\n";
 
                     // Preparar datos para el email
                     $email_to = [$cliente->email];
                     $nombre_completo = $cliente->full_name ?? $cliente->email;
-                    $subject = 'Finalización de Etapa Económica - ' . $concurso->nombre;
+                    $subject = 'Propuestas Económicas Completadas - ' . $concurso->nombre;
                     
                     // URL del detalle del concurso
                     $base_url = env('APP_SITE_URL', '');
@@ -87,12 +118,11 @@ class EconomicStageEndTask
                     
                     // Renderizar la plantilla de email
                     $templates_path = __DIR__ . '/../../resources/views/templates';
-                    $template = $templates_path . '/email/economic-stage-end.tpl';
+                    $template = $templates_path . '/email/economic-stage-all-submitted.tpl';
                     
-                    echo "Renderizando plantilla: {$template}\n";
+                    echo "📄 Renderizando plantilla: {$template}\n";
                     
                     // Crear instancia de Smarty manualmente para contexto CLI
-                    // Crear directorios si no existen
                     $compile_dir = __DIR__ . '/../../storage/tmp/templates_c';
                     $cache_dir = __DIR__ . '/../../storage/tmp/cache';
                     
@@ -115,14 +145,15 @@ class EconomicStageEndTask
                     $smarty->assign('nombre_cliente', $nombre_completo);
                     $smarty->assign('nombre_concurso', $concurso->nombre);
                     $smarty->assign('ronda_economica', $rondaTexto);
-                    $smarty->assign('fecha_finalizacion', Carbon::now()->format('d/m/Y H:i:s'));
+                    $smarty->assign('fecha_completado', Carbon::now()->format('d/m/Y H:i:s'));
+                    $smarty->assign('fecha_limite', Carbon::parse($concurso->fecha_limite_economicas)->format('d/m/Y H:i:s'));
                     $smarty->assign('url_concurso', $url_concurso);
-                    $smarty->assign('title', 'Finalización de Etapa Económica');
+                    $smarty->assign('title', 'Propuestas Económicas Completadas');
                     $smarty->assign('ano', Carbon::now()->format('Y'));
                     
                     $htmlMessage = $smarty->fetch($template);
 
-                    echo "📧 Enviando email...\n";
+                    echo "Enviando email...\n";
                     
                     // Enviar el email
                     $emailService = new EmailService();
@@ -150,14 +181,14 @@ class EconomicStageEndTask
             echo "\n===========================================\n";
             echo "RESUMEN FINAL\n";
             echo "===========================================\n";
-            echo "Concursos procesados: " . count($concursos) . "\n";
+            echo "Concursos revisados: {$revisados}\n";
             echo "Emails enviados: {$enviados}\n";
             echo "Errores: {$errores}\n";
             echo "===========================================\n\n";
 
             return [
                 'success' => true,
-                'procesados' => count($concursos),
+                'procesados' => $revisados,
                 'enviados' => $enviados,
                 'errores' => $errores
             ];
