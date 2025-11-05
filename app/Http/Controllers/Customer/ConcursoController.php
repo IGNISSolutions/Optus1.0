@@ -3074,6 +3074,10 @@ class ConcursoController extends BaseController
                 
                 $concurso->update($updateConcurso);
                 
+                // Resetear el campo de email para nueva ronda (actualización separada para asegurar NULL)
+                $concurso->email_economica_enviado_at = null;
+                $concurso->save();
+                
                 // 2) Para la 2ª ronda, comprobamos directamente en BD si quedan oferentes en 'economica-revisada'
                 if ($nuevaRonda === 2) {
                     $pendientesCount = $concurso->oferentes()
