@@ -1263,8 +1263,14 @@ class ConcursoController extends BaseController
             $filePath = config('app.files_path') . $user->customer_company->cuit . '/' . substr($concurso->fecha_limite, 0, 4) . '/';
             $fechaActual = date('d-m-Y H:i:s');
 
-            $fechaMinimaSegundaRonda = date('d-m-Y H:i', strtotime($fechaActual . ' + 3 days'));
-            $fechaMaximaMuroConsulta = date('d-m-Y H:i', strtotime($fechaMinimaSegundaRonda . ' - 2 days'));
+            // Calcular fecha mínima para segunda ronda considerando días hábiles (3 días = 72 horas)
+            $fechaMinimaSegundaRondaCarbon = $this->addBusinessHours(Carbon::now(), 72);
+            $fechaMinimaSegundaRonda = $fechaMinimaSegundaRondaCarbon->format('d-m-Y H:i');
+            
+            // Calcular fecha máxima muro consulta (2 días antes = 48 horas antes)
+            $fechaMaximaMuroConsultaCarbon = $fechaMinimaSegundaRondaCarbon->copy()->subHours(48);
+            $fechaMaximaMuroConsulta = $fechaMaximaMuroConsultaCarbon->format('d-m-Y H:i');
+            
             $plazoVencidoEconomicas = false;
 
 
@@ -1917,14 +1923,14 @@ class ConcursoController extends BaseController
                     [] :
                     $concurso->oferentes->pluck('id_offerer')->toArray(),
                 //'FinalizacionConsultas' => $create ? Carbon::now()->addDays(3)->addHour(1)->format('d-m-Y H:i') : $concurso->finalizacion_consultas->format('d-m-Y H:i'),
-                'FinalizacionConsultas' => $create
-                ? Carbon::now()->addDays(1)->addHour(2)->minute(0)->second(0)->format('d-m-Y H:i')
+               'FinalizacionConsultas' => $create
+                ? $this->addBusinessHours(Carbon::now(), 24)->format('d-m-Y H:i')
                 : $concurso->finalizacion_consultas->format('d-m-Y H:i'),                
                 'AceptacionTerminos' => $create && !$is_copy ? 'no' : $concurso->aceptacion_terminos,
                 'Aperturasobre' => $create && !$is_copy ? 'no' : $concurso->aperturasobre,
                 //'FechaLimite' => $create ? Carbon::now()->addDays(1)->addHour()->format('d-m-Y H:i') : $concurso->fecha_limite->format('d-m-Y H:i'),
                 'FechaLimite' => $create 
-                ? Carbon::now()->addDays(1)->addHour(2)->minute(0)->second(0)->format('d-m-Y H:i')
+                ? $this->addBusinessHours(Carbon::now(), 24)->format('d-m-Y H:i')
                 : $concurso->fecha_limite->format('d-m-Y H:i'),               
                 'SeguroCaucion' => $create && !$is_copy ? 'no' : $concurso->seguro_caucion,
                 'DiagramaGant' => $create && !$is_copy ? 'no' : $concurso->diagrama_gant,
@@ -2103,9 +2109,9 @@ class ConcursoController extends BaseController
             'FinalizarSiOferentesCompletaronEconomicas' => $create && !$is_copy ? 'no' : $concurso->finalizar_si_oferentes_completaron_economicas,
             'OfertasParcialesPermitidas' => $create && !$is_copy ? 'no' : $concurso->ofertas_parciales_permitidas,
             'OfertasParcialesCantidadMin' => $create && !$is_copy ? 0 : $concurso->ofertas_parciales_cantidad_min,
-            'FechaLimiteEconomicas' =>
+             'FechaLimiteEconomicas' =>
                 $create
-                    ? Carbon::now()->addDays(3)->addHour(2)->minute(0)->second(0)->format('d-m-Y H:i')
+                    ? $this->addBusinessHours(Carbon::now(), 72)->format('d-m-Y H:i')
                     : ($concurso->fecha_limite_economicas
                         ? $concurso->fecha_limite_economicas->minute(0)->second(0)->format('d-m-Y H:i')
                         : null),
@@ -2115,7 +2121,7 @@ class ConcursoController extends BaseController
             'ImagePath' => filePath(config('app.images_path')),
             'Portrait' => $create && !$is_copy ? null : $concurso->portrait,
             'FechaLimiteTecnica' => $create
-            ? Carbon::now()->addDays(2)->addHour(2)->minute(0)->second(0)->format('d-m-Y H:i')
+            ? $this->addBusinessHours(Carbon::now(), 48)->format('d-m-Y H:i')
             : ($concurso->ficha_tecnica_fecha_limite
                 ? $concurso->ficha_tecnica_fecha_limite->minute(0)->second(0)->format('d-m-Y H:i')
                 : null
@@ -2135,7 +2141,7 @@ class ConcursoController extends BaseController
    private function createOrEditAuction($create, $list, $user, $concurso, $is_copy)
     {
         return array_merge($list, [
-            'InicioSubasta' => $create ? Carbon::now()->addDays(3)->addHour(2)->minute(0)->second(0)->format('d-m-Y H:i') : $concurso->inicio_subasta->format('d-m-Y H:i'),
+            'InicioSubasta' => $create ? $this->addBusinessHours(Carbon::now(), 72)->format('d-m-Y H:i') : $concurso->inicio_subasta->format('d-m-Y H:i'),
             'Duracion' => $create && !$is_copy ? null : ($concurso->parsed_duracion[0] . $concurso->parsed_duracion[1]),
             'TiempoAdicional' => $create && !$is_copy ? 0 : $concurso->tiempo_adicional,
             'TiposValoresOfertar' => $this->GetTiposValoresOfertar(),
@@ -2154,7 +2160,7 @@ class ConcursoController extends BaseController
             'ImagePath' => filePath(config('app.images_path')),
             'Portrait' => $create && !$is_copy ? null : $concurso->portrait,
             'FechaLimiteTecnica' => $create
-            ? Carbon::now()->addDays(2)->addHour(2)->minute(0)->second(0)->format('d-m-Y H:i')
+            ? $this->addBusinessHours(Carbon::now(), 48)->format('d-m-Y H:i')
             : ($concurso->ficha_tecnica_fecha_limite
                 ? $concurso->ficha_tecnica_fecha_limite->minute(0)->second(0)->format('d-m-Y H:i')
                 : null
@@ -3337,6 +3343,32 @@ class ConcursoController extends BaseController
         }
 
         return $fecha;
+    }
+
+    /**
+     * Agrega horas a una fecha y si cae en fin de semana, la mueve al siguiente día hábil
+     * la hora siempre queda a las 23:00
+     * @param Carbon $fecha Fecha inicial
+     * @param int $horas Cantidad de horas a agregar
+     * @return Carbon Fecha resultante
+     */
+    private function addBusinessHours($fecha, $horas)
+    {
+        // Primero sumamos las horas normalmente
+        $fechaResultado = $fecha->copy()->addHours($horas);
+        
+        // Si cae en sábado (6), mover a lunes a la misma hora
+        if ($fechaResultado->dayOfWeek == Carbon::SATURDAY) {
+            $fechaResultado->addDays(2);
+        }
+        // Si cae en domingo (0), mover a lunes a la misma hora
+        elseif ($fechaResultado->dayOfWeek == Carbon::SUNDAY) {
+            $fechaResultado->addDays(1);
+        }
+
+        $fechaResultado->hour(23)->minute(0)->second(0);
+        
+        return $fechaResultado;
     }
 
     public static function GetTiposValoresOfertar()
