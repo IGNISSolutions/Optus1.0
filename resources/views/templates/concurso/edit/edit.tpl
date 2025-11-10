@@ -1138,7 +1138,8 @@
                 { id: 10, text: 'Medio Ambiente' },
                 { id: 11, text: 'Oficina Técnica' },
                 { id: 12, text: 'Informática' },
-                { id: 13, text: 'Siniestros' },
+                { id: 13, text: 'Siniestros 04D' },
+                { id: 14, text: 'Siniestros 08' },
             ]);
 
             this.Entity = new Form(data, self);

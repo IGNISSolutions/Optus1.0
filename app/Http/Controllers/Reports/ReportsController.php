@@ -130,6 +130,7 @@ class ReportsController extends BaseController
             $details[] = [
                 'id'         => $concurso->id,
                 'nombre'     => $concurso->nombre,
+                'areaSol'    => $concurso->area_sol ?? 'N/A',
                 'pos'        => $adj['itemId'],
                 'item'       => $adj['itemNombre'],
                 'cant'       => $adj['cantidad'],

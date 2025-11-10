@@ -123,6 +123,7 @@
         var ConcursoReport = function(data) {
             this.id = ko.observable(data.id)
             this.nombre = ko.observable(data.nombre)
+            this.areaSol = ko.observable(data.areaSol)
             this.pos = ko.observable(data.pos)
             this.item = ko.observable(data.item)
             this.cant = ko.observable(data.cant)
@@ -175,6 +176,7 @@
                     [
                         'Nº Concurso',
                         'Nombre Licitación',
+                        'Área Solicitante',
                         'Referencia Producto',
                         'Producto',
                         'Cant',
@@ -200,6 +202,7 @@
                     vItem.push(
                         item['id'](),
                         item['nombre'](),
+                        item['areaSol'](),
                         item['pos'](),
                         item['item'](),
                         item['cant'](),
@@ -227,6 +230,7 @@
                 var wscols = [
                     { wch: 11 },
                     { wch: 50 },
+                    { wch: 20 },
                     { wch: 17 },
                     { wch: 50 },
                     { wch: 10 },
