@@ -232,8 +232,10 @@ class A0Controller extends BaseController
 
         $url = "https://{$domain}/authorize?" . http_build_query($params);
 
-        header("Location: " . $url);
-        return $response;
+        // Redirección usando Slim Response
+        return $response
+            ->withHeader('Location', $url)
+            ->withStatus(302);
     }
 
     /**
