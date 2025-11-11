@@ -25,14 +25,14 @@ try {
     $result = $task->execute();
     
     if ($result['success']) {
-        echo "\n✅ Tarea completada exitosamente\n";
+        echo "\nTarea completada exitosamente\n";
         exit(0);
     } else {
-        echo "\n❌ Tarea completada con errores\n";
+        echo "\nTarea completada con errores\n";
         exit(1);
     }
 } catch (Exception $e) {
-    echo "\n❌ ERROR FATAL: " . $e->getMessage() . "\n";
+    echo "\nERROR FATAL: " . $e->getMessage() . "\n";
     echo $e->getTraceAsString() . "\n";
     exit(1);
 }

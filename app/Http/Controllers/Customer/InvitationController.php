@@ -317,12 +317,29 @@ class InvitationController extends BaseController
 
             $body = $request->getParsedBody();
             $concurso = Concurso::find((int) $body['IdConcurso']);
+            
+            // Si el concurso ya tenía enviado el email de "todos cotizaron"
+            // lo reseteamos porque se está agregando un nuevo proveedor
+            $emailYaEnviado = $concurso->email_economica_enviado_at !== null;
+            
             $oferente = new Participante([
                 'id_offerer' => (int) $body['idOfferer'],
                 'id_concurso' => $concurso->id,
                 'etapa_actual' => Participante::ETAPAS['seleccionado']
             ]);
             $oferente->save();
+            
+            // Resetear el campo si ya se había enviado el email
+            if ($emailYaEnviado) {
+                $concurso->email_economica_enviado_at = null;
+                $concurso->save();
+                
+                logger('concurso')->info(
+                    "Se agregó nuevo proveedor (ID: {$body['idOfferer']}) al concurso {$concurso->id}. " .
+                    "Campo email_economica_enviado_at reseteado a NULL para permitir nuevo envío de email."
+                );
+            }
+            
             $concurso->refresh();
             $companiesInvited = $concurso->oferentes->where('is_seleccionado', true)->pluck('id_offerer');
             $companies = OffererCompany::with('users')->whereIn('id', $companiesInvited)->get();

@@ -3834,6 +3834,8 @@ class ConcursoController extends BaseController
         // Creamos los nuevos
         $concurso->refresh();
 
+        $nuevosProveedoresAgregados = false;
+
         if (count($entity->OferentesAInvitar) > 0) {
             foreach ($entity->OferentesAInvitar as $seleccionado) {
                 $oferente = $concurso->oferentes->where('id_offerer', $seleccionado)->first();
@@ -3847,7 +3849,24 @@ class ConcursoController extends BaseController
                     'etapa_actual' => Participante::ETAPAS['seleccionado']
                 ]);
                 $oferente->save();
+                
+                // Marcamos que se agregó al menos un nuevo proveedor
+                $nuevosProveedoresAgregados = true;
             }
+            
+            // Si se agregaron nuevos proveedores y ya se había enviado el email
+            // reseteamos el campo para que el cron pueda enviar un nuevo email
+            // cuando todos (incluyendo los nuevos) hayan cotizado
+            if ($nuevosProveedoresAgregados && $concurso->email_economica_enviado_at !== null) {
+                $concurso->email_economica_enviado_at = null;
+                $concurso->save();
+                
+                logger('concurso')->info(
+                    "Se agregaron nuevos proveedores al concurso {$concurso->id}. " .
+                    "Campo email_economica_enviado_at reseteado a NULL para permitir nuevo envío de email."
+                );
+            }
+            
             $concurso->refresh();
             return true;
         }
