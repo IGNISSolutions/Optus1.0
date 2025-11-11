@@ -315,6 +315,7 @@ function setOferente($concurso, $oferente, $ronda)
                     $values[] = [
                         'id'               => $producto->id,
                         'nombre'           => $producto->nombre,
+                        'descripcion'      => $producto->descripcion ?? null,
                         'cotizacion'       => $cotizacion,
                         'cantidad'         => (int)$cantidad,
                         'fecha'            => $propuesta['fecha'] ?? 0,
