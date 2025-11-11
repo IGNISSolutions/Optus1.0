@@ -661,6 +661,13 @@ class CompanyController extends BaseController
                     break;
             }
 
+            // Refrescar la empresa para obtener las relaciones actualizadas
+            if (!$creation && $company) {
+                $company->refresh();
+                // Limpiar la caché de relaciones para asegurar datos frescos
+                $company->load('alcances');
+            }
+
             $common = [
                 'Tipo' => $role,
                 'Id' => $creation ? null : $company->id,
@@ -1332,6 +1339,20 @@ class CompanyController extends BaseController
             'status' => 200
         ];
 
+        // Asegurar que los arrays de alcance siempre existan
+        if (!isset($body->PaisesSelected) || !is_array($body->PaisesSelected)) {
+            $body->PaisesSelected = [];
+        }
+        if (!isset($body->ProvinciasSelected) || !is_array($body->ProvinciasSelected)) {
+            $body->ProvinciasSelected = [];
+        }
+        if (!isset($body->CiudadesSelected) || !is_array($body->CiudadesSelected)) {
+            $body->CiudadesSelected = [];
+        }
+        if (!isset($body->RubrosSelected) || !is_array($body->RubrosSelected)) {
+            $body->RubrosSelected = [];
+        }
+
         $company_status = OffererCompanyStatus::find((int) $body->Estado);
 
         $fields = array_merge($fields, [
@@ -1410,19 +1431,23 @@ class CompanyController extends BaseController
                     $result['message'] = 'Proveedor editado con éxito.';
                 }
                 // Rubros
-                $areas = Area::whereIn('id', $body->RubrosSelected)->get();
-                if ($areas) {
+                if (count($body->RubrosSelected) > 0) {
+                    $areas = Area::whereIn('id', $body->RubrosSelected)->get();
                     $company->areas()->sync($areas->pluck('id')->toArray());
+                } else {
+                    // Si no hay rubros seleccionados, limpiar la relación
+                    $company->areas()->sync([]);
                 }
 
-                // Alcances
-                if (isset($company->alcance)) {
-                    foreach ($company->alcance as $alcance) {
-                        $alcance->delete();
-                    }
-                }
+                // Alcances - Eliminar todos los alcances existentes
+                $company->alcances()->delete();
 
-                foreach ($body->CiudadesSelected as $id) {
+                // Asegurar que los arrays existan y sean arrays
+                $ciudadesSelected = isset($body->CiudadesSelected) && is_array($body->CiudadesSelected) ? $body->CiudadesSelected : [];
+                $provinciasSelected = isset($body->ProvinciasSelected) && is_array($body->ProvinciasSelected) ? $body->ProvinciasSelected : [];
+                $paisesSelected = isset($body->PaisesSelected) && is_array($body->PaisesSelected) ? $body->PaisesSelected : [];
+
+                foreach ($ciudadesSelected as $id) {
                     $alcance = new Alcance([
                         'id_empresa_oferente' => $company->id,
                         'id_ciudad' => $id
@@ -1430,9 +1455,9 @@ class CompanyController extends BaseController
                     $alcance->save();
                 }
 
-                foreach ($body->ProvinciasSelected as $id) {
-                    $province = Provincia::where('id', $id)->whereHas('ciudades', function ($query) use ($body) {
-                        $query->whereIn('id', $body->CiudadesSelected);
+                foreach ($provinciasSelected as $id) {
+                    $province = Provincia::where('id', $id)->whereHas('ciudades', function ($query) use ($ciudadesSelected) {
+                        $query->whereIn('id', $ciudadesSelected);
                     })->get()->first();
                     if ($province) {
                         continue;
@@ -1444,9 +1469,9 @@ class CompanyController extends BaseController
                     $alcance->save();
                 }
 
-                foreach ($body->PaisesSelected as $id) {
-                    $country = Pais::where('id', $id)->whereHas('provincias', function ($query) use ($body) {
-                        $query->whereIn('id', $body->ProvinciasSelected);
+                foreach ($paisesSelected as $id) {
+                    $country = Pais::where('id', $id)->whereHas('provincias', function ($query) use ($provinciasSelected) {
+                        $query->whereIn('id', $provinciasSelected);
                     })->get()->first();
                     if ($country) {
                         continue;
@@ -1457,6 +1482,9 @@ class CompanyController extends BaseController
                     ]);
                     $alcance->save();
                 }
+
+                // Refrescar la empresa para actualizar las relaciones
+                $company->refresh();
 
             } catch (\Exception $e) {
                 $result['success'] = false;
