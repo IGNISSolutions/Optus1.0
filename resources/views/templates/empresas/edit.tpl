@@ -501,9 +501,18 @@
             if (params[1] == 'offerer') {
                 this.FirstTimePaisesSelected = true;
                 self.Entity.PaisesSelected.subscribe((Countries) => {
-                    $.blockUI();
+                    // Cuando no es la primera vez y se limpian los países
+                    if (!self.FirstTimePaisesSelected && Countries.length === 0) {
+                        // Limpiar provincias y ciudades en cascada
+                        self.Entity.ProvinciasSelected([]);
+                        self.Provincias([]);
+                        self.Entity.CiudadesSelected([]);
+                        self.Ciudades([]);
+                        return;
+                    }
 
                     if (Countries.length > 0) {
+                        $.blockUI();
                         var url = '/lists/provinces';
                         var body = {
                             UserToken: User.Token,
@@ -514,7 +523,7 @@
                                 $.unblockUI();
                                 self.Provincias(response.data.list);
                                 if (self.FirstTimePaisesSelected) {
-                                    self.Entity.ProvinciasSelected(data.list.ProvinciasSelected);
+                                    self.Entity.ProvinciasSelected(data.list.ProvinciasSelected || []);
                                     self.FirstTimePaisesSelected = false;
                                 }
                             },
@@ -524,17 +533,25 @@
                             null,
                             null
                         );
-                    } else {
-                        $.unblockUI();
-                        self.Entity.ProvinciasSelected([]);
+                    } else if (self.FirstTimePaisesSelected) {
+                        // Primera carga sin países seleccionados
                         self.Provincias([]);
+                        self.Ciudades([]);
                     }
                 });
 
                 this.FirstTimeProvinciasSelected = true;
                 self.Entity.ProvinciasSelected.subscribe((Provinces) => {
-                    $.blockUI();
+                    // Cuando no es la primera vez y se limpian las provincias
+                    if (!self.FirstTimeProvinciasSelected && Provinces.length === 0) {
+                        // Limpiar ciudades en cascada
+                        self.Entity.CiudadesSelected([]);
+                        self.Ciudades([]);
+                        return;
+                    }
+
                     if (Provinces.length > 0) {
+                        $.blockUI();
                         var url = '/lists/cities';
                         var body = {
                             UserToken: User.Token,
@@ -545,7 +562,7 @@
                                 $.unblockUI();
                                 self.Ciudades(response.data.list);
                                 if (self.FirstTimeProvinciasSelected) {
-                                    self.Entity.CiudadesSelected(data.list.CiudadesSelected);
+                                    self.Entity.CiudadesSelected(data.list.CiudadesSelected || []);
                                     self.FirstTimeProvinciasSelected = false;
                                 }
                             },
@@ -555,9 +572,8 @@
                             null,
                             null
                         );
-                    } else {
-                        $.unblockUI();
-                        self.Entity.CiudadesSelected([]);
+                    } else if (self.FirstTimeProvinciasSelected) {
+                        // Primera carga sin provincias seleccionadas
                         self.Ciudades([]);
                     }
                 });
@@ -566,9 +582,9 @@
 
             // Inicializamos los observables múltiples.
             setTimeout(() => {
-                self.Entity.RubrosSelected(data.list.RubrosSelected);
-                self.Entity.ClienteAsociado(data.list.ClienteAsociado);
-                self.Entity.PaisesSelected(data.list.PaisesSelected);
+                self.Entity.RubrosSelected(data.list.RubrosSelected || []);
+                self.Entity.ClienteAsociado(data.list.ClienteAsociado || []);
+                self.Entity.PaisesSelected(data.list.PaisesSelected || []);
             }, 1000);
 
             this.validarform = function() {
@@ -610,9 +626,25 @@
                         url += '/' + params[3];
                         break;
                 }
+                
+                // Asegurar que los arrays de alcance siempre existan antes de enviar
+                var entityData = ko.toJS(self.Entity);
+                if (!entityData.PaisesSelected) entityData.PaisesSelected = [];
+                if (!entityData.ProvinciasSelected) entityData.ProvinciasSelected = [];
+                if (!entityData.CiudadesSelected) entityData.CiudadesSelected = [];
+                if (!entityData.RubrosSelected) entityData.RubrosSelected = [];
+                if (!entityData.ClienteAsociado) entityData.ClienteAsociado = [];
+                
+                // Debug: Verificar datos de alcance antes de enviar
+                console.log('Datos de alcance a enviar:', {
+                    Paises: entityData.PaisesSelected,
+                    Provincias: entityData.ProvinciasSelected,
+                    Ciudades: entityData.CiudadesSelected
+                });
+                
                 var data = {
                     UserToken: User.Token,
-                    Data: JSON.stringify(ko.toJS(self.Entity))
+                    Data: JSON.stringify(entityData)
                 };
                 Services.Post(url, data,
                     (response) => {

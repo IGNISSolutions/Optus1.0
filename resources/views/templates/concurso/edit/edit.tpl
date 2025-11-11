@@ -321,7 +321,7 @@
                 <strong>Aclaración:</strong>
                 <ul style="margin-top: 5px; margin-bottom: 5px;">
                     <li>El borrador solo aparecerá en el monitor una vez se haya seleccionado el/los proveedores a invitar</li>
-                    <li>Si se ha seleccionado proveedor, podrá buscar su borrador en el apartado de licitaciones/subastas por ID o Nombre</li>
+                    <li>Si no se ha seleccionado proveedor, podrá buscar su borrador en el apartado de licitaciones/subastas por ID o Nombre</li>
                 </ul>
             </div>
             
@@ -1706,6 +1706,28 @@
                         self.Entity.Products(newProducts);
                         break;
                 }
+            };
+
+            // Función para borrar todos los items
+            this.deleteAllProducts = function() {
+                swal({
+                    title: '¿Está seguro?',
+                    text: "Se eliminarán todos los items de la licitación.",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Sí, borrar todos',
+                    cancelButtonText: 'Cancelar'
+                }, function(isConfirm) {
+                    if (isConfirm) {
+                        // Usar la misma lógica que el borrado individual
+                        // Vaciar completamente el array
+                        self.Entity.Products.removeAll();
+                        self.Entity.Products([]);
+                        swal('Eliminados', 'Todos los items han sido eliminados', 'success');
+                    }
+                });
             };
 
             self.initFilters();

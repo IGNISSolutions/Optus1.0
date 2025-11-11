@@ -198,6 +198,12 @@
                 <div class="table-toolbar">
                     <div class="row">
                         <div class="col-md-6">
+                            <!-- ko if: !$root.ReadOnly() && Entity.Products().length > 0 -->
+                            <a data-bind="click: deleteAllProducts" class="btn sbold red"
+                                title="Borrar todos los items">
+                                <i class="fa fa-trash"></i> Borrar todos los items
+                            </a>
+                            <!-- /ko -->
                         </div>
                         <div class="col-md-6">
                         </div>
