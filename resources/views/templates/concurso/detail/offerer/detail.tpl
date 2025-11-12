@@ -1322,41 +1322,21 @@
 
                 // ⚠️ Solo validar si es envío definitivo
                 if (!isUpdate) {
-                    // Separar errores de fecha
-                    const erroresFecha = items.filter(item => {
-                        if (!item.ProductSelected()) return false;
-                        const fec = parseInt(item.fecha());
-                        return self.IsSobrecerrado() && (isNaN(fec) || fec < 1 || fec > 365);
-                    });
-
-                    if (erroresFecha.length > 0) {
-                        swal({
-                            title: "Plazo de entrega inválido",
-                            text: "El campo 'Plazo de entrega' debe estar entre 1 y 365 días.",
-                            type: "error",
-                            confirmButtonText: "Aceptar",
-                            confirmButtonClass: 'btn btn-danger',
-                            buttonsStyling: false
-                        });
-                        return;
-                    }
-
-                    // Validar restantes campos
-                    const itemsInvalidos = items.filter(item => {
-                        if (!item.ProductSelected()) return false;
-
+                    // 1️⃣ PRIMERO: Verificar si TODOS los campos están vacíos
+                    const todosVacios = items.every(item => {
+                        if (!item.ProductSelected()) return true; // Item no seleccionado cuenta como vacío
+                        
                         const cot = parseFloat(item.cotizacion());
                         const cant = parseFloat(item.cantidad());
                         const fec = parseInt(item.fecha());
-
-                        return (
-                            isNaN(cot) || cot <= 0 ||
-                            isNaN(cant) || cant <= 0 ||
-                            (self.IsSobrecerrado() && (isNaN(fec) || fec <= 0 || fec > 365))
-                        );
+                        
+                        // Si todos los campos están vacíos o son 0
+                        return (isNaN(cot) || cot <= 0) && 
+                               (isNaN(cant) || cant <= 0) && 
+                               (isNaN(fec) || fec <= 0);
                     });
 
-                    if (itemsInvalidos.length > 0) {
+                    if (todosVacios) {
                         swal({
                             title: "Error",
                             text: "Existen ítems seleccionados con campos obligatorios incompletos o inválidos. Por favor, complete la información requerida o deseleccione esos ítems.",
@@ -1366,6 +1346,67 @@
                             buttonsStyling: false
                         });
                         return;
+                    }
+
+                    // 2️⃣ SEGUNDO: Validar cantidad cotizada específicamente
+                    const itemsSinCantidad = items.filter(item => {
+                        if (!item.ProductSelected()) return false;
+                        const cant = parseFloat(item.cantidad());
+                        return isNaN(cant) || cant <= 0;
+                    });
+
+                    if (itemsSinCantidad.length > 0) {
+                        const nombresItems = itemsSinCantidad.map(item => '"' + item.product_name() + '"').join(' - ');
+                        swal({
+                            title: "Error",
+                            text: "Complete el campo cantidad cotizada para el item: " + nombresItems,
+                            type: "error",
+                            confirmButtonText: "Aceptar",
+                            confirmButtonClass: 'btn btn-danger',
+                            buttonsStyling: false
+                        });
+                        return;
+                    }
+
+                    // 2️⃣.1 VALIDAR: Cotización
+                    const itemsSinCotizacion = items.filter(item => {
+                        if (!item.ProductSelected()) return false;
+                        const cot = parseFloat(item.cotizacion());
+                        return isNaN(cot) || cot <= 0;
+                    });
+
+                    if (itemsSinCotizacion.length > 0) {
+                        swal({
+                            title: "Error",
+                            text: "Existen ítems seleccionados con campos obligatorios incompletos o inválidos. Por favor, complete la información requerida o deseleccione esos ítems.",
+                            type: "error",
+                            confirmButtonText: "Aceptar",
+                            confirmButtonClass: 'btn btn-danger',
+                            buttonsStyling: false
+                        });
+                        return;
+                    }
+
+                    // 3️⃣ TERCERO: Validar errores de fecha (vacía o fuera de rango)
+                    if (self.IsSobrecerrado()) {
+                        const erroresFecha = items.filter(item => {
+                            if (!item.ProductSelected()) return false;
+                            const fec = parseInt(item.fecha());
+                            return isNaN(fec) || fec < 1 || fec > 365;
+                        });
+
+                        if (erroresFecha.length > 0) {
+                            const nombresItemsFecha = erroresFecha.map(item => '"' + item.product_name() + '"').join(' - ');
+                            swal({
+                                title: "Plazo de entrega inválido",
+                                text: "Complete el plazo de entrega para los items: " + nombresItemsFecha,
+                                type: "error",
+                                confirmButtonText: "Aceptar",
+                                confirmButtonClass: 'btn btn-danger',
+                                buttonsStyling: false
+                            });
+                            return;
+                        }
                     }
                 }
 
