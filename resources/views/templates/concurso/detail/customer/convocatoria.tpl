@@ -53,9 +53,13 @@
 </div>
 <div class="m-heading-1 border-default m-bordered text-left">
     <h4 class="block bold" style="margin-top: 0; padding-top: 0;">Documentación</h4>
-    <!-- ko if: Media().length > 0 -->
+    <!-- ko if: Media().filter(function(m) { return m.indice != 0; }).length > 0 -->
     <table class="table table-striped table-bordered" id="ListaConcursosEconomicas">
-        <tbody data-bind="foreach: Media()">
+        <tbody data-bind="foreach: Media().filter(function(m, index, self) { 
+            return m.indice != 0 && self.findIndex(function(t) { 
+                return t.path === m.path; 
+            }) === index; 
+        })">
 
             <tr>
                 <td class="col-md-6 text-center" style="vertical-align: middle;" data-bind="text: nombre">
