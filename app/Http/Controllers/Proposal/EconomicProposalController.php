@@ -878,7 +878,7 @@ class EconomicProposalController extends BaseController
             $data = $fields,
             $rules = array_merge($common_rules, $conditional_rules),
             $messages = [
-                'payment_deadline.required' => 'Complete el campo plazo de pago',
+                'payment_deadline.required' => 'Debe seleccionar un plazo de pago',
                 'payment_condition.required' => 'Debe seleccionar una condición de pago',
                 'values.required' => 'Debe cotizar por lo menos un item.'
             ]
@@ -908,9 +908,9 @@ class EconomicProposalController extends BaseController
             $data = $fields,
             $rules = array_merge($common_rules, $conditional_rules),
             $messages = [
-                'economic_documents.0.filename.required' => 'Debe adjuntar una Propuesta Económica.',
-                'economic_documents.1.filename.required' => 'Debe adjuntar la Planilla de costos.',
-                'economic_documents.2.filename.required' => 'Debe adjuntar Análisis de Precios Unitarios.'
+                'economic_documents.0.filename.required' => 'Debe cargar una Propuesta Económica.',
+                'economic_documents.1.filename.required' => 'Debe cargar la Planilla de costos.',
+                'economic_documents.2.filename.required' => 'Debe cargar Análisis de Precios Unitarios.'
             ]
         );
     }

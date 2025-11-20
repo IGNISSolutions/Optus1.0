@@ -40,6 +40,6 @@ class PlantillaTecnica extends Model
             $result = $result->push($atributo);
         }
 
-        return $result;
+        return $result->sortBy('atributo')->values();
     }
 }
