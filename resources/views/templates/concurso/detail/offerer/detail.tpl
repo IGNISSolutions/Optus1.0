@@ -704,6 +704,12 @@
                         this.CartaRepresentanteMarca = ko.observable(data.list.CartaRepresentanteMarca);
                         this.SoportePostVenta = ko.observable(data.list.SoportePostVenta);
                         this.LugarFormaEntrega = ko.observable(data.list.LugarFormaEntrega);
+                         // PLANTILLA 1 - NUEVOS CAMPOS
+                        this.ListadoEquiposHerramientas = ko.observable(data.list.ListadoEquiposHerramientas);
+                        this.EquipoHumanoCompetencias = ko.observable(data.list.EquipoHumanoCompetencias);
+                        this.BalancesEstadosResultados = ko.observable(data.list.BalancesEstadosResultados);
+                        this.EstatutoContratoSocial = ko.observable(data.list.EstatutoContratoSocial);
+                        this.ActasDesignacionAutoridades = ko.observable(data.list.ActasDesignacionAutoridades);
                         this.ListaProveedores = ko.observable(data.list.ListaProveedores);
                         this.CertificadoVisitaObra = ko.observable(data.list.CertificadoVisitaObra);
 
