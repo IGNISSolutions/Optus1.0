@@ -5,7 +5,7 @@
     <table class="table table-striped table-bordered" data-bind="attr: { id: 'ResumenItems-' + $index() }" style="width:100%">
         <thead style="background-color: #ccc; color: #000000;">
             <tr>
-                <th class="dt-head-center" data-bind="text: 'Moneda: ' + $root.Moneda()" colspan="4"
+                <th class="dt-head-center" data-bind="text: 'Moneda: ' + $root.Moneda()" colspan="5"
                     data-dt-order="disable"></th>
                 <!-- ko foreach: ConcursoEconomicas.proveedores -->
                 <!-- ko ifnot: isRechazado || isVencido -->
@@ -18,6 +18,7 @@
                 <th class="vertical-align-middle dt-head-center">ITEMS</th>
                 <th class="vertical-align-middle dt-head-center">Cantidad Solicitada</th>
                 <th class="vertical-align-middle dt-head-center">Costo Objetivo</th>
+                <th class="vertical-align-middle dt-head-center">Descripción</th>
                 <!-- ko foreach: ConcursoEconomicas.proveedores -->
                 <!-- ko ifnot: isRechazado || isVencido -->
                 <th class="vertical-align-middle dt-head-center">Plazo entrega</th>
@@ -41,6 +42,9 @@
                     class="text-center vertical-align-middle dt-head-center">
                 </td>
                 <td data-bind="number: targetcost, precision: 2"
+                    class="text-center vertical-align-middle dt-head-center"></td>
+                class="text-center vertical-align-middle dt-head-center"></td>
+                <td data-bind="text: descripcion || '—'"
                     class="text-center vertical-align-middle dt-head-center"></td>
                 <!-- ko foreach: $parent.ConcursoEconomicas.proveedores -->
 <!-- ko ifnot: isRechazado || isVencido -->

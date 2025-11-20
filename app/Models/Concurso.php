@@ -194,12 +194,6 @@ class Concurso extends Model
         'carta_representante_marca',
         'soporte_post_venta',        
         'lugar_forma_entrega',
-        // ===== NUEVOS CAMPOS PLANTILLA 1 =====
-        'listado_equipos_herramientas',
-        'equipo_humano_competencias',
-        'balances_estados_resultados',
-        'estatuto_contrato_social',
-        'actas_designacion_autoridades',
 
     ];
 

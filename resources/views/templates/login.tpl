@@ -66,11 +66,13 @@ License: You must have a valid license purchased only from themeforest(the above
                         <i class="fa fa-user"></i>
                         <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="{$l['login'][1]}" name="username" id="username" data-bind="textInput: UserName" /> </div>
                 </div>
-                <div class="form-group">
+                <div class="form-group" style="position: relative;">
                     <label class="control-label visible-ie8 visible-ie9">{$l['login'][2]}</label>
                     <div class="input-icon">
                         <i class="fa fa-lock"></i>
-                        <input class="form-control placeholder-no-fix" type="password" autocomplete="off" placeholder="{$l['login'][2]}" name="password" id="password" data-bind="textInput: Password" /> </div>
+                        <input class="form-control placeholder-no-fix" type="password" autocomplete="off" placeholder="{$l['login'][2]}" name="password" id="password" data-bind="textInput: Password" style="padding-right: 35px;" />
+                    </div>
+                    <i class="fa fa-eye toggle-password" id="togglePassword" style="position: absolute; right: 10px; bottom: 12px; cursor: pointer; z-index: 10; color: #666;"></i>
                 </div>
                 <div class="form-actions" style="text-align: center;">
                     <button type="button" id="btnSubmit" class="btn green" data-bind="click: Login" style="width: 50%; margin-bottom: 3px;"> {$l['login'][4]} </button>
@@ -448,6 +450,20 @@ License: You must have a valid license purchased only from themeforest(the above
                     var keycode = (event.keyCode ? event.keyCode : event.which);
                     if (parseInt(keycode) === 13) {
                         $("#btnSubmit").click();
+                    }
+                });
+
+                // Toggle password visibility
+                $("#togglePassword").click(function() {
+                    var passwordField = $("#password");
+                    var icon = $(this);
+                    
+                    if (passwordField.attr("type") === "password") {
+                        passwordField.attr("type", "text");
+                        icon.removeClass("fa-eye").addClass("fa-eye-slash");
+                    } else {
+                        passwordField.attr("type", "password");
+                        icon.removeClass("fa-eye-slash").addClass("fa-eye");
                     }
                 });
             });
