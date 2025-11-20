@@ -18,7 +18,9 @@ class PayrollController extends BaseController
         $result = [];
 
         try {
-            $plantilla_tecnica_item = PlantillaTecnicaItem::where('id_plantilla', $params['id'])->get();
+            $plantilla_tecnica_item = PlantillaTecnicaItem::where('id_plantilla', $params['id'])
+                ->orderBy('atributo', 'asc')
+                ->get();
 
             $result = [
                 'PlantillaTecnicaSeleccionada' => $plantilla_tecnica_item

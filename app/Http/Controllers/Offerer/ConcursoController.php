@@ -798,6 +798,15 @@ class ConcursoController extends BaseController
 
                         'ListaProveedores' => isset($concurso->lista_prov) ? $concurso->lista_prov : 'no',
                         'CertificadoVisitaObra' => isset($concurso->cert_visita) ? $concurso->cert_visita : 'no',
+                        
+                        // =====================
+                        // PLANTILLA 1 - NUEVOS CAMPOS
+                        // =====================
+                        'ListadoEquiposHerramientas' => isset($concurso->listado_equipos_herramientas) ? $concurso->listado_equipos_herramientas : 'no',
+                        'EquipoHumanoCompetencias' => isset($concurso->equipo_humano_competencias) ? $concurso->equipo_humano_competencias : 'no',
+                        'BalancesEstadosResultados' => isset($concurso->balances_estados_resultados) ? $concurso->balances_estados_resultados : 'no',
+                        'EstatutoContratoSocial' => isset($concurso->estatuto_contrato_social) ? $concurso->estatuto_contrato_social : 'no',
+                        'ActasDesignacionAutoridades' => isset($concurso->actas_designacion_autoridades) ? $concurso->actas_designacion_autoridades : 'no',
 
                         'EntregaDocEvaluacion' => isset($concurso->entrega_doc_evaluacion) ? $concurso->entrega_doc_evaluacion : 'no',
                         'RequisitosLegales' => isset($concurso->requisitos_legales) ? $concurso->requisitos_legales : 'no',

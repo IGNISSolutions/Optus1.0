@@ -659,6 +659,12 @@
             this.SoportePostVenta = ko.observable(data.list.SoportePostVenta);
             this.LugarFormaEntrega = ko.observable(data.list.LugarFormaEntrega);
 
+            // PLANTILLA 1 - NUEVOS CAMPOS
+            this.ListadoEquiposHerramientas = ko.observable(data.list.ListadoEquiposHerramientas);
+            this.EquipoHumanoCompetencias = ko.observable(data.list.EquipoHumanoCompetencias);
+            this.BalancesEstadosResultados = ko.observable(data.list.BalancesEstadosResultados);
+            this.EstatutoContratoSocial = ko.observable(data.list.EstatutoContratoSocial);
+            this.ActasDesignacionAutoridades = ko.observable(data.list.ActasDesignacionAutoridades);
 
 
 
@@ -737,6 +743,12 @@
                                 self.edificio_subcontratistas('no')
                                 self.edificio_gestion('no')
                                 self.edificio_maquinas('no')
+                                // PLANTILLA 1 - NUEVOS CAMPOS
+                                self.ListadoEquiposHerramientas('no');
+                                self.EquipoHumanoCompetencias('no');
+                                self.BalancesEstadosResultados('no');
+                                self.EstatutoContratoSocial('no');
+                                self.ActasDesignacionAutoridades('no');
                             }
                             if (value == 2) {
                                 self.SeguroCaucion('no');

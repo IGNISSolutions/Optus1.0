@@ -52,14 +52,14 @@
 
                             name() !== 'Certificado de visita de obra' &&
 
-                            name() !== 'Diagrama de Gantt' && 
+                            name() !== 'Cronograma de trabajo' && 
                             name() !== 'Seguro de Caución' && 
                             name() !== 'Bases y condiciones Firmado' && 
                             name() !== 'Condiciones Generales Firmado' && 
                             name() !== 'Pliego Técnico Firmado' && 
                             name() !== 'Acuerdo de Confidencialidad Firmado' && 
                             name() !== 'Legajo Impositivo' && 
-                            name() !== 'Antecedentes y Referencias' && 
+                            name() !== 'Referencias comerciales' && 
                             name() !== 'Reporte Accidentes' &&
                             name() !== 'Envío de muestras' &&
                             name() !== 'NOM-251-SSA1-2009'&&
@@ -107,21 +107,25 @@
                             name() !== 'TÉCNICA - Cronograma de entrega / Plazo de entrega' &&
                             name() !== 'TÉCNICA - Carta de representante de la marca y/o distribuidor autorizado' &&
                             name() !== 'TÉCNICA - Soporte Post Venta' &&
-                            name() !== 'TÉCNICA - Lugar y forma de entrega'
-
-
+                            name() !== 'TÉCNICA - Lugar y forma de entrega' &&
+                            name() !== 'TÉCNICA - Acuerdo de confidencialidad FIRMADO' &&
+                            name() !== 'Listado de equipos y herramientas' &&
+                            name() !== 'Equipo humano y competencias' &&
+                            name() !== 'Balances y estados de resultados' &&
+                            name() !== 'Estatuto o contrato social' &&
+                            name() !== 'Actas de designación de autoridades'
+                            
 
 
 
 
                         ) || 
 
-                        (name() === 'Diagrama de Gantt' && $root.DiagramaGant() === 'si') ||                  
+                        (name() === 'Cronograma de trabajo' && $root.DiagramaGant() === 'si') ||                  
 
                         (name() === 'Lista de sub contratistas' && $root.ListaProveedores() === 'si') ||
                         (name() === 'Certificado de visita de obra' && $root.CertificadoVisitaObra() === 'si') ||
-
-
+                        (name() === 'TÉCNICA - Acuerdo de confidencialidad FIRMADO' && $root.NdaFirmado() === 'si') ||
                         (name() === 'Entrega de documentación para evaluación y Alta de proveedor' && $root.EntregaDocEvaluacion() === 'si') ||
                         (name() === 'Cumplimiento de requisitos legales y reglamentos aplicables' && $root.RequisitosLegales() === 'si') ||
                         (name() === 'Experiencia y referencias comerciales' && $root.ExperienciaYReferencias() === 'si') ||
@@ -139,7 +143,7 @@
                         (name() === 'Pliego Técnico Firmado' && $root.PliegoTecnico() === 'si') ||
                         (name() === 'Acuerdo de Confidencialidad Firmado' && $root.Confidencialidad() === 'si') ||
                         (name() === 'Legajo Impositivo' && $root.LegajoImpositivo() === 'si') ||
-                        (name() === 'Antecedentes y Referencias' && $root.Antecedentes() === 'si') ||
+                        (name() === 'Referencias comerciales' && $root.Antecedentes() === 'si') ||
                         (name() === 'Reporte Accidentes' && $root.ReporteAccidentes() === 'si') ||
                         (name() === 'Envío de muestras' && $root.EnvioMuestra() === 'si') ||
                         (name() === 'NOM-251-SSA1-2009' && $root.nom251() === 'si') ||
@@ -190,7 +194,13 @@
                         (name() === 'TÉCNICA - Cronograma de entrega / Plazo de entrega' && $root.CronogramaEntrega() === 'si') ||
                         (name() === 'TÉCNICA - Carta de representante de la marca y/o distribuidor autorizado' && $root.CartaRepresentanteMarca() === 'si') ||
                         (name() === 'TÉCNICA - Soporte Post Venta' && $root.SoportePostVenta() === 'si') ||
-                        (name() === 'TÉCNICA - Lugar y forma de entrega' && $root.LugarFormaEntrega() === 'si')
+                        (name() === 'TÉCNICA - Lugar y forma de entrega' && $root.LugarFormaEntrega() === 'si') ||
+
+                        (name() === 'Listado de equipos y herramientas' && $root.ListadoEquiposHerramientas() === 'si') ||
+                        (name() === 'Equipo humano y competencias' && $root.EquipoHumanoCompetencias() === 'si') ||
+                        (name() === 'Balances y estados de resultados' && $root.BalancesEstadosResultados() === 'si') ||
+                        (name() === 'Estatuto o contrato social' && $root.EstatutoContratoSocial() === 'si') ||
+                        (name() === 'Actas de designación de autoridades' && $root.ActasDesignacionAutoridades() === 'si')
 
 
 
@@ -253,14 +263,14 @@
                             name() !== 'Ficha técnica. (Materiales, especificaciones y características de la propuesta)' &&
 
 
-                            name() !== 'Diagrama de Gantt' && 
+                            name() !== 'Cronograma de trabajo' && 
                             name() !== 'Seguro de Caución' && 
                             name() !== 'Bases y condiciones Firmado' && 
                             name() !== 'Condiciones Generales Firmado' && 
                             name() !== 'Pliego Técnico Firmado' && 
                             name() !== 'Acuerdo de Confidencialidad Firmado' && 
                             name() !== 'Legajo Impositivo' && 
-                            name() !== 'Antecedentes y Referencias' && 
+                            name() !== 'Referencias comerciales' && 
                             name() !== 'Reporte Accidentes' &&
                             name() !== 'Envío de muestras' &&
                             name() !== 'NOM-251-SSA1-2009'&&
@@ -308,9 +318,14 @@
                             name() !== 'TÉCNICA - Cronograma de entrega / Plazo de entrega' &&
                             name() !== 'TÉCNICA - Carta de representante de la marca y/o distribuidor autorizado' &&
                             name() !== 'TÉCNICA - Soporte Post Venta' &&
-                            name() !== 'TÉCNICA - Lugar y forma de entrega'
+                            name() !== 'TÉCNICA - Lugar y forma de entrega' &&
 
-
+                            name() !== 'Listado de equipos y herramientas' &&
+                            name() !== 'Equipo humano y competencias' &&
+                            name() !== 'Balances y estados de resultados' &&
+                            name() !== 'Estatuto o contrato social' &&
+                            name() !== 'Actas de designación de autoridades' &&
+                            name() !== 'TÉCNICA - Acuerdo de confidencialidad FIRMADO'
 
 
                         ) || 
@@ -333,16 +348,22 @@
 
 
 
-                        (name() === 'Diagrama de Gantt' && $root.DiagramaGant() === 'si') || 
+                        (name() === 'Cronograma de trabajo' && $root.DiagramaGant() === 'si') || 
 
                         (name() === 'Seguro de Caución' && $root.SeguroCaucion() === 'si') ||
+
+                        (name() === 'Listado de equipos y herramientas' && $root.ListadoEquiposHerramientas() === 'si') ||
+                        (name() === 'Equipo humano y competencias' && $root.EquipoHumanoCompetencias() === 'si') ||
+                        (name() === 'Balances y estados de resultados' && $root.BalancesEstadosResultados() === 'si') ||
+                        (name() === 'Estatuto o contrato social' && $root.EstatutoContratoSocial() === 'si') ||
+                        (name() === 'Actas de designación de autoridades' && $root.ActasDesignacionAutoridades() === 'si') ||
 
                         (name() === 'Bases y condiciones Firmado' && $root.BaseCondiciones() === 'si') ||
                         (name() === 'Condiciones Generales Firmado' && $root.CondicionesGenerales() === 'si') ||
                         (name() === 'Pliego Técnico Firmado' && $root.PliegoTecnico() === 'si') ||
                         (name() === 'Acuerdo de Confidencialidad Firmado' && $root.Confidencialidad() === 'si') ||
                         (name() === 'Legajo Impositivo' && $root.LegajoImpositivo() === 'si') ||
-                        (name() === 'Antecedentes y Referencias' && $root.Antecedentes() === 'si') ||
+                        (name() === 'Referencias comerciales' && $root.Antecedentes() === 'si') ||
                         (name() === 'Reporte Accidentes' && $root.ReporteAccidentes() === 'si') ||
                         (name() === 'Envío de muestras' && $root.EnvioMuestra() === 'si') ||
                         (name() === 'NOM-251-SSA1-2009' && $root.nom251() === 'si') ||
@@ -392,12 +413,8 @@
                         (name() === 'TÉCNICA - Cronograma de entrega / Plazo de entrega' && $root.CronogramaEntrega() === 'si') ||
                         (name() === 'TÉCNICA - Carta de representante de la marca y/o distribuidor autorizado' && $root.CartaRepresentanteMarca() === 'si') ||
                         (name() === 'TÉCNICA - Soporte Post Venta' && $root.SoportePostVenta() === 'si') ||
-                        (name() === 'TÉCNICA - Lugar y forma de entrega' && $root.LugarFormaEntrega() === 'si')
-
-
-
-
-
+                        (name() === 'TÉCNICA - Lugar y forma de entrega' && $root.LugarFormaEntrega() === 'si') ||
+                        (name() === 'TÉCNICA - Acuerdo de confidencialidad FIRMADO' && $root.NdaFirmado() === 'si')
                         -->
                         <td class="col-md-3 text-center vertical-align-middle" data-bind="text: name"></td>
                         <!-- ko if: $root.EnableTechnical() -->
@@ -516,14 +533,14 @@
                             name() !== 'Tiempo de fabricación e instalación de cocinas' &&
                             name() !== 'Ficha técnica. (Materiales, especificaciones y características de la propuesta)' &&
 
-                            name() !== 'Diagrama de Gantt' && 
+                            name() !== 'Cronograma de trabajo' && 
                             name() !== 'Seguro de Caución' && 
                             name() !== 'Bases y condiciones Firmado' && 
                             name() !== 'Condiciones Generales Firmado' && 
                             name() !== 'Pliego Técnico Firmado' && 
                             name() !== 'Acuerdo de Confidencialidad Firmado' && 
                             name() !== 'Legajo Impositivo' && 
-                            name() !== 'Antecedentes y Referencias' && 
+                            name() !== 'Referencias comerciales' && 
                             name() !== 'Reporte Accidentes' &&
                             name() !== 'Envío de muestras' &&
                             name() !== 'NOM-251-SSA1-2009'&&
@@ -556,6 +573,7 @@
                             name() !== 'TÉCNICA - Inventario de equipos, herramientas, vehículos y/o maquinarias' &&
                             name() !== 'TÉCNICA - Acreditaciones, Permisos, Autorizaciones' &&
                             name() !== 'TÉCNICA - Requerimientos tecnológicos de hardware, software y/o conectividad' &&
+                            name() !== 'TÉCNICA - Acuerdo de confidencialidad FIRMADO' &&
                             name() !== 'TÉCNICA - Requisitos del personal, calificaciones, CV, certificaciones, experiencia, capacitación, etc' &&
                             name() !== 'TÉCNICA - Organigrama / Equipo de Trabajo / Niveles de escalamiento' &&
                             name() !== 'TÉCNICA - Valor agregado' &&
@@ -571,13 +589,18 @@
                             name() !== 'TÉCNICA - Cronograma de entrega / Plazo de entrega' &&
                             name() !== 'TÉCNICA - Carta de representante de la marca y/o distribuidor autorizado' &&
                             name() !== 'TÉCNICA - Soporte Post Venta' &&
-                            name() !== 'TÉCNICA - Lugar y forma de entrega'
+                            name() !== 'TÉCNICA - Lugar y forma de entrega' &&
 
+                            name() !== 'Listado de equipos y herramientas' &&
+                            name() !== 'Equipo humano y competencias' &&
+                            name() !== 'Balances y estados de resultados' &&
+                            name() !== 'Estatuto o contrato social' &&
+                            name() !== 'Actas de designación de autoridades'
 
 
                         ) || 
 
-                        (name() === 'Diagrama de Gantt' && $root.DiagramaGant() === 'si') || 
+                        (name() === 'Cronograma de trabajo' && $root.DiagramaGant() === 'si') || 
 
                         (name() === 'Lista de sub contratistas' && $root.ListaProveedores() === 'si') ||
                         (name() === 'Certificado de visita de obra' && $root.CertificadoVisitaObra() === 'si') ||
@@ -601,7 +624,7 @@
                         (name() === 'Pliego Técnico Firmado' && $root.PliegoTecnico() === 'si') ||
                         (name() === 'Acuerdo de Confidencialidad Firmado' && $root.Confidencialidad() === 'si') ||
                         (name() === 'Legajo Impositivo' && $root.LegajoImpositivo() === 'si') ||
-                        (name() === 'Antecedentes y Referencias' && $root.Antecedentes() === 'si') ||
+                        (name() === 'Referencias comerciales' && $root.Antecedentes() === 'si') ||
                         (name() === 'Reporte Accidentes' && $root.ReporteAccidentes() === 'si') ||
                         (name() === 'Envío de muestras' && $root.EnvioMuestra() === 'si') ||
                         (name() === 'NOM-251-SSA1-2009' && $root.nom251() === 'si') ||
@@ -652,9 +675,13 @@
                         (name() === 'TÉCNICA - Cronograma de entrega / Plazo de entrega' && $root.CronogramaEntrega() === 'si') ||
                         (name() === 'TÉCNICA - Carta de representante de la marca y/o distribuidor autorizado' && $root.CartaRepresentanteMarca() === 'si') ||
                         (name() === 'TÉCNICA - Soporte Post Venta' && $root.SoportePostVenta() === 'si') ||
-                        (name() === 'TÉCNICA - Lugar y forma de entrega' && $root.LugarFormaEntrega() === 'si')
-
-
+                        (name() === 'TÉCNICA - Lugar y forma de entrega' && $root.LugarFormaEntrega() === 'si') ||
+                        (name() === 'TÉCNICA - Acuerdo de confidencialidad FIRMADO' && $root.NdaFirmado() === 'si') ||
+                        (name() === 'Listado de equipos y herramientas' && $root.ListadoEquiposHerramientas() === 'si') ||
+                        (name() === 'Equipo humano y competencias' && $root.EquipoHumanoCompetencias() === 'si') ||
+                        (name() === 'Balances y estados de resultados' && $root.BalancesEstadosResultados() === 'si') ||
+                        (name() === 'Estatuto o contrato social' && $root.EstatutoContratoSocial() === 'si') ||
+                        (name() === 'Actas de designación de autoridades' && $root.ActasDesignacionAutoridades() === 'si') 
 
 
                         -->

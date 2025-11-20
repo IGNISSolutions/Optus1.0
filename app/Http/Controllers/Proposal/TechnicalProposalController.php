@@ -679,6 +679,7 @@ class TechnicalProposalController extends BaseController
             ]);
         }
 
+
         if ($concurso->base_condiciones_firmado === 'si') {
             $conditional_rules = array_merge($conditional_rules, [
                 'technical_documents.3.filename' => 'required'
@@ -1061,20 +1062,51 @@ class TechnicalProposalController extends BaseController
             ]);
         }
 
+        //Nuevos docs planilla general
+        if ($concurso->equipo_humano_competencias === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.68.filename' => 'required'
+            ]);
+        }
+
+        if ($concurso->balances_estados_resultados === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.69.filename' => 'required'
+            ]);
+        }
+
+        if ($concurso->estatuto_contrato_social === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.70.filename' => 'required'
+            ]);
+        }
+
+        if ($concurso->actas_designacion_autoridades === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.71.filename' => 'required'
+            ]);
+        }
+
+        if ($concurso->listado_equipos_herramientas === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.72.filename' => 'required'
+            ]);
+        }
+
 
         return validator(
             $data = $fields,
             $rules = array_merge($common_rules, $conditional_rules),
             $messages = [
                 'technical_documents.0.filename.required' => 'Debe cargar una Propuesta Técnica.',
-                'technical_documents.1.filename.required' => 'El Diagrama de Gantt es obligatorio.',
+                'technical_documents.1.filename.required' => 'El Cronograma de trabajo es obligatorio.',
                 'technical_documents.2.filename.required' => 'El Seguro de Caución es obligatorio.',
                 'technical_documents.3.filename.required' => 'Las Bases y condiciones Firmado son obligatorias.',
                 'technical_documents.4.filename.required' => 'Las Condiciones Generales Firmado son obligatorias.',
                 'technical_documents.5.filename.required' => 'El Pliego Técnico Firmado es obligatorio.',
                 'technical_documents.6.filename.required' => 'El Acuerdo de Confidencialidad Firmado es obligatorio.',
                 'technical_documents.7.filename.required' => 'El Legajo Impositivo es obligatorio.',
-                'technical_documents.8.filename.required' => 'Los Antecedentes y Referencias son obligatorios.',
+                'technical_documents.8.filename.required' => 'Las Referencias comerciales son obligatorias.',
                 'technical_documents.9.filename.required' => 'El Reporte Accidentes es obligatorio.',
                 'technical_documents.10.filename.required' => 'El Envio de muestra es obligatorio.',
                 'technical_documents.11.filename.required' => 'El NOM-251-SSA1-2009 es obligatorio.',
@@ -1083,7 +1115,7 @@ class TechnicalProposalController extends BaseController
                 'technical_documents.14.filename.required' => 'La documentacion REPSE es obligatoria.',
                 'technical_documents.15.filename.required' => 'La Póliza de seguro responsabilidad civil es obligatoria.',
                 'technical_documents.16.filename.required' => 'El Prima de Riesgo es obligatoria.',
-                'technical_documents.17.filename.required' => 'Las Referencias comerciales  son obligatorias.',
+                'technical_documents.17.filename.required' => 'Las Referencias comerciales son obligatorias.',
                 'technical_documents.18.filename.required' => 'El Organigrama de Obras es obligatorio.',
                 'technical_documents.19.filename.required' => 'El Documento de Equipos y herramientas es obligatorio.',
                 'technical_documents.20.filename.required' => 'El Cronograma de Obras es obligatorio.',
@@ -1141,6 +1173,12 @@ class TechnicalProposalController extends BaseController
                 'technical_documents.66.filename.required' => 'El Soporte Post Venta es obligatorio.',
                 'technical_documents.67.filename.required' => 'El documento de Lugar y forma de entrega es obligatorio.',
 
+                // ===================== Plantilla 1 - Nuevos Campos =====================
+                'technical_documents.68.filename.required' => 'El Equipo humano y competencias es obligatorio.',
+                'technical_documents.69.filename.required' => 'Los Balances y estados de resultados son obligatorios.',
+                'technical_documents.70.filename.required' => 'El Estatuto o contrato social es obligatorio.',
+                'technical_documents.71.filename.required' => 'Las Actas de designación de autoridades son obligatorias.',
+                'technical_documents.72.filename.required' => 'El Listado de equipos y herramientas es obligatorio.',
 
 
 
