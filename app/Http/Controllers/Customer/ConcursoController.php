@@ -2952,10 +2952,12 @@ class ConcursoController extends BaseController
                     $message = $result['message'];
                     $status = 422;
                     $success = false;
+                    $concursoId = null;
                 } else {
                     $connection->commit();
                     $message = 'Borrador guardado con éxito.';
                     $success = true;
+                    $concursoId = $result['data']['concurso']->id ?? null;
                 }
             } else {
                 // Editar concurso existente como borrador
@@ -2966,10 +2968,12 @@ class ConcursoController extends BaseController
                     $status = 422;
                     $success = false;
                     $message = $result['message'];
+                    $concursoId = null;
                 } else {
                     $connection->commit();
                     $message = 'Borrador actualizado con éxito.';
                     $success = true;
+                    $concursoId = $params['id'];
                 }
             }
         } catch (\Exception $e) {
@@ -2977,12 +2981,16 @@ class ConcursoController extends BaseController
             $error = true;
             $message = $e->getMessage();
             $status = 500;
+            $concursoId = null;
         }
 
         return $response->withJson([
             'success' => $success,
             'message' => $message,
-            'error' => $error
+            'error' => $error,
+            'data' => [
+                'id' => $concursoId
+            ]
         ], $status);
     }
 

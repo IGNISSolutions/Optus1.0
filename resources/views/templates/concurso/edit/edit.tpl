@@ -1549,6 +1549,14 @@
                 Services.Post(url, data,
                     (response) => {
                         if (response.success) {
+                            // Si es creación (no había ID), actualizar la URL con el nuevo ID
+                            if (!params[3] && response.data && response.data.id) {
+                                self.Entity.Id(response.data.id);
+                                // Actualizar params y URL para futuras guardadas
+                                params[3] = response.data.id;
+                                window.history.replaceState({}, '', '/concursos/' + params[1] + '/edit/' + response.data.id);
+                            }
+                            
                             $.unblockUI();
                             swal({
                                 title: 'Hecho',
