@@ -206,6 +206,18 @@
                             <!-- /ko -->
                         </div>
                         <div class="col-md-6">
+                            <!-- Campo de búsqueda personalizado -->
+                            <div class="form-group" style="margin-bottom:0;">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                                    <input type="text" class="form-control" id="customProductSearch" placeholder="Buscar por nombre o descripción...">
+                                    <span class="input-group-btn">
+                                        <button type="button" class="btn btn-default" title="Limpiar búsqueda" id="clearCustomSearch">
+                                            <i class="fa fa-times"></i>
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

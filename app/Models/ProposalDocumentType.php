@@ -94,7 +94,12 @@ class ProposalDocumentType extends Model
             'carta_representante_marca',
             'soporte_post_venta',        
             'lugar_forma_entrega',
-
+            // ===== NUEVOS CAMPOS PLANTILLA 1 =====
+            'listado-equipos-herramientas',
+            'equipo-humano-competencias',
+            'balances-estados-resultados',
+            'estatuto-contrato-social',
+            'actas-designacion-autoridades',
 
 
 

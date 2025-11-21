@@ -1936,6 +1936,12 @@ class ConcursoController extends BaseController
                 'DiagramaGant' => $create && !$is_copy ? 'no' : $concurso->diagrama_gant,
                 'CertificadoVisitaObra' => $create && !$is_copy ? 'no' : $concurso->cert_visita,
                 'ListaProveedores' => $create && !$is_copy ? 'no' : $concurso->lista_prov,
+                
+                'ListadoEquiposHerramientas' => $create && !$is_copy ? 'no' : ($concurso->listado_equipos_herramientas ?? 'no'),
+                'EquipoHumanoCompetencias' => $create && !$is_copy ? 'no' : ($concurso->equipo_humano_competencias ?? 'no'),
+                'BalancesEstadosResultados' => $create && !$is_copy ? 'no' : ($concurso->balances_estados_resultados ?? 'no'),
+                'EstatutoContratoSocial' => $create && !$is_copy ? 'no' : ($concurso->estatuto_contrato_social ?? 'no'),
+                'ActasDesignacionAutoridades' => $create && !$is_copy ? 'no' : ($concurso->actas_designacion_autoridades ?? 'no'),
 
                 'PropuestaTecnica'         => $create && !$is_copy ? 'no' : ($concurso->propuesta_tecnica ?? 'no'),
                 'PlanMantenimientoPreventivo' => $create && !$is_copy ? 'no' : ($concurso->plan_mantenimiento_preventivo ?? 'no'),
@@ -2884,6 +2890,11 @@ class ConcursoController extends BaseController
             'CartaRepresentanteMarca' => 'no',
             'SoportePostVenta' => 'no',
             'LugarFormaEntrega' => 'no',
+            'ListadoEquiposHerramientas' => 'no',
+            'EquipoHumanoCompetencias' => 'no',
+            'BalancesEstadosResultados' => 'no',
+            'EstatutoContratoSocial' => 'no',
+            'ActasDesignacionAutoridades' => 'no',
             'BaseCondicionesFirmado' => 'no',
             'CondicionesGenerales' => 'no',
             'PliegoTecnico' => 'no',
@@ -2952,10 +2963,12 @@ class ConcursoController extends BaseController
                     $message = $result['message'];
                     $status = 422;
                     $success = false;
+                    $concursoId = null;
                 } else {
                     $connection->commit();
                     $message = 'Borrador guardado con éxito.';
                     $success = true;
+                    $concursoId = $result['data']['concurso']->id ?? null;
                 }
             } else {
                 // Editar concurso existente como borrador
@@ -2966,10 +2979,12 @@ class ConcursoController extends BaseController
                     $status = 422;
                     $success = false;
                     $message = $result['message'];
+                    $concursoId = null;
                 } else {
                     $connection->commit();
                     $message = 'Borrador actualizado con éxito.';
                     $success = true;
+                    $concursoId = $params['id'];
                 }
             }
         } catch (\Exception $e) {
@@ -2977,12 +2992,16 @@ class ConcursoController extends BaseController
             $error = true;
             $message = $e->getMessage();
             $status = 500;
+            $concursoId = null;
         }
 
         return $response->withJson([
             'success' => $success,
             'message' => $message,
-            'error' => $error
+            'error' => $error,
+            'data' => [
+                'id' => $concursoId
+            ]
         ], $status);
     }
 
@@ -4324,6 +4343,11 @@ class ConcursoController extends BaseController
             'cert_visita' => $entity->CertificadoVisitaObra,
 
             'diagrama_gant' => $entity->DiagramaGant,
+            'listado_equipos_herramientas' => $entity->ListadoEquiposHerramientas,
+            'equipo_humano_competencias' => $entity->EquipoHumanoCompetencias,
+            'balances_estados_resultados' => $entity->BalancesEstadosResultados,
+            'estatuto_contrato_social' => $entity->EstatutoContratoSocial,
+            'actas_designacion_autoridades' => $entity->ActasDesignacionAutoridades,
             'propuesta_tecnica'            => $entity->PropuestaTecnica,
             'plan_mantenimiento_preventivo'=> $entity->PlanMantenimientoPreventivo,
             'nda_firmado'                  => $entity->NdaFirmado,
@@ -4935,12 +4959,17 @@ class ConcursoController extends BaseController
             'carta_representante_marca'   => 'Carta de representante de la marca y/o distribuidor autorizado',
             'soporte_post_venta'          => 'Soporte Post Venta',
             'lugar_forma_entrega'         => 'Lugar y forma de entrega',
-            'diagrama_gant' => 'Diagrama de Gantt/Cronograma de trabajo',
+            'diagrama_gant' => 'Cronograma de trabajo',
             'condiciones_generales' => 'Condiciones generales FIRMADO',
             'base_condiciones_firmado' => 'Base y condiciones FIRMADO',
+            'listado_equipos_herramientas' => 'Listado de equipos y herramientas',
+            'equipo_humano_competencias' => 'Equipo humano y competencias',
+            'balances_estados_resultados' => 'Balances y estados de resultados',
+            'estatuto_contrato_social' => 'Estatuto o contrato social',
+            'actas_designacion_autoridades' => 'Actas de designación de autoridades',
             'acuerdo_confidencialidad' => 'Acuerdo de confidencialidad FIRMADO',
             'legajo_impositivo' => 'Legajo Impositivo',
-            'antecendentes_referencia' => 'Antecedentes y referencias',
+            'antecendentes_referencia' => 'Referencias comerciales',
             'reporte_accidentes' => 'Reporte accidentes',
             'envio_muestra' => 'envio de muestra',
             'pliego_tecnico' => 'Pliego técnico FIRMADO',

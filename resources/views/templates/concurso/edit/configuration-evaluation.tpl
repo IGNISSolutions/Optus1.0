@@ -167,16 +167,46 @@
     <div class="col-md-6">
 
         <div class="form-group col-md-12">
-            <span>Póliza de seguro de caución</span>
+            <span>Actas de designación de autoridades</span>
             <div class="pull-right">
                 <label class="radio-inline">
                     <input type="radio" value="si"
-                        data-bind="checked: Entity.SeguroCaucion, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                        data-bind="checked: Entity.ActasDesignacionAutoridades, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     SI
                 </label>
                 <label class="radio-inline">
                     <input type="radio" value="no"
-                        data-bind="checked: Entity.SeguroCaucion, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                        data-bind="checked: Entity.ActasDesignacionAutoridades, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    NO
+                </label>
+            </div>
+        </div>
+        <div class="form-group col-md-12">
+            <span>Acuerdo de confidencialidad FIRMADO</span>
+            <div class="pull-right">
+                <label class="radio-inline">
+                    <input type="radio" value="si"
+                        data-bind="checked: Entity.AcuerdoConfidencialidad, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    SI
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" value="no"
+                        data-bind="checked: Entity.AcuerdoConfidencialidad, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    NO
+                </label>
+            </div>
+        </div>
+        <div class="form-group col-md-12">
+            <span>Balances y estados de resultados</span>
+            <div class="pull-right">
+                <label class="radio-inline">
+                    <input type="radio" value="si"
+                        data-bind="checked: Entity.BalancesEstadosResultados, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    SI
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" value="no"
+                        data-bind="checked: Entity.BalancesEstadosResultados, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     NO
                 </label>
             </div>
@@ -212,16 +242,16 @@
             </div>
         </div>
         <div class="form-group col-md-12">
-            <span>Pliego tecnico FIRMADO</span>
+            <span>Cronograma de trabajo</span>
             <div class="pull-right">
                 <label class="radio-inline">
                     <input type="radio" value="si"
-                        data-bind="checked: Entity.PliegoTecnico, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                        data-bind="checked: Entity.DiagramaGant, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     SI
                 </label>
                 <label class="radio-inline">
                     <input type="radio" value="no"
-                        data-bind="checked: Entity.PliegoTecnico, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                        data-bind="checked: Entity.DiagramaGant, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     NO
                 </label>
             </div>
@@ -244,37 +274,97 @@
     </div>
     <div class="col-md-6">
         <div class="form-group col-md-12">
-            <span>Diagrama de Gantt/Cronograma de trabajo</span>
+            <span>Envío de muestra</span>
             <div class="pull-right">
                 <label class="radio-inline">
                     <input type="radio" value="si"
-                        data-bind="checked: Entity.DiagramaGant, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                        data-bind="checked: Entity.EnvioMuestras, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     SI
                 </label>
                 <label class="radio-inline">
                     <input type="radio" value="no"
-                        data-bind="checked: Entity.DiagramaGant, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                        data-bind="checked: Entity.EnvioMuestras, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     NO
                 </label>
             </div>
         </div>
         <div class="form-group col-md-12">
-            <span>Acuerdo de confidencialidad FIRMADO</span>
+            <span>Equipo humano y competencias</span>
             <div class="pull-right">
                 <label class="radio-inline">
                     <input type="radio" value="si"
-                        data-bind="checked: Entity.AcuerdoConfidencialidad, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                        data-bind="checked: Entity.EquipoHumanoCompetencias, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     SI
                 </label>
                 <label class="radio-inline">
                     <input type="radio" value="no"
-                        data-bind="checked: Entity.AcuerdoConfidencialidad, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                        data-bind="checked: Entity.EquipoHumanoCompetencias, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     NO
                 </label>
             </div>
         </div>
         <div class="form-group col-md-12">
-            <span>Antecedentes y Referencias</span>
+            <span>Estatuto o contrato social</span>
+            <div class="pull-right">
+                <label class="radio-inline">
+                    <input type="radio" value="si"
+                        data-bind="checked: Entity.EstatutoContratoSocial, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    SI
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" value="no"
+                        data-bind="checked: Entity.EstatutoContratoSocial, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    NO
+                </label>
+            </div>
+        </div>
+        <div class="form-group col-md-12">
+            <span>Listado de equipos y herramientas</span>
+            <div class="pull-right">
+                <label class="radio-inline">
+                    <input type="radio" value="si"
+                        data-bind="checked: Entity.ListadoEquiposHerramientas, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    SI
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" value="no"
+                        data-bind="checked: Entity.ListadoEquiposHerramientas, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    NO
+                </label>
+            </div>
+        </div>
+        <div class="form-group col-md-12">
+            <span>Pliego tecnico FIRMADO</span>
+            <div class="pull-right">
+                <label class="radio-inline">
+                    <input type="radio" value="si"
+                        data-bind="checked: Entity.PliegoTecnico, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    SI
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" value="no"
+                        data-bind="checked: Entity.PliegoTecnico, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    NO
+                </label>
+            </div>
+        </div>
+        <div class="form-group col-md-12">
+            <span>Póliza de seguro de caución</span>
+            <div class="pull-right">
+                <label class="radio-inline">
+                    <input type="radio" value="si"
+                        data-bind="checked: Entity.SeguroCaucion, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    SI
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" value="no"
+                        data-bind="checked: Entity.SeguroCaucion, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    NO
+                </label>
+            </div>
+        </div>
+        <div class="form-group col-md-12">
+            <span>Referencias comerciales</span>
             <div class="pull-right">
                 <label class="radio-inline">
                     <input type="radio" value="si"
@@ -299,21 +389,6 @@
                 <label class="radio-inline">
                     <input type="radio" value="no"
                         data-bind="checked: Entity.ReporteAccidentes, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly()">
-                    NO
-                </label>
-            </div>
-        </div>
-        <div class="form-group col-md-12">
-            <span>Envío de muestra</span>
-            <div class="pull-right">
-                <label class="radio-inline">
-                    <input type="radio" value="si"
-                        data-bind="checked: Entity.EnvioMuestras, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
-                    SI
-                </label>
-                <label class="radio-inline">
-                    <input type="radio" value="no"
-                        data-bind="checked: Entity.EnvioMuestras, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     NO
                 </label>
             </div>

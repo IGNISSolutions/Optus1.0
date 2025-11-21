@@ -659,6 +659,12 @@
             this.SoportePostVenta = ko.observable(data.list.SoportePostVenta);
             this.LugarFormaEntrega = ko.observable(data.list.LugarFormaEntrega);
 
+            // PLANTILLA 1 - NUEVOS CAMPOS
+            this.ListadoEquiposHerramientas = ko.observable(data.list.ListadoEquiposHerramientas);
+            this.EquipoHumanoCompetencias = ko.observable(data.list.EquipoHumanoCompetencias);
+            this.BalancesEstadosResultados = ko.observable(data.list.BalancesEstadosResultados);
+            this.EstatutoContratoSocial = ko.observable(data.list.EstatutoContratoSocial);
+            this.ActasDesignacionAutoridades = ko.observable(data.list.ActasDesignacionAutoridades);
 
 
 
@@ -737,6 +743,12 @@
                                 self.edificio_subcontratistas('no')
                                 self.edificio_gestion('no')
                                 self.edificio_maquinas('no')
+                                // PLANTILLA 1 - NUEVOS CAMPOS
+                                self.ListadoEquiposHerramientas('no');
+                                self.EquipoHumanoCompetencias('no');
+                                self.BalancesEstadosResultados('no');
+                                self.EstatutoContratoSocial('no');
+                                self.ActasDesignacionAutoridades('no');
                             }
                             if (value == 2) {
                                 self.SeguroCaucion('no');
@@ -1143,6 +1155,8 @@
             ]);
 
             this.Entity = new Form(data, self);
+
+
             this.FirstTimeProvinciaDesdeSelect = true;
             self.Entity.ProvinciaDesdeSelect.subscribe((Province) => {
                 if (Province > 0) {
@@ -1547,6 +1561,14 @@
                 Services.Post(url, data,
                     (response) => {
                         if (response.success) {
+                            // Si es creación (no había ID), actualizar la URL con el nuevo ID
+                            if (!params[3] && response.data && response.data.id) {
+                                self.Entity.Id(response.data.id);
+                                // Actualizar params y URL para futuras guardadas
+                                params[3] = response.data.id;
+                                window.history.replaceState({}, '', '/concursos/' + params[1] + '/edit/' + response.data.id);
+                            }
+                            
                             $.unblockUI();
                             swal({
                                 title: 'Hecho',
@@ -2007,6 +2029,75 @@
                     AppOptus.Bind(E);
                     E.Entity.UsuarioCalificaReputacion(response.data.list.UsuarioCalificaReputacion);
                     E.Entity.UsuarioEvaluaTecnica(response.data.list.UsuarioEvaluaTecnica);
+                    
+                    // Búsqueda simple con jQuery - ocultar/mostrar filas directamente
+                    setTimeout(function() {
+                        var customSearchInput = $('#customProductSearch');
+                        var clearButton = $('#clearCustomSearch');
+                        
+                        function filterProducts() {
+                            var searchTerm = customSearchInput.val().toLowerCase().trim();
+                            var $tbody = $('#products tbody');
+                            var $rows = $tbody.find('tr');
+                            
+                            if (!searchTerm) {
+                                $rows.show();
+                                return;
+                            }
+                            
+                            $rows.each(function() {
+                                var $row = $(this);
+                                var found = false;
+                                
+                                // Buscar en nombre (primera columna)
+                                var $nombreCell = $row.find('td').eq(0);
+                                var nombreInput = $nombreCell.find('textarea, input[type="text"]');
+                                var nombreValue = '';
+                                
+                                if (nombreInput.length > 0) {
+                                    nombreValue = nombreInput.val().toLowerCase();
+                                } else {
+                                    nombreValue = $nombreCell.text().trim().toLowerCase();
+                                }
+                                
+                                if (nombreValue && nombreValue.indexOf(searchTerm) !== -1) {
+                                    found = true;
+                                }
+                                
+                                // Buscar en descripción (segunda columna) si no se encontró en nombre
+                                if (!found) {
+                                    var $descripcionCell = $row.find('td').eq(1);
+                                    var descripcionInput = $descripcionCell.find('textarea, input[type="text"]');
+                                    var descripcionValue = '';
+                                    
+                                    if (descripcionInput.length > 0) {
+                                        descripcionValue = descripcionInput.val().toLowerCase();
+                                    } else {
+                                        descripcionValue = $descripcionCell.text().trim().toLowerCase();
+                                    }
+                                    
+                                    if (descripcionValue && descripcionValue.indexOf(searchTerm) !== -1) {
+                                        found = true;
+                                    }
+                                }
+                                
+                                if (found) {
+                                    $row.show();
+                                } else {
+                                    $row.hide();
+                                }
+                            });
+                        }
+                        
+                        customSearchInput.on('keyup input', function() {
+                            filterProducts();
+                        });
+                        
+                        clearButton.on('click', function() {
+                            customSearchInput.val('');
+                            filterProducts();
+                        });
+                    }, 500);
                 }
                 is_init = false;
                 $.unblockUI();
