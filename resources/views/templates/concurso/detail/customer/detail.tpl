@@ -921,6 +921,7 @@
             } else if (params[3] === 'evaluacion-reputacion') {
                 this.titleEvaluaciones = ko.observable(data.list.titleEvaluaciones);
                 this.titleResultados = ko.observable(data.list.titleResultados);
+                this.UserType = ko.observable(data.list.UserType);
                 this.RondasOfertas = ko.observableArray(data.list.RondasOfertas);
                 this.Ronda = ko.observable('Ronda ' + data.list.rondaTitle + ' de ' + data.list.maxRonda);
                 this.Evaluaciones = ko.observableArray(data.list.Evaluaciones);
