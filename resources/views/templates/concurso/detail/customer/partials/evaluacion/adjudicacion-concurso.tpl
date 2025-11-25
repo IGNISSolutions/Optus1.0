@@ -1,3 +1,4 @@
+<!-- ko if: $root.UserType() === 'customer' || $root.UserType() === 'supervisor'-->
 <div class="m-heading-1 border-default m-bordered text-left">
     <h4 class="block bold" style="margin-top: 0; padding-top: 0;" data-bind="text:TipoAdjudicacion()"></h4>
     <!-- ko if: AdjudicacionItems().length > 0 -->
@@ -7,7 +8,7 @@
                 <th class="text-center"> Producto </th>
                 <th class="text-center"> Precio<br>Unitario </th>
                 <th class="text-center"> Precio<br>Total </th>
-                <th class="text-center"> Cant<br>Adjudicada </th>
+                <th class="text-center"> Cantidad<br>Adjudicada </th>
                 <th class="text-center"> Proveedor </th>
             </tr>
         </thead>
@@ -37,3 +38,4 @@
     </div>
     <!-- /ko -->
 </div>
+<!-- /ko -->

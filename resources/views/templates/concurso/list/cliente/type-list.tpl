@@ -447,7 +447,7 @@
                 </div>
             </div>
         </div>
-        <!-- ko if: $root.UserType() == 'customer' || $root.UserType() == 'supervisor' -->
+        <!-- ko if: $root.UserType() == 'customer' || $root.UserType() == 'supervisor' || $root.UserType() == 'customer-approve' -->
         <div class="col-md-12">
             <div class="portlet box green-jungle">
                 <div class="portlet-title">

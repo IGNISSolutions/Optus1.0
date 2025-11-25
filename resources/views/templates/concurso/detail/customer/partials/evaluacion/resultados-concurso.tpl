@@ -1,3 +1,4 @@
+<!-- ko if: $root.UserType() === 'customer' || $root.UserType() === 'supervisor'-->
 <div class="m-heading-1 border-default m-bordered text-left">
     <h4 class="block bold" style="margin-top: 0; padding-top: 0;">
         <span style="text-aling: left; float: left;" data-bind="text:titleResultados()"></span>
@@ -9,6 +10,8 @@
             <a data-toggle="pill" data-bind="text:title, attr: { href: '#'+ref }"></a>
         </li>
     </ul>
+
+
     <div class="tab-content" data-bind="foreach: RondasOfertas()">
         <div class="tab-pane fade"
             data-bind="attr: { id: ref }, css: { in: active ? 'in' : '', active: active ? 'active' : '' }">
@@ -20,3 +23,4 @@
         </div>
     </div>
 </div>
+<!-- /ko -->
