@@ -712,6 +712,37 @@
                         this.ActasDesignacionAutoridades = ko.observable(data.list.ActasDesignacionAutoridades);
                         this.ListaProveedores = ko.observable(data.list.ListaProveedores);
                         this.CertificadoVisitaObra = ko.observable(data.list.CertificadoVisitaObra);
+                        // PLANTILLA 9 - Items 1-30
+                        this.Item1 = ko.observable(data.list.Item1);
+                        this.Item2 = ko.observable(data.list.Item2);
+                        this.Item3 = ko.observable(data.list.Item3);
+                        this.Item4 = ko.observable(data.list.Item4);
+                        this.Item5 = ko.observable(data.list.Item5);
+                        this.Item6 = ko.observable(data.list.Item6);
+                        this.Item7 = ko.observable(data.list.Item7);
+                        this.Item8 = ko.observable(data.list.Item8);
+                        this.Item9 = ko.observable(data.list.Item9);
+                        this.Item10 = ko.observable(data.list.Item10);
+                        this.Item11 = ko.observable(data.list.Item11);
+                        this.Item12 = ko.observable(data.list.Item12);
+                        this.Item13 = ko.observable(data.list.Item13);
+                        this.Item14 = ko.observable(data.list.Item14);
+                        this.Item15 = ko.observable(data.list.Item15);
+                        this.Item16 = ko.observable(data.list.Item16);
+                        this.Item17 = ko.observable(data.list.Item17);
+                        this.Item18 = ko.observable(data.list.Item18);
+                        this.Item19 = ko.observable(data.list.Item19);
+                        this.Item20 = ko.observable(data.list.Item20);
+                        this.Item21 = ko.observable(data.list.Item21);
+                        this.Item22 = ko.observable(data.list.Item22);
+                        this.Item23 = ko.observable(data.list.Item23);
+                        this.Item24 = ko.observable(data.list.Item24);
+                        this.Item25 = ko.observable(data.list.Item25);
+                        this.Item26 = ko.observable(data.list.Item26);
+                        this.Item27 = ko.observable(data.list.Item27);
+                        this.Item28 = ko.observable(data.list.Item28);
+                        this.Item29 = ko.observable(data.list.Item29);
+                        this.Item30 = ko.observable(data.list.Item30);
 
                         this.EntregaDocEvaluacion = ko.observable(data.list.EntregaDocEvaluacion);
                         this.RequisitosLegales = ko.observable(data.list.RequisitosLegales);
@@ -752,6 +783,7 @@
                         this.tarima_licencia = ko.observable(data.list.tarima_licencia);
                         this.tarima_nom_144 = ko.observable(data.list.tarima_nom_144);
                         this.tarima_acreditacion = ko.observable(data.list.tarima_acreditacion);
+                        this.TechnicalHeaderInfo = data.list.PropuestasTecnicas.HeaderInfo;
                         this.EvaluacionTecnica = data.list.PropuestasTecnicas.TechnicalEvaluations;
                         this.edificio_balance = ko.observable(data.list.edificio_balance);
                         this.edificio_iva = ko.observable(data.list.edificio_iva);

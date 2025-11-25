@@ -21,6 +21,7 @@ use App\Models\Catalogo;
 use App\Models\GoType;
 use App\Models\Alcance;
 use App\Models\Concurso;
+use App\Models\ConcursoPlantillaItem;
 use App\Models\Participante;
 use App\Models\Producto;
 use App\Models\Provincia;
@@ -2008,6 +2009,39 @@ class ConcursoController extends BaseController
                 'tarima_nom_144' => $create && !$is_copy ? 'no' : $concurso->tarima_nom_144,
                 'tarima_acreditacion' => $create && !$is_copy ? 'no' : $concurso->tarima_acreditacion,
                 'concurso_fiscalizado' => $create && !$is_copy ? 'no' : $concurso->concurso_fiscalizado,
+
+                // Plantilla 9 - Items 1-30
+                'Item1' => $create && !$is_copy ? 'no' : ($concurso->plantilla_items->item_1 ?? 'no'),
+                'Item2' => $create && !$is_copy ? 'no' : ($concurso->plantilla_items->item_2 ?? 'no'),
+                'Item3' => $create && !$is_copy ? 'no' : ($concurso->plantilla_items->item_3 ?? 'no'),
+                'Item4' => $create && !$is_copy ? 'no' : ($concurso->plantilla_items->item_4 ?? 'no'),
+                'Item5' => $create && !$is_copy ? 'no' : ($concurso->plantilla_items->item_5 ?? 'no'),
+                'Item6' => $create && !$is_copy ? 'no' : ($concurso->plantilla_items->item_6 ?? 'no'),
+                'Item7' => $create && !$is_copy ? 'no' : ($concurso->plantilla_items->item_7 ?? 'no'),
+                'Item8' => $create && !$is_copy ? 'no' : ($concurso->plantilla_items->item_8 ?? 'no'),
+                'Item9' => $create && !$is_copy ? 'no' : ($concurso->plantilla_items->item_9 ?? 'no'),
+                'Item10' => $create && !$is_copy ? 'no' : ($concurso->plantilla_items->item_10 ?? 'no'),
+                'Item11' => $create && !$is_copy ? 'no' : ($concurso->plantilla_items->item_11 ?? 'no'),
+                'Item12' => $create && !$is_copy ? 'no' : ($concurso->plantilla_items->item_12 ?? 'no'),
+                'Item13' => $create && !$is_copy ? 'no' : ($concurso->plantilla_items->item_13 ?? 'no'),
+                'Item14' => $create && !$is_copy ? 'no' : ($concurso->plantilla_items->item_14 ?? 'no'),
+                'Item15' => $create && !$is_copy ? 'no' : ($concurso->plantilla_items->item_15 ?? 'no'),
+                'Item16' => $create && !$is_copy ? 'no' : ($concurso->plantilla_items->item_16 ?? 'no'),
+                'Item17' => $create && !$is_copy ? 'no' : ($concurso->plantilla_items->item_17 ?? 'no'),
+                'Item18' => $create && !$is_copy ? 'no' : ($concurso->plantilla_items->item_18 ?? 'no'),
+                'Item19' => $create && !$is_copy ? 'no' : ($concurso->plantilla_items->item_19 ?? 'no'),
+                'Item20' => $create && !$is_copy ? 'no' : ($concurso->plantilla_items->item_20 ?? 'no'),
+                'Item21' => $create && !$is_copy ? 'no' : ($concurso->plantilla_items->item_21 ?? 'no'),
+                'Item22' => $create && !$is_copy ? 'no' : ($concurso->plantilla_items->item_22 ?? 'no'),
+                'Item23' => $create && !$is_copy ? 'no' : ($concurso->plantilla_items->item_23 ?? 'no'),
+                'Item24' => $create && !$is_copy ? 'no' : ($concurso->plantilla_items->item_24 ?? 'no'),
+                'Item25' => $create && !$is_copy ? 'no' : ($concurso->plantilla_items->item_25 ?? 'no'),
+                'Item26' => $create && !$is_copy ? 'no' : ($concurso->plantilla_items->item_26 ?? 'no'),
+                'Item27' => $create && !$is_copy ? 'no' : ($concurso->plantilla_items->item_27 ?? 'no'),
+                'Item28' => $create && !$is_copy ? 'no' : ($concurso->plantilla_items->item_28 ?? 'no'),
+                'Item29' => $create && !$is_copy ? 'no' : ($concurso->plantilla_items->item_29 ?? 'no'),
+                'Item30' => $create && !$is_copy ? 'no' : ($concurso->plantilla_items->item_30 ?? 'no'),
+
                 'edificio_balance' => $create && !$is_copy ? 'no' : $concurso->edificio_balance,
                 'edificio_iva' => $create && !$is_copy ? 'no' : $concurso->edificio_iva,
                 'edificio_cuit' => $create && !$is_copy ? 'no' : $concurso->edificio_cuit,
@@ -3242,8 +3276,15 @@ class ConcursoController extends BaseController
                 if ($round == $techRound) {
                     $eval = $oferente->analisis_tecnica_valores ? $oferente->analisis_tecnica_valores[0] : null;
                     $approved = $eval ? (int) $eval['alcanzado'] >= (int) $eval['minimo'] : false;
-                    $evaluation->atributo = $plantilla[0]->atributo;
-                    $evaluation->puntaje = $plantilla[0]->puntaje;
+                    
+                    // Buscar el elemento "Puntaje mínimo necesario" en la plantilla
+                    $puntajeMinElem = collect($plantilla)->first(function($item) {
+                        return isset($item->atributo) && $item->atributo === 'Puntaje mínimo necesario';
+                    });
+                    
+                    $evaluation->atributo = $puntajeMinElem ? $puntajeMinElem->atributo : 'Puntaje mínimo necesario';
+                    $evaluation->puntaje = $puntajeMinElem ? $puntajeMinElem->puntaje : 0;
+                    $evaluation->puntaje_minimo = $plantilla->puntaje_minimo;
                     $evaluation->valores = $eval ? explode(',', $eval['valores']) : [];
                     $evaluation->minimo = $eval ? $eval['minimo'] : null;
                     $evaluation->alcanzado = $eval ? $eval['alcanzado'] : null;
@@ -3258,7 +3299,8 @@ class ConcursoController extends BaseController
                     $evaluation->lastRound = $techRound < 5 ? false : true;
                     $evaluation->plantilla = collect();
                     foreach ($plantilla as $key => $value) {
-                        if ($key != 0) {
+                        // Excluir el elemento "Puntaje mínimo necesario" de la plantilla de evaluación
+                        if (!(isset($value->atributo) && $value->atributo === 'Puntaje mínimo necesario')) {
                             $evaluation->plantilla->push(clone $value);
                         }
                     }
@@ -3649,8 +3691,15 @@ class ConcursoController extends BaseController
                 $plantilla_tecnica = [
                     'payroll' => []
                 ];
+                
+                // Asegurar que puntaje_minimo sea numérico (requerido por validación)
+                $puntaje_minimo = isset($body->PlantillaTecnicaSeleccionada->puntaje_minimo) && 
+                                  is_numeric($body->PlantillaTecnicaSeleccionada->puntaje_minimo) 
+                                  ? $body->PlantillaTecnicaSeleccionada->puntaje_minimo 
+                                  : 0;
+                
                 $plantilla_tecnica = array_merge($plantilla_tecnica, [
-                    'puntaje_minimo' => $body->PlantillaTecnicaSeleccionada->puntaje_minimo,
+                    'puntaje_minimo' => $puntaje_minimo,
                     'total' => $body->PlantillaTecnicaSeleccionada->total
                 ]);
 
@@ -3734,8 +3783,15 @@ class ConcursoController extends BaseController
                 $plantilla_tecnica = [
                     'payroll' => []
                 ];
+                
+                // Asegurar que puntaje_minimo sea numérico (requerido por validación)
+                $puntaje_minimo = isset($body->PlantillaTecnicaSeleccionada->puntaje_minimo) && 
+                                  is_numeric($body->PlantillaTecnicaSeleccionada->puntaje_minimo) 
+                                  ? $body->PlantillaTecnicaSeleccionada->puntaje_minimo 
+                                  : 0;
+                
                 $plantilla_tecnica = array_merge($plantilla_tecnica, [
-                    'puntaje_minimo' => $body->PlantillaTecnicaSeleccionada->puntaje_minimo,
+                    'puntaje_minimo' => $puntaje_minimo,
                     'total' => $body->PlantillaTecnicaSeleccionada->total
                 ]);
 
@@ -4511,6 +4567,41 @@ class ConcursoController extends BaseController
         $concurso->save();
         $concurso->refresh();
 
+        // Guardar items de Plantilla 9
+        ConcursoPlantillaItem::create([
+            'concurso_id' => $concurso->id,
+            'item_1' => $entity->Item1 ?? 'no',
+            'item_2' => $entity->Item2 ?? 'no',
+            'item_3' => $entity->Item3 ?? 'no',
+            'item_4' => $entity->Item4 ?? 'no',
+            'item_5' => $entity->Item5 ?? 'no',
+            'item_6' => $entity->Item6 ?? 'no',
+            'item_7' => $entity->Item7 ?? 'no',
+            'item_8' => $entity->Item8 ?? 'no',
+            'item_9' => $entity->Item9 ?? 'no',
+            'item_10' => $entity->Item10 ?? 'no',
+            'item_11' => $entity->Item11 ?? 'no',
+            'item_12' => $entity->Item12 ?? 'no',
+            'item_13' => $entity->Item13 ?? 'no',
+            'item_14' => $entity->Item14 ?? 'no',
+            'item_15' => $entity->Item15 ?? 'no',
+            'item_16' => $entity->Item16 ?? 'no',
+            'item_17' => $entity->Item17 ?? 'no',
+            'item_18' => $entity->Item18 ?? 'no',
+            'item_19' => $entity->Item19 ?? 'no',
+            'item_20' => $entity->Item20 ?? 'no',
+            'item_21' => $entity->Item21 ?? 'no',
+            'item_22' => $entity->Item22 ?? 'no',
+            'item_23' => $entity->Item23 ?? 'no',
+            'item_24' => $entity->Item24 ?? 'no',
+            'item_25' => $entity->Item25 ?? 'no',
+            'item_26' => $entity->Item26 ?? 'no',
+            'item_27' => $entity->Item27 ?? 'no',
+            'item_28' => $entity->Item28 ?? 'no',
+            'item_29' => $entity->Item29 ?? 'no',
+            'item_30' => $entity->Item30 ?? 'no'
+        ]);
+
         // GO
         if ($is_go) {
             // Documentos GCG/NO-GCG
@@ -4826,6 +4917,77 @@ class ConcursoController extends BaseController
         // Guardar concurso
         $concurso->update(array_merge($common_fields, $extra_fields));
 
+        // Actualizar items de Plantilla 9
+        $plantillaItems = $concurso->plantilla_items;
+        if ($plantillaItems) {
+            $plantillaItems->update([
+                'item_1' => $entity->Item1 ?? 'no',
+                'item_2' => $entity->Item2 ?? 'no',
+                'item_3' => $entity->Item3 ?? 'no',
+                'item_4' => $entity->Item4 ?? 'no',
+                'item_5' => $entity->Item5 ?? 'no',
+                'item_6' => $entity->Item6 ?? 'no',
+                'item_7' => $entity->Item7 ?? 'no',
+                'item_8' => $entity->Item8 ?? 'no',
+                'item_9' => $entity->Item9 ?? 'no',
+                'item_10' => $entity->Item10 ?? 'no',
+                'item_11' => $entity->Item11 ?? 'no',
+                'item_12' => $entity->Item12 ?? 'no',
+                'item_13' => $entity->Item13 ?? 'no',
+                'item_14' => $entity->Item14 ?? 'no',
+                'item_15' => $entity->Item15 ?? 'no',
+                'item_16' => $entity->Item16 ?? 'no',
+                'item_17' => $entity->Item17 ?? 'no',
+                'item_18' => $entity->Item18 ?? 'no',
+                'item_19' => $entity->Item19 ?? 'no',
+                'item_20' => $entity->Item20 ?? 'no',
+                'item_21' => $entity->Item21 ?? 'no',
+                'item_22' => $entity->Item22 ?? 'no',
+                'item_23' => $entity->Item23 ?? 'no',
+                'item_24' => $entity->Item24 ?? 'no',
+                'item_25' => $entity->Item25 ?? 'no',
+                'item_26' => $entity->Item26 ?? 'no',
+                'item_27' => $entity->Item27 ?? 'no',
+                'item_28' => $entity->Item28 ?? 'no',
+                'item_29' => $entity->Item29 ?? 'no',
+                'item_30' => $entity->Item30 ?? 'no'
+            ]);
+        } else {
+            ConcursoPlantillaItem::create([
+                'concurso_id' => $concurso->id,
+                'item_1' => $entity->Item1 ?? 'no',
+                'item_2' => $entity->Item2 ?? 'no',
+                'item_3' => $entity->Item3 ?? 'no',
+                'item_4' => $entity->Item4 ?? 'no',
+                'item_5' => $entity->Item5 ?? 'no',
+                'item_6' => $entity->Item6 ?? 'no',
+                'item_7' => $entity->Item7 ?? 'no',
+                'item_8' => $entity->Item8 ?? 'no',
+                'item_9' => $entity->Item9 ?? 'no',
+                'item_10' => $entity->Item10 ?? 'no',
+                'item_11' => $entity->Item11 ?? 'no',
+                'item_12' => $entity->Item12 ?? 'no',
+                'item_13' => $entity->Item13 ?? 'no',
+                'item_14' => $entity->Item14 ?? 'no',
+                'item_15' => $entity->Item15 ?? 'no',
+                'item_16' => $entity->Item16 ?? 'no',
+                'item_17' => $entity->Item17 ?? 'no',
+                'item_18' => $entity->Item18 ?? 'no',
+                'item_19' => $entity->Item19 ?? 'no',
+                'item_20' => $entity->Item20 ?? 'no',
+                'item_21' => $entity->Item21 ?? 'no',
+                'item_22' => $entity->Item22 ?? 'no',
+                'item_23' => $entity->Item23 ?? 'no',
+                'item_24' => $entity->Item24 ?? 'no',
+                'item_25' => $entity->Item25 ?? 'no',
+                'item_26' => $entity->Item26 ?? 'no',
+                'item_27' => $entity->Item27 ?? 'no',
+                'item_28' => $entity->Item28 ?? 'no',
+                'item_29' => $entity->Item29 ?? 'no',
+                'item_30' => $entity->Item30 ?? 'no'
+            ]);
+        }
+
         if ($concurso->is_go) {
             // GO
             $go = $concurso->go;
@@ -4958,21 +5120,21 @@ class ConcursoController extends BaseController
             'cronograma_entrega'          => 'Cronograma de entrega / Plazo de entrega',
             'carta_representante_marca'   => 'Carta de representante de la marca y/o distribuidor autorizado',
             'soporte_post_venta'          => 'Soporte Post Venta',
-            'lugar_forma_entrega'         => 'Lugar y forma de entrega',
+            'lugar_forma_entrega'         => 'TÉCNICA - Lugar y forma de entrega',
             'diagrama_gant' => 'Cronograma de trabajo',
-            'condiciones_generales' => 'Condiciones generales FIRMADO',
-            'base_condiciones_firmado' => 'Base y condiciones FIRMADO',
+            'condiciones_generales' => 'Condiciones Generales Firmado',
+            'base_condiciones_firmado' => 'Bases y condiciones Firmado',
             'listado_equipos_herramientas' => 'Listado de equipos y herramientas',
             'equipo_humano_competencias' => 'Equipo humano y competencias',
             'balances_estados_resultados' => 'Balances y estados de resultados',
             'estatuto_contrato_social' => 'Estatuto o contrato social',
             'actas_designacion_autoridades' => 'Actas de designación de autoridades',
-            'acuerdo_confidencialidad' => 'Acuerdo de confidencialidad FIRMADO',
+            'acuerdo_confidencialidad' => 'Acuerdo de Confidencialidad Firmado',
             'legajo_impositivo' => 'Legajo Impositivo',
             'antecendentes_referencia' => 'Referencias comerciales',
-            'reporte_accidentes' => 'Reporte accidentes',
-            'envio_muestra' => 'envio de muestra',
-            'pliego_tecnico' => 'Pliego técnico FIRMADO',
+            'reporte_accidentes' => 'Reporte Accidentes',
+            'envio_muestra' => 'Envío de muestras',
+            'pliego_tecnico' => 'Pliego Técnico Firmado',
             'nom251' => 'NOM-251-SSA1-2009',
             'distintivo' => 'Distintivo H',
             'filtros_sanitarios' => 'Filtros Sanitarios Trimestrales a los empleados',
@@ -5003,7 +5165,7 @@ class ConcursoController extends BaseController
         $ajustDocumentsTecnical = [];
 
         foreach ($documents as $field => $description) {
-            if ($concurso->$field != $common_fields[$field]) {
+            if (isset($common_fields[$field]) && $concurso->$field != $common_fields[$field]) {
                 $ajustDocumentsTecnical[$field] = $concurso->$field === 'si' ?
                     "No se requiere $description" : "Se requiere $description";
             }

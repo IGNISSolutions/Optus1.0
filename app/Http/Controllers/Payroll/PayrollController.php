@@ -22,6 +22,15 @@ class PayrollController extends BaseController
                 ->orderBy('atributo', 'asc')
                 ->get();
 
+            // Para Plantilla 9, ordenar numéricamente los Items
+            if ($params['id'] == 9) {
+                $plantilla_tecnica_item = $plantilla_tecnica_item->sortBy(function($item) {
+                    // Extraer el número del string "Item X"
+                    preg_match('/Item (\d+)/', $item->atributo, $matches);
+                    return isset($matches[1]) ? (int)$matches[1] : 0;
+                })->values();
+            }
+
             $result = [
                 'PlantillaTecnicaSeleccionada' => $plantilla_tecnica_item
             ];

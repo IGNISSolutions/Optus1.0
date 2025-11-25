@@ -2,8 +2,8 @@
 <table class="table table-striped table-bordered" id="ListaConcursosEconomicas">
     <thead>
         <tr>
-            <th data-bind="html: EvaluacionTecnica[0].atributo"></th>
-            <th class="text-center" data-bind="html: EvaluacionTecnica[0].puntaje"></th>
+            <th data-bind="html: TechnicalHeaderInfo.atributo"></th>
+            <th class="text-center" data-bind="html: TechnicalHeaderInfo.puntaje"></th>
         </tr>
     </thead>
     <thead>

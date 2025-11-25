@@ -320,6 +320,11 @@ class Concurso extends Model
         return $this->belongsTo(PlantillaTecnica::class, 'id', 'id_concurso');
     }
 
+    public function plantilla_items()
+    {
+        return $this->hasOne(ConcursoPlantillaItem::class, 'concurso_id', 'id');
+    }
+
     public function cliente()
     {
         return $this->belongsTo(User::class, 'id_cliente', 'id');

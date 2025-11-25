@@ -657,7 +657,17 @@ class TechnicalProposalController extends BaseController
     private function validateDocuments($body, $concurso, $fields)
     { //Agregra la validaciond e los documentos tambien aca (copiar los ya hehcos) TICK
 
-
+        // ===== DEBUG: Ver qué IDs vienen en technical_documents =====
+        error_log("===== DEBUG TECHNICAL DOCUMENTS =====");
+        error_log("Body documents: " . json_encode($body->documents ?? 'NO DOCUMENTS'));
+        error_log("Fields received: " . json_encode($fields));
+        if (isset($fields['technical_documents'])) {
+            error_log("IDs de documentos recibidos: " . json_encode(array_keys($fields['technical_documents'])));
+            foreach ($fields['technical_documents'] as $id => $doc) {
+                error_log("ID $id: " . json_encode($doc));
+            }
+        }
+        error_log("=====================================");
 
         $conditional_rules = [];
         $common_rules = [
@@ -862,8 +872,6 @@ class TechnicalProposalController extends BaseController
                 'technical_documents.37.filename' => 'required'
             ]);
         }
-
-
 
         // if ($concurso->entrega_doc_evaluacion === 'si') {
         //     $conditional_rules = array_merge($conditional_rules, [
@@ -1087,9 +1095,155 @@ class TechnicalProposalController extends BaseController
             ]);
         }
 
-        if ($concurso->listado_equipos_herramientas === 'si') {
+        // ===== PLANTILLA 9 - Items 1-30 (IDs 72-101) =====
+        if (isset($concurso->plantilla_items->item_1) && $concurso->plantilla_items->item_1 === 'si') {
             $conditional_rules = array_merge($conditional_rules, [
                 'technical_documents.72.filename' => 'required'
+            ]);
+        }
+        if (isset($concurso->plantilla_items->item_2) && $concurso->plantilla_items->item_2 === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.73.filename' => 'required'
+            ]);
+        }
+        if (isset($concurso->plantilla_items->item_3) && $concurso->plantilla_items->item_3 === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.74.filename' => 'required'
+            ]);
+        }
+        if (isset($concurso->plantilla_items->item_4) && $concurso->plantilla_items->item_4 === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.75.filename' => 'required'
+            ]);
+        }
+        if (isset($concurso->plantilla_items->item_5) && $concurso->plantilla_items->item_5 === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.76.filename' => 'required'
+            ]);
+        }
+        if (isset($concurso->plantilla_items->item_6) && $concurso->plantilla_items->item_6 === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.77.filename' => 'required'
+            ]);
+        }
+        if (isset($concurso->plantilla_items->item_7) && $concurso->plantilla_items->item_7 === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.78.filename' => 'required'
+            ]);
+        }
+        if (isset($concurso->plantilla_items->item_8) && $concurso->plantilla_items->item_8 === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.79.filename' => 'required'
+            ]);
+        }
+        if (isset($concurso->plantilla_items->item_9) && $concurso->plantilla_items->item_9 === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.80.filename' => 'required'
+            ]);
+        }
+        if (isset($concurso->plantilla_items->item_10) && $concurso->plantilla_items->item_10 === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.81.filename' => 'required'
+            ]);
+        }
+        if (isset($concurso->plantilla_items->item_11) && $concurso->plantilla_items->item_11 === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.82.filename' => 'required'
+            ]);
+        }
+        if (isset($concurso->plantilla_items->item_12) && $concurso->plantilla_items->item_12 === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.83.filename' => 'required'
+            ]);
+        }
+        if (isset($concurso->plantilla_items->item_13) && $concurso->plantilla_items->item_13 === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.84.filename' => 'required'
+            ]);
+        }
+        if (isset($concurso->plantilla_items->item_14) && $concurso->plantilla_items->item_14 === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.85.filename' => 'required'
+            ]);
+        }
+        if (isset($concurso->plantilla_items->item_15) && $concurso->plantilla_items->item_15 === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.86.filename' => 'required'
+            ]);
+        }
+        if (isset($concurso->plantilla_items->item_16) && $concurso->plantilla_items->item_16 === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.87.filename' => 'required'
+            ]);
+        }
+        if (isset($concurso->plantilla_items->item_17) && $concurso->plantilla_items->item_17 === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.88.filename' => 'required'
+            ]);
+        }
+        if (isset($concurso->plantilla_items->item_18) && $concurso->plantilla_items->item_18 === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.89.filename' => 'required'
+            ]);
+        }
+        if (isset($concurso->plantilla_items->item_19) && $concurso->plantilla_items->item_19 === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.90.filename' => 'required'
+            ]);
+        }
+        if (isset($concurso->plantilla_items->item_20) && $concurso->plantilla_items->item_20 === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.91.filename' => 'required'
+            ]);
+        }
+        if (isset($concurso->plantilla_items->item_21) && $concurso->plantilla_items->item_21 === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.92.filename' => 'required'
+            ]);
+        }
+        if (isset($concurso->plantilla_items->item_22) && $concurso->plantilla_items->item_22 === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.93.filename' => 'required'
+            ]);
+        }
+        if (isset($concurso->plantilla_items->item_23) && $concurso->plantilla_items->item_23 === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.94.filename' => 'required'
+            ]);
+        }
+        if (isset($concurso->plantilla_items->item_24) && $concurso->plantilla_items->item_24 === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.95.filename' => 'required'
+            ]);
+        }
+        if (isset($concurso->plantilla_items->item_25) && $concurso->plantilla_items->item_25 === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.96.filename' => 'required'
+            ]);
+        }
+        if (isset($concurso->plantilla_items->item_26) && $concurso->plantilla_items->item_26 === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.97.filename' => 'required'
+            ]);
+        }
+        if (isset($concurso->plantilla_items->item_27) && $concurso->plantilla_items->item_27 === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.98.filename' => 'required'
+            ]);
+        }
+        if (isset($concurso->plantilla_items->item_28) && $concurso->plantilla_items->item_28 === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.99.filename' => 'required'
+            ]);
+        }
+        if (isset($concurso->plantilla_items->item_29) && $concurso->plantilla_items->item_29 === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.100.filename' => 'required'
+            ]);
+        }
+        if (isset($concurso->plantilla_items->item_30) && $concurso->plantilla_items->item_30 === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.101.filename' => 'required'
             ]);
         }
 
@@ -1171,17 +1325,45 @@ class TechnicalProposalController extends BaseController
                 'technical_documents.64.filename.required' => 'El Cronograma/Plazo de entrega es obligatorio.',
                 'technical_documents.65.filename.required' => 'La Carta de representante de la marca y/o distribuidor autorizado es obligatoria.',
                 'technical_documents.66.filename.required' => 'El Soporte Post Venta es obligatorio.',
-                'technical_documents.67.filename.required' => 'El documento de Lugar y forma de entrega es obligatorio.',
+                'technical_documents.67.filename.required' => 'El Listado de equipos y herramientas es obligatorio.',
 
                 // ===================== Plantilla 1 - Nuevos Campos =====================
                 'technical_documents.68.filename.required' => 'El Equipo humano y competencias es obligatorio.',
                 'technical_documents.69.filename.required' => 'Los Balances y estados de resultados son obligatorios.',
                 'technical_documents.70.filename.required' => 'El Estatuto o contrato social es obligatorio.',
                 'technical_documents.71.filename.required' => 'Las Actas de designación de autoridades son obligatorias.',
-                'technical_documents.72.filename.required' => 'El Listado de equipos y herramientas es obligatorio.',
 
-
-
+                // ===================== Plantilla 9 - Items 1-30 (IDs 72-101) =====================
+                'technical_documents.72.filename.required' => 'El Item 1 es obligatorio.',
+                'technical_documents.73.filename.required' => 'El Item 2 es obligatorio.',
+                'technical_documents.74.filename.required' => 'El Item 3 es obligatorio.',
+                'technical_documents.75.filename.required' => 'El Item 4 es obligatorio.',
+                'technical_documents.76.filename.required' => 'El Item 5 es obligatorio.',
+                'technical_documents.77.filename.required' => 'El Item 6 es obligatorio.',
+                'technical_documents.78.filename.required' => 'El Item 7 es obligatorio.',
+                'technical_documents.79.filename.required' => 'El Item 8 es obligatorio.',
+                'technical_documents.80.filename.required' => 'El Item 9 es obligatorio.',
+                'technical_documents.81.filename.required' => 'El Item 10 es obligatorio.',
+                'technical_documents.82.filename.required' => 'El Item 11 es obligatorio.',
+                'technical_documents.83.filename.required' => 'El Item 12 es obligatorio.',
+                'technical_documents.84.filename.required' => 'El Item 13 es obligatorio.',
+                'technical_documents.85.filename.required' => 'El Item 14 es obligatorio.',
+                'technical_documents.86.filename.required' => 'El Item 15 es obligatorio.',
+                'technical_documents.87.filename.required' => 'El Item 16 es obligatorio.',
+                'technical_documents.88.filename.required' => 'El Item 17 es obligatorio.',
+                'technical_documents.89.filename.required' => 'El Item 18 es obligatorio.',
+                'technical_documents.90.filename.required' => 'El Item 19 es obligatorio.',
+                'technical_documents.91.filename.required' => 'El Item 20 es obligatorio.',
+                'technical_documents.92.filename.required' => 'El Item 21 es obligatorio.',
+                'technical_documents.93.filename.required' => 'El Item 22 es obligatorio.',
+                'technical_documents.94.filename.required' => 'El Item 23 es obligatorio.',
+                'technical_documents.95.filename.required' => 'El Item 24 es obligatorio.',
+                'technical_documents.96.filename.required' => 'El Item 25 es obligatorio.',
+                'technical_documents.97.filename.required' => 'El Item 26 es obligatorio.',
+                'technical_documents.98.filename.required' => 'El Item 27 es obligatorio.',
+                'technical_documents.99.filename.required' => 'El Item 28 es obligatorio.',
+                'technical_documents.100.filename.required' => 'El Item 29 es obligatorio.',
+                'technical_documents.101.filename.required' => 'El Item 30 es obligatorio.',
             ]
         );
     }
