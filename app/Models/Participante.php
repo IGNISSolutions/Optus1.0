@@ -929,9 +929,56 @@ class Participante extends Model
     {
 
         $proposal = $this->technicalByRound($techRound);
+        $concurso = $this->concurso;
+        $plantillaItems = $concurso->plantilla_items;
+        
         $result = collect();
+        
+        // Mapeo de códigos de documentos a campos de plantilla_items
+        $itemsMapping = [
+            'item-1' => 'item_1',
+            'item-2' => 'item_2',
+            'item-3' => 'item_3',
+            'item-4' => 'item_4',
+            'item-5' => 'item_5',
+            'item-6' => 'item_6',
+            'item-7' => 'item_7',
+            'item-8' => 'item_8',
+            'item-9' => 'item_9',
+            'item-10' => 'item_10',
+            'item-11' => 'item_11',
+            'item-12' => 'item_12',
+            'item-13' => 'item_13',
+            'item-14' => 'item_14',
+            'item-15' => 'item_15',
+            'item-16' => 'item_16',
+            'item-17' => 'item_17',
+            'item-18' => 'item_18',
+            'item-19' => 'item_19',
+            'item-20' => 'item_20',
+            'item-21' => 'item_21',
+            'item-22' => 'item_22',
+            'item-23' => 'item_23',
+            'item-24' => 'item_24',
+            'item-25' => 'item_25',
+            'item-26' => 'item_26',
+            'item-27' => 'item_27',
+            'item-28' => 'item_28',
+            'item-29' => 'item_29',
+            'item-30' => 'item_30',
+        ];
+        
         // DOCUMENTS
         foreach (Proposal::getTechnicalDocumentsTypes() as $type) {
+            // Verificar si este documento está en la plantilla 9 (items 1-30)
+            if (isset($itemsMapping[$type->code]) && $plantillaItems) {
+                $itemField = $itemsMapping[$type->code];
+                // Solo incluir si el item está configurado como 'si'
+                if ($plantillaItems->$itemField !== 'si') {
+                    continue;
+                }
+            }
+            
             $existent_document =
                 $proposal ?
                 $proposal->documents
