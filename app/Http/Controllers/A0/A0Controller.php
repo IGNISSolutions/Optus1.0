@@ -78,9 +78,8 @@ class A0Controller extends BaseController
                 "id" => "2",
                 "description" => "Concursos",
                 "permissions" => [
-                    ["id" => 2, "description" => "Subasta", "active" => false],
+                    ["id" => 2, "description" => "Subasta", "active" => true],
                     ["id" => 3, "description" => "Licitación", "active" => true],
-                    ["id" => 4, "description" => "Informes", "active" => true],
                     ["id" => 5, "description" => "Archivos", "active" => true],
                 ],
                 "active" => true
@@ -145,9 +144,15 @@ class A0Controller extends BaseController
 
         $user_name = $auth0User['given_name'] ?? ($auth0User['name'] ?? '');
         $user_surname = $auth0User['family_name'] ?? (explode(' ', $auth0User['name'] ?? '')[1] ?? '');
-        $user_username = strtolower(
-            preg_replace('/[^a-z0-9]/', '', (substr($user_name, 0, 1) . ($user_surname ?: 'user')))
-        );
+        
+        // Generar username basado en el email (parte antes del @)
+        $emailParts = explode('@', $user_email);
+        $user_username = strtolower(preg_replace('/[^a-z0-9]/', '', strtolower($emailParts[0] ?? 'user')));
+        
+        // Si el username está vacío o es muy corto, usar fallback
+        if (strlen($user_username) < 3) {
+            $user_username = 'user' . rand(1000, 9999);
+        }
 
         $length = 8;
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -157,6 +162,12 @@ class A0Controller extends BaseController
             $randomPassword .= $characters[rand(0, $charactersLength - 1)];
         }
         $md5 = md5($randomPassword);
+
+        // Determinar customer_company_id según el cliente de Auth0
+        $customerCompanyId = null;
+        if (isset($_SESSION['A0_CLIENT']) && $_SESSION['A0_CLIENT'] === 'SCR') {
+            $customerCompanyId = 22; // Sancor
+        }
 
         $userData = [
             'type_id' => 3,
@@ -170,6 +181,7 @@ class A0Controller extends BaseController
             'area' => 'Compras',
             'rol' => 'Comprador',
             'email' => $user_email,
+            'customer_company_id' => $customerCompanyId,
         ];
 
         $user = new User($userData);
@@ -225,6 +237,7 @@ class A0Controller extends BaseController
             'scope' => 'openid profile email',
             'code_challenge' => $code_challenge,
             'code_challenge_method' => 'S256',
+            'prompt' => 'login', // Forzar siempre la pantalla de login (no usar SSO automático)
         ];
         if (!empty($audience)) {
             $params['audience'] = $audience;
@@ -368,11 +381,60 @@ class A0Controller extends BaseController
         echo "
             <script>
                 localStorage.setItem('userdata', '" . json_encode($user) . "');
+                localStorage.setItem('auth_provider', 'A0');
                 document.cookie = 'customer_company_id=" . ($_SESSION['customer_company_id'] ?? '') . "; path=/';
                 window.location.href = '/';
             </script>
         ";
         exit();
         
+    }
+
+    /**
+     * Logout de Auth0: cierra la sesión local y redirige al logout de Auth0 para cerrar SSO
+     */
+    public function logoutA0(Request $request, Response $response)
+    {
+        // Limpiar sesión local
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        // Limpiar token del usuario en BD si existe
+        $user = user();
+        if ($user) {
+            $user->update([
+                'token' => null,
+                'validity_date' => null
+            ]);
+        }
+
+        // Destruir sesión
+        unset($_SESSION);
+        session_destroy();
+
+        // Configuración de Auth0
+        $domain = env('AUTH0_DOMAIN');
+        $clientId = env('AUTH0_CLIENT_ID');
+        $returnTo = env('APP_URL') . '/login'; // URL de retorno después del logout
+
+        if (!$domain || !$clientId) {
+            // Si no hay configuración, redirigir al login local
+            return $response
+                ->withHeader('Location', '/login')
+                ->withStatus(302);
+        }
+
+        // Construir URL de logout de Auth0
+        // https://auth0.com/docs/api/authentication#logout
+        $logoutUrl = "https://{$domain}/v2/logout?" . http_build_query([
+            'client_id' => $clientId,
+            'returnTo' => $returnTo
+        ]);
+
+        // Redirigir al logout de Auth0
+        return $response
+            ->withHeader('Location', $logoutUrl)
+            ->withStatus(302);
     }
 }
