@@ -202,7 +202,8 @@ class ConcursoController extends BaseController
             $concursos = collect();
             $concursos = $invited
                 ->filter(function ($concurso) use ($user) {
-                    date_default_timezone_set($concurso->cliente->customer_company->timeZone);
+                    $timezone = $concurso->cliente->customer_company->timeZone ?? 'UTC';
+                    date_default_timezone_set($timezone);
                     return $concurso->oferentes
                         ->where('id_offerer', $user->offerer_company_id)
                         ->where('rechazado', false)
@@ -221,7 +222,8 @@ class ConcursoController extends BaseController
             $concursos = $invited
                 ->where('technical_includes', true)
                 ->filter(function ($concurso) use ($user) {
-                    date_default_timezone_set($concurso->cliente->customer_company->timeZone);
+                    $timezone = $concurso->cliente->customer_company->timeZone ?? 'UTC';
+                    date_default_timezone_set($timezone);
                     return $concurso->oferentes
                         ->where('id_offerer', $user->offerer_company_id)
                         ->whereIn(
@@ -246,7 +248,8 @@ class ConcursoController extends BaseController
             $concursos = $invited
                 ->filter(
                     function ($concurso) use ($user) {
-                        date_default_timezone_set($concurso->cliente->customer_company->timeZone);
+                        $timezone = $concurso->cliente->customer_company->timeZone ?? 'UTC';
+                        date_default_timezone_set($timezone);
                         return (
                             ($concurso->is_sobrecerrado || $concurso->is_go) &&
                             $concurso->oferentes
@@ -281,7 +284,8 @@ class ConcursoController extends BaseController
                         ->count() > 0);
                 })
                 ->filter(function ($concurso) {
-                    date_default_timezone_set($concurso->cliente->customer_company->timeZone);
+                    $timezone = $concurso->cliente->customer_company->timeZone ?? 'UTC';
+                    date_default_timezone_set($timezone);
                     if ($concurso->is_online) {
                         return
                             ($concurso->countdown || $concurso->timeleft) &&
@@ -434,7 +438,8 @@ class ConcursoController extends BaseController
             $concurso = $user->concursos_invitado->find($params['id']);
             $rondaActual = $concurso->ronda_actual;
             $title = $rondaActual > 1 ? Concurso::NUEVAS_RONDAS[$rondaActual] : '';
-            date_default_timezone_set($concurso->cliente->customer_company->timeZone);
+            $timezone = $concurso->cliente->customer_company->timeZone ?? 'UTC';
+            date_default_timezone_set($timezone);
 
 
             $list['IsGo'] = $concurso->is_go;

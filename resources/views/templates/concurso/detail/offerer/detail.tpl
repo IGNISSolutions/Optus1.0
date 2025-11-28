@@ -1950,21 +1950,27 @@
             const tableRows = document.querySelectorAll(
                 "#ListaConcursosEconomicas tbody tr"); // Seleccionar las filas del tbody
 
+            let nroItem = 1; // Contador para Nro Item empezando en 1
+
             // Iterar sobre cada fila y extraer los valores
             tableRows.forEach((row, index) => {
-                // Solo agregar filas que no estén en el rango de las filas 2 a 10
-                if (index < 0 || index > 21) { // Excluir las filas 2 a 10 (índices 1 a 9)
-                    const cells = row.querySelectorAll("td"); // Obtener las celdas de la fila
+                const cells = row.querySelectorAll("td"); // Obtener las celdas de la fila
+                const itemText = cells[1]?.innerText.trim() || "";
+                const unidadText = cells[2]?.innerText.trim() || "";
+                
+                // Solo agregar si la fila tiene contenido válido en Item y Unidad (evitar filas vacías y cabeceras)
+                if (itemText !== "" && unidadText !== "" && cells.length >= 7) {
                     data.push({
-                        "Item": cells[1]?.innerText.trim() || "", // Columna 1: Item
-                        "Unidad": cells[2]?.innerText.trim() || "", // Columna 2: Unidad
+                        "Item": itemText, // Columna 1: Item
+                        "Unidad": unidadText, // Columna 2: Unidad
                         "Cant Sol": cells[3]?.innerText.trim() || "", // Columna 3: Cant Sol
                         "Cant Min": cells[4]?.innerText.trim() || "", // Columna 4: Cant Min
                         "Precio Unit": cells[5]?.innerText.trim() || "", // Columna 5: Precio Unit
                         "Cant Cot": cells[6]?.innerText.trim() || "", // Columna 6: Cant Cot
                         "Pl. Entr (días)": cells[7]?.innerText.trim() || "", // Columna 7: Pl. Entr
-                        "Nro Item": (index - 20) + 1, // Columna 8: Nro Item (autoincremental al final)
+                        "Nro Item": nroItem, // Columna 8: Nro Item (autoincremental)
                     });
+                    nroItem++; // Incrementar contador
                 }
             });
 
