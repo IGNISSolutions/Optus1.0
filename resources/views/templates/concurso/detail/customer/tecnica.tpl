@@ -136,7 +136,7 @@
                                     <th colspan="3" data-bind="html: evaluation.atributo"></th>
                                     <th class="text-center" data-bind="html: evaluation.puntaje"></th>
                                     <input class="form-control minimo" type="hidden"
-                                        data-bind="value: evaluation.puntaje">
+                                        data-bind="value: evaluation.puntaje_minimo">
                                 </tr>
                             </thead>
                             <thead>

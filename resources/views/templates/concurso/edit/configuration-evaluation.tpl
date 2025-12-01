@@ -124,13 +124,17 @@
 
 <!-- ko if: Entity.PlantillaTecnicaSeleccionada() !== null -->
 <div class="row">
-    <!-- Nuevos campos para todas las plantillas -->
+    
     <div class="col-md-12">
         <span class="caption-subject bold uppercase d-block mb-3"
             style="text-align: left; display: block; margin-bottom: 15px;">
             MARQUE LOS DOCUMENTOS QUE DEBEN PRESENTAR LOS PROVEEDORES
         </span>
-        <div class="form-group col-md-6">
+    </div>
+    <!-- Nuevos campos para todas las plantillas (excepto Plantilla 9) -->
+    <!-- ko if: Entity.PlantillaTecnica() != 9 -->
+    <div class="col-md-6">
+        <div class="form-group col-md-12">
             <span>Lista de sub contratistas</span>
             <div class="pull-right">
                 <label class="radio-inline">
@@ -145,7 +149,9 @@
                 </label>
             </div>
         </div>
-        <div class="form-group col-md-6" style="padding-left: 30px;">
+    </div>
+    <div class="col-md-6">
+        <div class="form-group col-md-12">
             <span>Certificado de visita de obra</span>
             <div class="pull-right">
                 <label class="radio-inline">
@@ -161,6 +167,7 @@
             </div>
         </div>
     </div>
+    <!-- /ko -->
 
 
     <!-- ko if: Entity.PlantillaTecnica() == 1 -->
@@ -1404,6 +1411,463 @@
             </div>
         </div>
 
+    </div>
+    <!-- /ko -->
+
+    <!-- ko if: Entity.PlantillaTecnica() == 9 -->
+    <div class="col-md-6">
+        <div class="form-group col-md-12">
+            <span>Item 1</span>
+            <div class="pull-right">
+                <label class="radio-inline">
+                    <input type="radio" value="si"
+                        data-bind="checked: Entity.Item1, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    SI
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" value="no"
+                        data-bind="checked: Entity.Item1, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    NO
+                </label>
+            </div>
+        </div>
+        <div class="form-group col-md-12">
+            <span>Item 2</span>
+            <div class="pull-right">
+                <label class="radio-inline">
+                    <input type="radio" value="si"
+                        data-bind="checked: Entity.Item2, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    SI
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" value="no"
+                        data-bind="checked: Entity.Item2, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    NO
+                </label>
+            </div>
+        </div>
+        <div class="form-group col-md-12">
+            <span>Item 3</span>
+            <div class="pull-right">
+                <label class="radio-inline">
+                    <input type="radio" value="si"
+                        data-bind="checked: Entity.Item3, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    SI
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" value="no"
+                        data-bind="checked: Entity.Item3, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    NO
+                </label>
+            </div>
+        </div>
+        <div class="form-group col-md-12">
+            <span>Item 4</span>
+            <div class="pull-right">
+                <label class="radio-inline">
+                    <input type="radio" value="si"
+                        data-bind="checked: Entity.Item4, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    SI
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" value="no"
+                        data-bind="checked: Entity.Item4, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    NO
+                </label>
+            </div>
+        </div>
+        <div class="form-group col-md-12">
+            <span>Item 5</span>
+            <div class="pull-right">
+                <label class="radio-inline">
+                    <input type="radio" value="si"
+                        data-bind="checked: Entity.Item5, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    SI
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" value="no"
+                        data-bind="checked: Entity.Item5, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    NO
+                </label>
+            </div>
+        </div>
+        <div class="form-group col-md-12">
+            <span>Item 6</span>
+            <div class="pull-right">
+                <label class="radio-inline">
+                    <input type="radio" value="si"
+                        data-bind="checked: Entity.Item6, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    SI
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" value="no"
+                        data-bind="checked: Entity.Item6, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    NO
+                </label>
+            </div>
+        </div>
+        <div class="form-group col-md-12">
+            <span>Item 7</span>
+            <div class="pull-right">
+                <label class="radio-inline">
+                    <input type="radio" value="si"
+                        data-bind="checked: Entity.Item7, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    SI
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" value="no"
+                        data-bind="checked: Entity.Item7, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    NO
+                </label>
+            </div>
+        </div>
+        <div class="form-group col-md-12">
+            <span>Item 8</span>
+            <div class="pull-right">
+                <label class="radio-inline">
+                    <input type="radio" value="si"
+                        data-bind="checked: Entity.Item8, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    SI
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" value="no"
+                        data-bind="checked: Entity.Item8, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    NO
+                </label>
+            </div>
+        </div>
+        <div class="form-group col-md-12">
+            <span>Item 9</span>
+            <div class="pull-right">
+                <label class="radio-inline">
+                    <input type="radio" value="si"
+                        data-bind="checked: Entity.Item9, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    SI
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" value="no"
+                        data-bind="checked: Entity.Item9, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    NO
+                </label>
+            </div>
+        </div>
+        <div class="form-group col-md-12">
+            <span>Item 10</span>
+            <div class="pull-right">
+                <label class="radio-inline">
+                    <input type="radio" value="si"
+                        data-bind="checked: Entity.Item10, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    SI
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" value="no"
+                        data-bind="checked: Entity.Item10, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    NO
+                </label>
+            </div>
+        </div>
+        <div class="form-group col-md-12">
+            <span>Item 11</span>
+            <div class="pull-right">
+                <label class="radio-inline">
+                    <input type="radio" value="si"
+                        data-bind="checked: Entity.Item11, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    SI
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" value="no"
+                        data-bind="checked: Entity.Item11, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    NO
+                </label>
+            </div>
+        </div>
+        <div class="form-group col-md-12">
+            <span>Item 12</span>
+            <div class="pull-right">
+                <label class="radio-inline">
+                    <input type="radio" value="si"
+                        data-bind="checked: Entity.Item12, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    SI
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" value="no"
+                        data-bind="checked: Entity.Item12, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    NO
+                </label>
+            </div>
+        </div>
+        <div class="form-group col-md-12">
+            <span>Item 13</span>
+            <div class="pull-right">
+                <label class="radio-inline">
+                    <input type="radio" value="si"
+                        data-bind="checked: Entity.Item13, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    SI
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" value="no"
+                        data-bind="checked: Entity.Item13, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    NO
+                </label>
+            </div>
+        </div>
+        <div class="form-group col-md-12">
+            <span>Item 14</span>
+            <div class="pull-right">
+                <label class="radio-inline">
+                    <input type="radio" value="si"
+                        data-bind="checked: Entity.Item14, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    SI
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" value="no"
+                        data-bind="checked: Entity.Item14, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    NO
+                </label>
+            </div>
+        </div>
+        <div class="form-group col-md-12">
+            <span>Item 15</span>
+            <div class="pull-right">
+                <label class="radio-inline">
+                    <input type="radio" value="si"
+                        data-bind="checked: Entity.Item15, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    SI
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" value="no"
+                        data-bind="checked: Entity.Item15, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    NO
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group col-md-12">
+            <span>Item 16</span>
+            <div class="pull-right">
+                <label class="radio-inline">
+                    <input type="radio" value="si"
+                        data-bind="checked: Entity.Item16, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    SI
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" value="no"
+                        data-bind="checked: Entity.Item16, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    NO
+                </label>
+            </div>
+        </div>
+        <div class="form-group col-md-12">
+            <span>Item 17</span>
+            <div class="pull-right">
+                <label class="radio-inline">
+                    <input type="radio" value="si"
+                        data-bind="checked: Entity.Item17, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    SI
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" value="no"
+                        data-bind="checked: Entity.Item17, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    NO
+                </label>
+            </div>
+        </div>
+        <div class="form-group col-md-12">
+            <span>Item 18</span>
+            <div class="pull-right">
+                <label class="radio-inline">
+                    <input type="radio" value="si"
+                        data-bind="checked: Entity.Item18, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    SI
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" value="no"
+                        data-bind="checked: Entity.Item18, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    NO
+                </label>
+            </div>
+        </div>
+        <div class="form-group col-md-12">
+            <span>Item 19</span>
+            <div class="pull-right">
+                <label class="radio-inline">
+                    <input type="radio" value="si"
+                        data-bind="checked: Entity.Item19, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    SI
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" value="no"
+                        data-bind="checked: Entity.Item19, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    NO
+                </label>
+            </div>
+        </div>
+        <div class="form-group col-md-12">
+            <span>Item 20</span>
+            <div class="pull-right">
+                <label class="radio-inline">
+                    <input type="radio" value="si"
+                        data-bind="checked: Entity.Item20, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    SI
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" value="no"
+                        data-bind="checked: Entity.Item20, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    NO
+                </label>
+            </div>
+        </div>
+        <div class="form-group col-md-12">
+            <span>Item 21</span>
+            <div class="pull-right">
+                <label class="radio-inline">
+                    <input type="radio" value="si"
+                        data-bind="checked: Entity.Item21, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    SI
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" value="no"
+                        data-bind="checked: Entity.Item21, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    NO
+                </label>
+            </div>
+        </div>
+        <div class="form-group col-md-12">
+            <span>Item 22</span>
+            <div class="pull-right">
+                <label class="radio-inline">
+                    <input type="radio" value="si"
+                        data-bind="checked: Entity.Item22, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    SI
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" value="no"
+                        data-bind="checked: Entity.Item22, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    NO
+                </label>
+            </div>
+        </div>
+        <div class="form-group col-md-12">
+            <span>Item 23</span>
+            <div class="pull-right">
+                <label class="radio-inline">
+                    <input type="radio" value="si"
+                        data-bind="checked: Entity.Item23, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    SI
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" value="no"
+                        data-bind="checked: Entity.Item23, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    NO
+                </label>
+            </div>
+        </div>
+        <div class="form-group col-md-12">
+            <span>Item 24</span>
+            <div class="pull-right">
+                <label class="radio-inline">
+                    <input type="radio" value="si"
+                        data-bind="checked: Entity.Item24, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    SI
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" value="no"
+                        data-bind="checked: Entity.Item24, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    NO
+                </label>
+            </div>
+        </div>
+        <div class="form-group col-md-12">
+            <span>Item 25</span>
+            <div class="pull-right">
+                <label class="radio-inline">
+                    <input type="radio" value="si"
+                        data-bind="checked: Entity.Item25, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    SI
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" value="no"
+                        data-bind="checked: Entity.Item25, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    NO
+                </label>
+            </div>
+        </div>
+        <div class="form-group col-md-12">
+            <span>Item 26</span>
+            <div class="pull-right">
+                <label class="radio-inline">
+                    <input type="radio" value="si"
+                        data-bind="checked: Entity.Item26, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    SI
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" value="no"
+                        data-bind="checked: Entity.Item26, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    NO
+                </label>
+            </div>
+        </div>
+        <div class="form-group col-md-12">
+            <span>Item 27</span>
+            <div class="pull-right">
+                <label class="radio-inline">
+                    <input type="radio" value="si"
+                        data-bind="checked: Entity.Item27, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    SI
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" value="no"
+                        data-bind="checked: Entity.Item27, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    NO
+                </label>
+            </div>
+        </div>
+        <div class="form-group col-md-12">
+            <span>Item 28</span>
+            <div class="pull-right">
+                <label class="radio-inline">
+                    <input type="radio" value="si"
+                        data-bind="checked: Entity.Item28, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    SI
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" value="no"
+                        data-bind="checked: Entity.Item28, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    NO
+                </label>
+            </div>
+        </div>
+        <div class="form-group col-md-12">
+            <span>Item 29</span>
+            <div class="pull-right">
+                <label class="radio-inline">
+                    <input type="radio" value="si"
+                        data-bind="checked: Entity.Item29, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    SI
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" value="no"
+                        data-bind="checked: Entity.Item29, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    NO
+                </label>
+            </div>
+        </div>
+        <div class="form-group col-md-12">
+            <span>Item 30</span>
+            <div class="pull-right">
+                <label class="radio-inline">
+                    <input type="radio" value="si"
+                        data-bind="checked: Entity.Item30, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    SI
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" value="no"
+                        data-bind="checked: Entity.Item30, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    NO
+                </label>
+            </div>
+        </div>
     </div>
     <!-- /ko -->
 

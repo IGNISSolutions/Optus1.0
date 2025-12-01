@@ -666,6 +666,38 @@
             this.EstatutoContratoSocial = ko.observable(data.list.EstatutoContratoSocial);
             this.ActasDesignacionAutoridades = ko.observable(data.list.ActasDesignacionAutoridades);
 
+            // PLANTILLA 9 - 30 ITEMS
+            this.Item1 = ko.observable(data.list.Item1);
+            this.Item2 = ko.observable(data.list.Item2);
+            this.Item3 = ko.observable(data.list.Item3);
+            this.Item4 = ko.observable(data.list.Item4);
+            this.Item5 = ko.observable(data.list.Item5);
+            this.Item6 = ko.observable(data.list.Item6);
+            this.Item7 = ko.observable(data.list.Item7);
+            this.Item8 = ko.observable(data.list.Item8);
+            this.Item9 = ko.observable(data.list.Item9);
+            this.Item10 = ko.observable(data.list.Item10);
+            this.Item11 = ko.observable(data.list.Item11);
+            this.Item12 = ko.observable(data.list.Item12);
+            this.Item13 = ko.observable(data.list.Item13);
+            this.Item14 = ko.observable(data.list.Item14);
+            this.Item15 = ko.observable(data.list.Item15);
+            this.Item16 = ko.observable(data.list.Item16);
+            this.Item17 = ko.observable(data.list.Item17);
+            this.Item18 = ko.observable(data.list.Item18);
+            this.Item19 = ko.observable(data.list.Item19);
+            this.Item20 = ko.observable(data.list.Item20);
+            this.Item21 = ko.observable(data.list.Item21);
+            this.Item22 = ko.observable(data.list.Item22);
+            this.Item23 = ko.observable(data.list.Item23);
+            this.Item24 = ko.observable(data.list.Item24);
+            this.Item25 = ko.observable(data.list.Item25);
+            this.Item26 = ko.observable(data.list.Item26);
+            this.Item27 = ko.observable(data.list.Item27);
+            this.Item28 = ko.observable(data.list.Item28);
+            this.Item29 = ko.observable(data.list.Item29);
+            this.Item30 = ko.observable(data.list.Item30);
+
 
 
             this.OferentesAInvitar = ko.observableArray([]).extend({ required: true });
@@ -917,6 +949,40 @@
                                 self.ReferenciasComerciales('no');  // reutilizado
                                 self.FormaPago('no');               // reutilizado
                                 self.RiesgoFinanciero('no');        // reutilizado
+                            }
+                            
+                            // Plantilla 9 (30 items)
+                            if (value == 9) {
+                                self.Item1('no');
+                                self.Item2('no');
+                                self.Item3('no');
+                                self.Item4('no');
+                                self.Item5('no');
+                                self.Item6('no');
+                                self.Item7('no');
+                                self.Item8('no');
+                                self.Item9('no');
+                                self.Item10('no');
+                                self.Item11('no');
+                                self.Item12('no');
+                                self.Item13('no');
+                                self.Item14('no');
+                                self.Item15('no');
+                                self.Item16('no');
+                                self.Item17('no');
+                                self.Item18('no');
+                                self.Item19('no');
+                                self.Item20('no');
+                                self.Item21('no');
+                                self.Item22('no');
+                                self.Item23('no');
+                                self.Item24('no');
+                                self.Item25('no');
+                                self.Item26('no');
+                                self.Item27('no');
+                                self.Item28('no');
+                                self.Item29('no');
+                                self.Item30('no');
                             }
                             if (response.data.list.PlantillaTecnicaSeleccionada.length > 0) {
                                 self.PlantillaTecnicaSeleccionada(new TechnicalPayroll(response.data

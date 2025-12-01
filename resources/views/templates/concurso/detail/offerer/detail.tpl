@@ -712,6 +712,37 @@
                         this.ActasDesignacionAutoridades = ko.observable(data.list.ActasDesignacionAutoridades);
                         this.ListaProveedores = ko.observable(data.list.ListaProveedores);
                         this.CertificadoVisitaObra = ko.observable(data.list.CertificadoVisitaObra);
+                        // PLANTILLA 9 - Items 1-30
+                        this.Item1 = ko.observable(data.list.Item1);
+                        this.Item2 = ko.observable(data.list.Item2);
+                        this.Item3 = ko.observable(data.list.Item3);
+                        this.Item4 = ko.observable(data.list.Item4);
+                        this.Item5 = ko.observable(data.list.Item5);
+                        this.Item6 = ko.observable(data.list.Item6);
+                        this.Item7 = ko.observable(data.list.Item7);
+                        this.Item8 = ko.observable(data.list.Item8);
+                        this.Item9 = ko.observable(data.list.Item9);
+                        this.Item10 = ko.observable(data.list.Item10);
+                        this.Item11 = ko.observable(data.list.Item11);
+                        this.Item12 = ko.observable(data.list.Item12);
+                        this.Item13 = ko.observable(data.list.Item13);
+                        this.Item14 = ko.observable(data.list.Item14);
+                        this.Item15 = ko.observable(data.list.Item15);
+                        this.Item16 = ko.observable(data.list.Item16);
+                        this.Item17 = ko.observable(data.list.Item17);
+                        this.Item18 = ko.observable(data.list.Item18);
+                        this.Item19 = ko.observable(data.list.Item19);
+                        this.Item20 = ko.observable(data.list.Item20);
+                        this.Item21 = ko.observable(data.list.Item21);
+                        this.Item22 = ko.observable(data.list.Item22);
+                        this.Item23 = ko.observable(data.list.Item23);
+                        this.Item24 = ko.observable(data.list.Item24);
+                        this.Item25 = ko.observable(data.list.Item25);
+                        this.Item26 = ko.observable(data.list.Item26);
+                        this.Item27 = ko.observable(data.list.Item27);
+                        this.Item28 = ko.observable(data.list.Item28);
+                        this.Item29 = ko.observable(data.list.Item29);
+                        this.Item30 = ko.observable(data.list.Item30);
 
                         this.EntregaDocEvaluacion = ko.observable(data.list.EntregaDocEvaluacion);
                         this.RequisitosLegales = ko.observable(data.list.RequisitosLegales);
@@ -752,6 +783,7 @@
                         this.tarima_licencia = ko.observable(data.list.tarima_licencia);
                         this.tarima_nom_144 = ko.observable(data.list.tarima_nom_144);
                         this.tarima_acreditacion = ko.observable(data.list.tarima_acreditacion);
+                        this.TechnicalHeaderInfo = data.list.PropuestasTecnicas.HeaderInfo;
                         this.EvaluacionTecnica = data.list.PropuestasTecnicas.TechnicalEvaluations;
                         this.edificio_balance = ko.observable(data.list.edificio_balance);
                         this.edificio_iva = ko.observable(data.list.edificio_iva);
@@ -1918,21 +1950,27 @@
             const tableRows = document.querySelectorAll(
                 "#ListaConcursosEconomicas tbody tr"); // Seleccionar las filas del tbody
 
+            let nroItem = 1; // Contador para Nro Item empezando en 1
+
             // Iterar sobre cada fila y extraer los valores
             tableRows.forEach((row, index) => {
-                // Solo agregar filas que no estén en el rango de las filas 2 a 10
-                if (index < 0 || index > 21) { // Excluir las filas 2 a 10 (índices 1 a 9)
-                    const cells = row.querySelectorAll("td"); // Obtener las celdas de la fila
+                const cells = row.querySelectorAll("td"); // Obtener las celdas de la fila
+                const itemText = cells[1]?.innerText.trim() || "";
+                const unidadText = cells[2]?.innerText.trim() || "";
+                
+                // Solo agregar si la fila tiene contenido válido en Item y Unidad (evitar filas vacías y cabeceras)
+                if (itemText !== "" && unidadText !== "" && cells.length >= 7) {
                     data.push({
-                        "Item": cells[1]?.innerText.trim() || "", // Columna 1: Item
-                        "Unidad": cells[2]?.innerText.trim() || "", // Columna 2: Unidad
+                        "Item": itemText, // Columna 1: Item
+                        "Unidad": unidadText, // Columna 2: Unidad
                         "Cant Sol": cells[3]?.innerText.trim() || "", // Columna 3: Cant Sol
                         "Cant Min": cells[4]?.innerText.trim() || "", // Columna 4: Cant Min
                         "Precio Unit": cells[5]?.innerText.trim() || "", // Columna 5: Precio Unit
                         "Cant Cot": cells[6]?.innerText.trim() || "", // Columna 6: Cant Cot
                         "Pl. Entr (días)": cells[7]?.innerText.trim() || "", // Columna 7: Pl. Entr
-                        "Nro Item": (index - 20) + 1, // Columna 8: Nro Item (autoincremental al final)
+                        "Nro Item": nroItem, // Columna 8: Nro Item (autoincremental)
                     });
+                    nroItem++; // Incrementar contador
                 }
             });
 

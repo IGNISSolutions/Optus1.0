@@ -113,7 +113,37 @@
                             name() !== 'Equipo humano y competencias' &&
                             name() !== 'Balances y estados de resultados' &&
                             name() !== 'Estatuto o contrato social' &&
-                            name() !== 'Actas de designación de autoridades'
+                            name() !== 'Actas de designación de autoridades' &&
+                            name() !== 'Item 1' &&
+                            name() !== 'Item 2' &&
+                            name() !== 'Item 3' &&
+                            name() !== 'Item 4' &&
+                            name() !== 'Item 5' &&
+                            name() !== 'Item 6' &&
+                            name() !== 'Item 7' &&
+                            name() !== 'Item 8' &&
+                            name() !== 'Item 9' &&
+                            name() !== 'Item 10' &&
+                            name() !== 'Item 11' &&
+                            name() !== 'Item 12' &&
+                            name() !== 'Item 13' &&
+                            name() !== 'Item 14' &&
+                            name() !== 'Item 15' &&
+                            name() !== 'Item 16' &&
+                            name() !== 'Item 17' &&
+                            name() !== 'Item 18' &&
+                            name() !== 'Item 19' &&
+                            name() !== 'Item 20' &&
+                            name() !== 'Item 21' &&
+                            name() !== 'Item 22' &&
+                            name() !== 'Item 23' &&
+                            name() !== 'Item 24' &&
+                            name() !== 'Item 25' &&
+                            name() !== 'Item 26' &&
+                            name() !== 'Item 27' &&
+                            name() !== 'Item 28' &&
+                            name() !== 'Item 29' &&
+                            name() !== 'Item 30'
                             
 
 
@@ -200,7 +230,37 @@
                         (name() === 'Equipo humano y competencias' && $root.EquipoHumanoCompetencias() === 'si') ||
                         (name() === 'Balances y estados de resultados' && $root.BalancesEstadosResultados() === 'si') ||
                         (name() === 'Estatuto o contrato social' && $root.EstatutoContratoSocial() === 'si') ||
-                        (name() === 'Actas de designación de autoridades' && $root.ActasDesignacionAutoridades() === 'si')
+                        (name() === 'Actas de designación de autoridades' && $root.ActasDesignacionAutoridades() === 'si') ||
+                        (name() === 'Item 1' && $root.Item1() === 'si') ||
+                        (name() === 'Item 2' && $root.Item2() === 'si') ||
+                        (name() === 'Item 3' && $root.Item3() === 'si') ||
+                        (name() === 'Item 4' && $root.Item4() === 'si') ||
+                        (name() === 'Item 5' && $root.Item5() === 'si') ||
+                        (name() === 'Item 6' && $root.Item6() === 'si') ||
+                        (name() === 'Item 7' && $root.Item7() === 'si') ||
+                        (name() === 'Item 8' && $root.Item8() === 'si') ||
+                        (name() === 'Item 9' && $root.Item9() === 'si') ||
+                        (name() === 'Item 10' && $root.Item10() === 'si') ||
+                        (name() === 'Item 11' && $root.Item11() === 'si') ||
+                        (name() === 'Item 12' && $root.Item12() === 'si') ||
+                        (name() === 'Item 13' && $root.Item13() === 'si') ||
+                        (name() === 'Item 14' && $root.Item14() === 'si') ||
+                        (name() === 'Item 15' && $root.Item15() === 'si') ||
+                        (name() === 'Item 16' && $root.Item16() === 'si') ||
+                        (name() === 'Item 17' && $root.Item17() === 'si') ||
+                        (name() === 'Item 18' && $root.Item18() === 'si') ||
+                        (name() === 'Item 19' && $root.Item19() === 'si') ||
+                        (name() === 'Item 20' && $root.Item20() === 'si') ||
+                        (name() === 'Item 21' && $root.Item21() === 'si') ||
+                        (name() === 'Item 22' && $root.Item22() === 'si') ||
+                        (name() === 'Item 23' && $root.Item23() === 'si') ||
+                        (name() === 'Item 24' && $root.Item24() === 'si') ||
+                        (name() === 'Item 25' && $root.Item25() === 'si') ||
+                        (name() === 'Item 26' && $root.Item26() === 'si') ||
+                        (name() === 'Item 27' && $root.Item27() === 'si') ||
+                        (name() === 'Item 28' && $root.Item28() === 'si') ||
+                        (name() === 'Item 29' && $root.Item29() === 'si') ||
+                        (name() === 'Item 30' && $root.Item30() === 'si')
 
 
 
@@ -325,7 +385,38 @@
                             name() !== 'Balances y estados de resultados' &&
                             name() !== 'Estatuto o contrato social' &&
                             name() !== 'Actas de designación de autoridades' &&
-                            name() !== 'TÉCNICA - Acuerdo de confidencialidad FIRMADO'
+                            name() !== 'TÉCNICA - Acuerdo de confidencialidad FIRMADO' &&
+                            name() !== 'Item 1' &&
+                            name() !== 'Item 2' &&
+                            name() !== 'Item 3' &&
+                            name() !== 'Item 4' &&
+                            name() !== 'Item 5' &&
+                            name() !== 'Item 6' &&
+                            name() !== 'Item 7' &&
+                            name() !== 'Item 8' &&
+                            name() !== 'Item 9' &&
+                            name() !== 'Item 10' &&
+                            name() !== 'Item 11' &&
+                            name() !== 'Item 12' &&
+                            name() !== 'Item 13' &&
+                            name() !== 'Item 14' &&
+                            name() !== 'Item 15' &&
+                            name() !== 'Item 16' &&
+                            name() !== 'Item 17' &&
+                            name() !== 'Item 18' &&
+                            name() !== 'Item 19' &&
+                            name() !== 'Item 20' &&
+                            name() !== 'Item 21' &&
+                            name() !== 'Item 22' &&
+                            name() !== 'Item 23' &&
+                            name() !== 'Item 24' &&
+                            name() !== 'Item 25' &&
+                            name() !== 'Item 26' &&
+                            name() !== 'Item 27' &&
+                            name() !== 'Item 28' &&
+                            name() !== 'Item 29' &&
+                            name() !== 'Item 30'
+
 
 
                         ) || 
@@ -414,7 +505,37 @@
                         (name() === 'TÉCNICA - Carta de representante de la marca y/o distribuidor autorizado' && $root.CartaRepresentanteMarca() === 'si') ||
                         (name() === 'TÉCNICA - Soporte Post Venta' && $root.SoportePostVenta() === 'si') ||
                         (name() === 'TÉCNICA - Lugar y forma de entrega' && $root.LugarFormaEntrega() === 'si') ||
-                        (name() === 'TÉCNICA - Acuerdo de confidencialidad FIRMADO' && $root.NdaFirmado() === 'si')
+                        (name() === 'TÉCNICA - Acuerdo de confidencialidad FIRMADO' && $root.NdaFirmado() === 'si') ||
+                        (name() === 'Item 1' && $root.Item1() === 'si') ||
+                        (name() === 'Item 2' && $root.Item2() === 'si') ||
+                        (name() === 'Item 3' && $root.Item3() === 'si') ||
+                        (name() === 'Item 4' && $root.Item4() === 'si') ||
+                        (name() === 'Item 5' && $root.Item5() === 'si') ||
+                        (name() === 'Item 6' && $root.Item6() === 'si') ||
+                        (name() === 'Item 7' && $root.Item7() === 'si') ||
+                        (name() === 'Item 8' && $root.Item8() === 'si') ||
+                        (name() === 'Item 9' && $root.Item9() === 'si') ||
+                        (name() === 'Item 10' && $root.Item10() === 'si') ||
+                        (name() === 'Item 11' && $root.Item11() === 'si') ||
+                        (name() === 'Item 12' && $root.Item12() === 'si') ||
+                        (name() === 'Item 13' && $root.Item13() === 'si') ||
+                        (name() === 'Item 14' && $root.Item14() === 'si') ||
+                        (name() === 'Item 15' && $root.Item15() === 'si') ||
+                        (name() === 'Item 16' && $root.Item16() === 'si') ||
+                        (name() === 'Item 17' && $root.Item17() === 'si') ||
+                        (name() === 'Item 18' && $root.Item18() === 'si') ||
+                        (name() === 'Item 19' && $root.Item19() === 'si') ||
+                        (name() === 'Item 20' && $root.Item20() === 'si') ||
+                        (name() === 'Item 21' && $root.Item21() === 'si') ||
+                        (name() === 'Item 22' && $root.Item22() === 'si') ||
+                        (name() === 'Item 23' && $root.Item23() === 'si') ||
+                        (name() === 'Item 24' && $root.Item24() === 'si') ||
+                        (name() === 'Item 25' && $root.Item25() === 'si') ||
+                        (name() === 'Item 26' && $root.Item26() === 'si') ||
+                        (name() === 'Item 27' && $root.Item27() === 'si') ||
+                        (name() === 'Item 28' && $root.Item28() === 'si') ||
+                        (name() === 'Item 29' && $root.Item29() === 'si') ||
+                        (name() === 'Item 30' && $root.Item30() === 'si')
                         -->
                         <td class="col-md-3 text-center vertical-align-middle" data-bind="text: name"></td>
                         <!-- ko if: $root.EnableTechnical() -->
@@ -595,7 +716,37 @@
                             name() !== 'Equipo humano y competencias' &&
                             name() !== 'Balances y estados de resultados' &&
                             name() !== 'Estatuto o contrato social' &&
-                            name() !== 'Actas de designación de autoridades'
+                            name() !== 'Actas de designación de autoridades' &&
+                            name() !== 'Item 1' &&
+                            name() !== 'Item 2' &&
+                            name() !== 'Item 3' &&
+                            name() !== 'Item 4' &&
+                            name() !== 'Item 5' &&
+                            name() !== 'Item 6' &&
+                            name() !== 'Item 7' &&
+                            name() !== 'Item 8' &&
+                            name() !== 'Item 9' &&
+                            name() !== 'Item 10' &&
+                            name() !== 'Item 11' &&
+                            name() !== 'Item 12' &&
+                            name() !== 'Item 13' &&
+                            name() !== 'Item 14' &&
+                            name() !== 'Item 15' &&
+                            name() !== 'Item 16' &&
+                            name() !== 'Item 17' &&
+                            name() !== 'Item 18' &&
+                            name() !== 'Item 19' &&
+                            name() !== 'Item 20' &&
+                            name() !== 'Item 21' &&
+                            name() !== 'Item 22' &&
+                            name() !== 'Item 23' &&
+                            name() !== 'Item 24' &&
+                            name() !== 'Item 25' &&
+                            name() !== 'Item 26' &&
+                            name() !== 'Item 27' &&
+                            name() !== 'Item 28' &&
+                            name() !== 'Item 29' &&
+                            name() !== 'Item 30'
 
 
                         ) || 
@@ -681,7 +832,37 @@
                         (name() === 'Equipo humano y competencias' && $root.EquipoHumanoCompetencias() === 'si') ||
                         (name() === 'Balances y estados de resultados' && $root.BalancesEstadosResultados() === 'si') ||
                         (name() === 'Estatuto o contrato social' && $root.EstatutoContratoSocial() === 'si') ||
-                        (name() === 'Actas de designación de autoridades' && $root.ActasDesignacionAutoridades() === 'si') 
+                        (name() === 'Actas de designación de autoridades' && $root.ActasDesignacionAutoridades() === 'si') ||
+                        (name() === 'Item 1' && $root.Item1() === 'si') ||
+                        (name() === 'Item 2' && $root.Item2() === 'si') ||
+                        (name() === 'Item 3' && $root.Item3() === 'si') ||
+                        (name() === 'Item 4' && $root.Item4() === 'si') ||
+                        (name() === 'Item 5' && $root.Item5() === 'si') ||
+                        (name() === 'Item 6' && $root.Item6() === 'si') ||
+                        (name() === 'Item 7' && $root.Item7() === 'si') ||
+                        (name() === 'Item 8' && $root.Item8() === 'si') ||
+                        (name() === 'Item 9' && $root.Item9() === 'si') ||
+                        (name() === 'Item 10' && $root.Item10() === 'si') ||
+                        (name() === 'Item 11' && $root.Item11() === 'si') ||
+                        (name() === 'Item 12' && $root.Item12() === 'si') ||
+                        (name() === 'Item 13' && $root.Item13() === 'si') ||
+                        (name() === 'Item 14' && $root.Item14() === 'si') ||
+                        (name() === 'Item 15' && $root.Item15() === 'si') ||
+                        (name() === 'Item 16' && $root.Item16() === 'si') ||
+                        (name() === 'Item 17' && $root.Item17() === 'si') ||
+                        (name() === 'Item 18' && $root.Item18() === 'si') ||
+                        (name() === 'Item 19' && $root.Item19() === 'si') ||
+                        (name() === 'Item 20' && $root.Item20() === 'si') ||
+                        (name() === 'Item 21' && $root.Item21() === 'si') ||
+                        (name() === 'Item 22' && $root.Item22() === 'si') ||
+                        (name() === 'Item 23' && $root.Item23() === 'si') ||
+                        (name() === 'Item 24' && $root.Item24() === 'si') ||
+                        (name() === 'Item 25' && $root.Item25() === 'si') ||
+                        (name() === 'Item 26' && $root.Item26() === 'si') ||
+                        (name() === 'Item 27' && $root.Item27() === 'si') ||
+                        (name() === 'Item 28' && $root.Item28() === 'si') ||
+                        (name() === 'Item 29' && $root.Item29() === 'si') ||
+                        (name() === 'Item 30' && $root.Item30() === 'si')
 
 
                         -->

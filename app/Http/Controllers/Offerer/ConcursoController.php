@@ -202,7 +202,8 @@ class ConcursoController extends BaseController
             $concursos = collect();
             $concursos = $invited
                 ->filter(function ($concurso) use ($user) {
-                    date_default_timezone_set($concurso->cliente->customer_company->timeZone);
+                    $timezone = $concurso->cliente->customer_company->timeZone ?? 'UTC';
+                    date_default_timezone_set($timezone);
                     return $concurso->oferentes
                         ->where('id_offerer', $user->offerer_company_id)
                         ->where('rechazado', false)
@@ -221,7 +222,8 @@ class ConcursoController extends BaseController
             $concursos = $invited
                 ->where('technical_includes', true)
                 ->filter(function ($concurso) use ($user) {
-                    date_default_timezone_set($concurso->cliente->customer_company->timeZone);
+                    $timezone = $concurso->cliente->customer_company->timeZone ?? 'UTC';
+                    date_default_timezone_set($timezone);
                     return $concurso->oferentes
                         ->where('id_offerer', $user->offerer_company_id)
                         ->whereIn(
@@ -246,7 +248,8 @@ class ConcursoController extends BaseController
             $concursos = $invited
                 ->filter(
                     function ($concurso) use ($user) {
-                        date_default_timezone_set($concurso->cliente->customer_company->timeZone);
+                        $timezone = $concurso->cliente->customer_company->timeZone ?? 'UTC';
+                        date_default_timezone_set($timezone);
                         return (
                             ($concurso->is_sobrecerrado || $concurso->is_go) &&
                             $concurso->oferentes
@@ -281,7 +284,8 @@ class ConcursoController extends BaseController
                         ->count() > 0);
                 })
                 ->filter(function ($concurso) {
-                    date_default_timezone_set($concurso->cliente->customer_company->timeZone);
+                    $timezone = $concurso->cliente->customer_company->timeZone ?? 'UTC';
+                    date_default_timezone_set($timezone);
                     if ($concurso->is_online) {
                         return
                             ($concurso->countdown || $concurso->timeleft) &&
@@ -434,7 +438,8 @@ class ConcursoController extends BaseController
             $concurso = $user->concursos_invitado->find($params['id']);
             $rondaActual = $concurso->ronda_actual;
             $title = $rondaActual > 1 ? Concurso::NUEVAS_RONDAS[$rondaActual] : '';
-            date_default_timezone_set($concurso->cliente->customer_company->timeZone);
+            $timezone = $concurso->cliente->customer_company->timeZone ?? 'UTC';
+            date_default_timezone_set($timezone);
 
 
             $list['IsGo'] = $concurso->is_go;
@@ -851,7 +856,38 @@ class ConcursoController extends BaseController
                         'edificio_organigrama_obra' => isset($concurso->edificio_organigrama_obra) ? $concurso->edificio_organigrama_obra : 'no',
                         'edificio_subcontratistas' => isset($concurso->edificio_subcontratistas) ? $concurso->edificio_subcontratistas : 'no',
                         'edificio_gestion' => isset($concurso->edificio_gestion) ? $concurso->edificio_gestion : 'no',
-                        'edificio_maquinas' => isset($concurso->edificio_maquinas) ? $concurso->edificio_maquinas : 'no'
+                        'edificio_maquinas' => isset($concurso->edificio_maquinas) ? $concurso->edificio_maquinas : 'no',
+                        // ===== PLANTILLA 9 - Items 1-30 =====
+                        'Item1' => isset($concurso->plantilla_items->item_1) ? $concurso->plantilla_items->item_1 : 'no',
+                        'Item2' => isset($concurso->plantilla_items->item_2) ? $concurso->plantilla_items->item_2 : 'no',
+                        'Item3' => isset($concurso->plantilla_items->item_3) ? $concurso->plantilla_items->item_3 : 'no',
+                        'Item4' => isset($concurso->plantilla_items->item_4) ? $concurso->plantilla_items->item_4 : 'no',
+                        'Item5' => isset($concurso->plantilla_items->item_5) ? $concurso->plantilla_items->item_5 : 'no',
+                        'Item6' => isset($concurso->plantilla_items->item_6) ? $concurso->plantilla_items->item_6 : 'no',
+                        'Item7' => isset($concurso->plantilla_items->item_7) ? $concurso->plantilla_items->item_7 : 'no',
+                        'Item8' => isset($concurso->plantilla_items->item_8) ? $concurso->plantilla_items->item_8 : 'no',
+                        'Item9' => isset($concurso->plantilla_items->item_9) ? $concurso->plantilla_items->item_9 : 'no',
+                        'Item10' => isset($concurso->plantilla_items->item_10) ? $concurso->plantilla_items->item_10 : 'no',
+                        'Item11' => isset($concurso->plantilla_items->item_11) ? $concurso->plantilla_items->item_11 : 'no',
+                        'Item12' => isset($concurso->plantilla_items->item_12) ? $concurso->plantilla_items->item_12 : 'no',
+                        'Item13' => isset($concurso->plantilla_items->item_13) ? $concurso->plantilla_items->item_13 : 'no',
+                        'Item14' => isset($concurso->plantilla_items->item_14) ? $concurso->plantilla_items->item_14 : 'no',
+                        'Item15' => isset($concurso->plantilla_items->item_15) ? $concurso->plantilla_items->item_15 : 'no',
+                        'Item16' => isset($concurso->plantilla_items->item_16) ? $concurso->plantilla_items->item_16 : 'no',
+                        'Item17' => isset($concurso->plantilla_items->item_17) ? $concurso->plantilla_items->item_17 : 'no',
+                        'Item18' => isset($concurso->plantilla_items->item_18) ? $concurso->plantilla_items->item_18 : 'no',
+                        'Item19' => isset($concurso->plantilla_items->item_19) ? $concurso->plantilla_items->item_19 : 'no',
+                        'Item20' => isset($concurso->plantilla_items->item_20) ? $concurso->plantilla_items->item_20 : 'no',
+                        'Item21' => isset($concurso->plantilla_items->item_21) ? $concurso->plantilla_items->item_21 : 'no',
+                        'Item22' => isset($concurso->plantilla_items->item_22) ? $concurso->plantilla_items->item_22 : 'no',
+                        'Item23' => isset($concurso->plantilla_items->item_23) ? $concurso->plantilla_items->item_23 : 'no',
+                        'Item24' => isset($concurso->plantilla_items->item_24) ? $concurso->plantilla_items->item_24 : 'no',
+                        'Item25' => isset($concurso->plantilla_items->item_25) ? $concurso->plantilla_items->item_25 : 'no',
+                        'Item26' => isset($concurso->plantilla_items->item_26) ? $concurso->plantilla_items->item_26 : 'no',
+                        'Item27' => isset($concurso->plantilla_items->item_27) ? $concurso->plantilla_items->item_27 : 'no',
+                        'Item28' => isset($concurso->plantilla_items->item_28) ? $concurso->plantilla_items->item_28 : 'no',
+                        'Item29' => isset($concurso->plantilla_items->item_29) ? $concurso->plantilla_items->item_29 : 'no',
+                        'Item30' => isset($concurso->plantilla_items->item_30) ? $concurso->plantilla_items->item_30 : 'no'
                     ]));
                 }
             }
@@ -1122,8 +1158,27 @@ class ConcursoController extends BaseController
 
     public function parsed_technical_proposal($concurso, $oferente)
     {
+        $plantilla = $concurso->plantilla_tecnica->parsed_items;
+        
+        // Buscar el elemento "Puntaje mínimo necesario" en la plantilla
+        $puntajeMinElem = collect($plantilla)->first(function($item) {
+            return isset($item->atributo) && $item->atributo === 'Puntaje mínimo necesario';
+        });
+        
+        // Crear objeto con información del encabezado
+        $headerInfo = new \stdClass();
+        $headerInfo->atributo = $puntajeMinElem ? $puntajeMinElem->atributo : 'Puntaje mínimo necesario';
+        $headerInfo->puntaje = $puntajeMinElem ? $puntajeMinElem->puntaje : 0;
+        $headerInfo->puntaje_minimo = $plantilla->puntaje_minimo;
+        
+        // Filtrar plantilla para excluir el elemento "Puntaje mínimo necesario"
+        $plantillaFiltrada = collect($plantilla)->filter(function($item) {
+            return !(isset($item->atributo) && $item->atributo === 'Puntaje mínimo necesario');
+        })->values();
+        
         return [
-            'TechnicalEvaluations' => $concurso->plantilla_tecnica->parsed_items,
+            'HeaderInfo' => $headerInfo,
+            'TechnicalEvaluations' => $plantillaFiltrada,
             'rondas' => $this->parseRounds($oferente)
         ];
     }
