@@ -132,24 +132,7 @@
         </span>
     </div>
     <!-- Nuevos campos para todas las plantillas (excepto Plantilla 9) -->
-    <!-- ko if: Entity.PlantillaTecnica() != 9 -->
-    <div class="col-md-6">
-        <div class="form-group col-md-12">
-            <span>Lista de sub contratistas</span>
-            <div class="pull-right">
-                <label class="radio-inline">
-                    <input type="radio" value="si"
-                        data-bind="checked: Entity.ListaProveedores, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
-                    SI
-                </label>
-                <label class="radio-inline">
-                    <input type="radio" value="no"
-                        data-bind="checked: Entity.ListaProveedores, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
-                    NO
-                </label>
-            </div>
-        </div>
-    </div>
+    <!-- ko if: Entity.PlantillaTecnica() != 9 && Entity.PlantillaTecnica() != 1 -->
     <div class="col-md-6">
         <div class="form-group col-md-12">
             <span>Certificado de visita de obra</span>
@@ -162,6 +145,23 @@
                 <label class="radio-inline">
                     <input type="radio" value="no"
                         data-bind="checked: Entity.CertificadoVisitaObra, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    NO
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group col-md-12">
+            <span>Lista de sub contratistas</span>
+            <div class="pull-right">
+                <label class="radio-inline">
+                    <input type="radio" value="si"
+                        data-bind="checked: Entity.ListaProveedores, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    SI
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" value="no"
+                        data-bind="checked: Entity.ListaProveedores, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     NO
                 </label>
             </div>
@@ -214,6 +214,21 @@
                 <label class="radio-inline">
                     <input type="radio" value="no"
                         data-bind="checked: Entity.BalancesEstadosResultados, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    NO
+                </label>
+            </div>
+        </div>
+        <div class="form-group col-md-12">
+            <span>Certificado de visita de obra</span>
+            <div class="pull-right">
+                <label class="radio-inline">
+                    <input type="radio" value="si"
+                        data-bind="checked: Entity.CertificadoVisitaObra, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    SI
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" value="no"
+                        data-bind="checked: Entity.CertificadoVisitaObra, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     NO
                 </label>
             </div>
@@ -336,6 +351,21 @@
                 <label class="radio-inline">
                     <input type="radio" value="no"
                         data-bind="checked: Entity.ListadoEquiposHerramientas, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    NO
+                </label>
+            </div>
+        </div>
+        <div class="form-group col-md-12">
+            <span>Lista de sub contratistas</span>
+            <div class="pull-right">
+                <label class="radio-inline">
+                    <input type="radio" value="si"
+                        data-bind="checked: Entity.ListaProveedores, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
+                    SI
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" value="no"
+                        data-bind="checked: Entity.ListaProveedores, disable: Entity.IncluyePrecalifTecnica() == 'no' || ReadOnly() || $root.BloquearCamposTecnica()">
                     NO
                 </label>
             </div>

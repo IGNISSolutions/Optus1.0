@@ -1247,6 +1247,13 @@ class TechnicalProposalController extends BaseController
             ]);
         }
 
+        // ===== PLANTILLA 1 - Campo adicional =====
+        if ($concurso->listado_equipos_herramientas === 'si') {
+            $conditional_rules = array_merge($conditional_rules, [
+                'technical_documents.102.filename' => 'required'
+            ]);
+        }
+
 
         return validator(
             $data = $fields,
@@ -1325,7 +1332,7 @@ class TechnicalProposalController extends BaseController
                 'technical_documents.64.filename.required' => 'El Cronograma/Plazo de entrega es obligatorio.',
                 'technical_documents.65.filename.required' => 'La Carta de representante de la marca y/o distribuidor autorizado es obligatoria.',
                 'technical_documents.66.filename.required' => 'El Soporte Post Venta es obligatorio.',
-                'technical_documents.67.filename.required' => 'El Listado de equipos y herramientas es obligatorio.',
+                'technical_documents.67.filename.required' => 'El Lugar y forma de entrega es obligatorio.',
 
                 // ===================== Plantilla 1 - Nuevos Campos =====================
                 'technical_documents.68.filename.required' => 'El Equipo humano y competencias es obligatorio.',
@@ -1364,6 +1371,9 @@ class TechnicalProposalController extends BaseController
                 'technical_documents.99.filename.required' => 'El Item 28 es obligatorio.',
                 'technical_documents.100.filename.required' => 'El Item 29 es obligatorio.',
                 'technical_documents.101.filename.required' => 'El Item 30 es obligatorio.',
+
+                // ===================== Plantilla 1 - Campo adicional =====================
+                'technical_documents.102.filename.required' => 'El Listado de equipos y herramientas es obligatorio.',
             ]
         );
     }
