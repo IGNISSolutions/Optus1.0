@@ -1371,10 +1371,10 @@ class TechnicalProposalController extends BaseController
                 'technical_documents.99.filename.required' => 'El Item 28 es obligatorio.',
                 'technical_documents.100.filename.required' => 'El Item 29 es obligatorio.',
                 'technical_documents.101.filename.required' => 'El Item 30 es obligatorio.',
-
+                
                 // ===================== Plantilla 1 - Campo adicional =====================
                 'technical_documents.102.filename.required' => 'El Listado de equipos y herramientas es obligatorio.',
-            ]
+            ]   
         );
     }
 

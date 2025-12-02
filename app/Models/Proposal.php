@@ -100,14 +100,14 @@ class Proposal extends Model
     {
         return ProposalDocumentType::all()->filter(function ($item) {
             return $item->is_technical;
-        })->sortBy('description');
+        });
     }
 
     public static function getEconomicDocumentsTypes()
     {
         return ProposalDocumentType::all()->filter(function ($item) {
             return $item->is_economic;
-        })->sortBy('description');
+        });
     }
 
     public function getIsAcceptedAttribute()

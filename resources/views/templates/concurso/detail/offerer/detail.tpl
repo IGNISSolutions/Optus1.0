@@ -280,6 +280,15 @@
                     self.documents.push(new Document(item));
                 });
             }
+
+            // Computed para mostrar documentos ordenados alfabéticamente (solo visual)
+            this.sortedDocuments = ko.computed(function() {
+                return self.documents().slice().sort(function(a, b) {
+                    var nameA = (a.name() || '').toLowerCase();
+                    var nameB = (b.name() || '').toLowerCase();
+                    return nameA.localeCompare(nameB, 'es');
+                });
+            });
         }
 
         var EconomicProposalProduct = function(data, currentRound) {
