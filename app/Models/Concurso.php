@@ -42,7 +42,8 @@ class Concurso extends Model
         'deleted_at',
         'tercera_ronda_fecha_limite',
         'cuarta_ronda_fecha_limite',
-        'quita_ronda_fecha_limite'
+        'quita_ronda_fecha_limite',
+        'fecha_apertura_sobres'
     ];
 
     protected $fillable = [
@@ -92,6 +93,7 @@ class Concurso extends Model
         'precio_minimo',
         'solo_ofertas_mejores',
         'aperturasobre',
+        'fecha_apertura_sobres',
         'subastavistaciega',
         'unidad_minima',
         'ficha_tecnica_incluye',

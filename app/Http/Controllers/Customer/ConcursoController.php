@@ -4324,6 +4324,13 @@ class ConcursoController extends BaseController
                 ]);
                 $offerer->refresh();
             }
+            
+            // Guardar fecha de apertura de sobres si es la primera vez
+            if (!$concurso->fecha_apertura_sobres) {
+                $concurso->fecha_apertura_sobres = Carbon::now();
+                $concurso->save();
+            }
+            
             $connection->commit();
             $message = 'Ofertas actualizadas.';
             $success = true;
