@@ -1369,7 +1369,24 @@
 
                 // ⚠️ Solo validar si es envío definitivo
                 if (!isUpdate) {
-                    // 1️⃣ PRIMERO: Verificar si TODOS los campos están vacíos
+                    // 0️⃣ PRIORIDAD MÁXIMA: Validar documento de propuesta económica
+                    const documents = self.EconomicProposal().documents();
+                    if (documents.length > 0) {
+                        const propuestaEconomicaDoc = documents[0]; // Primer documento es la Propuesta Económica
+                        if (!propuestaEconomicaDoc.filename() || propuestaEconomicaDoc.filename().trim() === '') {
+                            swal({
+                                title: "Error",
+                                text: "Debe cargar el archivo de Propuesta Económica.",
+                                type: "error",
+                                confirmButtonText: "Aceptar",
+                                confirmButtonClass: 'btn btn-danger',
+                                buttonsStyling: false
+                            });
+                            return;
+                        }
+                    }
+
+                    // 1️⃣ SEGUNDO: Verificar si TODOS los campos están vacíos
                     const todosVacios = items.every(item => {
                         if (!item.ProductSelected()) return true; // Item no seleccionado cuenta como vacío
                         
@@ -1395,7 +1412,7 @@
                         return;
                     }
 
-                    // 2️⃣ SEGUNDO: Validar cantidad cotizada específicamente
+                    // 2️⃣ TERCERO: Validar cantidad cotizada específicamente
                     const itemsSinCantidad = items.filter(item => {
                         if (!item.ProductSelected()) return false;
                         const cant = parseFloat(item.cantidad());
@@ -1415,7 +1432,48 @@
                         return;
                     }
 
-                    // 2️⃣.1 VALIDAR: Cotización
+                    // 2️⃣.1 VALIDAR: Cantidad cotizada según reglas de negocio
+                    // Si oferta_minima == cantidad_solicitada → debe ser exactamente igual
+                    // Si oferta_minima != cantidad_solicitada → debe estar entre minima y solicitada
+                    const itemsCantidadInvalida = items.filter(item => {
+                        if (!item.ProductSelected()) return false;
+                        const cantCotizada = parseFloat(item.cantidad());
+                        const cantSolicitada = parseFloat(item.total_quantity());
+                        const cantMinima = parseFloat(item.minimum_quantity());
+                        
+                        if (cantMinima === cantSolicitada) {
+                            // Debe ser exactamente igual
+                            return cantCotizada !== cantSolicitada;
+                        } else {
+                            // Debe estar en el rango [minima, solicitada]
+                            return cantCotizada < cantMinima || cantCotizada > cantSolicitada;
+                        }
+                    });
+
+                    if (itemsCantidadInvalida.length > 0) {
+                        const item = itemsCantidadInvalida[0];
+                        const cantSolicitada = parseFloat(item.total_quantity());
+                        const cantMinima = parseFloat(item.minimum_quantity());
+                        
+                        let mensaje;
+                        if (cantMinima === cantSolicitada) {
+                            mensaje = 'La Cantidad Cotizada de "' + item.product_name() + '" debe ser igual a ' + cantSolicitada + '.';
+                        } else {
+                            mensaje = 'La Cantidad Cotizada de "' + item.product_name() + '" debe ser mayor a ' + cantMinima + ' y menor o igual a ' + cantSolicitada + '.';
+                        }
+                        
+                        swal({
+                            title: "Error",
+                            text: mensaje,
+                            type: "error",
+                            confirmButtonText: "Aceptar",
+                            confirmButtonClass: 'btn btn-danger',
+                            buttonsStyling: false
+                        });
+                        return;
+                    }
+
+                    // 2️⃣.2 VALIDAR: Cotización
                     const itemsSinCotizacion = items.filter(item => {
                         if (!item.ProductSelected()) return false;
                         const cot = parseFloat(item.cotizacion());
