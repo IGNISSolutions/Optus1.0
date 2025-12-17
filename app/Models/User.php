@@ -268,5 +268,46 @@ class User extends Model
         return $result;
     }
 
-    
+    public function getCompradoresByCompanyList()
+    {
+        $result = [];
+        $query = self::query()->where('type_id', 3); // 3 = compradores
+
+        // Caso: cliente / admin / superadmin -> mismos compradores de su company
+        if ($this->is_customer || isAdmin() || isSuperAdmin()) {
+            if ($this->customer_company_id) {
+                $query->where('customer_company_id', $this->customer_company_id);
+            } else {
+                return $result; // sin company, no hay qué listar
+            }
+        }
+        // Caso: oferente -> compradores de las compañías cliente asociadas a su empresa oferente
+        elseif ($this->is_offerer && $this->offerer_company) {
+            $customerIds = $this->offerer_company->associated_customers
+                ? $this->offerer_company->associated_customers->pluck('id')->all()
+                : [];
+
+            if (!empty($customerIds)) {
+                $query->whereIn('customer_company_id', $customerIds);
+            } else {
+                return $result;
+            }
+        }
+        // Otros tipos de usuario: no listamos
+        else {
+            return $result;
+        }
+
+        // SoftDeletes ya filtra borrados por defecto
+        $users = $query->orderBy('first_name')->orderBy('last_name')->get();
+
+        foreach ($users as $user) {
+            $result[] = [
+                'id'   => $user->id,
+                'text' => $user->full_name,
+            ];
+        }
+
+        return $result;
+    }
 }
