@@ -106,4 +106,9 @@ class CustomerCompany extends Model
     {
         return $this->hasManyThrough(Concurso::class, User::class, 'customer_company_id', 'id_cliente', 'id', 'id')->whereNotNull('concursos.deleted_at');
     }
+
+        public function getAllSolpedsByCompany()
+    {
+        return $this->hasManyThrough(Solped::class, User::class, 'customer_company_id', 'id_solicitante', 'id', 'id');
+    }
 }

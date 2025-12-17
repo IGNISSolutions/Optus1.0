@@ -168,6 +168,64 @@ app()->group('/concursos', function () {
     $this->post('/delete/{id}', 'App\Http\Controllers\Customer\ConcursoController:delete')->add(new AuthMiddleware())->setName('concursos.cliente.delete');
     $this->post('/verOfertas/{id}', 'App\Http\Controllers\Customer\ConcursoController:verOfertas')->add(new AuthMiddleware())->setName('concursos.cliente.verOfertas');
     $this->post('/setToken/{id}', 'App\Http\Controllers\Customer\ConcursoController:setToken')->add(new AuthMiddleware())->setName('concursos.cliente.setToken');
+    // Crear desde SOLPEDs
+    $this->post('/cliente/from-solpeds', 'App\Http\Controllers\Customer\ConcursoController:createFromSolpeds')->add(new AuthMiddleware())->setName('concursos.cliente.createFromSolpeds');
+    $this->post('/cliente/auction-from-solpeds', 'App\Http\Controllers\Customer\ConcursoController:createAuctionFromSolpeds')->add(new AuthMiddleware())->setName('concursos.cliente.createAuctionFromSolpeds');
+});
+
+// SOLPED
+app()->group('/solped', function () {
+
+    //Enviar Solicitud a comprador
+    $this->post('/solicitante/send', 'App\Http\Controllers\Solped\SolpedController:send')->add(new AuthMiddleware())->setName('solped.send');
+    //Cancelar Solicitud por solicitante
+    $this->post('/solicitante/cancelSolped', 'App\Http\Controllers\Solped\SolpedController:cancelSolped')->add(new AuthMiddleware())->setName('solped.cancelSolped');
+    //Aceptar/Rechazar Solicitud comprador
+    //$this->post('/cliente/accept-or-reject', 'App\Http\Controllers\Customer\SolpedController:acceptOrReject')->add(new AuthMiddleware())->setName('solped.acceptOrReject');
+    $this->post('/cliente/send-back', 'App\Http\Controllers\Customer\SolpedController:sendBack')->add(new AuthMiddleware())->setName('solped.sendBack');
+    $this->post('/cliente/reject', 'App\Http\Controllers\Customer\SolpedController:reject')->add(new AuthMiddleware())->setName('solped.reject');
+    $this->post('/cliente/approve', 'App\Http\Controllers\Customer\SolpedController:approve')->add(new AuthMiddleware())->setName('solped.approve');
+    //Detail Cliente 
+    $this->get('/cliente/{etapa}/{id:[0-9]+}', 'App\Http\Controllers\Customer\SolpedController:serveDetail')->add(new AuthMiddleware())->setName('solped.serveDetail');
+    $this->get('/cliente/{etapa}/{id:[0-9]+}/detail', 'App\Http\Controllers\Customer\SolpedController:detail')->add(new AuthMiddleware())->setName('solped.detail');
+
+    //Monitor Cliente
+    $this->get('/cliente/monitor', 'App\Http\Controllers\Solped\SolpedController:serveTypeList')->add(new AuthMiddleware())->setName('solped.serveTypeList');
+    $this->get('/cliente/monitor/list', 'App\Http\Controllers\Solped\SolpedController:list')->add(new AuthMiddleware())->setName('solped.list');
+    $this->post('/cliente/monitor/list', 'App\Http\Controllers\Solped\SolpedController:listFilter')->add(new AuthMiddleware())->setName('solped.listFilter');
+
+    //Monitor Solicitante
+    $this->get('/solicitante/monitor', 'App\Http\Controllers\Solped\SolpedController:serveTypeList')->add(new AuthMiddleware())->setName('solped.serveTypeList');
+    $this->get('/solicitante/monitor/list', 'App\Http\Controllers\Solped\SolpedController:list')->add(new AuthMiddleware())->setName('solped.list');
+    $this->post('/solicitante/monitor/list', 'App\Http\Controllers\Solped\SolpedController:listFilter')->add(new AuthMiddleware())->setName('solped.listFilter');
+
+    //Enviar Solicitud Solicitante
+    $this->post('/invitations/send', 'App\Http\Controllers\Solped\SolpedInvitationController:send')->add(new AuthMiddleware())->setName('solped.invitations.send');
+
+    //Detalle Solicitante
+    $this->get('/solicitante/{etapa}/{id:[0-9]+}', 'App\Http\Controllers\Solped\SolpedController:serveDetail')->add(new AuthMiddleware())->setName('solped.serveDetail');
+    $this->get('/solicitante/{etapa}/{id:[0-9]+}/detail', 'App\Http\Controllers\Solped\SolpedController:detail')->add(new AuthMiddleware())->setName('solped.detail');
+
+    $this->get('/solicitudes', 'App\Http\Controllers\Solped\SolpedController:serveList')->add(new AuthMiddleware())->setName('solped.serveList');
+        
+    $this->get('/list', 'App\Http\Controllers\Solped\SolpedController:listJson')->add(new AuthMiddleware())->setName('solped.listJson');
+
+    $this->get('/nuevo', 'App\Http\Controllers\Solped\SolpedController:serveCreate')->add(new AuthMiddleware())->setName('solped.serveCreate');
+
+    $this->get('/edicion/{id:[0-9]+}', 'App\Http\Controllers\Solped\SolpedController:serveEdit')->add(new AuthMiddleware())->setName('solped.serveEdit');
+
+    // API unificada create/edit (JSON) → usa regex para NO capturar "save"
+    $this->get('/{action:create|edit}[/{id:[0-9]+}]','App\Http\Controllers\Solped\SolpedController:editOrCreate')->add(new AuthMiddleware())->setName('solped.editOrCreate');
+
+    // Chequear productos
+    $this->post('/products/check','App\Http\Controllers\Solped\SolpedController:checkProducts')->add(new AuthMiddleware())->setName('solped.products.check');
+
+    // Guardar (POST)
+    $this->post('/save[/{id:[0-9]+}]','App\Http\Controllers\Solped\SolpedController:store')->add(new AuthMiddleware())->setName('solped.solicitante.store');
+    //Eliminar
+    $this->post('/delete/{id}', 'App\Http\Controllers\Solped\SolpedController:delete')->add(new AuthMiddleware())->setName('solped.solicitante.delete');
+
+
 });
 
 // USUARIOS Y PERMISOS

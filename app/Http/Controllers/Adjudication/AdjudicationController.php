@@ -72,6 +72,17 @@ class AdjudicationController extends BaseController
 
             $connection->commit();
 
+            // Si se aceptó la adjudicación, actualizar solpeds
+            if ($accept) {
+                $this->updateSolpedsWhenAdjudicationAccepted($concurso);
+                // Enviar correo a solicitantes de SOLPEDs involucradas
+                try {
+                    $this->sendEmailAdjudicationAcceptedToSolpeds($concurso, $oferente);
+                } catch (\Exception $e) {
+                    error_log('Error enviando emails de adjudicación aceptada a solicitantes de SOLPED: ' . $e->getMessage());
+                }
+            }
+
             $subject = $concurso->nombre . ' - ' . $title;
             $html = $this->fetch($template, [
                 'title' => $title,
@@ -799,6 +810,105 @@ class AdjudicationController extends BaseController
             return $concurso->oferentes->where('id_offerer', $ids)->first();
         } else {
             return $concurso->oferentes->whereIn('id_offerer', $ids);
+        }
+    }
+
+    /**
+     * Actualizar solpeds a estado 'adjudicada' cuando hay oferentes con etapa 'adjudicacion-aceptada'
+     * 
+     * @param \App\Models\Concurso $concurso
+     */
+    private function updateSolpedsWhenAdjudicationAccepted($concurso)
+    {
+        try {
+            error_log("=== ACTUALIZANDO SOLPEDS POR ADJUDICACION ===");
+            error_log("Concurso ID: " . $concurso->id);
+            error_log("created_from_solped: " . $concurso->created_from_solped);
+            
+            // 1. Verificar si el concurso tiene solpeds asociadas
+            if (empty($concurso->created_from_solped)) {
+                error_log("No hay solpeds asociadas");
+                return;
+            }
+
+            // 2. Obtener IDs de solpeds (separados por comas)
+            $solpedIds = array_map('intval', array_map('trim', explode(',', $concurso->created_from_solped)));
+            error_log("Solped IDs: " . json_encode($solpedIds));
+
+            // 3. Verificar si hay oferentes con 'adjudicacion-aceptada'
+            $hasAdjudicationAccepted = \App\Models\Participante::where('id_concurso', $concurso->id)
+                ->where('etapa_actual', \App\Models\Participante::ETAPAS['adjudicacion-aceptada'])
+                ->exists();
+
+            error_log("¿Hay adjudicacion-aceptada?: " . ($hasAdjudicationAccepted ? 'Sí' : 'No'));
+
+            if ($hasAdjudicationAccepted) {
+                // 4. Actualizar solpeds a estado 'adjudicada'
+                $updated = \App\Models\Solped::whereIn('id', $solpedIds)
+                    ->update([
+                        'estado_actual' => 'adjudicada',
+                        'etapa_actual' => 'finalizada',
+                        'updated_at' => \Carbon\Carbon::now()
+                    ]);
+
+                error_log("Solpeds actualizadas: " . $updated);
+                error_log("=== FIN ACTUALIZACIÓN SOLPEDS ===");
+            }
+
+        } catch (\Exception $e) {
+            error_log("Error en updateSolpedsWhenAdjudicationAccepted: " . $e->getMessage());
+        }
+    }
+
+    /**
+     * Enviar email a solicitante/s de las SOLPEDs involucradas cuando se acepta la adjudicación
+     * Incluye proveedor adjudicado y fecha/hora de la aceptación
+     *
+     * @param \App\Models\Concurso $concurso
+     * @param \App\Models\Participante $oferente
+     */
+    private function sendEmailAdjudicationAcceptedToSolpeds($concurso, $oferente)
+    {
+        if (empty($concurso->created_from_solped)) {
+            return;
+        }
+
+        $emailService = new EmailService();
+        $template = rootPath(config('app.templates_path')) . '/email/solped-adjudicacion-aceptada.tpl';
+
+        $solpedIds = array_map('intval', array_map('trim', explode(',', $concurso->created_from_solped)));
+        $solpeds = \App\Models\Solped::whereIn('id', $solpedIds)->get();
+
+        $adjudicado = $oferente && $oferente->company ? $oferente->company->business_name : 'Proveedor adjudicado';
+        $fechaHora = Carbon::now()->format('d/m/Y H:i');
+
+        foreach ($solpeds as $solped) {
+            try {
+                if (!$solped->solicitante || empty($solped->solicitante->email)) {
+                    continue;
+                }
+
+                $subject = 'Solicitud #' . $solped->id . ' - Adjudicación aceptada';
+
+                $html = $this->fetch($template, [
+                    'title' => $subject,
+                    'ano' => Carbon::now()->format('Y'),
+                    'concurso' => $concurso,
+                    'user' => $solped->solicitante,
+                    'solped' => $solped,
+                    'adjudicado' => $adjudicado,
+                    'fecha_hora' => $fechaHora,
+                ]);
+
+                $emailService->send(
+                    $html,
+                    $subject,
+                    [$solped->solicitante->email],
+                    $solped->solicitante->full_name
+                );
+            } catch (\Exception $e) {
+                error_log("Error enviando email de adjudicación aceptada para SOLPED {$solped->id}: " . $e->getMessage());
+            }
         }
     }
 }

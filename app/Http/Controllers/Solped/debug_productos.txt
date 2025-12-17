@@ -1,0 +1,270 @@
+=== Solped ID: 1 ===
+Cantidad productos: 1
+Productos: Array
+(
+    [0] => Array
+        (
+            [id] => 1
+            [id_solped] => 1
+            [id_usuario_creador] => 1668
+            [nombre] => item1
+            [descripcion] => lakjdlkajdlakjdlakjda
+            [cantidad] => 2
+            [oferta_minima] => 2
+            [unidad] => 1
+            [targetcost] => 0
+            [eliminado] => 0
+            [created_at] => 
+            [updated_at] => 
+            [deleted_at] => 
+            [unidad_medida] => Array
+                (
+                    [id] => 1
+                    [name] => M
+                    [created_at] => 2020-09-14 00:51:59
+                    [updated_at] => 
+                    [deleted_at] => 
+                )
+
+        )
+
+)
+
+=== Solped ID: 3 ===
+Cantidad productos: 1
+Productos: Array
+(
+    [0] => Array
+        (
+            [id] => 3
+            [id_solped] => 3
+            [id_usuario_creador] => 1668
+            [nombre] => aaaa
+            [descripcion] => 
+            [cantidad] => 2
+            [oferta_minima] => 2
+            [unidad] => 2
+            [targetcost] => 0
+            [eliminado] => 0
+            [created_at] => 
+            [updated_at] => 
+            [deleted_at] => 
+            [unidad_medida] => Array
+                (
+                    [id] => 2
+                    [name] => cm
+                    [created_at] => 2020-09-14 00:51:59
+                    [updated_at] => 
+                    [deleted_at] => 
+                )
+
+        )
+
+)
+
+=== Solped ID: 4 ===
+Cantidad productos: 2
+Productos: Array
+(
+    [0] => Array
+        (
+            [id] => 4
+            [id_solped] => 4
+            [id_usuario_creador] => 1668
+            [nombre] => aaa
+            [descripcion] => 
+            [cantidad] => 2
+            [oferta_minima] => 2
+            [unidad] => 2
+            [targetcost] => 0
+            [eliminado] => 0
+            [created_at] => 
+            [updated_at] => 
+            [deleted_at] => 
+            [unidad_medida] => Array
+                (
+                    [id] => 2
+                    [name] => cm
+                    [created_at] => 2020-09-14 00:51:59
+                    [updated_at] => 
+                    [deleted_at] => 
+                )
+
+        )
+
+    [1] => Array
+        (
+            [id] => 5
+            [id_solped] => 4
+            [id_usuario_creador] => 1668
+            [nombre] => item2
+            [descripcion] => 
+            [cantidad] => 2
+            [oferta_minima] => 2
+            [unidad] => 3
+            [targetcost] => 0
+            [eliminado] => 0
+            [created_at] => 
+            [updated_at] => 
+            [deleted_at] => 
+            [unidad_medida] => Array
+                (
+                    [id] => 3
+                    [name] => Lts
+                    [created_at] => 2020-09-14 00:51:59
+                    [updated_at] => 
+                    [deleted_at] => 
+                )
+
+        )
+
+)
+
+=== Solped ID: 5 ===
+Cantidad productos: 1
+Productos: Array
+(
+    [0] => Array
+        (
+            [id] => 6
+            [id_solped] => 5
+            [id_usuario_creador] => 1668
+            [nombre] => sss
+            [descripcion] => 
+            [cantidad] => 1
+            [oferta_minima] => 1
+            [unidad] => 4
+            [targetcost] => 0
+            [eliminado] => 0
+            [created_at] => 
+            [updated_at] => 
+            [deleted_at] => 
+            [unidad_medida] => Array
+                (
+                    [id] => 4
+                    [name] => Tn
+                    [created_at] => 2020-09-14 00:51:59
+                    [updated_at] => 
+                    [deleted_at] => 
+                )
+
+        )
+
+)
+
+=== Solped ID: 6 ===
+Cantidad productos: 2
+Productos: Array
+(
+    [0] => Array
+        (
+            [id] => 7
+            [id_solped] => 6
+            [id_usuario_creador] => 1668
+            [nombre] => Item 1
+            [descripcion] => 
+            [cantidad] => 2
+            [oferta_minima] => 2
+            [unidad] => 3
+            [targetcost] => 0
+            [eliminado] => 0
+            [created_at] => 
+            [updated_at] => 
+            [deleted_at] => 
+            [unidad_medida] => Array
+                (
+                    [id] => 3
+                    [name] => Lts
+                    [created_at] => 2020-09-14 00:51:59
+                    [updated_at] => 
+                    [deleted_at] => 
+                )
+
+        )
+
+    [1] => Array
+        (
+            [id] => 8
+            [id_solped] => 6
+            [id_usuario_creador] => 1668
+            [nombre] => aaa
+            [descripcion] => es de algo
+            [cantidad] => 4
+            [oferta_minima] => 4
+            [unidad] => 7
+            [targetcost] => 0
+            [eliminado] => 0
+            [created_at] => 
+            [updated_at] => 
+            [deleted_at] => 
+            [unidad_medida] => Array
+                (
+                    [id] => 7
+                    [name] => M2
+                    [created_at] => 2020-09-14 00:51:59
+                    [updated_at] => 
+                    [deleted_at] => 
+                )
+
+        )
+
+)
+
+=== Solped ID: 7 ===
+Cantidad productos: 2
+Productos: Array
+(
+    [0] => Array
+        (
+            [id] => 9
+            [id_solped] => 7
+            [id_usuario_creador] => 1668
+            [nombre] => item 1
+            [descripcion] => 
+            [cantidad] => 44
+            [oferta_minima] => 44
+            [unidad] => 4
+            [targetcost] => 0
+            [eliminado] => 0
+            [created_at] => 
+            [updated_at] => 
+            [deleted_at] => 
+            [unidad_medida] => Array
+                (
+                    [id] => 4
+                    [name] => Tn
+                    [created_at] => 2020-09-14 00:51:59
+                    [updated_at] => 
+                    [deleted_at] => 
+                )
+
+        )
+
+    [1] => Array
+        (
+            [id] => 10
+            [id_solped] => 7
+            [id_usuario_creador] => 1668
+            [nombre] => Item 2
+            [descripcion] => 
+            [cantidad] => 22
+            [oferta_minima] => 22
+            [unidad] => 5
+            [targetcost] => 0
+            [eliminado] => 0
+            [created_at] => 
+            [updated_at] => 
+            [deleted_at] => 
+            [unidad_medida] => Array
+                (
+                    [id] => 5
+                    [name] => UN
+                    [created_at] => 2020-09-14 00:51:59
+                    [updated_at] => 
+                    [deleted_at] => 
+                )
+
+        )
+
+)
+

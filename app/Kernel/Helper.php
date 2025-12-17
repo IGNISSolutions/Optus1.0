@@ -309,6 +309,13 @@ if (!function_exists('isCustomer')) {
 	}
 }
 
+if (!function_exists('isSolicitante')) {
+	function isSolicitante()
+	{
+		return isRole('customer-approve');
+	}
+}
+
 if (!function_exists('can')) {
 	function can($permission)
 	{

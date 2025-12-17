@@ -1,0 +1,51 @@
+Array
+(
+    [IdSolicitud] => 7
+    [Nombre] => Prueba etapas
+    [IdSolicitante] => 1668
+    [Solicitante] => sss aaa
+    [TipoCompraId] => 2
+    [CodigoInterno] => 
+    [Descripcion] => adadadada
+    [AreaSolicitante] => 
+    [CompradorSugerido] => 
+    [FechaCreacion] => 2025-09-15 12:01:54
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 
+    [FechaRechazo] => 
+    [FechaAceptacion] => 
+    [RejectComment] => 
+    [ReturnComment] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 9
+                    [Nombre] => item 1
+                    [Descripcion] => 
+                    [Cantidad] => 44
+                    [OfertaMinima] => 44
+                    [UnidadMedidaId] => 
+                    [UnidadMedidaNombre] => 
+                    [TargetCost] => 0
+                )
+
+            [1] => Array
+                (
+                    [Id] => 10
+                    [Nombre] => Item 2
+                    [Descripcion] => 
+                    [Cantidad] => 22
+                    [OfertaMinima] => 22
+                    [UnidadMedidaId] => 
+                    [UnidadMedidaNombre] => 
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => 
+    [FilePathComplete] => 
+    [Etapa] => en-analisis
+)

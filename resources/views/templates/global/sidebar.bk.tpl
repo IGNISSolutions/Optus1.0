@@ -31,53 +31,6 @@
                 </li>
             {/if}
 
-            {if isSolicitante() || isCustomer() || isAdmin()}
-            <li class="nav-item{if $page eq 'solped'} active open{/if}">
-                <a href="#" class="nav-link nav-toggle">
-                    <i class="icon-map"></i>
-                    <span class="title">Solped</span>
-                    <span class="arrow{if $page eq 'solped'} open{/if}"></span>
-                    {if $page eq 'solped'}
-                        <span class="selected"></span>
-                    {/if}
-                </a>
-
-                <ul class="sub-menu">
-                    {if isSolicitante() || isAdmin()}
-                        <li class="nav-item{if $accion eq 'monitor-solped'} active open{/if}">
-                            <a href="/solped/solicitante/monitor" class="nav-link ">
-                                {if isSolicitante() && isCustomer()}
-                                    <span class="title">Monitor</span>
-                                {else}
-                                    <span class="title">Monitor Solicitante</span>
-                                {/if}
-                            </a>
-                        </li>
-                    {/if}
-
-                    {if isCustomer() && !isSolicitante() || isAdmin()}
-                        <li class="nav-item{if $accion eq 'monitor-solped-customer'} active open{/if}">
-                            <a href="/solped/cliente/monitor" class="nav-link ">
-                                {if isCustomer()}
-                                    <span class="title">Monitor</span>
-                                {else}
-                                    <span class="title">Monitor Cliente</span>
-                                {/if}
-                            </a>
-                        </li>
-                    {/if}
-
-                    {if isSolicitante()}
-                        <li class="nav-item{if $accion eq 'solicitudes-solped'} active open{/if}">
-                            <a href="/solped/solicitudes" class="nav-link ">
-                                <span class="title">Solicitudes</span>
-                            </a>
-                        </li>
-                    {/if}
-                </ul>
-            </li>
-        {/if}
-
             {if can('concursos-edit-online') or
                 can('concursos-edit-sobrecerrado') or
                 can('concursos-edit-go') or
@@ -117,7 +70,7 @@
                         </li>
                     {/if}
                     {if can('concursos-list')}
-                        {if isOfferer() || isAdmin() }
+                        {if isOfferer() || isAdmin()}
                             <li class="nav-item{if $accion eq 'listado-oferente'} active open{/if}">
                                 <a href="/concursos/oferente" class="nav-link ">
                                     <span class="title">
@@ -130,7 +83,7 @@
                                 </a>
                             </li>
                         {/if}
-                        {if isCustomer() || isAdmin() || isSolicitante()}
+                        {if isCustomer() || isAdmin()}
                             <li class="nav-item{if $accion eq 'listado-cliente'} active open{/if}">
                                 <a href="/concursos/cliente" class="nav-link ">
                                     <span class="title">

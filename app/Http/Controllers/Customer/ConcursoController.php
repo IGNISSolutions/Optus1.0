@@ -26,6 +26,7 @@ use App\Models\Participante;
 use App\Models\Producto;
 use App\Models\Provincia;
 use App\Models\TipoOperacion;
+use App\Models\SolpedItems;
 use App\Models\Sheet;
 use App\Models\SheetType;
 use App\Models\ConvocatoriaTipo;
@@ -331,9 +332,9 @@ class ConcursoController extends BaseController
                 $isOnline = $args['type'] === 'online';
                 $list[] = [
                     'Id' => $concurso->id,
-                    'TipoOperacion' => $concurso->alcance->nombre,
+                    'TipoOperacion' => $concurso->alcance ? $concurso->alcance->nombre : 'Sin especificar',
                     'Nombre' => $concurso->nombre,
-                    'creadoPor' => $concurso->cliente->first_name . ' ' . $concurso->cliente->last_name,
+                    'creadoPor' => $concurso->cliente ? $concurso->cliente->first_name . ' ' . $concurso->cliente->last_name : 'Sin especificar',
                     'ImagePath' => filePath(config('app.images_path')),
                     'Portrait' => $concurso->portrait,
                     //'etapaActual' => $etapaActual,
@@ -5303,6 +5304,321 @@ class ConcursoController extends BaseController
                 'success' => false,
                 'message' => $e->getMessage()
             ], 500);
+        }
+    }
+
+    public function createFromSolpeds(Request $request, Response $response)
+    {
+        $success = false;
+        $message = null;
+        $status = 200;
+
+        try {
+            // 🔹 Obtener usuario
+            $user = user();
+
+            if (!$user) {
+                throw new \Exception("No hay usuario logueado.");
+            }
+
+            // 🔹 Obtener IDs de solpeds
+            $idsSolpeds = $request->getParam('solpeds', []);
+
+            if (empty($idsSolpeds)) {
+                throw new \Exception("No se enviaron solicitudes de compra.");
+            }
+
+            // 🔹 Traer los productos vinculados a esas solpeds usando el modelo
+            $productos = \App\Models\SolpedItems::whereIn('id_solped', $idsSolpeds)->get();
+
+            if ($productos->isEmpty()) {
+                throw new \Exception("No se encontraron ítems en las solicitudes seleccionadas.");
+            }
+
+            // 🔹 CREAR EL CONCURSO (LICITACIÓN SOBRE CERRADO)
+            date_default_timezone_set($user->customer_company->timeZone ?? 'America/Argentina/Buenos_Aires');
+            
+            // Calcular fecha de finalización de consultas (7 días desde ahora)
+            $fechaFinalizacionConsultas = Carbon::now()->addDays(7);
+            
+            $concurso = new Concurso();
+            $concurso->id_cliente = $user->id; // ID del usuario, no de la compañía
+            $concurso->tipo_concurso = Concurso::TYPES['sobrecerrado']; // Licitación sobre cerrado
+            $concurso->tipo_operacion = 2; // Licitación
+            $concurso->nombre = "Licitación desde SOLPEDs - " . date('d/m/Y H:i');
+            $concurso->resena = "Licitación creada automáticamente desde SOLPEDs: " . implode(', ', $idsSolpeds);
+            $concurso->descripcion = "";
+            $concurso->pais = $user->customer_company->country ?? 'Argentina';
+            $concurso->provincia = $user->customer_company->province ?? null;
+            $concurso->fecha_alta = Carbon::now();
+            $concurso->finalizacion_consultas = $fechaFinalizacionConsultas;
+            $concurso->fecha_limite = $fechaFinalizacionConsultas;
+            $concurso->area_sol = "Administración";
+            $concurso->moneda = 5; // ARS (Pesos Argentinos) por defecto
+            $concurso->tipo_convocatoria = 1; // Privada
+            $concurso->chat = 'S';
+            $concurso->adjudicado = 0;
+            $concurso->ronda_actual = 1;
+            $concurso->created_from_solped = implode(',', $idsSolpeds); // Guardar IDs de SOLPEDs separados por coma
+            
+            $concurso->save();
+
+            // 🔹 Insertar productos asociados al concurso recién creado
+            $insertCount = 0;
+            foreach ($productos as $p) {
+                $producto = new \App\Models\Producto();
+                $producto->id_concurso   = $concurso->id;
+                $producto->id_usuario    = $user->id; // ID del usuario que crea el concurso
+                $producto->nombre        = $p->nombre ?? '';
+                $producto->descripcion   = $p->descripcion ?? '';
+                $producto->cantidad      = floatval($p->cantidad ?? 0);
+                $producto->oferta_minima = floatval($p->oferta_minima ?? 0);
+                $producto->unidad        = $p->unidad ?? 0;
+                $producto->targetcost    = floatval($p->targetcost ?? $p->oferta_minima ?? 0);
+                $producto->eliminado     = 0;
+                $producto->save();
+                $insertCount++;
+            }
+
+            // 🔹 Actualizar estado de las SOLPEDs a "licitando"
+            $solpedsToUpdate = \App\Models\Solped::whereIn('id', $idsSolpeds)->get();
+            foreach ($solpedsToUpdate as $solped) {
+                $solped->estado_actual = 'licitando';
+                $solped->fecha_inicio_licitacion = Carbon::now();
+                $solped->save();
+            }
+
+            // 🔹 Generar token de acceso para edición
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
+            
+            $secret = getenv('TOKEN_SECRET_KEY');
+            $sessionId = session_id();
+            $token = hash_hmac('sha256', $concurso->id . $sessionId, $secret);
+            
+            $_SESSION['edit_token'] = $_SESSION['edit_token'] ?? [];
+            $_SESSION['edit_token'][$concurso->id] = $token;
+
+            // 🔹 Enviar emails a los solicitantes de las SOLPEDs
+            $emailService = new EmailService();
+            $solpeds = \App\Models\Solped::whereIn('id', $idsSolpeds)->get();
+            
+            foreach ($solpeds as $solped) {
+                try {
+                    $solicitante = $solped->solicitante;
+                    if ($solicitante && $solicitante->email) {
+                        $template = rootPath(config('app.templates_path')) . '/email/solped-concurso-creado.tpl';
+                        $subject = 'Solicitud #' . $solped->id . ' - Proceso de Licitación Iniciado';
+                        
+                        $html = $this->fetch($template, [
+                            'title' => $subject,
+                            'ano' => Carbon::now()->format('Y'),
+                            'solped' => $solped,
+                            'user' => $solicitante,
+                            'fecha_creacion' => Carbon::now()->format('d-m-Y H:i')
+                        ]);
+                        
+                        $successMail = $emailService->send(
+                            $html,
+                            $subject,
+                            [$solicitante->email],
+                            $solicitante->full_name
+                        );
+                    }
+                } catch (\Exception $e) {
+                }
+            }
+            
+            // 🔹 Retornar JSON con redirectUrl a EDICIÓN
+            $redirectUrl = '/concursos/sobrecerrado/edicion/' . $concurso->id;
+
+            return $this->json($response, [
+                'success' => true,
+                'message' => "Licitación creada exitosamente. Complete los datos restantes.",
+                'redirectUrl' => $redirectUrl,
+                'concursoId' => $concurso->id
+            ]);
+
+        } catch (\Exception $e) {
+            $success = false;
+            $message = $e->getMessage();
+            $status = method_exists($e, 'getStatusCode')
+                ? $e->getStatusCode()
+                : (method_exists($e, 'getCode') ? $e->getCode() : 500);
+
+            return $this->json($response, [
+                'success' => $success,
+                'message' => $message,
+                'data' => []
+            ], $status);
+        }
+    }
+
+     public function createAuctionFromSolpeds(Request $request, Response $response)
+    {
+        $success = false;
+        $message = null;
+        $status = 200;
+
+        try {
+            // 🔹 Obtener usuario
+            $user = user();
+
+            if (!$user) {
+                throw new \Exception("No hay usuario logueado.");
+            }
+
+            // 🔹 Debug completo del request
+
+            // 🔹 Obtener IDs de solpeds (desde JSON body)
+            $body = $request->getParsedBody();
+            $idsSolpeds = isset($body['solpeds']) ? $body['solpeds'] : [];
+
+            if (empty($idsSolpeds)) {
+                throw new \Exception("No se enviaron solicitudes de compra.");
+            }
+
+            // 🔹 Traer los productos vinculados a esas solpeds usando el modelo
+            $productos = \App\Models\SolpedItems::whereIn('id_solped', $idsSolpeds)->get();
+
+            if ($productos->isEmpty()) {
+                throw new \Exception("No se encontraron ítems en las solicitudes seleccionadas.");
+            }
+
+            // 🔹 CREAR EL CONCURSO (SUBASTA ONLINE)
+            date_default_timezone_set($user->customer_company->timeZone ?? 'America/Argentina/Buenos_Aires');
+            
+            // Calcular fecha de finalización de consultas (7 días desde ahora)
+            $fechaFinalizacionConsultas = Carbon::now()->addDays(7);
+            // Calcular fecha de inicio de subasta (8 días desde ahora, 1 día después de consultas)
+            $fechaInicioSubasta = Carbon::now()->addDays(8);
+            
+            $concurso = new Concurso();
+            $concurso->id_cliente = $user->id;
+            $concurso->tipo_concurso = Concurso::TYPES['online']; // Subasta online
+            $concurso->tipo_operacion = 2; // Licitación
+            $concurso->nombre = "Subasta desde SOLPEDs - " . date('d/m/Y H:i');
+            $concurso->resena = "Subasta creada automáticamente desde SOLPEDs: " . implode(', ', $idsSolpeds);
+            $concurso->descripcion = "";
+            $concurso->pais = $user->customer_company->country ?? 'Argentina';
+            $concurso->provincia = $user->customer_company->province ?? null;
+            $concurso->fecha_alta = Carbon::now();
+            $concurso->finalizacion_consultas = $fechaFinalizacionConsultas;
+            $concurso->fecha_limite = $fechaFinalizacionConsultas;
+            $concurso->area_sol = "Administración";
+            $concurso->moneda = 5; // ARS (Pesos Argentinos) por defecto
+            $concurso->tipo_convocatoria = 1; // Privada
+            $concurso->chat = 'S';
+            $concurso->adjudicado = 0;
+            $concurso->ronda_actual = 1;
+            
+            // Campos específicos de subasta
+            $concurso->inicio_subasta = $fechaInicioSubasta;
+            $concurso->duracion = 3600; // 1 hora por defecto (en segundos)
+            $concurso->tiempo_adicional = 20; // 20 segundos adicionales
+            $concurso->tipo_valor_ofertar = 1; // Por defecto
+            $concurso->ver_num_oferentes_participan = 'no';
+            $concurso->ver_oferta_ganadora = 'no';
+            $concurso->ver_ranking = 'no';
+            $concurso->ver_tiempo_restante = 'si';
+            $concurso->permitir_anular_oferta = 'no';
+            $concurso->solo_ofertas_mejores = 'no';
+            $concurso->aperturasobre = 'no';
+            $concurso->subastavistaciega = 'no';
+            $concurso->created_from_solped = implode(',', $idsSolpeds); // Guardar IDs de SOLPEDs separados por coma
+            
+            $concurso->save();
+
+            // 🔹 Insertar productos asociados al concurso recién creado
+            $insertCount = 0;
+            foreach ($productos as $p) {
+                $producto = new \App\Models\Producto();
+                $producto->id_concurso   = $concurso->id;
+                $producto->id_usuario    = $user->id;
+                $producto->nombre        = $p->nombre ?? '';
+                $producto->descripcion   = $p->descripcion ?? '';
+                $producto->cantidad      = floatval($p->cantidad ?? 0);
+                $producto->oferta_minima = floatval($p->oferta_minima ?? 0);
+                $producto->unidad        = $p->unidad ?? 0;
+                $producto->targetcost    = floatval($p->targetcost ?? $p->oferta_minima ?? 0);
+                $producto->eliminado     = 0;
+                $producto->save();
+                $insertCount++;
+            }
+
+            // 🔹 Actualizar estado de las SOLPEDs a "licitando"
+            $solpedsToUpdate = \App\Models\Solped::whereIn('id', $idsSolpeds)->get();
+            foreach ($solpedsToUpdate as $solped) {
+                $solped->estado_actual = 'licitando';
+                $solped->fecha_inicio_licitacion = Carbon::now();
+                $solped->save();
+            }
+
+            // 🔹 Generar token de acceso para edición
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
+            
+            $secret = getenv('TOKEN_SECRET_KEY');
+            $sessionId = session_id();
+            $token = hash_hmac('sha256', $concurso->id . $sessionId, $secret);
+            
+            $_SESSION['edit_token'] = $_SESSION['edit_token'] ?? [];
+            $_SESSION['edit_token'][$concurso->id] = $token;
+
+            // 🔹 Enviar emails a los solicitantes de las SOLPEDs
+            $emailService = new EmailService();
+            $solpeds = \App\Models\Solped::whereIn('id', $idsSolpeds)->get();
+            
+            foreach ($solpeds as $solped) {
+                try {
+                    $solicitante = $solped->solicitante;
+                    if ($solicitante && $solicitante->email) {
+                        $template = rootPath(config('app.templates_path')) . '/email/solped-concurso-creado.tpl';
+                        $subject = 'Solicitud #' . $solped->id . ' - Proceso de Subasta Iniciado';
+                        
+                        $html = $this->fetch($template, [
+                            'title' => $subject,
+                            'ano' => Carbon::now()->format('Y'),
+                            'solped' => $solped,
+                            'user' => $solicitante,
+                            'fecha_creacion' => Carbon::now()->format('d-m-Y H:i')
+                        ]);
+                        
+                        $successMail = $emailService->send(
+                            $html,
+                            $subject,
+                            [$solicitante->email],
+                            $solicitante->full_name
+                        );
+                    }
+                } catch (\Exception $e) {
+                }
+            }
+            
+            // 🔹 Retornar JSON con redirectUrl a EDICIÓN
+            $redirectUrl = '/concursos/online/edicion/' . $concurso->id;
+
+            return $this->json($response, [
+                'success' => true,
+                'message' => "Subasta creada exitosamente. Complete los datos restantes.",
+                'redirectUrl' => $redirectUrl,
+                'concursoId' => $concurso->id
+            ]);
+
+        } catch (\Exception $e) {
+            $success = false;
+            $message = $e->getMessage();
+            $status = method_exists($e, 'getStatusCode')
+                ? $e->getStatusCode()
+                : (method_exists($e, 'getCode') ? $e->getCode() : 500);
+
+            return $this->json($response, [
+                'success' => $success,
+                'message' => $message,
+                'data' => []
+            ], $status);
         }
     }
 }

@@ -1,0 +1,4305 @@
+
+=== detail INICIO === 10-12-2025 10:44:20 ===
+Params recibidos: Array
+(
+    [etapa] => aceptada
+    [id] => 39
+)
+
+Usuario: ID=2668, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=39, etapa=aceptada
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 48
+    [Nombre] => aaa
+    [Descripcion] => 
+    [Cantidad] => 2
+    [OfertaMinima] => 2
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Total productos: 1
+FilePath base: /img/solped/
+Document encontrado: NO
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 39
+    [Nombre] => Prueba Lic
+    [IdSolicitante] => 2668
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 3
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 11-12-2025 10:35:00
+    [FechaEntrega] => 15-12-2025 15:55:00
+    [FechaCreacion] => 10-12-2025 10:42:49
+    [FechaEnvioComprador] => 10-12-2025 10:42:57
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 10-12-2025 10:43:16
+    [RejectComment] => 
+    [ReturnComment] => 
+    [Etapa] => aceptada
+    [EstadoActual] => licitando
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 10-12-2025 10:43:10
+    [FechaDevolucion] => 
+    [CompradorDecisionFecha] => 
+    [CompradorDevolucionFecha] => 
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 48
+                    [Nombre] => aaa
+                    [Descripcion] => 
+                    [Cantidad] => 2
+                    [OfertaMinima] => 2
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => /img/solped/
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 10-12-2025 10:48:28 ===
+Params recibidos: Array
+(
+    [etapa] => aceptada
+    [id] => 39
+)
+
+Usuario: ID=2668, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=39, etapa=aceptada
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 48
+    [Nombre] => aaa
+    [Descripcion] => 
+    [Cantidad] => 2
+    [OfertaMinima] => 2
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Total productos: 1
+FilePath base: /img/solped/
+Document encontrado: NO
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 39
+    [Nombre] => Prueba Lic
+    [IdSolicitante] => 2668
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 3
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 11-12-2025 10:35:00
+    [FechaEntrega] => 15-12-2025 15:55:00
+    [FechaCreacion] => 10-12-2025 10:42:49
+    [FechaEnvioComprador] => 10-12-2025 10:42:57
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 10-12-2025 10:43:16
+    [RejectComment] => 
+    [ReturnComment] => 
+    [Etapa] => aceptada
+    [EstadoActual] => licitando
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 10-12-2025 10:43:10
+    [FechaDevolucion] => 
+    [CompradorDecisionFecha] => 
+    [CompradorDevolucionFecha] => 
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 48
+                    [Nombre] => aaa
+                    [Descripcion] => 
+                    [Cantidad] => 2
+                    [OfertaMinima] => 2
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => /img/solped/
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 10-12-2025 10:48:34 ===
+Params recibidos: Array
+(
+    [etapa] => aceptada
+    [id] => 39
+)
+
+Usuario: ID=2668, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=39, etapa=aceptada
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 48
+    [Nombre] => aaa
+    [Descripcion] => 
+    [Cantidad] => 2
+    [OfertaMinima] => 2
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Total productos: 1
+FilePath base: /img/solped/
+Document encontrado: NO
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 39
+    [Nombre] => Prueba Lic
+    [IdSolicitante] => 2668
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 3
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 11-12-2025 10:35:00
+    [FechaEntrega] => 15-12-2025 15:55:00
+    [FechaCreacion] => 10-12-2025 10:42:49
+    [FechaEnvioComprador] => 10-12-2025 10:42:57
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 10-12-2025 10:43:16
+    [RejectComment] => 
+    [ReturnComment] => 
+    [Etapa] => aceptada
+    [EstadoActual] => licitando
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 10-12-2025 10:43:10
+    [FechaDevolucion] => 
+    [CompradorDecisionFecha] => 
+    [CompradorDevolucionFecha] => 
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 48
+                    [Nombre] => aaa
+                    [Descripcion] => 
+                    [Cantidad] => 2
+                    [OfertaMinima] => 2
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => /img/solped/
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 10-12-2025 10:52:39 ===
+Params recibidos: Array
+(
+    [etapa] => aceptada
+    [id] => 39
+)
+
+Usuario: ID=2668, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=39, etapa=aceptada
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 48
+    [Nombre] => aaa
+    [Descripcion] => 
+    [Cantidad] => 2
+    [OfertaMinima] => 2
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Total productos: 1
+FilePath base: /img/solped/
+Document encontrado: NO
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 39
+    [Nombre] => Prueba Lic
+    [IdSolicitante] => 2668
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 3
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 11-12-2025 10:35:00
+    [FechaEntrega] => 15-12-2025 15:55:00
+    [FechaCreacion] => 10-12-2025 10:42:49
+    [FechaEnvioComprador] => 10-12-2025 10:42:57
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 10-12-2025 10:43:16
+    [RejectComment] => 
+    [ReturnComment] => 
+    [Etapa] => aceptada
+    [EstadoActual] => licitando
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 10-12-2025 10:43:10
+    [FechaDevolucion] => 
+    [CompradorDecisionFecha] => 
+    [CompradorDevolucionFecha] => 
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 48
+                    [Nombre] => aaa
+                    [Descripcion] => 
+                    [Cantidad] => 2
+                    [OfertaMinima] => 2
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => /img/solped/
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 10-12-2025 10:55:16 ===
+Params recibidos: Array
+(
+    [etapa] => aceptada
+    [id] => 39
+)
+
+Usuario: ID=2668, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=39, etapa=aceptada
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 48
+    [Nombre] => aaa
+    [Descripcion] => 
+    [Cantidad] => 2
+    [OfertaMinima] => 2
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Total productos: 1
+FilePath base: /img/solped/
+Document encontrado: NO
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 39
+    [Nombre] => Prueba Lic
+    [IdSolicitante] => 2668
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 3
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 11-12-2025 10:35:00
+    [FechaEntrega] => 15-12-2025 15:55:00
+    [FechaCreacion] => 10-12-2025 10:42:49
+    [FechaEnvioComprador] => 10-12-2025 10:42:57
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 10-12-2025 10:43:16
+    [RejectComment] => 
+    [ReturnComment] => 
+    [Etapa] => aceptada
+    [EstadoActual] => licitando
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 10-12-2025 10:43:10
+    [FechaDevolucion] => 
+    [CompradorDecisionFecha] => 
+    [CompradorDevolucionFecha] => 
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 48
+                    [Nombre] => aaa
+                    [Descripcion] => 
+                    [Cantidad] => 2
+                    [OfertaMinima] => 2
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => /img/solped/
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 10-12-2025 10:56:17 ===
+Params recibidos: Array
+(
+    [etapa] => aceptada
+    [id] => 39
+)
+
+Usuario: ID=2668, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=39, etapa=aceptada
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 48
+    [Nombre] => aaa
+    [Descripcion] => 
+    [Cantidad] => 2
+    [OfertaMinima] => 2
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Total productos: 1
+FilePath base: /img/solped/
+Document encontrado: NO
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 39
+    [Nombre] => Prueba Lic
+    [IdSolicitante] => 2668
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 3
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 11-12-2025 10:35:00
+    [FechaEntrega] => 15-12-2025 15:55:00
+    [FechaCreacion] => 10-12-2025 10:42:49
+    [FechaEnvioComprador] => 10-12-2025 10:42:57
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 10-12-2025 10:43:16
+    [RejectComment] => 
+    [ReturnComment] => 
+    [Etapa] => aceptada
+    [EstadoActual] => licitando
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 10-12-2025 10:43:10
+    [FechaDevolucion] => 
+    [CompradorDecisionFecha] => 
+    [CompradorDevolucionFecha] => 
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 48
+                    [Nombre] => aaa
+                    [Descripcion] => 
+                    [Cantidad] => 2
+                    [OfertaMinima] => 2
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => /img/solped/
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 10-12-2025 10:57:10 ===
+Params recibidos: Array
+(
+    [etapa] => aceptada
+    [id] => 39
+)
+
+Usuario: ID=2668, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=39, etapa=aceptada
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 48
+    [Nombre] => aaa
+    [Descripcion] => 
+    [Cantidad] => 2
+    [OfertaMinima] => 2
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Total productos: 1
+FilePath base: /img/solped/
+Document encontrado: NO
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 39
+    [Nombre] => Prueba Lic
+    [IdSolicitante] => 2668
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 3
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 11-12-2025 10:35:00
+    [FechaEntrega] => 15-12-2025 15:55:00
+    [FechaCreacion] => 10-12-2025 10:42:49
+    [FechaEnvioComprador] => 10-12-2025 10:42:57
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 10-12-2025 10:43:16
+    [RejectComment] => 
+    [ReturnComment] => 
+    [Etapa] => aceptada
+    [EstadoActual] => licitando
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 10-12-2025 10:43:10
+    [FechaDevolucion] => 
+    [CompradorDecisionFecha] => 
+    [CompradorDevolucionFecha] => 
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 48
+                    [Nombre] => aaa
+                    [Descripcion] => 
+                    [Cantidad] => 2
+                    [OfertaMinima] => 2
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => /img/solped/
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 10-12-2025 10:57:17 ===
+Params recibidos: Array
+(
+    [etapa] => aceptada
+    [id] => 39
+)
+
+Usuario: ID=2668, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=39, etapa=aceptada
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 48
+    [Nombre] => aaa
+    [Descripcion] => 
+    [Cantidad] => 2
+    [OfertaMinima] => 2
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Total productos: 1
+FilePath base: /img/solped/
+Document encontrado: NO
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 39
+    [Nombre] => Prueba Lic
+    [IdSolicitante] => 2668
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 3
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 11-12-2025 10:35:00
+    [FechaEntrega] => 15-12-2025 15:55:00
+    [FechaCreacion] => 10-12-2025 10:42:49
+    [FechaEnvioComprador] => 10-12-2025 10:42:57
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 10-12-2025 10:43:16
+    [RejectComment] => 
+    [ReturnComment] => 
+    [Etapa] => aceptada
+    [EstadoActual] => licitando
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 10-12-2025 10:43:10
+    [FechaDevolucion] => 
+    [CompradorDecisionFecha] => 
+    [CompradorDevolucionFecha] => 
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 48
+                    [Nombre] => aaa
+                    [Descripcion] => 
+                    [Cantidad] => 2
+                    [OfertaMinima] => 2
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => /img/solped/
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 10-12-2025 10:57:27 ===
+Params recibidos: Array
+(
+    [etapa] => aceptada
+    [id] => 39
+)
+
+Usuario: ID=2668, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=39, etapa=aceptada
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 48
+    [Nombre] => aaa
+    [Descripcion] => 
+    [Cantidad] => 2
+    [OfertaMinima] => 2
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Total productos: 1
+FilePath base: /img/solped/
+Document encontrado: NO
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 39
+    [Nombre] => Prueba Lic
+    [IdSolicitante] => 2668
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 3
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 11-12-2025 10:35:00
+    [FechaEntrega] => 15-12-2025 15:55:00
+    [FechaCreacion] => 10-12-2025 10:42:49
+    [FechaEnvioComprador] => 10-12-2025 10:42:57
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 10-12-2025 10:43:16
+    [RejectComment] => 
+    [ReturnComment] => 
+    [Etapa] => aceptada
+    [EstadoActual] => licitando
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 10-12-2025 10:43:10
+    [FechaDevolucion] => 
+    [CompradorDecisionFecha] => 
+    [CompradorDevolucionFecha] => 
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 48
+                    [Nombre] => aaa
+                    [Descripcion] => 
+                    [Cantidad] => 2
+                    [OfertaMinima] => 2
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => /img/solped/
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 10-12-2025 10:57:34 ===
+Params recibidos: Array
+(
+    [etapa] => aceptada
+    [id] => 39
+)
+
+Usuario: ID=2668, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=39, etapa=aceptada
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 48
+    [Nombre] => aaa
+    [Descripcion] => 
+    [Cantidad] => 2
+    [OfertaMinima] => 2
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Total productos: 1
+FilePath base: /img/solped/
+Document encontrado: NO
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 39
+    [Nombre] => Prueba Lic
+    [IdSolicitante] => 2668
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 3
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 11-12-2025 10:35:00
+    [FechaEntrega] => 15-12-2025 15:55:00
+    [FechaCreacion] => 10-12-2025 10:42:49
+    [FechaEnvioComprador] => 10-12-2025 10:42:57
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 10-12-2025 10:43:16
+    [RejectComment] => 
+    [ReturnComment] => 
+    [Etapa] => aceptada
+    [EstadoActual] => licitando
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 10-12-2025 10:43:10
+    [FechaDevolucion] => 
+    [CompradorDecisionFecha] => 
+    [CompradorDevolucionFecha] => 
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 48
+                    [Nombre] => aaa
+                    [Descripcion] => 
+                    [Cantidad] => 2
+                    [OfertaMinima] => 2
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => /img/solped/
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 10-12-2025 10:58:12 ===
+Params recibidos: Array
+(
+    [etapa] => aceptada
+    [id] => 39
+)
+
+Usuario: ID=2668, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=39, etapa=aceptada
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 48
+    [Nombre] => aaa
+    [Descripcion] => 
+    [Cantidad] => 2
+    [OfertaMinima] => 2
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Total productos: 1
+FilePath base: /img/solped/
+Document encontrado: NO
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 39
+    [Nombre] => Prueba Lic
+    [IdSolicitante] => 2668
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 3
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 11-12-2025 10:35:00
+    [FechaEntrega] => 15-12-2025 15:55:00
+    [FechaCreacion] => 10-12-2025 10:42:49
+    [FechaEnvioComprador] => 10-12-2025 10:42:57
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 10-12-2025 10:43:16
+    [RejectComment] => 
+    [ReturnComment] => 
+    [Etapa] => aceptada
+    [EstadoActual] => licitando
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 10-12-2025 10:43:10
+    [FechaDevolucion] => 
+    [CompradorDecisionFecha] => 
+    [CompradorDevolucionFecha] => 
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 48
+                    [Nombre] => aaa
+                    [Descripcion] => 
+                    [Cantidad] => 2
+                    [OfertaMinima] => 2
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => /img/solped/
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 10-12-2025 10:59:05 ===
+Params recibidos: Array
+(
+    [etapa] => aceptada
+    [id] => 39
+)
+
+Usuario: ID=2668, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=39, etapa=aceptada
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 48
+    [Nombre] => aaa
+    [Descripcion] => 
+    [Cantidad] => 2
+    [OfertaMinima] => 2
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Total productos: 1
+FilePath base: /img/solped/
+Document encontrado: NO
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 39
+    [Nombre] => Prueba Lic
+    [IdSolicitante] => 2668
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 3
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 11-12-2025 10:35:00
+    [FechaEntrega] => 15-12-2025 15:55:00
+    [FechaCreacion] => 10-12-2025 10:42:49
+    [FechaEnvioComprador] => 10-12-2025 10:42:57
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 10-12-2025 10:43:16
+    [RejectComment] => 
+    [ReturnComment] => 
+    [Etapa] => aceptada
+    [EstadoActual] => licitando
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 10-12-2025 10:43:10
+    [FechaDevolucion] => 
+    [CompradorDecisionFecha] => 
+    [CompradorDevolucionFecha] => 
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 48
+                    [Nombre] => aaa
+                    [Descripcion] => 
+                    [Cantidad] => 2
+                    [OfertaMinima] => 2
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => /img/solped/
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 10-12-2025 10:59:10 ===
+Params recibidos: Array
+(
+    [etapa] => aceptada
+    [id] => 33
+)
+
+Usuario: ID=2668, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=33, etapa=aceptada
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 39
+    [Nombre] => Item 1
+    [Descripcion] => D1
+    [Cantidad] => 2
+    [OfertaMinima] => 2
+    [UnidadMedidaId] => 2
+    [UnidadMedidaNombre] => cm
+    [TargetCost] => 0
+)
+
+Producto agregado: Array
+(
+    [Id] => 40
+    [Nombre] => Item 2
+    [Descripcion] => D2
+    [Cantidad] => 4
+    [OfertaMinima] => 1
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Producto agregado: Array
+(
+    [Id] => 41
+    [Nombre] => Item 3
+    [Descripcion] => D3
+    [Cantidad] => 44
+    [OfertaMinima] => 2
+    [UnidadMedidaId] => 1
+    [UnidadMedidaNombre] => M
+    [TargetCost] => 0
+)
+
+Total productos: 3
+FilePath base: /img/solped/
+Document encontrado: NO
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 33
+    [Nombre] => Primer Prueba Solped Prod
+    [IdSolicitante] => 2668
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 1
+    [CodigoInterno] => 98
+    [Descripcion] => Descripcion Prueba
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 
+    [FechaEntrega] => 
+    [FechaCreacion] => 02-12-2025 11:19:19
+    [FechaEnvioComprador] => 02-12-2025 11:20:13
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 02-12-2025 11:20:44
+    [RejectComment] => 
+    [ReturnComment] => 
+    [Etapa] => aceptada
+    [EstadoActual] => aceptada
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 02-12-2025 11:20:38
+    [FechaDevolucion] => 
+    [CompradorDecisionFecha] => 
+    [CompradorDevolucionFecha] => 
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 39
+                    [Nombre] => Item 1
+                    [Descripcion] => D1
+                    [Cantidad] => 2
+                    [OfertaMinima] => 2
+                    [UnidadMedidaId] => 2
+                    [UnidadMedidaNombre] => cm
+                    [TargetCost] => 0
+                )
+
+            [1] => Array
+                (
+                    [Id] => 40
+                    [Nombre] => Item 2
+                    [Descripcion] => D2
+                    [Cantidad] => 4
+                    [OfertaMinima] => 1
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+            [2] => Array
+                (
+                    [Id] => 41
+                    [Nombre] => Item 3
+                    [Descripcion] => D3
+                    [Cantidad] => 44
+                    [OfertaMinima] => 2
+                    [UnidadMedidaId] => 1
+                    [UnidadMedidaNombre] => M
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => /img/solped/
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 10-12-2025 10:59:16 ===
+Params recibidos: Array
+(
+    [etapa] => aceptada
+    [id] => 39
+)
+
+Usuario: ID=2668, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=39, etapa=aceptada
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 48
+    [Nombre] => aaa
+    [Descripcion] => 
+    [Cantidad] => 2
+    [OfertaMinima] => 2
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Total productos: 1
+FilePath base: /img/solped/
+Document encontrado: NO
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 39
+    [Nombre] => Prueba Lic
+    [IdSolicitante] => 2668
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 3
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 11-12-2025 10:35:00
+    [FechaEntrega] => 15-12-2025 15:55:00
+    [FechaCreacion] => 10-12-2025 10:42:49
+    [FechaEnvioComprador] => 10-12-2025 10:42:57
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 10-12-2025 10:43:16
+    [RejectComment] => 
+    [ReturnComment] => 
+    [Etapa] => aceptada
+    [EstadoActual] => licitando
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 10-12-2025 10:43:10
+    [FechaDevolucion] => 
+    [CompradorDecisionFecha] => 
+    [CompradorDevolucionFecha] => 
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 48
+                    [Nombre] => aaa
+                    [Descripcion] => 
+                    [Cantidad] => 2
+                    [OfertaMinima] => 2
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => /img/solped/
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 10-12-2025 10:59:55 ===
+Params recibidos: Array
+(
+    [etapa] => aceptada
+    [id] => 39
+)
+
+Usuario: ID=2668, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=39, etapa=aceptada
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 48
+    [Nombre] => aaa
+    [Descripcion] => 
+    [Cantidad] => 2
+    [OfertaMinima] => 2
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Total productos: 1
+FilePath base: /img/solped/
+Document encontrado: NO
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 39
+    [Nombre] => Prueba Lic
+    [IdSolicitante] => 2668
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 3
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 11-12-2025 10:35:00
+    [FechaEntrega] => 15-12-2025 15:55:00
+    [FechaCreacion] => 10-12-2025 10:42:49
+    [FechaEnvioComprador] => 10-12-2025 10:42:57
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 10-12-2025 10:43:16
+    [RejectComment] => 
+    [ReturnComment] => 
+    [Etapa] => aceptada
+    [EstadoActual] => licitando
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 10-12-2025 10:43:10
+    [FechaDevolucion] => 
+    [CompradorDecisionFecha] => 
+    [CompradorDevolucionFecha] => 
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 48
+                    [Nombre] => aaa
+                    [Descripcion] => 
+                    [Cantidad] => 2
+                    [OfertaMinima] => 2
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => /img/solped/
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 10-12-2025 11:01:00 ===
+Params recibidos: Array
+(
+    [etapa] => aceptada
+    [id] => 39
+)
+
+Usuario: ID=2668, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=39, etapa=aceptada
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 48
+    [Nombre] => aaa
+    [Descripcion] => 
+    [Cantidad] => 2
+    [OfertaMinima] => 2
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Total productos: 1
+FilePath base: /img/solped/
+Document encontrado: NO
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 39
+    [Nombre] => Prueba Lic
+    [IdSolicitante] => 2668
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 3
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 11-12-2025 10:35:00
+    [FechaEntrega] => 15-12-2025 15:55:00
+    [FechaCreacion] => 10-12-2025 10:42:49
+    [FechaEnvioComprador] => 10-12-2025 10:42:57
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 10-12-2025 10:43:16
+    [RejectComment] => 
+    [ReturnComment] => 
+    [Etapa] => aceptada
+    [EstadoActual] => licitando
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 10-12-2025 10:43:10
+    [FechaDevolucion] => 
+    [CompradorDecisionFecha] => 
+    [CompradorDevolucionFecha] => 
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 48
+                    [Nombre] => aaa
+                    [Descripcion] => 
+                    [Cantidad] => 2
+                    [OfertaMinima] => 2
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => /img/solped/
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 10-12-2025 11:01:11 ===
+Params recibidos: Array
+(
+    [etapa] => aceptada
+    [id] => 39
+)
+
+Usuario: ID=2668, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=39, etapa=aceptada
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 48
+    [Nombre] => aaa
+    [Descripcion] => 
+    [Cantidad] => 2
+    [OfertaMinima] => 2
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Total productos: 1
+FilePath base: /img/solped/
+Document encontrado: NO
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 39
+    [Nombre] => Prueba Lic
+    [IdSolicitante] => 2668
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 3
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 11-12-2025 10:35:00
+    [FechaEntrega] => 15-12-2025 15:55:00
+    [FechaCreacion] => 10-12-2025 10:42:49
+    [FechaEnvioComprador] => 10-12-2025 10:42:57
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 10-12-2025 10:43:16
+    [RejectComment] => 
+    [ReturnComment] => 
+    [Etapa] => aceptada
+    [EstadoActual] => licitando
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 10-12-2025 10:43:10
+    [FechaDevolucion] => 
+    [CompradorDecisionFecha] => 
+    [CompradorDevolucionFecha] => 
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 48
+                    [Nombre] => aaa
+                    [Descripcion] => 
+                    [Cantidad] => 2
+                    [OfertaMinima] => 2
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => /img/solped/
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 10-12-2025 11:01:42 ===
+Params recibidos: Array
+(
+    [etapa] => aceptada
+    [id] => 39
+)
+
+Usuario: ID=2668, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=39, etapa=aceptada
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 48
+    [Nombre] => aaa
+    [Descripcion] => 
+    [Cantidad] => 2
+    [OfertaMinima] => 2
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Total productos: 1
+FilePath base: /img/solped/
+Document encontrado: NO
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 39
+    [Nombre] => Prueba Lic
+    [IdSolicitante] => 2668
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 3
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 11-12-2025 10:35:00
+    [FechaEntrega] => 15-12-2025 15:55:00
+    [FechaCreacion] => 10-12-2025 10:42:49
+    [FechaEnvioComprador] => 10-12-2025 10:42:57
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 10-12-2025 10:43:16
+    [RejectComment] => 
+    [ReturnComment] => 
+    [Etapa] => aceptada
+    [EstadoActual] => licitando
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 10-12-2025 10:43:10
+    [FechaDevolucion] => 
+    [CompradorDecisionFecha] => 
+    [CompradorDevolucionFecha] => 
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 48
+                    [Nombre] => aaa
+                    [Descripcion] => 
+                    [Cantidad] => 2
+                    [OfertaMinima] => 2
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => /img/solped/
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 10-12-2025 11:02:01 ===
+Params recibidos: Array
+(
+    [etapa] => aceptada
+    [id] => 39
+)
+
+Usuario: ID=2668, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=39, etapa=aceptada
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 48
+    [Nombre] => aaa
+    [Descripcion] => 
+    [Cantidad] => 2
+    [OfertaMinima] => 2
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Total productos: 1
+FilePath base: /img/solped/
+Document encontrado: NO
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 39
+    [Nombre] => Prueba Lic
+    [IdSolicitante] => 2668
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 3
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 11-12-2025 10:35:00
+    [FechaEntrega] => 15-12-2025 15:55:00
+    [FechaCreacion] => 10-12-2025 10:42:49
+    [FechaEnvioComprador] => 10-12-2025 10:42:57
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 10-12-2025 10:43:16
+    [RejectComment] => 
+    [ReturnComment] => 
+    [Etapa] => aceptada
+    [EstadoActual] => licitando
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 10-12-2025 10:43:10
+    [FechaDevolucion] => 
+    [CompradorDecisionFecha] => 
+    [CompradorDevolucionFecha] => 
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 48
+                    [Nombre] => aaa
+                    [Descripcion] => 
+                    [Cantidad] => 2
+                    [OfertaMinima] => 2
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => /img/solped/
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 10-12-2025 11:02:11 ===
+Params recibidos: Array
+(
+    [etapa] => aceptada
+    [id] => 39
+)
+
+Usuario: ID=2668, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=39, etapa=aceptada
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 48
+    [Nombre] => aaa
+    [Descripcion] => 
+    [Cantidad] => 2
+    [OfertaMinima] => 2
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Total productos: 1
+FilePath base: /img/solped/
+Document encontrado: NO
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 39
+    [Nombre] => Prueba Lic
+    [IdSolicitante] => 2668
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 3
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 11-12-2025 10:35:00
+    [FechaEntrega] => 15-12-2025 15:55:00
+    [FechaCreacion] => 10-12-2025 10:42:49
+    [FechaEnvioComprador] => 10-12-2025 10:42:57
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 10-12-2025 10:43:16
+    [RejectComment] => 
+    [ReturnComment] => 
+    [Etapa] => aceptada
+    [EstadoActual] => licitando
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 10-12-2025 10:43:10
+    [FechaDevolucion] => 
+    [CompradorDecisionFecha] => 
+    [CompradorDevolucionFecha] => 
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 48
+                    [Nombre] => aaa
+                    [Descripcion] => 
+                    [Cantidad] => 2
+                    [OfertaMinima] => 2
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => /img/solped/
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 10-12-2025 11:02:22 ===
+Params recibidos: Array
+(
+    [etapa] => aceptada
+    [id] => 39
+)
+
+Usuario: ID=2668, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=39, etapa=aceptada
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 48
+    [Nombre] => aaa
+    [Descripcion] => 
+    [Cantidad] => 2
+    [OfertaMinima] => 2
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Total productos: 1
+FilePath base: /img/solped/
+Document encontrado: NO
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 39
+    [Nombre] => Prueba Lic
+    [IdSolicitante] => 2668
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 3
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 11-12-2025 10:35:00
+    [FechaEntrega] => 15-12-2025 15:55:00
+    [FechaCreacion] => 10-12-2025 10:42:49
+    [FechaEnvioComprador] => 10-12-2025 10:42:57
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 10-12-2025 10:43:16
+    [RejectComment] => 
+    [ReturnComment] => 
+    [Etapa] => aceptada
+    [EstadoActual] => licitando
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 10-12-2025 10:43:10
+    [FechaDevolucion] => 
+    [CompradorDecisionFecha] => 
+    [CompradorDevolucionFecha] => 
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 48
+                    [Nombre] => aaa
+                    [Descripcion] => 
+                    [Cantidad] => 2
+                    [OfertaMinima] => 2
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => /img/solped/
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 10-12-2025 11:03:07 ===
+Params recibidos: Array
+(
+    [etapa] => aceptada
+    [id] => 39
+)
+
+Usuario: ID=2668, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=39, etapa=aceptada
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 48
+    [Nombre] => aaa
+    [Descripcion] => 
+    [Cantidad] => 2
+    [OfertaMinima] => 2
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Total productos: 1
+FilePath base: /img/solped/
+Document encontrado: NO
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 39
+    [Nombre] => Prueba Lic
+    [IdSolicitante] => 2668
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 3
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 11-12-2025 10:35:00
+    [FechaEntrega] => 15-12-2025 15:55:00
+    [FechaCreacion] => 10-12-2025 10:42:49
+    [FechaEnvioComprador] => 10-12-2025 10:42:57
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 10-12-2025 10:43:16
+    [RejectComment] => 
+    [ReturnComment] => 
+    [Etapa] => aceptada
+    [EstadoActual] => licitando
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 10-12-2025 10:43:10
+    [FechaDevolucion] => 
+    [CompradorDecisionFecha] => 
+    [CompradorDevolucionFecha] => 
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 48
+                    [Nombre] => aaa
+                    [Descripcion] => 
+                    [Cantidad] => 2
+                    [OfertaMinima] => 2
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => /img/solped/
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 10-12-2025 11:03:25 ===
+Params recibidos: Array
+(
+    [etapa] => aceptada
+    [id] => 39
+)
+
+Usuario: ID=2668, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=39, etapa=aceptada
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 48
+    [Nombre] => aaa
+    [Descripcion] => 
+    [Cantidad] => 2
+    [OfertaMinima] => 2
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Total productos: 1
+FilePath base: /img/solped/
+Document encontrado: NO
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 39
+    [Nombre] => Prueba Lic
+    [IdSolicitante] => 2668
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 3
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 11-12-2025 10:35:00
+    [FechaEntrega] => 15-12-2025 15:55:00
+    [FechaCreacion] => 10-12-2025 10:42:49
+    [FechaEnvioComprador] => 10-12-2025 10:42:57
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 10-12-2025 10:43:16
+    [RejectComment] => 
+    [ReturnComment] => 
+    [Etapa] => aceptada
+    [EstadoActual] => licitando
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 10-12-2025 10:43:10
+    [FechaDevolucion] => 
+    [CompradorDecisionFecha] => 
+    [CompradorDevolucionFecha] => 
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 48
+                    [Nombre] => aaa
+                    [Descripcion] => 
+                    [Cantidad] => 2
+                    [OfertaMinima] => 2
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => /img/solped/
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 10-12-2025 11:03:46 ===
+Params recibidos: Array
+(
+    [etapa] => aceptada
+    [id] => 39
+)
+
+Usuario: ID=2668, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=39, etapa=aceptada
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 48
+    [Nombre] => aaa
+    [Descripcion] => 
+    [Cantidad] => 2
+    [OfertaMinima] => 2
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Total productos: 1
+FilePath base: /img/solped/
+Document encontrado: NO
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 39
+    [Nombre] => Prueba Lic
+    [IdSolicitante] => 2668
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 3
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 11-12-2025 10:35:00
+    [FechaEntrega] => 15-12-2025 15:55:00
+    [FechaCreacion] => 10-12-2025 10:42:49
+    [FechaEnvioComprador] => 10-12-2025 10:42:57
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 10-12-2025 10:43:16
+    [RejectComment] => 
+    [ReturnComment] => 
+    [Etapa] => aceptada
+    [EstadoActual] => licitando
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 10-12-2025 10:43:10
+    [FechaDevolucion] => 
+    [CompradorDecisionFecha] => 
+    [CompradorDevolucionFecha] => 
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 48
+                    [Nombre] => aaa
+                    [Descripcion] => 
+                    [Cantidad] => 2
+                    [OfertaMinima] => 2
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => /img/solped/
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 10-12-2025 11:03:52 ===
+Params recibidos: Array
+(
+    [etapa] => en-correccion
+    [id] => 38
+)
+
+Usuario: ID=2668, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=38, etapa=devuelta
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 47
+    [Nombre] => aaaaa
+    [Descripcion] => 
+    [Cantidad] => 2
+    [OfertaMinima] => 2
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Total productos: 1
+FilePath base: /img/solped/
+Document encontrado: NO
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 38
+    [Nombre] => Pruebaaaa
+    [IdSolicitante] => 2668
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 2
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Food Loop
+    [FechaResolucion] => 18-12-2025 11:50:00
+    [FechaEntrega] => 08-12-2025 00:50:00
+    [FechaCreacion] => 09-12-2025 11:48:05
+    [FechaEnvioComprador] => 09-12-2025 11:48:16
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 
+    [RejectComment] => 
+    [ReturnComment] => Prueba Devolucion 1
+    [Etapa] => devuelta
+    [EstadoActual] => devuelta
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 09-12-2025 11:48:31
+    [FechaDevolucion] => 09-12-2025 11:48:44
+    [CompradorDecisionFecha] => 
+    [CompradorDevolucionFecha] => Ucoca Cola - 09-12-2025 11:48:44
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 47
+                    [Nombre] => aaaaa
+                    [Descripcion] => 
+                    [Cantidad] => 2
+                    [OfertaMinima] => 2
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => /img/solped/
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 10-12-2025 11:03:58 ===
+Params recibidos: Array
+(
+    [etapa] => en-correccion
+    [id] => 38
+)
+
+Usuario: ID=2668, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=38, etapa=devuelta
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 47
+    [Nombre] => aaaaa
+    [Descripcion] => 
+    [Cantidad] => 2
+    [OfertaMinima] => 2
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Total productos: 1
+FilePath base: /img/solped/
+Document encontrado: NO
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 38
+    [Nombre] => Pruebaaaa
+    [IdSolicitante] => 2668
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 2
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Food Loop
+    [FechaResolucion] => 18-12-2025 11:50:00
+    [FechaEntrega] => 08-12-2025 00:50:00
+    [FechaCreacion] => 09-12-2025 11:48:05
+    [FechaEnvioComprador] => 09-12-2025 11:48:16
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 
+    [RejectComment] => 
+    [ReturnComment] => Prueba Devolucion 1
+    [Etapa] => devuelta
+    [EstadoActual] => devuelta
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 09-12-2025 11:48:31
+    [FechaDevolucion] => 09-12-2025 11:48:44
+    [CompradorDecisionFecha] => 
+    [CompradorDevolucionFecha] => Ucoca Cola - 09-12-2025 11:48:44
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 47
+                    [Nombre] => aaaaa
+                    [Descripcion] => 
+                    [Cantidad] => 2
+                    [OfertaMinima] => 2
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => /img/solped/
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 11-12-2025 12:09:16 ===
+Params recibidos: Array
+(
+    [etapa] => en-correccion
+    [id] => 38
+)
+
+Usuario: ID=2668, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=38, etapa=devuelta
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 47
+    [Nombre] => aaaaa
+    [Descripcion] => 
+    [Cantidad] => 2
+    [OfertaMinima] => 2
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Total productos: 1
+FilePath base: /img/solped/
+Document encontrado: NO
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 38
+    [Nombre] => Pruebaaaa
+    [IdSolicitante] => 2668
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 2
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Food Loop
+    [FechaResolucion] => 18-12-2025 11:50:00
+    [FechaEntrega] => 08-12-2025 00:50:00
+    [FechaCreacion] => 09-12-2025 11:48:05
+    [FechaEnvioComprador] => 09-12-2025 11:48:16
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 
+    [RejectComment] => 
+    [ReturnComment] => Prueba Devolucion 1
+    [Etapa] => devuelta
+    [EstadoActual] => devuelta
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 09-12-2025 11:48:31
+    [FechaDevolucion] => 09-12-2025 11:48:44
+    [CompradorDecisionFecha] => 
+    [CompradorDevolucionFecha] => Ucoca Cola - 09-12-2025 11:48:44
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 47
+                    [Nombre] => aaaaa
+                    [Descripcion] => 
+                    [Cantidad] => 2
+                    [OfertaMinima] => 2
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => /img/solped/
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 11-12-2025 12:09:21 ===
+Params recibidos: Array
+(
+    [etapa] => en-correccion
+    [id] => 38
+)
+
+Usuario: ID=2668, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=38, etapa=en-analisis
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 47
+    [Nombre] => aaaaa
+    [Descripcion] => 
+    [Cantidad] => 2
+    [OfertaMinima] => 2
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Total productos: 1
+FilePath base: /img/solped/
+Document encontrado: NO
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 38
+    [Nombre] => Pruebaaaa
+    [IdSolicitante] => 2668
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 2
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Food Loop
+    [FechaResolucion] => 18-12-2025 11:50:00
+    [FechaEntrega] => 08-12-2025 00:50:00
+    [FechaCreacion] => 09-12-2025 11:48:05
+    [FechaEnvioComprador] => 11-12-2025 12:09:19
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 
+    [FechaRechazo] => 
+    [FechaAceptacion] => 
+    [RejectComment] => 
+    [ReturnComment] => 
+    [Etapa] => en-analisis
+    [EstadoActual] => esperando-revision-2
+    [CompradorDecision] => 
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 09-12-2025 11:48:31
+    [FechaDevolucion] => 
+    [CompradorDecisionFecha] => 
+    [CompradorDevolucionFecha] => 
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 47
+                    [Nombre] => aaaaa
+                    [Descripcion] => 
+                    [Cantidad] => 2
+                    [OfertaMinima] => 2
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => /img/solped/
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 15-12-2025 10:20:27 ===
+Params recibidos: Array
+(
+    [etapa] => en-analisis
+    [id] => 40
+)
+
+Usuario: ID=2668, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=40, etapa=en-analisis
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 49
+    [Nombre] => Item 1 A
+    [Descripcion] => Desc 1A
+    [Cantidad] => 2
+    [OfertaMinima] => 2
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 300
+)
+
+Producto agregado: Array
+(
+    [Id] => 50
+    [Nombre] => Item 2 A
+    [Descripcion] => Desc 2A
+    [Cantidad] => 6
+    [OfertaMinima] => 6
+    [UnidadMedidaId] => 5
+    [UnidadMedidaNombre] => UN
+    [TargetCost] => 1000
+)
+
+Producto agregado: Array
+(
+    [Id] => 51
+    [Nombre] => Item 3A
+    [Descripcion] => Desc 3A
+    [Cantidad] => 10
+    [OfertaMinima] => 10
+    [UnidadMedidaId] => 2
+    [UnidadMedidaNombre] => cm
+    [TargetCost] => 5000
+)
+
+Total productos: 3
+FilePath base: /img/solped/
+Document encontrado: {"id":24,"solped_id":40,"filename":"Captura de pantalla 2023-09-14 115249.png","created_at":"2025-12-15 10:20:10","updated_at":"2025-12-15 10:20:10"}
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 40
+    [Nombre] => Solicitud 1 Prueba Integral
+    [IdSolicitante] => 2668
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 2
+    [CodigoInterno] => 976H
+    [Descripcion] => Desciprcion Prueba 1
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 17-12-2025 18:35:00
+    [FechaEntrega] => 23-12-2025 00:30:00
+    [FechaCreacion] => 15-12-2025 10:20:10
+    [FechaEnvioComprador] => 15-12-2025 10:20:21
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 
+    [FechaRechazo] => 
+    [FechaAceptacion] => 
+    [RejectComment] => 
+    [ReturnComment] => 
+    [Etapa] => en-analisis
+    [EstadoActual] => esperando-revision
+    [CompradorDecision] => 
+    [CompradorFirstRevision] => 
+    [FechaFirstRevision] => 
+    [FechaDevolucion] => 
+    [CompradorDecisionFecha] => 
+    [CompradorDevolucionFecha] => 
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 49
+                    [Nombre] => Item 1 A
+                    [Descripcion] => Desc 1A
+                    [Cantidad] => 2
+                    [OfertaMinima] => 2
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 300
+                )
+
+            [1] => Array
+                (
+                    [Id] => 50
+                    [Nombre] => Item 2 A
+                    [Descripcion] => Desc 2A
+                    [Cantidad] => 6
+                    [OfertaMinima] => 6
+                    [UnidadMedidaId] => 5
+                    [UnidadMedidaNombre] => UN
+                    [TargetCost] => 1000
+                )
+
+            [2] => Array
+                (
+                    [Id] => 51
+                    [Nombre] => Item 3A
+                    [Descripcion] => Desc 3A
+                    [Cantidad] => 10
+                    [OfertaMinima] => 10
+                    [UnidadMedidaId] => 2
+                    [UnidadMedidaNombre] => cm
+                    [TargetCost] => 5000
+                )
+
+        )
+
+    [FilePath] => /img/solped/
+    [FilePathComplete] => /img/solped/Captura de pantalla 2023-09-14 115249.png
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 15-12-2025 12:31:53 ===
+Params recibidos: Array
+(
+    [etapa] => en-analisis
+    [id] => 44
+)
+
+Usuario: ID=2668, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=44, etapa=en-analisis
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 59
+    [Nombre] => Item 1
+    [Descripcion] => 
+    [Cantidad] => 2
+    [OfertaMinima] => 2
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Total productos: 1
+FilePath base: /img/solped/
+Document encontrado: NO
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 44
+    [Nombre] => Prueba Email Masivo
+    [IdSolicitante] => 2668
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 2
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => 
+    [FechaResolucion] => 10-12-2025 06:50:00
+    [FechaEntrega] => 31-12-2025 14:35:00
+    [FechaCreacion] => 15-12-2025 11:01:12
+    [FechaEnvioComprador] => 15-12-2025 11:01:20
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 
+    [FechaRechazo] => 
+    [FechaAceptacion] => 
+    [RejectComment] => 
+    [ReturnComment] => 
+    [Etapa] => en-analisis
+    [EstadoActual] => esperando-revision
+    [CompradorDecision] => 
+    [CompradorFirstRevision] => 
+    [FechaFirstRevision] => 
+    [FechaDevolucion] => 
+    [CompradorDecisionFecha] => 
+    [CompradorDevolucionFecha] => 
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 59
+                    [Nombre] => Item 1
+                    [Descripcion] => 
+                    [Cantidad] => 2
+                    [OfertaMinima] => 2
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => /img/solped/
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 15-12-2025 12:34:15 ===
+Params recibidos: Array
+(
+    [etapa] => aceptada
+    [id] => 40
+)
+
+Usuario: ID=2668, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=40, etapa=finalizada
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 49
+    [Nombre] => Item 1 A
+    [Descripcion] => Desc 1A
+    [Cantidad] => 2
+    [OfertaMinima] => 2
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 300
+)
+
+Producto agregado: Array
+(
+    [Id] => 50
+    [Nombre] => Item 2 A
+    [Descripcion] => Desc 2A
+    [Cantidad] => 6
+    [OfertaMinima] => 6
+    [UnidadMedidaId] => 5
+    [UnidadMedidaNombre] => UN
+    [TargetCost] => 1000
+)
+
+Producto agregado: Array
+(
+    [Id] => 51
+    [Nombre] => Item 3A
+    [Descripcion] => Desc 3A
+    [Cantidad] => 10
+    [OfertaMinima] => 10
+    [UnidadMedidaId] => 2
+    [UnidadMedidaNombre] => cm
+    [TargetCost] => 5000
+)
+
+Total productos: 3
+FilePath base: /img/solped/
+Document encontrado: {"id":24,"solped_id":40,"filename":"Captura de pantalla 2023-09-14 115249.png","created_at":"2025-12-15 10:20:10","updated_at":"2025-12-15 10:20:10"}
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 40
+    [Nombre] => Solicitud 1 Prueba Integral
+    [IdSolicitante] => 2668
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 2
+    [CodigoInterno] => 976H
+    [Descripcion] => Desciprcion Prueba 1
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 17-12-2025 18:35:00
+    [FechaEntrega] => 23-12-2025 00:30:00
+    [FechaCreacion] => 15-12-2025 10:20:10
+    [FechaEnvioComprador] => 15-12-2025 10:20:21
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 15-12-2025 11:08:38
+    [RejectComment] => 
+    [ReturnComment] => 
+    [Etapa] => finalizada
+    [EstadoActual] => adjudicada
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 15-12-2025 11:08:33
+    [FechaDevolucion] => 
+    [CompradorDecisionFecha] => 
+    [CompradorDevolucionFecha] => 
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 49
+                    [Nombre] => Item 1 A
+                    [Descripcion] => Desc 1A
+                    [Cantidad] => 2
+                    [OfertaMinima] => 2
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 300
+                )
+
+            [1] => Array
+                (
+                    [Id] => 50
+                    [Nombre] => Item 2 A
+                    [Descripcion] => Desc 2A
+                    [Cantidad] => 6
+                    [OfertaMinima] => 6
+                    [UnidadMedidaId] => 5
+                    [UnidadMedidaNombre] => UN
+                    [TargetCost] => 1000
+                )
+
+            [2] => Array
+                (
+                    [Id] => 51
+                    [Nombre] => Item 3A
+                    [Descripcion] => Desc 3A
+                    [Cantidad] => 10
+                    [OfertaMinima] => 10
+                    [UnidadMedidaId] => 2
+                    [UnidadMedidaNombre] => cm
+                    [TargetCost] => 5000
+                )
+
+        )
+
+    [FilePath] => /img/solped/
+    [FilePathComplete] => /img/solped/Captura de pantalla 2023-09-14 115249.png
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 16-12-2025 10:36:20 ===
+Params recibidos: Array
+(
+    [etapa] => aceptada
+    [id] => 44
+)
+
+Usuario: ID=2668, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=44, etapa=finalizada
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 59
+    [Nombre] => Item 1
+    [Descripcion] => 
+    [Cantidad] => 2
+    [OfertaMinima] => 2
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Total productos: 1
+FilePath base: /img/solped/
+Document encontrado: NO
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 44
+    [Nombre] => Prueba Email Masivo
+    [IdSolicitante] => 2668
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 2
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => 
+    [FechaResolucion] => 10-12-2025 06:50:00
+    [FechaEntrega] => 31-12-2025 14:35:00
+    [FechaCreacion] => 15-12-2025 11:01:12
+    [FechaEnvioComprador] => 15-12-2025 11:01:20
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 16-12-2025 10:32:49
+    [RejectComment] => 
+    [ReturnComment] => 
+    [Etapa] => finalizada
+    [EstadoActual] => adjudicada
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 16-12-2025 10:32:46
+    [FechaDevolucion] => 
+    [CompradorDecisionFecha] => 
+    [CompradorDevolucionFecha] => 
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 59
+                    [Nombre] => Item 1
+                    [Descripcion] => 
+                    [Cantidad] => 2
+                    [OfertaMinima] => 2
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => /img/solped/
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 16-12-2025 10:37:41 ===
+Params recibidos: Array
+(
+    [etapa] => aceptada
+    [id] => 44
+)
+
+Usuario: ID=2668, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=44, etapa=finalizada
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 59
+    [Nombre] => Item 1
+    [Descripcion] => 
+    [Cantidad] => 2
+    [OfertaMinima] => 2
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Total productos: 1
+FilePath base: /img/solped/
+Document encontrado: NO
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 44
+    [Nombre] => Prueba Email Masivo
+    [IdSolicitante] => 2668
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 2
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => 
+    [FechaResolucion] => 10-12-2025 06:50:00
+    [FechaEntrega] => 31-12-2025 14:35:00
+    [FechaCreacion] => 15-12-2025 11:01:12
+    [FechaEnvioComprador] => 15-12-2025 11:01:20
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 16-12-2025 10:32:49
+    [RejectComment] => 
+    [ReturnComment] => 
+    [Etapa] => finalizada
+    [EstadoActual] => adjudicada
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 16-12-2025 10:32:46
+    [FechaDevolucion] => 
+    [CompradorDecisionFecha] => 
+    [CompradorDevolucionFecha] => 
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 59
+                    [Nombre] => Item 1
+                    [Descripcion] => 
+                    [Cantidad] => 2
+                    [OfertaMinima] => 2
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => /img/solped/
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 16-12-2025 10:37:45 ===
+Params recibidos: Array
+(
+    [etapa] => rechazada
+    [id] => 34
+)
+
+Usuario: ID=2668, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=34, etapa=rechazada
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 42
+    [Nombre] => Item 1
+    [Descripcion] => Desc 1
+    [Cantidad] => 2
+    [OfertaMinima] => 2
+    [UnidadMedidaId] => 2
+    [UnidadMedidaNombre] => cm
+    [TargetCost] => 0
+)
+
+Producto agregado: Array
+(
+    [Id] => 43
+    [Nombre] => Item 2
+    [Descripcion] => 
+    [Cantidad] => 2
+    [OfertaMinima] => 2
+    [UnidadMedidaId] => 5
+    [UnidadMedidaNombre] => UN
+    [TargetCost] => 0
+)
+
+Total productos: 2
+FilePath base: /img/solped/
+Document encontrado: NO
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 34
+    [Nombre] => Prueba Fechas
+    [IdSolicitante] => 2668
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 1
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 
+    [FechaEntrega] => 
+    [FechaCreacion] => 09-12-2025 09:49:04
+    [FechaEnvioComprador] => 09-12-2025 09:49:14
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 09-12-2025 11:43:57
+    [FechaAceptacion] => 
+    [RejectComment] => Prueba rechazo 22
+    [ReturnComment] => 
+    [Etapa] => rechazada
+    [EstadoActual] => rechazada
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 09-12-2025 11:43:46
+    [FechaDevolucion] => 
+    [CompradorDecisionFecha] => Ucoca Cola - 09-12-2025 11:43:57
+    [CompradorDevolucionFecha] => 
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 42
+                    [Nombre] => Item 1
+                    [Descripcion] => Desc 1
+                    [Cantidad] => 2
+                    [OfertaMinima] => 2
+                    [UnidadMedidaId] => 2
+                    [UnidadMedidaNombre] => cm
+                    [TargetCost] => 0
+                )
+
+            [1] => Array
+                (
+                    [Id] => 43
+                    [Nombre] => Item 2
+                    [Descripcion] => 
+                    [Cantidad] => 2
+                    [OfertaMinima] => 2
+                    [UnidadMedidaId] => 5
+                    [UnidadMedidaNombre] => UN
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => /img/solped/
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 16-12-2025 10:37:51 ===
+Params recibidos: Array
+(
+    [etapa] => aceptada
+    [id] => 43
+)
+
+Usuario: ID=2668, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=43, etapa=finalizada
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 58
+    [Nombre] => aaa
+    [Descripcion] => 
+    [Cantidad] => 2
+    [OfertaMinima] => 2
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Total productos: 1
+FilePath base: /img/solped/
+Document encontrado: NO
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 43
+    [Nombre] => Prueba Email Directo
+    [IdSolicitante] => 2668
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 2
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 16-12-2025 10:45:00
+    [FechaEntrega] => 16-12-2025 13:50:00
+    [FechaCreacion] => 15-12-2025 10:40:12
+    [FechaEnvioComprador] => 15-12-2025 10:56:10
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 16-12-2025 10:19:40
+    [RejectComment] => 
+    [ReturnComment] => 
+    [Etapa] => finalizada
+    [EstadoActual] => adjudicada
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 16-12-2025 10:19:37
+    [FechaDevolucion] => 
+    [CompradorDecisionFecha] => 
+    [CompradorDevolucionFecha] => 
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 58
+                    [Nombre] => aaa
+                    [Descripcion] => 
+                    [Cantidad] => 2
+                    [OfertaMinima] => 2
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => /img/solped/
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 16-12-2025 10:43:16 ===
+Params recibidos: Array
+(
+    [etapa] => aceptada
+    [id] => 43
+)
+
+Usuario: ID=2668, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=43, etapa=finalizada
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 58
+    [Nombre] => aaa
+    [Descripcion] => 
+    [Cantidad] => 2
+    [OfertaMinima] => 2
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Total productos: 1
+FilePath base: /img/solped/
+Document encontrado: NO
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 43
+    [Nombre] => Prueba Email Directo
+    [IdSolicitante] => 2668
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 2
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 16-12-2025 10:45:00
+    [FechaEntrega] => 16-12-2025 13:50:00
+    [FechaCreacion] => 15-12-2025 10:40:12
+    [FechaEnvioComprador] => 15-12-2025 10:56:10
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 16-12-2025 10:19:40
+    [RejectComment] => 
+    [ReturnComment] => 
+    [Etapa] => finalizada
+    [EstadoActual] => adjudicada
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 16-12-2025 10:19:37
+    [FechaDevolucion] => 
+    [CompradorDecisionFecha] => 
+    [CompradorDevolucionFecha] => 
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 58
+                    [Nombre] => aaa
+                    [Descripcion] => 
+                    [Cantidad] => 2
+                    [OfertaMinima] => 2
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => /img/solped/
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 16-12-2025 10:43:57 ===
+Params recibidos: Array
+(
+    [etapa] => aceptada
+    [id] => 42
+)
+
+Usuario: ID=2668, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=42, etapa=finalizada
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 55
+    [Nombre] => Item 1C
+    [Descripcion] => 
+    [Cantidad] => 1000000
+    [OfertaMinima] => 80000
+    [UnidadMedidaId] => 5
+    [UnidadMedidaNombre] => UN
+    [TargetCost] => 990000
+)
+
+Producto agregado: Array
+(
+    [Id] => 56
+    [Nombre] => Item 2C
+    [Descripcion] => 
+    [Cantidad] => 9000000
+    [OfertaMinima] => 450000
+    [UnidadMedidaId] => 2
+    [UnidadMedidaNombre] => cm
+    [TargetCost] => 10000000
+)
+
+Producto agregado: Array
+(
+    [Id] => 57
+    [Nombre] => Item 3C
+    [Descripcion] => 
+    [Cantidad] => 900000000
+    [OfertaMinima] => 5000000
+    [UnidadMedidaId] => 33
+    [UnidadMedidaNombre] => cm2
+    [TargetCost] => 85000000
+)
+
+Total productos: 3
+FilePath base: /img/solped/
+Document encontrado: NO
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 42
+    [Nombre] => Solicitud 3 Prueba Integral
+    [IdSolicitante] => 2668
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 1
+    [CodigoInterno] => J-KL-HJ2
+    [Descripcion] => DESCRIPCION GENERAL 3
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 17-12-2025 14:40:00
+    [FechaEntrega] => 10-12-2025 00:45:00
+    [FechaCreacion] => 15-12-2025 10:30:25
+    [FechaEnvioComprador] => 15-12-2025 10:30:38
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 15-12-2025 11:09:06
+    [RejectComment] => 
+    [ReturnComment] => 
+    [Etapa] => finalizada
+    [EstadoActual] => adjudicada
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 15-12-2025 11:09:02
+    [FechaDevolucion] => 
+    [CompradorDecisionFecha] => 
+    [CompradorDevolucionFecha] => 
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 55
+                    [Nombre] => Item 1C
+                    [Descripcion] => 
+                    [Cantidad] => 1000000
+                    [OfertaMinima] => 80000
+                    [UnidadMedidaId] => 5
+                    [UnidadMedidaNombre] => UN
+                    [TargetCost] => 990000
+                )
+
+            [1] => Array
+                (
+                    [Id] => 56
+                    [Nombre] => Item 2C
+                    [Descripcion] => 
+                    [Cantidad] => 9000000
+                    [OfertaMinima] => 450000
+                    [UnidadMedidaId] => 2
+                    [UnidadMedidaNombre] => cm
+                    [TargetCost] => 10000000
+                )
+
+            [2] => Array
+                (
+                    [Id] => 57
+                    [Nombre] => Item 3C
+                    [Descripcion] => 
+                    [Cantidad] => 900000000
+                    [OfertaMinima] => 5000000
+                    [UnidadMedidaId] => 33
+                    [UnidadMedidaNombre] => cm2
+                    [TargetCost] => 85000000
+                )
+
+        )
+
+    [FilePath] => /img/solped/
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 16-12-2025 10:44:01 ===
+Params recibidos: Array
+(
+    [etapa] => aceptada
+    [id] => 43
+)
+
+Usuario: ID=2668, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=43, etapa=finalizada
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 58
+    [Nombre] => aaa
+    [Descripcion] => 
+    [Cantidad] => 2
+    [OfertaMinima] => 2
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Total productos: 1
+FilePath base: /img/solped/
+Document encontrado: NO
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 43
+    [Nombre] => Prueba Email Directo
+    [IdSolicitante] => 2668
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 2
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 16-12-2025 10:45:00
+    [FechaEntrega] => 16-12-2025 13:50:00
+    [FechaCreacion] => 15-12-2025 10:40:12
+    [FechaEnvioComprador] => 15-12-2025 10:56:10
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 16-12-2025 10:19:40
+    [RejectComment] => 
+    [ReturnComment] => 
+    [Etapa] => finalizada
+    [EstadoActual] => adjudicada
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 16-12-2025 10:19:37
+    [FechaDevolucion] => 
+    [CompradorDecisionFecha] => 
+    [CompradorDevolucionFecha] => 
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 58
+                    [Nombre] => aaa
+                    [Descripcion] => 
+                    [Cantidad] => 2
+                    [OfertaMinima] => 2
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => /img/solped/
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 16-12-2025 10:44:34 ===
+Params recibidos: Array
+(
+    [etapa] => aceptada
+    [id] => 36
+)
+
+Usuario: ID=2668, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=36, etapa=aceptada
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 45
+    [Nombre] => AAAA
+    [Descripcion] => 
+    [Cantidad] => 2
+    [OfertaMinima] => 2
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Total productos: 1
+FilePath base: /img/solped/
+Document encontrado: NO
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 36
+    [Nombre] => AAAAA
+    [IdSolicitante] => 2668
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 2
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Food Loop
+    [FechaResolucion] => 12-12-2025 18:55:00
+    [FechaEntrega] => 25-12-2025 16:50:00
+    [FechaCreacion] => 09-12-2025 09:54:47
+    [FechaEnvioComprador] => 09-12-2025 11:48:20
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 09-12-2025 11:53:47
+    [RejectComment] => 
+    [ReturnComment] => 
+    [Etapa] => aceptada
+    [EstadoActual] => licitando
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 09-12-2025 11:53:44
+    [FechaDevolucion] => 
+    [CompradorDecisionFecha] => 
+    [CompradorDevolucionFecha] => 
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 45
+                    [Nombre] => AAAA
+                    [Descripcion] => 
+                    [Cantidad] => 2
+                    [OfertaMinima] => 2
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => /img/solped/
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 16-12-2025 10:49:34 ===
+Params recibidos: Array
+(
+    [etapa] => aceptada
+    [id] => 43
+)
+
+Usuario: ID=2668, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=43, etapa=finalizada
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 58
+    [Nombre] => aaa
+    [Descripcion] => 
+    [Cantidad] => 2
+    [OfertaMinima] => 2
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Total productos: 1
+FilePath base: /img/solped/
+Document encontrado: NO
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 43
+    [Nombre] => Prueba Email Directo
+    [IdSolicitante] => 2668
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 2
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 16-12-2025 10:45:00
+    [FechaEntrega] => 16-12-2025 13:50:00
+    [FechaCreacion] => 15-12-2025 10:40:12
+    [FechaEnvioComprador] => 15-12-2025 10:56:10
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 16-12-2025 10:19:40
+    [RejectComment] => 
+    [ReturnComment] => 
+    [Etapa] => finalizada
+    [EstadoActual] => adjudicada
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 16-12-2025 10:19:37
+    [FechaDevolucion] => 
+    [CompradorDecisionFecha] => 
+    [CompradorDevolucionFecha] => 
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 58
+                    [Nombre] => aaa
+                    [Descripcion] => 
+                    [Cantidad] => 2
+                    [OfertaMinima] => 2
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => /img/solped/
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 16-12-2025 10:51:10 ===
+Params recibidos: Array
+(
+    [etapa] => aceptada
+    [id] => 43
+)
+
+Usuario: ID=2668, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=43, etapa=finalizada
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 58
+    [Nombre] => aaa
+    [Descripcion] => 
+    [Cantidad] => 2
+    [OfertaMinima] => 2
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Total productos: 1
+FilePath base: /img/solped/
+Document encontrado: NO
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 43
+    [Nombre] => Prueba Email Directo
+    [IdSolicitante] => 2668
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 2
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 16-12-2025 10:45:00
+    [FechaEntrega] => 16-12-2025 13:50:00
+    [FechaCreacion] => 15-12-2025 10:40:12
+    [FechaEnvioComprador] => 15-12-2025 10:56:10
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 16-12-2025 10:19:40
+    [RejectComment] => 
+    [ReturnComment] => 
+    [Etapa] => finalizada
+    [EstadoActual] => adjudicada
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 16-12-2025 10:19:37
+    [FechaDevolucion] => 
+    [CompradorDecisionFecha] => 
+    [CompradorDevolucionFecha] => 
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 58
+                    [Nombre] => aaa
+                    [Descripcion] => 
+                    [Cantidad] => 2
+                    [OfertaMinima] => 2
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => /img/solped/
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 16-12-2025 10:51:22 ===
+Params recibidos: Array
+(
+    [etapa] => aceptada
+    [id] => 43
+)
+
+Usuario: ID=2668, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=43, etapa=finalizada
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 58
+    [Nombre] => aaa
+    [Descripcion] => 
+    [Cantidad] => 2
+    [OfertaMinima] => 2
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Total productos: 1
+FilePath base: /img/solped/
+Document encontrado: NO
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 43
+    [Nombre] => Prueba Email Directo
+    [IdSolicitante] => 2668
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 2
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 16-12-2025 10:45:00
+    [FechaEntrega] => 16-12-2025 13:50:00
+    [FechaCreacion] => 15-12-2025 10:40:12
+    [FechaEnvioComprador] => 15-12-2025 10:56:10
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 16-12-2025 10:19:40
+    [RejectComment] => 
+    [ReturnComment] => 
+    [Etapa] => finalizada
+    [EstadoActual] => adjudicada
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 16-12-2025 10:19:37
+    [FechaDevolucion] => 
+    [CompradorDecisionFecha] => 
+    [CompradorDevolucionFecha] => 
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 58
+                    [Nombre] => aaa
+                    [Descripcion] => 
+                    [Cantidad] => 2
+                    [OfertaMinima] => 2
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => /img/solped/
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 16-12-2025 10:57:43 ===
+Params recibidos: Array
+(
+    [etapa] => aceptada
+    [id] => 43
+)
+
+Usuario: ID=2668, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=43, etapa=finalizada
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 58
+    [Nombre] => aaa
+    [Descripcion] => 
+    [Cantidad] => 2
+    [OfertaMinima] => 2
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Total productos: 1
+FilePath base: /img/solped/
+Document encontrado: NO
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 43
+    [Nombre] => Prueba Email Directo
+    [IdSolicitante] => 2668
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 2
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 16-12-2025 10:45:00
+    [FechaEntrega] => 16-12-2025 13:50:00
+    [FechaCreacion] => 15-12-2025 10:40:12
+    [FechaEnvioComprador] => 15-12-2025 10:56:10
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 16-12-2025 10:19:40
+    [RejectComment] => 
+    [ReturnComment] => 
+    [Etapa] => finalizada
+    [EstadoActual] => adjudicada
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 16-12-2025 10:19:37
+    [FechaDevolucion] => 
+    [CompradorDecisionFecha] => 
+    [CompradorDevolucionFecha] => 
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 58
+                    [Nombre] => aaa
+                    [Descripcion] => 
+                    [Cantidad] => 2
+                    [OfertaMinima] => 2
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => /img/solped/
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 16-12-2025 11:00:20 ===
+Params recibidos: Array
+(
+    [etapa] => aceptada
+    [id] => 43
+)
+
+Usuario: ID=2668, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=43, etapa=finalizada
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 58
+    [Nombre] => aaa
+    [Descripcion] => 
+    [Cantidad] => 2
+    [OfertaMinima] => 2
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Total productos: 1
+FilePath base: /img/solped/
+Document encontrado: NO
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 43
+    [Nombre] => Prueba Email Directo
+    [IdSolicitante] => 2668
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 2
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 16-12-2025 10:45:00
+    [FechaEntrega] => 16-12-2025 13:50:00
+    [FechaCreacion] => 15-12-2025 10:40:12
+    [FechaEnvioComprador] => 15-12-2025 10:56:10
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 16-12-2025 10:19:40
+    [RejectComment] => 
+    [ReturnComment] => 
+    [Etapa] => finalizada
+    [EstadoActual] => adjudicada
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 16-12-2025 10:19:37
+    [FechaDevolucion] => 
+    [CompradorDecisionFecha] => Ucoca Cola - 16-12-2025 10:45:00
+    [CompradorDevolucionFecha] => 
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 58
+                    [Nombre] => aaa
+                    [Descripcion] => 
+                    [Cantidad] => 2
+                    [OfertaMinima] => 2
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => /img/solped/
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 16-12-2025 11:03:45 ===
+Params recibidos: Array
+(
+    [etapa] => aceptada
+    [id] => 43
+)
+
+Usuario: ID=2668, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=43, etapa=finalizada
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 58
+    [Nombre] => aaa
+    [Descripcion] => 
+    [Cantidad] => 2
+    [OfertaMinima] => 2
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Total productos: 1
+FilePath base: /img/solped/
+Document encontrado: NO
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 43
+    [Nombre] => Prueba Email Directo
+    [IdSolicitante] => 2668
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 2
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 16-12-2025 10:45:00
+    [FechaEntrega] => 16-12-2025 13:50:00
+    [FechaCreacion] => 15-12-2025 10:40:12
+    [FechaEnvioComprador] => 15-12-2025 10:56:10
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 16-12-2025 10:19:40
+    [RejectComment] => 
+    [ReturnComment] => 
+    [Etapa] => finalizada
+    [EstadoActual] => adjudicada
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 16-12-2025 10:19:37
+    [FechaDevolucion] => 
+    [CompradorDecisionFecha] => Ucoca Cola - 16-12-2025 10:19:40
+    [CompradorDevolucionFecha] => 
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 58
+                    [Nombre] => aaa
+                    [Descripcion] => 
+                    [Cantidad] => 2
+                    [OfertaMinima] => 2
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => /img/solped/
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 16-12-2025 11:04:12 ===
+Params recibidos: Array
+(
+    [etapa] => rechazada
+    [id] => 35
+)
+
+Usuario: ID=2668, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=35, etapa=rechazada
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 44
+    [Nombre] => Item 
+    [Descripcion] => 
+    [Cantidad] => 2
+    [OfertaMinima] => 2
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Total productos: 1
+FilePath base: /img/solped/
+Document encontrado: NO
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 35
+    [Nombre] => Prueba fechas entrega 2
+    [IdSolicitante] => 2668
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 3
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Comprador 2
+    [FechaResolucion] => 
+    [FechaEntrega] => 
+    [FechaCreacion] => 09-12-2025 09:53:28
+    [FechaEnvioComprador] => 09-12-2025 09:53:36
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 09-12-2025 11:40:48
+    [FechaAceptacion] => 
+    [RejectComment] => Prueba Rechazo
+    [ReturnComment] => 
+    [Etapa] => rechazada
+    [EstadoActual] => rechazada
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 09-12-2025 10:08:43
+    [FechaDevolucion] => 
+    [CompradorDecisionFecha] => Ucoca Cola - 09-12-2025 11:40:48
+    [CompradorDevolucionFecha] => 
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 44
+                    [Nombre] => Item 
+                    [Descripcion] => 
+                    [Cantidad] => 2
+                    [OfertaMinima] => 2
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => /img/solped/
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 16-12-2025 12:19:31 ===
+Params recibidos: Array
+(
+    [etapa] => en-analisis
+    [id] => 45
+)
+
+Usuario: ID=2668, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=45, etapa=en-analisis
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 60
+    [Nombre] => Item 1
+    [Descripcion] => Desc 1
+    [Cantidad] => 10
+    [OfertaMinima] => 10
+    [UnidadMedidaId] => 2
+    [UnidadMedidaNombre] => cm
+    [TargetCost] => 0
+)
+
+Producto agregado: Array
+(
+    [Id] => 61
+    [Nombre] => Item 2
+    [Descripcion] => Desc 2
+    [Cantidad] => 15
+    [OfertaMinima] => 10
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Producto agregado: Array
+(
+    [Id] => 62
+    [Nombre] => Item 3
+    [Descripcion] => 
+    [Cantidad] => 100
+    [OfertaMinima] => 100
+    [UnidadMedidaId] => 4
+    [UnidadMedidaNombre] => Tn
+    [TargetCost] => 0
+)
+
+Total productos: 3
+FilePath base: /img/solped/
+Document encontrado: NO
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 45
+    [Nombre] => Prueba Reunion Martes
+    [IdSolicitante] => 2668
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 1
+    [CodigoInterno] => 
+    [Descripcion] => Descripcion
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 17-12-2025 05:30:00
+    [FechaEntrega] => 26-12-2025 07:35:00
+    [FechaCreacion] => 16-12-2025 12:18:03
+    [FechaEnvioComprador] => 16-12-2025 12:18:28
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 
+    [FechaRechazo] => 
+    [FechaAceptacion] => 
+    [RejectComment] => 
+    [ReturnComment] => 
+    [Etapa] => en-analisis
+    [EstadoActual] => revisada
+    [CompradorDecision] => 
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 16-12-2025 12:19:15
+    [FechaDevolucion] => 
+    [CompradorDecisionFecha] => 
+    [CompradorDevolucionFecha] => 
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 60
+                    [Nombre] => Item 1
+                    [Descripcion] => Desc 1
+                    [Cantidad] => 10
+                    [OfertaMinima] => 10
+                    [UnidadMedidaId] => 2
+                    [UnidadMedidaNombre] => cm
+                    [TargetCost] => 0
+                )
+
+            [1] => Array
+                (
+                    [Id] => 61
+                    [Nombre] => Item 2
+                    [Descripcion] => Desc 2
+                    [Cantidad] => 15
+                    [OfertaMinima] => 10
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+            [2] => Array
+                (
+                    [Id] => 62
+                    [Nombre] => Item 3
+                    [Descripcion] => 
+                    [Cantidad] => 100
+                    [OfertaMinima] => 100
+                    [UnidadMedidaId] => 4
+                    [UnidadMedidaNombre] => Tn
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => /img/solped/
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 16-12-2025 12:27:49 ===
+Params recibidos: Array
+(
+    [etapa] => aceptada
+    [id] => 45
+)
+
+Usuario: ID=2668, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=45, etapa=finalizada
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 60
+    [Nombre] => Item 1
+    [Descripcion] => Desc 1
+    [Cantidad] => 10
+    [OfertaMinima] => 10
+    [UnidadMedidaId] => 2
+    [UnidadMedidaNombre] => cm
+    [TargetCost] => 0
+)
+
+Producto agregado: Array
+(
+    [Id] => 61
+    [Nombre] => Item 2
+    [Descripcion] => Desc 2
+    [Cantidad] => 15
+    [OfertaMinima] => 10
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Producto agregado: Array
+(
+    [Id] => 62
+    [Nombre] => Item 3
+    [Descripcion] => 
+    [Cantidad] => 100
+    [OfertaMinima] => 100
+    [UnidadMedidaId] => 4
+    [UnidadMedidaNombre] => Tn
+    [TargetCost] => 0
+)
+
+Total productos: 3
+FilePath base: /img/solped/
+Document encontrado: NO
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 45
+    [Nombre] => Prueba Reunion Martes
+    [IdSolicitante] => 2668
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 1
+    [CodigoInterno] => 
+    [Descripcion] => Descripcion
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 17-12-2025 05:30:00
+    [FechaEntrega] => 26-12-2025 07:35:00
+    [FechaCreacion] => 16-12-2025 12:18:03
+    [FechaEnvioComprador] => 16-12-2025 12:18:28
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 16-12-2025 12:20:03
+    [RejectComment] => 
+    [ReturnComment] => 
+    [Etapa] => finalizada
+    [EstadoActual] => adjudicada
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 16-12-2025 12:19:15
+    [FechaDevolucion] => 
+    [CompradorDecisionFecha] => Ucoca Cola - 16-12-2025 12:20:03
+    [CompradorDevolucionFecha] => 
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 60
+                    [Nombre] => Item 1
+                    [Descripcion] => Desc 1
+                    [Cantidad] => 10
+                    [OfertaMinima] => 10
+                    [UnidadMedidaId] => 2
+                    [UnidadMedidaNombre] => cm
+                    [TargetCost] => 0
+                )
+
+            [1] => Array
+                (
+                    [Id] => 61
+                    [Nombre] => Item 2
+                    [Descripcion] => Desc 2
+                    [Cantidad] => 15
+                    [OfertaMinima] => 10
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+            [2] => Array
+                (
+                    [Id] => 62
+                    [Nombre] => Item 3
+                    [Descripcion] => 
+                    [Cantidad] => 100
+                    [OfertaMinima] => 100
+                    [UnidadMedidaId] => 4
+                    [UnidadMedidaNombre] => Tn
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => /img/solped/
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 16-12-2025 12:28:22 ===
+Params recibidos: Array
+(
+    [etapa] => rechazada
+    [id] => 34
+)
+
+Usuario: ID=2668, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=34, etapa=rechazada
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 42
+    [Nombre] => Item 1
+    [Descripcion] => Desc 1
+    [Cantidad] => 2
+    [OfertaMinima] => 2
+    [UnidadMedidaId] => 2
+    [UnidadMedidaNombre] => cm
+    [TargetCost] => 0
+)
+
+Producto agregado: Array
+(
+    [Id] => 43
+    [Nombre] => Item 2
+    [Descripcion] => 
+    [Cantidad] => 2
+    [OfertaMinima] => 2
+    [UnidadMedidaId] => 5
+    [UnidadMedidaNombre] => UN
+    [TargetCost] => 0
+)
+
+Total productos: 2
+FilePath base: /img/solped/
+Document encontrado: NO
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 34
+    [Nombre] => Prueba Fechas
+    [IdSolicitante] => 2668
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 1
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 
+    [FechaEntrega] => 
+    [FechaCreacion] => 09-12-2025 09:49:04
+    [FechaEnvioComprador] => 09-12-2025 09:49:14
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 09-12-2025 11:43:57
+    [FechaAceptacion] => 
+    [RejectComment] => Prueba rechazo 22
+    [ReturnComment] => 
+    [Etapa] => rechazada
+    [EstadoActual] => rechazada
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 09-12-2025 11:43:46
+    [FechaDevolucion] => 
+    [CompradorDecisionFecha] => Ucoca Cola - 09-12-2025 11:43:57
+    [CompradorDevolucionFecha] => 
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 42
+                    [Nombre] => Item 1
+                    [Descripcion] => Desc 1
+                    [Cantidad] => 2
+                    [OfertaMinima] => 2
+                    [UnidadMedidaId] => 2
+                    [UnidadMedidaNombre] => cm
+                    [TargetCost] => 0
+                )
+
+            [1] => Array
+                (
+                    [Id] => 43
+                    [Nombre] => Item 2
+                    [Descripcion] => 
+                    [Cantidad] => 2
+                    [OfertaMinima] => 2
+                    [UnidadMedidaId] => 5
+                    [UnidadMedidaNombre] => UN
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => /img/solped/
+    [FilePathComplete] => 
+)
+
+=== detail FIN ===
+
