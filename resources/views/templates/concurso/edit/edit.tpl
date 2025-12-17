@@ -1125,8 +1125,18 @@
             this.VerTiempoRestante = ko.observable(data.list.VerTiempoRestante || 'no');
             this.PermitirAnularOferta = ko.observable(data.list.PermitirAnularOferta || 'no');
             this.SubastaVistaCiega = ko.observable(data.list.SubastaVistaCiega || 'no');
-            this.PrecioMinimo = ko.observable(data.list.PrecioMinimo).extend({ required: true });
-            this.PrecioMaximo = ko.observable(data.list.PrecioMaximo).extend({ required: true });
+            this.PrecioMinimo = ko.observable(data.list.PrecioMinimo);
+            this.PrecioMinimo.extend({
+                required: {
+                    onlyIf: function() { return self.TipoValorOfertar() == 'ascendente'; }
+                }
+            });
+            this.PrecioMaximo = ko.observable(data.list.PrecioMaximo);
+            this.PrecioMaximo.extend({
+                required: {
+                    onlyIf: function() { return self.TipoValorOfertar() == 'descendente'; }
+                }
+            });
             this.SoloOfertasMejores = ko.observable(data.list.SoloOfertasMejores);
             this.UnidadesMinimas = ko.observable(data.list.UnidadesMinimas);
             this.UnidadMinima = ko.observable(data.list.UnidadMinima).extend({ required: true });
@@ -1483,9 +1493,20 @@
                     var inicioSubastaValido = this.Entity.InicioSubasta.isValid();
                     var duracionValido = this.Entity.Duracion.isValid();
                     var tiempoAdicionalValido = this.Entity.TiempoAdicional.isValid();
-                    var precioMaximoValido = this.Entity.PrecioMaximo.isValid();
-                    var precioMinimoValido = this.Entity.PrecioMinimo.isValid();
                     var unidadMinimaValido = this.Entity.UnidadMinima.isValid();
+                    
+                    // Validar precio según tipo de subasta
+                    var tipoSubasta = this.Entity.TipoValorOfertar();
+                    var precioMaximoValido = true;
+                    var precioMinimoValido = true;
+                    
+                    if (tipoSubasta == 'ascendente') {
+                        // Ascendente: solo validar precio mínimo
+                        precioMinimoValido = this.Entity.PrecioMinimo.isValid();
+                    } else if (tipoSubasta == 'descendente') {
+                        // Descendente: solo validar precio máximo
+                        precioMaximoValido = this.Entity.PrecioMaximo.isValid();
+                    }
 
                     isPriceValid = (
                         inicioSubastaValido &&

@@ -98,12 +98,13 @@
         </div>
     </div>
     <!-- Límite inferior -->
+    <!-- Habilitado solo para Ascendente - Para venta -->
     <div class="col-md-12">
-        <div class="form-group required" data-bind="validationElement: Entity.PrecioMinimo">
+        <div class="form-group" data-bind="css: { 'required': Entity.TipoValorOfertar() == 'ascendente' }, validationElement: Entity.PrecioMinimo">
             <label class="control-label visible-ie8 visible-ie9" style="display: block;">Límite inferior para ofertas
                 precio unitario</label>
             <input class="form-control placeholder-no-fix" type="number" min="0.01" step="0.01" id="precio_minimo"
-                data-bind="value: Entity.PrecioMinimo, disable: ReadOnly()" />
+                data-bind="value: Entity.PrecioMinimo, disable: (ReadOnly() || Entity.TipoValorOfertar() == 'descendente')" />
         </div>
     </div>
 
@@ -118,12 +119,13 @@
     </div>
 
     <!-- Límite superior -->
+    <!-- Habilitado solo para Descendente - Para compra -->
     <div class="col-md-12">
-        <div class="form-group required" data-bind="validationElement: Entity.PrecioMaximo">
+        <div class="form-group" data-bind="css: { 'required': Entity.TipoValorOfertar() == 'descendente' }, validationElement: Entity.PrecioMaximo">
             <label class="control-label visible-ie8 visible-ie9" style="display: block;">Límite superior para ofertas
                 precio unitario</label>
             <input class="form-control placeholder-no-fix" type="number" min="0.01" step="0.01" id="precio_maximo"
-                data-bind="value: Entity.PrecioMaximo, disable: (ReadOnly() || Entity.PrecioMinimo() < 1)" />
+                data-bind="value: Entity.PrecioMaximo, disable: (ReadOnly() || Entity.TipoValorOfertar() == 'ascendente')" />
         </div>
     </div>
     <!-- /ko -->

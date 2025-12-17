@@ -18,6 +18,7 @@ class EmailService
     {
         $this->mail = new PHPMailer(true);
         $this->mail->isSMTP();
+        // Cambiar a 2 para debug detallado, 0 para producción
         $this->mail->SMTPDebug = 0;
         $this->mail->Debugoutput = 'html';
         $this->mail->SMTPAuth = true;

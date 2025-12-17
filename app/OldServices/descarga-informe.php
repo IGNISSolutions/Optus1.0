@@ -586,6 +586,31 @@ class DataInforme extends Rest
         ];
     }
 
+    /**
+     * Genera la tabla con la fecha de apertura de sobres
+     * @return array|null Retorna el elemento de tabla o null si no hay fecha
+     */
+    private function getTablaFechaApertura()
+    {
+        if (!$this->concurso->fecha_apertura_sobres) {
+            return null;
+        }
+        
+        $fechaApertura = $this->concurso->fecha_apertura_sobres->format('d/m/Y H:i:s');
+        
+        return [
+            'tipo' => 'tabla',
+            'cabeceras' => [
+                [
+                    'Apertura de sobres'
+                ]
+            ],
+            'contenido' => [[
+                'valor' => $fechaApertura,
+                'css' => ['font-weight' => 'bold']
+            ]]
+        ];
+    }
 
     private function seccionAdjudicacion() 
     {
@@ -1015,38 +1040,46 @@ class DataInforme extends Rest
 
         $tablaComparativaOfertas = $this->armarTablaComparativaOfertas($proveedores);
 
+        // Construir contenido con fecha de apertura si existe
+        $contenido = [];
+        
+        $tablaFechaApertura = $this->getTablaFechaApertura();
+        if ($tablaFechaApertura) {
+            $contenido[] = $tablaFechaApertura;
+        }
+        
+        $contenido[] = [
+            'tipo' => 'parrafo',
+            'contenido' => '<div style="text-align:center;font-weight:bold">Mejor oferta Integral</div>',
+        ];
+        $contenido[] = [
+            'tipo' => 'tabla',
+            'cabeceras' => [
+                [
+                    'Item',
+                    'Cotización',
+                    'Proveedor'
+                ]
+            ],
+            'contenido' => $contenidoMejorOfertaIntegral,
+        ];
+        $contenido[] = [
+            'tipo' => 'tabla',
+            'cabeceras' => [
+                [
+                    'Comentarios'
+                ]
+            ],
+            'contenido' => [[
+                'valor' => $comentario ? $comentario:'<em>No hay comentarios</em>',
+                'css' => ['font-weight' => 'bold']
+            ]]
+        ];
+        $contenido[] = $tablaComparativaOfertas;
+
         return [
             'titulo' => '5. Adjudicación',
-            'contenido' => [
-                [
-                    'tipo' => 'parrafo',
-                    'contenido' => '<div style="text-align:center;font-weight:bold">Mejor oferta Integral</div>',
-                ],
-                [
-                    'tipo' => 'tabla',
-                    'cabeceras' => [
-                        [
-                            'Item',
-                            'Cotización',
-                            'Proveedor'
-                        ]
-                    ],
-                    'contenido' => $contenidoMejorOfertaIntegral,
-                ],
-                [
-                    'tipo' => 'tabla',
-                    'cabeceras' => [
-                        [
-                            'Comentarios'
-                        ]
-                    ],
-                    'contenido' => [[
-                        'valor' => $comentario ? $comentario:'<em>No hay comentarios</em>',
-                        'css' => ['font-weight' => 'bold']
-                    ]]
-                ],
-                $tablaComparativaOfertas,
-            ],
+            'contenido' => $contenido,
         ];
     }
     private function setIndividual($mejorIndividual, $proveedores, $comentario)
@@ -1074,38 +1107,46 @@ class DataInforme extends Rest
         ];
         $tablaComparativaOfertas = $this->armarTablaComparativaOfertas($proveedores);
         
+        // Construir contenido con fecha de apertura si existe
+        $contenido = [];
+        
+        $tablaFechaApertura = $this->getTablaFechaApertura();
+        if ($tablaFechaApertura) {
+            $contenido[] = $tablaFechaApertura;
+        }
+        
+        $contenido[] = [
+            'tipo' => 'parrafo',
+            'contenido' => '<div style="text-align:center;font-weight:bold">Mejor oferta Individual </div>',
+        ];
+        $contenido[] = [
+            'tipo' => 'tabla',
+            'cabeceras' => [
+                [
+                    'Item',
+                    'Cotización',
+                    'Proveedor'
+                ]
+            ],
+            'contenido' => $contenidoMejorOfertaIndividual,
+        ];
+        $contenido[] = [
+            'tipo' => 'tabla',
+            'cabeceras' => [
+                [
+                    'Comentarios'
+                ]
+            ],
+            'contenido' => [[
+                'valor' => $comentario ? $comentario:'<em>No hay comentarios</em>',
+                'css' => ['font-weight' => 'bold']
+            ]]
+        ];
+        $contenido[] = $tablaComparativaOfertas;
+
         return [
             'titulo' => '5. Adjudicación',
-            'contenido' => [
-                [
-                    'tipo' => 'parrafo',
-                    'contenido' => '<div style="text-align:center;font-weight:bold">Mejor oferta Individual </div>',
-                ],
-                [
-                    'tipo' => 'tabla',
-                    'cabeceras' => [
-                        [
-                            'Item',
-                            'Cotización',
-                            'Proveedor'
-                        ]
-                    ],
-                    'contenido' => $contenidoMejorOfertaIndividual,
-                ],
-                [
-                    'tipo' => 'tabla',
-                    'cabeceras' => [
-                        [
-                            'Comentarios'
-                        ]
-                    ],
-                    'contenido' => [[
-                        'valor' => $comentario ? $comentario:'<em>No hay comentarios</em>',
-                        'css' => ['font-weight' => 'bold']
-                    ]]
-                ],
-                $tablaComparativaOfertas,
-            ]
+            'contenido' => $contenido,
         ];
     }
     private function setManual($adjudicacionItems, $comentario)
@@ -1157,41 +1198,50 @@ class DataInforme extends Rest
             ],
             $adjudicacionItems['razonSocial'],
         ]; 
+        
+        // Construir contenido con fecha de apertura si existe
+        $contenido = [];
+        
+        $tablaFechaApertura = $this->getTablaFechaApertura();
+        if ($tablaFechaApertura) {
+            $contenido[] = $tablaFechaApertura;
+        }
+        
+        $contenido[] = [
+            'tipo' => 'parrafo',
+            'contenido' => '<div style="text-align:center;font-weight:bold">Mejor oferta Manual </div>',
+        ];
+        $contenido[] = [
+            'tipo' => 'tabla',
+            'cabeceras' => [
+                [
+                    'Item',
+                    'Cantidad Solicitada',
+                    'Cantidad Cotizada',
+                    'Cotización',
+                    'Cantidad Adjudicada',
+                    'Total Adjudicación',
+                    'Proveedor',
+                ]
+            ],
+            'contenido' => $contenidoMejorOfertaManual,
+        ];
+        $contenido[] = [
+            'tipo' => 'tabla',
+            'cabeceras' => [
+                [
+                    'Comentarios'
+                ]
+            ],
+            'contenido' => [[
+                'valor' => $comentario ? $comentario:'<em>No hay comentarios</em>',
+                'css' => ['font-weight' => 'bold']
+            ]]
+        ];
+
         return [
             'titulo' => '5. Adjudicación',
-            'contenido' => [
-                [
-                    'tipo' => 'parrafo',
-                    'contenido' => '<div style="text-align:center;font-weight:bold">Mejor oferta Manual </div>',
-                ],
-                [
-                    'tipo' => 'tabla',
-                    'cabeceras' => [
-                        [
-                            'Item',
-                            'Cantidad Solicitada',
-                            'Cantidad Cotizada',
-                            'Cotización',
-                            'Cantidad Adjudicada',
-                            'Total Adjudicación',
-                            'Proveedor',
-                        ]
-                    ],
-                    'contenido' => $contenidoMejorOfertaManual,
-                ],
-                [
-                    'tipo' => 'tabla',
-                    'cabeceras' => [
-                        [
-                            'Comentarios'
-                        ]
-                    ],
-                    'contenido' => [[
-                        'valor' => $comentario ? $comentario:'<em>No hay comentarios</em>',
-                        'css' => ['font-weight' => 'bold']
-                    ]]
-                ],
-            ],
+            'contenido' => $contenido,
         ];   
     }
 

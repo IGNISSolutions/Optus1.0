@@ -31,7 +31,7 @@
                 <p data-bind="text: comentario()"></p>
             </div>
             <table class="table table-striped table-bordered">
-                <tbody data-bind="foreach: documents()">
+                <tbody data-bind="foreach: sortedDocuments()">
                     <tr>
                         <!---agregra el nombre que tiene en base de datos de los nuevos cosos para el coso (copiar lista sub contra<tista)-->
                         <!-- ko if: 
@@ -304,7 +304,7 @@
                         </td>
                     </tr>
                 </tbody>
-                <tbody data-bind="foreach: documents()">
+                <tbody data-bind="foreach: sortedDocuments()">
                     <tr>
                         <!-- ko if: 
                         (
@@ -636,7 +636,7 @@
                 <p data-bind="text: comentario()"></p>
             </div>
             <table class="table table-striped table-bordered">
-                <tbody data-bind="foreach: documents()">
+                <tbody data-bind="foreach: sortedDocuments()">
                     <tr>
                         <!-- ko if: 
                         (        

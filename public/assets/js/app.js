@@ -66,9 +66,9 @@ var UserLogin = function () {
       title: "Seleccione una opción",
       text: `
       <div id="login3btns" style="display:flex; flex-direction:column; gap:10px; margin-top:10px;">
-        <button class="swal3btn" data-href="/ad/login/TLC">AD TLC</button>
-        <button class="swal3btn" data-href="/ad/login/LG">AD LG</button>
-        <button class="swal3btn" data-href="/a0/login/SCR">A0 SCR</button>
+        <button class="swal3btn" data-href="/ad/login/TLC">Telecentro</button>
+        <button class="swal3btn" data-href="/ad/login/LG">Los Grobo</button>
+        <button class="swal3btn" data-href="/a0/login/SCR">Sancor Seguros</button>
         <button id="btnBack" class="swal3btn swal3btn-back">Volver</button>
       </div>
     `,
@@ -87,18 +87,18 @@ var UserLogin = function () {
       #login3btns .swal3btn {
         padding: 10px 14px;
         border-radius: 8px;
-        border: 0;
+        border: 1px solid transparent;
         font-weight: 600;
         cursor: pointer;
         font-size: 14px;
         transition: background 0.2s;
       }
-      #login3btns .swal3btn:nth-child(1) { background:#3b82f6; color:white; }
-      #login3btns .swal3btn:nth-child(1):hover { background:#2563eb; }
-      #login3btns .swal3btn:nth-child(2) { background:#10b981; color:white; }
-      #login3btns .swal3btn:nth-child(2):hover { background:#059669; }
-      #login3btns .swal3btn:nth-child(3) { background:#ef4444; color:white; }
-      #login3btns .swal3btn:nth-child(3):hover { background:#dc2626; }
+      #login3btns .swal3btn:nth-child(1) { background:#1e3a5f; color:white; }
+      #login3btns .swal3btn:nth-child(1):hover { background:#152a45; }
+      #login3btns .swal3btn:nth-child(2) { background:#ffffff; color:#b8860b; border-color:#b8860b; }
+      #login3btns .swal3btn:nth-child(2):hover { background:#f5f5f5; }
+      #login3btns .swal3btn:nth-child(3) { background:#e91e63; color:white; }
+      #login3btns .swal3btn:nth-child(3):hover { background:#c2185b; }
       #login3btns .swal3btn-back {
         background:#e5e7eb;
         color:#111827;
@@ -175,13 +175,21 @@ var User = function () {
   };
 
   var logOut = function () {
+    // Verificar si el usuario se logueó con Auth0
+    var authProvider = localStorage.getItem('auth_provider');
+    
     Services.Post('/logout', {
       UserToken: User.Token
     },
       (response) => {
         if (response.success) {
           localStorage.clear();
-          window.location.href = '/login';
+          // Si el login fue con Auth0, redirigir al logout de Auth0 para cerrar la sesión SSO
+          if (authProvider === 'A0') {
+            window.location.href = '/a0/logout';
+          } else {
+            window.location.href = '/login';
+          }
         } else {
           swal('Error.', response.message, 'error');
         }

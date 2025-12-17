@@ -42,7 +42,8 @@ class Concurso extends Model
         'deleted_at',
         'tercera_ronda_fecha_limite',
         'cuarta_ronda_fecha_limite',
-        'quita_ronda_fecha_limite'
+        'quita_ronda_fecha_limite',
+        'fecha_apertura_sobres'
     ];
 
     protected $fillable = [
@@ -73,6 +74,7 @@ class Concurso extends Model
         'inicio_subasta',
         'duracion',
         'tiempo_adicional',
+        'tiempo_adicional_aplicado',
         'plantilla_economicas',
         'fecha_limite_economicas',
         'finalizar_si_oferentes_completaron_economicas',
@@ -92,6 +94,7 @@ class Concurso extends Model
         'precio_minimo',
         'solo_ofertas_mejores',
         'aperturasobre',
+        'fecha_apertura_sobres',
         'subastavistaciega',
         'unidad_minima',
         'ficha_tecnica_incluye',
@@ -848,7 +851,8 @@ class Concurso extends Model
                     $mejor_oferta_cotizacion = $valores_mejor ? $valores_mejor['cotizacion'] : null;
                     $mejor_oferta_cantidad = $valores_mejor ? $valores_mejor['cantidad'] : null;
                     $mejor_oferta_oferente = $valores_mejor ? $valores_mejor['oferente'] : null;
-                    $mejor_oferta_hora = $valores_mejor && !empty($valores_mejor['creado']) ? Carbon::createFromFormat('Y-m-d H:i:s', $valores_mejor['creado'])->format('H:i:s') : null;
+                    $timezone = $this->cliente->customer_company->timeZone ?? 'UTC';
+                    $mejor_oferta_hora = $valores_mejor && !empty($valores_mejor['creado']) ? Carbon::createFromFormat('Y-m-d H:i:s', $valores_mejor['creado'])->setTimezone($timezone)->format('H:i:s') : null;
 
                     $oferta_puesto = null;
                     $empatado = false;
@@ -984,7 +988,8 @@ class Concurso extends Model
                             continue;
                         }
 
-                        $oferta_hora = $oferta && !empty($oferta['creado']) ? Carbon::createFromFormat('Y-m-d H:i:s', $oferta['creado'])->format('H:i:s') : null;
+                        $timezone = $this->cliente->customer_company->timeZone ?? 'UTC';
+                        $oferta_hora = $oferta && !empty($oferta['creado']) ? Carbon::createFromFormat('Y-m-d H:i:s', $oferta['creado'])->setTimezone($timezone)->format('H:i:s') : null;
 
                         $result[] = [
                             'razon_social' => $oferente->company->business_name,
@@ -1106,7 +1111,11 @@ class Concurso extends Model
 
     public function setAdditionalTime($seconds)
     {
-        $this->attributes['duracion'] = $this->attributes['duracion'] + $this->attributes['tiempo_adicional'];
+        // Solo aplicar el tiempo adicional si no se ha aplicado antes
+        if (!$this->attributes['tiempo_adicional_aplicado']) {
+            $this->attributes['duracion'] = $this->attributes['duracion'] + $this->attributes['tiempo_adicional'];
+            $this->attributes['tiempo_adicional_aplicado'] = true;
+        }
     }
 
     public function getParsedDuracionAttribute()

@@ -1126,14 +1126,26 @@ class ConcursoController extends BaseController
                 'tipo_valor_ofertar',
                 'duracion',
                 'tiempo_adicional',
-                'precio_minimo',
                 'unidad_minima',
-                'precio_maximo',
                 'inicio_subasta'
             ];
 
             foreach ($requiredOnlineFields as $field) {
                 if (empty($concurso->$field)) {
+                    return false;
+                }
+            }
+            
+            // Validar precio_minimo solo para subasta ascendente
+            if ($concurso->tipo_valor_ofertar === 'ascendente') {
+                if (empty($concurso->precio_minimo)) {
+                    return false;
+                }
+            }
+            
+            // Validar precio_maximo solo para subasta descendente
+            if ($concurso->tipo_valor_ofertar === 'descendente') {
+                if (empty($concurso->precio_maximo)) {
                     return false;
                 }
             }
@@ -2779,10 +2791,29 @@ class ConcursoController extends BaseController
 
     private function storeAuction($entity, $extra_fields)
     {
-
-
         $duracion_split = $entity->Duracion ? str_split($entity->Duracion, 3) : [];
         $duracion = count($duracion_split) > 0 ? (int) ($duracion_split[0] * 60) + (int) $duracion_split[1] : 0;
+        
+        // Determinar valores de precio según tipo de subasta
+        $tipo_subasta = isset($entity->TipoValorOfertar) ? $entity->TipoValorOfertar : null;
+        
+        // Para subasta ascendente: precio_maximo muy alto si no se especifica
+        // Para subasta descendente: precio_minimo en 0 si no se especifica
+        $precio_maximo = $entity->PrecioMaximo;
+        $precio_minimo = $entity->PrecioMinimo;
+        
+        if ($tipo_subasta === 'ascendente') {
+            // Subasta ascendente: si no hay precio máximo, poner un valor muy alto
+            if (empty($precio_maximo) || $precio_maximo == 0) {
+                $precio_maximo = 999999999999.00;
+            }
+        } elseif ($tipo_subasta === 'descendente') {
+            // Subasta descendente: si no hay precio mínimo, poner 0
+            if (empty($precio_minimo)) {
+                $precio_minimo = 0;
+            }
+        }
+        
         return array_merge($extra_fields, [
             'inicio_subasta' =>
                 $entity->InicioSubasta ?
@@ -2791,7 +2822,7 @@ class ConcursoController extends BaseController
             'duracion' => $duracion,
             'tiempo_adicional' => $entity->TiempoAdicional,
             'plantilla_economicas' => isset($entity->PlantillasEconomica) ? $entity->PlantillasEconomica : null,
-            'tipo_valor_ofertar' => isset($entity->TipoValorOfertar) ? $entity->TipoValorOfertar : null,
+            'tipo_valor_ofertar' => $tipo_subasta,
             'chat' => $entity->Chat,
             'subastavistaciega' => isset($entity->SubastaVistaCiega) ? $entity->SubastaVistaCiega : 'no',
             'ver_num_oferentes_participan' => $entity->VerNumOferentesParticipan,
@@ -2799,8 +2830,8 @@ class ConcursoController extends BaseController
             'ver_ranking' => $entity->VerRanking,
             'ver_tiempo_restante' => $entity->VerTiempoRestante,
             'permitir_anular_oferta' => $entity->PermitirAnularOferta,
-            'precio_maximo' => $entity->PrecioMaximo,
-            'precio_minimo' => $entity->PrecioMinimo,
+            'precio_maximo' => $precio_maximo,
+            'precio_minimo' => $precio_minimo,
             'solo_ofertas_mejores' => $entity->SoloOfertasMejores,
             'unidad_minima' => $entity->UnidadMinima,
             'imagen' => $entity->Portrait->filename,
@@ -4055,14 +4086,14 @@ class ConcursoController extends BaseController
 
         // ONLINE
         if ($is_online) {
+            $tipo_subasta = $fields['tipo_valor_ofertar'] ?? null;
             $precio_inferior = $fields['precio_minimo'] > $fields['unidad_minima'] ? $fields['precio_minimo'] : $fields['unidad_minima'];
-            $conditional_rules = array_merge($conditional_rules, [
+            
+            $online_rules = [
                 'tipo_valor_ofertar' => 'required|in:ascendente,descendente',
                 'duracion' => 'required|numeric|min:60',
                 'tiempo_adicional' => 'required|numeric|between:1,120',
-                'precio_minimo' => 'required|numeric|min:1',
                 'unidad_minima' => 'required|numeric|min:1',
-                'precio_maximo' => 'required|numeric|min:' . (($precio_inferior ? $precio_inferior : 0) * 10),
                 'inicio_subasta' => [
                     'required',
                     'date_format:Y-m-d H:i:s',
@@ -4085,7 +4116,23 @@ class ConcursoController extends BaseController
                                 $fail('La fecha de Inicio de Concurso debe ser al menos 1 día mayor a la fecha de Muro de Consultas.');
                     },
                 ]
-            ]);
+            ];
+            
+            // Validar precio_minimo solo para subasta ascendente
+            if ($tipo_subasta === 'ascendente') {
+                $online_rules['precio_minimo'] = 'required|numeric|min:1';
+            } else {
+                $online_rules['precio_minimo'] = 'nullable|numeric|min:0';
+            }
+            
+            // Validar precio_maximo solo para subasta descendente
+            if ($tipo_subasta === 'descendente') {
+                $online_rules['precio_maximo'] = 'required|numeric|min:1';
+            } else {
+                $online_rules['precio_maximo'] = 'nullable|numeric|min:0';
+            }
+            
+            $conditional_rules = array_merge($conditional_rules, $online_rules);
         }
 
         // GO
@@ -4324,6 +4371,13 @@ class ConcursoController extends BaseController
                 ]);
                 $offerer->refresh();
             }
+            
+            // Guardar fecha de apertura de sobres si es la primera vez
+            if (!$concurso->fecha_apertura_sobres) {
+                $concurso->fecha_apertura_sobres = Carbon::now();
+                $concurso->save();
+            }
+            
             $connection->commit();
             $message = 'Ofertas actualizadas.';
             $success = true;

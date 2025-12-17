@@ -145,14 +145,17 @@ class A0Controller extends BaseController
         $user_name = $auth0User['given_name'] ?? ($auth0User['name'] ?? '');
         $user_surname = $auth0User['family_name'] ?? (explode(' ', $auth0User['name'] ?? '')[1] ?? '');
         
-        // Generar username basado en el email (parte antes del @)
+        // Generar username basado en el email (parte antes del @) + número aleatorio
         $emailParts = explode('@', $user_email);
-        $user_username = strtolower(preg_replace('/[^a-z0-9]/', '', strtolower($emailParts[0] ?? 'user')));
+        $baseUsername = strtolower(preg_replace('/[^a-z0-9]/', '', strtolower($emailParts[0] ?? 'user')));
         
         // Si el username está vacío o es muy corto, usar fallback
-        if (strlen($user_username) < 3) {
-            $user_username = 'user' . rand(1000, 9999);
+        if (strlen($baseUsername) < 3) {
+            $baseUsername = 'user';
         }
+        
+        // Agregar número aleatorio para evitar duplicados
+        $user_username = $baseUsername . rand(100, 999);
 
         $length = 8;
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
