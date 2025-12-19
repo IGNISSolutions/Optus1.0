@@ -113,7 +113,8 @@
         <div class="form-group required" data-bind="validationElement: Entity.UnidadMinima">
             <label class="control-label visible-ie8 visible-ie9" style="display: block;">Unidad mínima para mejorar
                 oferta</label>
-            <input class="form-control placeholder-no-fix" type="number" min="0.01" step="0.01" id="unidad_minima"
+            <input class="form-control placeholder-no-fix" type="number" step="0.01" id="unidad_minima"
+                placeholder="Distinto de 0"
                 data-bind="value: Entity.UnidadMinima, disable: ReadOnly()" />
         </div>
     </div>

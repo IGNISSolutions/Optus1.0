@@ -4245,7 +4245,7 @@ class ConcursoController extends BaseController
 
         // Mensajes personalizados
         $messages = [
-            'unidad_minima.required' => 'La unidad mínima debe ser distinto de 0.',
+            'unidad_minima.required' => 'La unidad mínima es obligatoria y debe ser distinto de 0.',
             'unidad_minima.numeric' => 'La unidad mínima debe ser un valor numérico.',
             'unidad_minima.min' => 'La unidad mínima debe ser distinto de 0.',
         ];
