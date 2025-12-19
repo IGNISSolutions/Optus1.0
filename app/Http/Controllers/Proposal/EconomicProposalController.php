@@ -636,6 +636,7 @@ class EconomicProposalController extends BaseController
         $unidad = $producto->unidad_medida->name;
         $descendente = $concurso->tipo_valor_ofertar == 'descendente' ? true : false;
         $mejor_oferta = null;
+        $solo_ofertas_mejores = $concurso->solo_ofertas_mejores; // true = comparar con mejor oferta, false = comparar con oferta propia
 
         // Obtenemos los valores ingresados.
         $cotizacion = $oferta->valores->cotizacion;
@@ -664,35 +665,59 @@ class EconomicProposalController extends BaseController
             }
         }
 
-        // Validar unidad mínima: la nueva oferta debe mejorar la mejor oferta existente
-        // por al menos la unidad mínima (excepto si la mejor oferta es del mismo oferente)
-        if ($mejor_oferta && $unidad_minima && !$es_mi_mejor_oferta) {
-            if ($descendente) {
-                // Subasta descendente: la nueva oferta debe ser <= mejor_oferta - unidad_minima
-                $cotizacion_limite = $mejor_oferta - $unidad_minima;
-                if ($cotizacion > $cotizacion_limite) {
-                    $errores[] = "La cotización debe ser menor o igual a $cotizacion_limite ($moneda). Debe mejorar la mejor oferta ($mejor_oferta) en al menos $unidad_minima.";
+        // Validar que la oferta no sea igual a la anterior del mismo oferente
+        if ($cotizacion_anterior !== null && $cotizacion == $cotizacion_anterior) {
+            $errores[] = "La cotización debe ser diferente a su oferta anterior ($cotizacion_anterior $moneda).";
+        }
+
+        // LÓGICA DE VALIDACIÓN SEGÚN solo_ofertas_mejores:
+        // - SI (true): La nueva oferta debe superar la MEJOR OFERTA del item por al menos la unidad mínima
+        // - NO (false): La nueva oferta debe superar la OFERTA PROPIA ANTERIOR por al menos la unidad mínima
+
+        if ($solo_ofertas_mejores) {
+            // =====================================================
+            // MODO "SI": Comparar siempre con la MEJOR OFERTA
+            // =====================================================
+            if ($mejor_oferta) {
+                // Debe superar la mejor oferta por al menos la unidad mínima
+                if ($descendente) {
+                    $cotizacion_limite = $mejor_oferta - $unidad_minima;
+                    if ($cotizacion > $cotizacion_limite) {
+                        $errores[] = "La cotización debe ser menor o igual a $cotizacion_limite ($moneda). Debe mejorar la mejor oferta ($mejor_oferta) en al menos $unidad_minima.";
+                    }
+                } else {
+                    $cotizacion_limite = $mejor_oferta + $unidad_minima;
+                    if ($cotizacion < $cotizacion_limite) {
+                        $errores[] = "La cotización debe ser mayor o igual a $cotizacion_limite ($moneda). Debe mejorar la mejor oferta ($mejor_oferta) en al menos $unidad_minima.";
+                    }
                 }
             } else {
-                // Subasta ascendente: la nueva oferta debe ser >= mejor_oferta + unidad_minima
-                $cotizacion_limite = $mejor_oferta + $unidad_minima;
-                if ($cotizacion < $cotizacion_limite) {
-                    $errores[] = "La cotización debe ser mayor o igual a $cotizacion_limite ($moneda). Debe mejorar la mejor oferta ($mejor_oferta) en al menos $unidad_minima.";
+                // Primera oferta del concurso: debe ser al menos igual a la unidad mínima
+                if ($cotizacion < $unidad_minima) {
+                    $errores[] = "La cotización debe ser al menos $unidad_minima ($moneda).";
                 }
             }
-        }
-        
-        // Si es mi mejor oferta, validar que mejore mi propia oferta por la unidad mínima
-        if ($mejor_oferta && $unidad_minima && $es_mi_mejor_oferta && $cotizacion_anterior) {
-            if ($descendente) {
-                $cotizacion_limite = $cotizacion_anterior - $unidad_minima;
-                if ($cotizacion > $cotizacion_limite) {
-                    $errores[] = "La cotización debe ser menor o igual a $cotizacion_limite ($moneda). Debe mejorar su oferta anterior ($cotizacion_anterior) en al menos $unidad_minima.";
+        } else {
+            // =====================================================
+            // MODO "NO": Comparar siempre con la OFERTA PROPIA ANTERIOR
+            // =====================================================
+            if ($cotizacion_anterior !== null) {
+                // Debe superar su oferta anterior por al menos la unidad mínima
+                if ($descendente) {
+                    $cotizacion_limite = $cotizacion_anterior - $unidad_minima;
+                    if ($cotizacion > $cotizacion_limite) {
+                        $errores[] = "La cotización debe ser menor o igual a $cotizacion_limite ($moneda). Debe mejorar su oferta anterior ($cotizacion_anterior) en al menos $unidad_minima.";
+                    }
+                } else {
+                    $cotizacion_limite = $cotizacion_anterior + $unidad_minima;
+                    if ($cotizacion < $cotizacion_limite) {
+                        $errores[] = "La cotización debe ser mayor o igual a $cotizacion_limite ($moneda). Debe mejorar su oferta anterior ($cotizacion_anterior) en al menos $unidad_minima.";
+                    }
                 }
             } else {
-                $cotizacion_limite = $cotizacion_anterior + $unidad_minima;
-                if ($cotizacion < $cotizacion_limite) {
-                    $errores[] = "La cotización debe ser mayor o igual a $cotizacion_limite ($moneda). Debe mejorar su oferta anterior ($cotizacion_anterior) en al menos $unidad_minima.";
+                // Primera oferta: debe ser al menos igual a la unidad mínima
+                if ($cotizacion < $unidad_minima) {
+                    $errores[] = "La cotización debe ser al menos $unidad_minima ($moneda).";
                 }
             }
         }

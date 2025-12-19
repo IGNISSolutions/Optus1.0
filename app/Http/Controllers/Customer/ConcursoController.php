@@ -4094,7 +4094,7 @@ class ConcursoController extends BaseController
                 'tipo_valor_ofertar' => 'required|in:ascendente,descendente',
                 'duracion' => 'required|numeric|min:60',
                 'tiempo_adicional' => 'required|numeric|between:1,120',
-                'unidad_minima' => 'required|numeric|min:1',
+                'unidad_minima' => 'required|numeric|min:0.01',
                 'inicio_subasta' => [
                     'required',
                     'date_format:Y-m-d H:i:s',
@@ -4243,9 +4243,17 @@ class ConcursoController extends BaseController
             ]);
         }
 
+        // Mensajes personalizados
+        $messages = [
+            'unidad_minima.required' => 'La unidad mínima debe ser distinto de 0.',
+            'unidad_minima.numeric' => 'La unidad mínima debe ser un valor numérico.',
+            'unidad_minima.min' => 'La unidad mínima debe ser distinto de 0.',
+        ];
+
         return validator(
             $data = $fields,
-            $rules = array_merge($common_rules, $conditional_rules)
+            $rules = array_merge($common_rules, $conditional_rules),
+            $messages
         );
     }
 
