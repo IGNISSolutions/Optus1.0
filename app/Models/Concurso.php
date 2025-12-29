@@ -851,13 +851,8 @@ class Concurso extends Model
                     $mejor_oferta_cotizacion = $valores_mejor ? $valores_mejor['cotizacion'] : null;
                     $mejor_oferta_cantidad = $valores_mejor ? $valores_mejor['cantidad'] : null;
                     $mejor_oferta_oferente = $valores_mejor ? $valores_mejor['oferente'] : null;
-                    $timezone_cliente = $this->cliente->customer_company->timeZone ?? 'UTC';
-                    $timezone_servidor = config('app.timezone') ?? 'America/Argentina/Cordoba';
-                    $mejor_oferta_hora = $valores_mejor && !empty($valores_mejor['creado']) 
-                        ? Carbon::createFromFormat('Y-m-d H:i:s', $valores_mejor['creado'], $timezone_servidor)
-                            ->setTimezone($timezone_cliente)
-                            ->format('H:i:s') 
-                        : null;
+                    $timezone = $this->cliente->customer_company->timeZone ?? 'UTC';
+                    $mejor_oferta_hora = $valores_mejor && !empty($valores_mejor['creado']) ? Carbon::createFromFormat('Y-m-d H:i:s', $valores_mejor['creado'])->setTimezone($timezone)->format('H:i:s') : null;
 
                     $oferta_puesto = null;
                     $empatado = false;
@@ -993,13 +988,8 @@ class Concurso extends Model
                             continue;
                         }
 
-                        $timezone_cliente = $this->cliente->customer_company->timeZone ?? 'UTC';
-                        $timezone_servidor = config('app.timezone') ?? 'America/Argentina/Cordoba';
-                        $oferta_hora = $oferta && !empty($oferta['creado']) 
-                            ? Carbon::createFromFormat('Y-m-d H:i:s', $oferta['creado'], $timezone_servidor)
-                                ->setTimezone($timezone_cliente)
-                                ->format('H:i:s') 
-                            : null;
+                        $timezone = $this->cliente->customer_company->timeZone ?? 'UTC';
+                        $oferta_hora = $oferta && !empty($oferta['creado']) ? Carbon::createFromFormat('Y-m-d H:i:s', $oferta['creado'])->setTimezone($timezone)->format('H:i:s') : null;
 
                         $result[] = [
                             'razon_social' => $oferente->company->business_name,
