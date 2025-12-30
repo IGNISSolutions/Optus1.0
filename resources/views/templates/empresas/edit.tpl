@@ -78,7 +78,7 @@
                                     <label class="control-label visible-ie8 visible-ie9" style="display: block;">Código
                                         Fiscal</label>
                                         <input 
-                                            data-bind="textInput: Entity.Cuit, event: { keypress: onlyNumbers, blur: onCuitBlur }" 
+                                            data-bind="textInput: Entity.Cuit, event: { blur: onCuitBlur }" 
                                             class="form-control placeholder-no-fix"
                                             type="text" 
                                             name="cuit" 
