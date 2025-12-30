@@ -1139,7 +1139,10 @@
             });
             this.SoloOfertasMejores = ko.observable(data.list.SoloOfertasMejores);
             this.UnidadesMinimas = ko.observable(data.list.UnidadesMinimas);
-            this.UnidadMinima = ko.observable(data.list.UnidadMinima).extend({ required: true });
+            this.UnidadMinima = ko.observable(data.list.UnidadMinima).extend({ 
+                required: { message: 'La unidad mínima es obligatoria y debe ser distinto de 0.' },
+                min: { params: 0.01, message: 'La unidad mínima es obligatoria y debe ser distinto de 0.' }
+            });
 
             /**
          * GO

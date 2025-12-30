@@ -58,7 +58,7 @@
                                     data-bind="number: 
                                         valores_mejor().cotizacion && $parent.VerOfertaGanadora() ? 
                                         valores_mejor().cotizacion : 
-                                        'No disponible', precision: 0">
+                                        'No disponible', precision: 2">
                                 </td>
                                 <!-- ko if: $parent.VerRanking() -->
                                 <td class="text-center valign-middle" data-bind="text: 

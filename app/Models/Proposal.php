@@ -77,9 +77,12 @@ class Proposal extends Model
 
         if ($values) {
             foreach ($values as &$value) {
+                // Convertir cotización y cantidad a float para asegurar formato numérico correcto
+                $value['cotizacion'] = isset($value['cotizacion']) ? (float) $value['cotizacion'] : null;
+                $value['cantidad'] = isset($value['cantidad']) ? (float) $value['cantidad'] : null;
                 $value['cotUnitaria'] = $value['cotizacion'];
                 $value['cantidadCot'] = $value['cantidad'];
-                $value['total'] = (int) $value['cotUnitaria'] * (int) $value['cantidadCot'];
+                $value['total'] = (float) $value['cotUnitaria'] * (float) $value['cantidadCot'];
             }
         }
 

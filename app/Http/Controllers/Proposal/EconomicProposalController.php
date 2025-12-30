@@ -352,18 +352,18 @@ class EconomicProposalController extends BaseController
                     $oferta_new = [
                         'producto' => $producto->id,
                         'unidad' => $producto->unidad_medida->name,
-                        'cotizacion' => isset($ofertas_old[$i]) && isset($ofertas_old[$i]['cotizacion']) ? $ofertas_old[$i]['cotizacion'] : null,
+                        'cotizacion' => isset($ofertas_old[$i]) && isset($ofertas_old[$i]['cotizacion']) ? (float) $ofertas_old[$i]['cotizacion'] : null,
                         'creado' => isset($ofertas_old[$i]) && isset($ofertas_old[$i]['creado']) ? $ofertas_old[$i]['creado'] : null,
                         'fecha' => isset($ofertas_old[$i]) && isset($ofertas_old[$i]['fecha']) ? $ofertas_old[$i]['fecha'] : null,
-                        'cantidad' => isset($ofertas_old[$i]) && isset($ofertas_old[$i]['cantidad']) ? $ofertas_old[$i]['cantidad'] : null,
+                        'cantidad' => isset($ofertas_old[$i]) && isset($ofertas_old[$i]['cantidad']) ? (float) $ofertas_old[$i]['cantidad'] : null,
                         'anulada' => isset($ofertas_old[$i]) && isset($ofertas_old[$i]['anulada']) ? $ofertas_old[$i]['anulada'] : false,
                         // preservamos el estado del switch si estaba presente
                         'selected' => isset($ofertas_old[$i]) && array_key_exists('selected', $ofertas_old[$i]) ? (bool)$ofertas_old[$i]['selected'] : null
                     ];
 
                     if ($i == $body->Index) {
-                        $oferta_new['cotizacion'] = $h1[$i]['valores']['cotizacion'];
-                        $oferta_new['cantidad'] = $h1[$i]['valores']['cantidad'];
+                        $oferta_new['cotizacion'] = (float) $h1[$i]['valores']['cotizacion'];
+                        $oferta_new['cantidad'] = (float) $h1[$i]['valores']['cantidad'];
                         $oferta_new['creado'] = Carbon::now()->format('Y-m-d H:i:s');
                         $oferta_new['anulada'] = false;
                     }
@@ -374,7 +374,7 @@ class EconomicProposalController extends BaseController
                 }
                 // Sumar valores históricos a la cadena.
                 $ofertas_new = array_merge($ofertas_new, $ofertas_old);
-                $economic_values = json_encode($ofertas_new);
+                $economic_values = json_encode($ofertas_new, JSON_PRESERVE_ZERO_FRACTION);
 
                 if ($economic_proposal) {
                     $economic_proposal->update([
@@ -626,68 +626,103 @@ class EconomicProposalController extends BaseController
         $producto = $concurso->productos->get($body->Index);
 
         // Obtenemos los valores de partida.
-        $cantidad_min = $producto->oferta_minima;
-        $cantidad_max = $producto->cantidad;
-        $cotizacion_min = $concurso->precio_minimo;
-        $cotizacion_max = $concurso->precio_maximo;
-        $unidad_minima = $concurso->unidad_minima;
+        $cantidad_min = (float) $producto->oferta_minima;
+        $cantidad_max = (float) $producto->cantidad;
+        $cotizacion_min = (float) $concurso->precio_minimo;
+        $cotizacion_max = (float) $concurso->precio_maximo;
+        $unidad_minima = (float) $concurso->unidad_minima;
         $cotizacion_anterior = null;
         $moneda = $concurso->tipo_moneda->nombre;
         $unidad = $producto->unidad_medida->name;
         $descendente = $concurso->tipo_valor_ofertar == 'descendente' ? true : false;
         $mejor_oferta = null;
+        $solo_ofertas_mejores = $concurso->solo_ofertas_mejores; // true = comparar con mejor oferta, false = comparar con oferta propia
 
         // Obtenemos los valores ingresados.
-        $cotizacion = $oferta->valores->cotizacion;
-        $cantidad = $oferta->valores->cantidad;
+        $cotizacion = (float) $oferta->valores->cotizacion;
+        $cantidad = (float) $oferta->valores->cantidad;
 
         // Verificamos que existan datos.
         if (!$cotizacion || !$cantidad) {
             $errores[] = 'Los campos de Importe y Cantidad son obligatorios.';
         }
 
+        $es_mi_mejor_oferta = false;
         foreach ($subasta['Items'] as $item) {
             // Obtengo la mejor oferta para el producto.
             if ($item['id'] == $producto->id) {
-                $mejor_oferta = $item['valores_mejor']['cotizacion'];
+                $mejor_oferta = (float) $item['valores_mejor']['cotizacion'];
+                
+                // Verifico si la mejor oferta es del oferente actual
+                if ($item['valores_mejor']['oferente'] == user()->offerer_company_id) {
+                    $es_mi_mejor_oferta = true;
+                }
 
                 // Obtengo la oferta anterior del oferente para el producto.
-                if ($item['id_oferente'] == user()->id) {
-                    $cotizacion_anterior = $item['valores']['cotizacion'];
+                if ($item['id_oferente'] == user()->offerer_company_id) {
+                    $cotizacion_anterior = (float) $item['valores']['cotizacion'];
                 }
             }
         }
 
-        // Obtengo la cotización de partida para el producto.
-        $cotizacion_limite =
-            $mejor_oferta && $concurso->solo_ofertas_mejores ?
-            $mejor_oferta :
-            ($cotizacion_anterior ? $cotizacion_anterior : null);
+        // Validar que la oferta no sea igual a la anterior del mismo oferente
+        if ($cotizacion_anterior !== null && $cotizacion == $cotizacion_anterior) {
+            $errores[] = "La cotización debe ser diferente a su oferta anterior ($cotizacion_anterior $moneda).";
+        }
 
-        $cotizacion_limite =
-            $cotizacion_limite && $unidad_minima ?
-            (
-                $descendente ?
-                $cotizacion_limite - $unidad_minima :
-                $cotizacion_limite + $unidad_minima
-            ) :
-            $cotizacion_limite;
+        // LÓGICA DE VALIDACIÓN SEGÚN solo_ofertas_mejores:
+        // - SI (true): La nueva oferta debe superar la MEJOR OFERTA del item por al menos la unidad mínima
+        // - NO (false): La nueva oferta debe superar la OFERTA PROPIA ANTERIOR por al menos la unidad mínima
 
-        if ($cotizacion_limite) {
-            // Reviso si estamos dentro del rango de mejor oferta. Todos tienen la posibilidad de ofertar igual en ese rango.
-            if ($descendente && ($cotizacion - $cotizacion_min) <= $unidad_minima) {
-                $cotizacion_limite = $mejor_oferta ? $mejor_oferta : $cotizacion_min;
+        if ($solo_ofertas_mejores) {
+            // =====================================================
+            // MODO "SI": Comparar siempre con la MEJOR OFERTA
+            // =====================================================
+            if ($mejor_oferta) {
+                // Primero validar que no sea exactamente igual a la mejor oferta
+                if (abs($cotizacion - $mejor_oferta) < 0.001) {
+                    $errores[] = "La cotización no puede ser igual a la mejor oferta actual ($mejor_oferta $moneda). Debe mejorarla en al menos $unidad_minima.";
+                }
+                // Debe superar la mejor oferta por al menos la unidad mínima
+                elseif ($descendente) {
+                    $cotizacion_limite = $mejor_oferta - $unidad_minima;
+                    if ($cotizacion > $cotizacion_limite) {
+                        $errores[] = "La cotización debe ser menor o igual a $cotizacion_limite ($moneda). Debe mejorar la mejor oferta ($mejor_oferta) en al menos $unidad_minima.";
+                    }
+                } else {
+                    $cotizacion_limite = $mejor_oferta + $unidad_minima;
+                    if ($cotizacion < $cotizacion_limite) {
+                        $errores[] = "La cotización debe ser mayor o igual a $cotizacion_limite ($moneda). Debe mejorar la mejor oferta ($mejor_oferta) en al menos $unidad_minima.";
+                    }
+                }
+            } else {
+                // Primera oferta del concurso: debe ser al menos igual a la unidad mínima
+                if ($cotizacion < $unidad_minima) {
+                    $errores[] = "La cotización debe ser al menos $unidad_minima ($moneda).";
+                }
             }
-
-            if ((!$descendente && ($cotizacion_max - $cotizacion) <= $unidad_minima)) {
-                $cotizacion_limite = $mejor_oferta ? $mejor_oferta : $cotizacion_max;
-            }
-
-            // Verifico que la cotización ingresada sea aceptable.
-            if (($descendente && $cotizacion > $cotizacion_limite)) {
-                $errores[] = "Cotización mayor a $cotizacion_limite ($moneda) no permitida.";
-            } elseif ((!$descendente && $cotizacion < $cotizacion_limite)) {
-                $errores[] = "Cotización menor a $cotizacion_limite ($moneda) no permitida.";
+        } else {
+            // =====================================================
+            // MODO "NO": Comparar siempre con la OFERTA PROPIA ANTERIOR
+            // =====================================================
+            if ($cotizacion_anterior !== null) {
+                // Debe superar su oferta anterior por al menos la unidad mínima
+                if ($descendente) {
+                    $cotizacion_limite = $cotizacion_anterior - $unidad_minima;
+                    if ($cotizacion > $cotizacion_limite) {
+                        $errores[] = "La cotización debe ser menor o igual a $cotizacion_limite ($moneda). Debe mejorar su oferta anterior ($cotizacion_anterior) en al menos $unidad_minima.";
+                    }
+                } else {
+                    $cotizacion_limite = $cotizacion_anterior + $unidad_minima;
+                    if ($cotizacion < $cotizacion_limite) {
+                        $errores[] = "La cotización debe ser mayor o igual a $cotizacion_limite ($moneda). Debe mejorar su oferta anterior ($cotizacion_anterior) en al menos $unidad_minima.";
+                    }
+                }
+            } else {
+                // Primera oferta: debe ser al menos igual a la unidad mínima
+                if ($cotizacion < $unidad_minima) {
+                    $errores[] = "La cotización debe ser al menos $unidad_minima ($moneda).";
+                }
             }
         }
 
