@@ -352,18 +352,18 @@ class EconomicProposalController extends BaseController
                     $oferta_new = [
                         'producto' => $producto->id,
                         'unidad' => $producto->unidad_medida->name,
-                        'cotizacion' => isset($ofertas_old[$i]) && isset($ofertas_old[$i]['cotizacion']) ? $ofertas_old[$i]['cotizacion'] : null,
+                        'cotizacion' => isset($ofertas_old[$i]) && isset($ofertas_old[$i]['cotizacion']) ? (float) $ofertas_old[$i]['cotizacion'] : null,
                         'creado' => isset($ofertas_old[$i]) && isset($ofertas_old[$i]['creado']) ? $ofertas_old[$i]['creado'] : null,
                         'fecha' => isset($ofertas_old[$i]) && isset($ofertas_old[$i]['fecha']) ? $ofertas_old[$i]['fecha'] : null,
-                        'cantidad' => isset($ofertas_old[$i]) && isset($ofertas_old[$i]['cantidad']) ? $ofertas_old[$i]['cantidad'] : null,
+                        'cantidad' => isset($ofertas_old[$i]) && isset($ofertas_old[$i]['cantidad']) ? (float) $ofertas_old[$i]['cantidad'] : null,
                         'anulada' => isset($ofertas_old[$i]) && isset($ofertas_old[$i]['anulada']) ? $ofertas_old[$i]['anulada'] : false,
                         // preservamos el estado del switch si estaba presente
                         'selected' => isset($ofertas_old[$i]) && array_key_exists('selected', $ofertas_old[$i]) ? (bool)$ofertas_old[$i]['selected'] : null
                     ];
 
                     if ($i == $body->Index) {
-                        $oferta_new['cotizacion'] = $h1[$i]['valores']['cotizacion'];
-                        $oferta_new['cantidad'] = $h1[$i]['valores']['cantidad'];
+                        $oferta_new['cotizacion'] = (float) $h1[$i]['valores']['cotizacion'];
+                        $oferta_new['cantidad'] = (float) $h1[$i]['valores']['cantidad'];
                         $oferta_new['creado'] = Carbon::now()->format('Y-m-d H:i:s');
                         $oferta_new['anulada'] = false;
                     }
@@ -374,7 +374,7 @@ class EconomicProposalController extends BaseController
                 }
                 // Sumar valores históricos a la cadena.
                 $ofertas_new = array_merge($ofertas_new, $ofertas_old);
-                $economic_values = json_encode($ofertas_new);
+                $economic_values = json_encode($ofertas_new, JSON_PRESERVE_ZERO_FRACTION);
 
                 if ($economic_proposal) {
                     $economic_proposal->update([
@@ -626,11 +626,11 @@ class EconomicProposalController extends BaseController
         $producto = $concurso->productos->get($body->Index);
 
         // Obtenemos los valores de partida.
-        $cantidad_min = $producto->oferta_minima;
-        $cantidad_max = $producto->cantidad;
-        $cotizacion_min = $concurso->precio_minimo;
-        $cotizacion_max = $concurso->precio_maximo;
-        $unidad_minima = $concurso->unidad_minima;
+        $cantidad_min = (float) $producto->oferta_minima;
+        $cantidad_max = (float) $producto->cantidad;
+        $cotizacion_min = (float) $concurso->precio_minimo;
+        $cotizacion_max = (float) $concurso->precio_maximo;
+        $unidad_minima = (float) $concurso->unidad_minima;
         $cotizacion_anterior = null;
         $moneda = $concurso->tipo_moneda->nombre;
         $unidad = $producto->unidad_medida->name;
@@ -639,8 +639,8 @@ class EconomicProposalController extends BaseController
         $solo_ofertas_mejores = $concurso->solo_ofertas_mejores; // true = comparar con mejor oferta, false = comparar con oferta propia
 
         // Obtenemos los valores ingresados.
-        $cotizacion = $oferta->valores->cotizacion;
-        $cantidad = $oferta->valores->cantidad;
+        $cotizacion = (float) $oferta->valores->cotizacion;
+        $cantidad = (float) $oferta->valores->cantidad;
 
         // Verificamos que existan datos.
         if (!$cotizacion || !$cantidad) {
@@ -651,7 +651,7 @@ class EconomicProposalController extends BaseController
         foreach ($subasta['Items'] as $item) {
             // Obtengo la mejor oferta para el producto.
             if ($item['id'] == $producto->id) {
-                $mejor_oferta = $item['valores_mejor']['cotizacion'];
+                $mejor_oferta = (float) $item['valores_mejor']['cotizacion'];
                 
                 // Verifico si la mejor oferta es del oferente actual
                 if ($item['valores_mejor']['oferente'] == user()->offerer_company_id) {
@@ -660,7 +660,7 @@ class EconomicProposalController extends BaseController
 
                 // Obtengo la oferta anterior del oferente para el producto.
                 if ($item['id_oferente'] == user()->offerer_company_id) {
-                    $cotizacion_anterior = $item['valores']['cotizacion'];
+                    $cotizacion_anterior = (float) $item['valores']['cotizacion'];
                 }
             }
         }
@@ -679,8 +679,12 @@ class EconomicProposalController extends BaseController
             // MODO "SI": Comparar siempre con la MEJOR OFERTA
             // =====================================================
             if ($mejor_oferta) {
+                // Primero validar que no sea exactamente igual a la mejor oferta
+                if (abs($cotizacion - $mejor_oferta) < 0.001) {
+                    $errores[] = "La cotización no puede ser igual a la mejor oferta actual ($mejor_oferta $moneda). Debe mejorarla en al menos $unidad_minima.";
+                }
                 // Debe superar la mejor oferta por al menos la unidad mínima
-                if ($descendente) {
+                elseif ($descendente) {
                     $cotizacion_limite = $mejor_oferta - $unidad_minima;
                     if ($cotizacion > $cotizacion_limite) {
                         $errores[] = "La cotización debe ser menor o igual a $cotizacion_limite ($moneda). Debe mejorar la mejor oferta ($mejor_oferta) en al menos $unidad_minima.";

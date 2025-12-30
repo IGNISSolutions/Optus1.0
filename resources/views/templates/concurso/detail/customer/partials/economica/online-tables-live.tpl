@@ -25,7 +25,7 @@
                     <td class="bold text-center" data-bind="text: sol_unidad" style="vertical-align: middle;"></td>
                     <td class="bold text-center" data-bind="text: sol_cantidad" style="vertical-align: middle;"></td>
                     <td class="bold text-center" data-bind="text: sol_oferta_minima" style="vertical-align: middle;"></td>
-                    <td data-bind="number: cotizacion, precision: 0" class="text-center" style="white-space: nowrap;vertical-align: middle;"></td>
+                    <td data-bind="number: cotizacion, precision: 2" class="text-center" style="white-space: nowrap;vertical-align: middle;"></td>
                     <td data-bind="text: hora" class="text-center" style="vertical-align: middle;"></td>
                     <td data-bind="text: razon_social" class="text-center" style="white-space: nowrap;vertical-align: middle;"></td>
                     <td data-bind="text: cantidad" class="text-center" style="vertical-align: middle;"></td>
@@ -57,7 +57,7 @@
             <tbody data-bind="dataTablesForEach : { data: Log, options: { paging: false, searching: false, scrollY: '500px', scrollCollapse: true }}">
                 <tr role="row">
                     <td class="bold text-center" data-bind="text: producto" style="white-space: nowrap;vertical-align: middle;" ></td>
-                    <td data-bind="number: cotizacion, precision: 0" class="text-center" style="white-space: nowrap;vertical-align: middle;"></td>
+                    <td data-bind="number: cotizacion, precision: 2" class="text-center" style="white-space: nowrap;vertical-align: middle;"></td>
                     <td data-bind="text: creado" class="text-center" style="vertical-align: middle;"></td>
                     <td data-bind="text: razon_social" class="text-center" style="white-space: nowrap;vertical-align: middle;"></td>
                     <td data-bind="text: cantidad" class="text-center" style="vertical-align: middle;"></td>

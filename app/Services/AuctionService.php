@@ -91,7 +91,20 @@ class AuctionService implements MessageComponentInterface {
         $accion = isset($attributes[3]) ? $attributes[3] : null;
         $additional_time = isset($attributes[4]) && $attributes[4] > 0 ? $attributes[4] : null;
 
-        $concurso = Concurso::find($id_concurso);
+        // Limpiar cualquier cache de Eloquent y obtener instancia fresca
+        Concurso::flushEventListeners();
+        $concurso = Concurso::query()
+            ->with(['productos.unidad_medida', 'cliente.customer_company', 'tipo_moneda'])
+            ->find($id_concurso);
+        
+        // Forzar recarga de oferentes y sus proposals desde la base de datos
+        if ($concurso) {
+            $concurso->load(['oferentes' => function($query) {
+                $query->with(['proposals' => function($q) {
+                    $q->whereNull('deleted_at');
+                }, 'company']);
+            }]);
+        }
 
         // Recorremos los Oferentes y Clientes...
         foreach ($this->clients as $client) {
@@ -124,7 +137,7 @@ class AuctionService implements MessageComponentInterface {
                     $output['TiempoAdicional'] = $additional_time;
                 }
          
-                $client->send(json_encode($output));
+                $client->send(json_encode($output, JSON_PRESERVE_ZERO_FRACTION));
 
             } elseif ($this->clientes->where('id_concurso', $id_concurso)->where('id_recurso', $client->resourceId)->count() > 0) {
 
@@ -142,7 +155,7 @@ class AuctionService implements MessageComponentInterface {
                         $output = array_merge($output, $subastaOutput);
                 }
 
-                $client->send(json_encode($output));
+                $client->send(json_encode($output, JSON_PRESERVE_ZERO_FRACTION));
             }
         }
 

@@ -673,6 +673,10 @@ class Concurso extends Model
     {
         $result = collect();
         if ($this->is_online) {
+            // Recargar relaciones frescas desde la base de datos
+            $this->unsetRelation('oferentes');
+            $this->unsetRelation('productos');
+            $this->load(['oferentes.proposals', 'productos.unidad_medida']);
 
             $ascendente = $this->tipo_valor_ofertar == 'ascendente' ? true : false;
             foreach ($this->productos as $producto) {
@@ -680,18 +684,30 @@ class Concurso extends Model
                 $cotizaciones = collect();
 
                 $total_cotizaciones = [];
-                $oferentes = $this->oferentes->where('has_economica_presentada', true);
+                
+                // Filtrar oferentes que tienen propuesta económica con valores
+                $oferentes = $this->oferentes->filter(function($oferente) {
+                    $proposal = $oferente->proposals->where('is_economic', true)->first();
+                    return $proposal && $proposal->values && count($proposal->values) > 0;
+                });
 
                 foreach ($oferentes as $oferente) {
                     $proposal = $oferente->proposals->where('is_economic', true)->first();
-                    $oferta = array_values(
+                    if (!$proposal || !$proposal->values) {
+                        continue;
+                    }
+                    $ofertaArray = array_values(
                         array_filter(
                             $proposal->values,
                             function ($item) use ($producto) {
                                 return $item['producto'] == $producto->id;
                             }
                         )
-                    )[0];
+                    );
+                    if (empty($ofertaArray)) {
+                        continue;
+                    }
+                    $oferta = $ofertaArray[0];
                     if (!$oferta['cotizacion']) {
                         continue;
                     }
@@ -704,9 +720,9 @@ class Concurso extends Model
                     $total_cotizaciones,
                     function ($value, $key) use ($total_cotizaciones, $ascendente) {
                         if ($ascendente) {
-                            return (int) $value >= max(array_filter($total_cotizaciones));
+                            return (float) $value >= max(array_filter($total_cotizaciones));
                         }
-                        return (int) $value <= (int) min(array_filter($total_cotizaciones));
+                        return (float) $value <= (float) min(array_filter($total_cotizaciones));
                     },
                     ARRAY_FILTER_USE_BOTH
                 );
@@ -725,6 +741,9 @@ class Concurso extends Model
                                 }
                             )
                         )[0];
+                        // Asegurar que cotizacion y cantidad sean floats
+                        $oferta['cotizacion'] = (float) $oferta['cotizacion'];
+                        $oferta['cantidad'] = (float) $oferta['cantidad'];
                         $value = array_merge(
                             [
                                 'oferente' => (int) $oferente->id_offerer
@@ -733,7 +752,7 @@ class Concurso extends Model
                         );
                     }
                 );
-                $mejores_cotizaciones = collect(json_decode(json_encode(array_values($mejores_cotizaciones))));
+                $mejores_cotizaciones = collect(json_decode(json_encode(array_values($mejores_cotizaciones)), false, 512, JSON_PRESERVE_ZERO_FRACTION));
                 foreach ($mejores_cotizaciones as $cotizacion) {
                     $cotizacion->parsed_date = Carbon::createFromFormat('Y-m-d H:i:s', $cotizacion->creado);
                 }
@@ -749,23 +768,30 @@ class Concurso extends Model
                     $mejor_cotizacion = $mejores_cotizaciones->first();
 
                     $proposal = $oferente->proposals->where('is_economic', true)->first();
-                    $oferta = array_values(
+                    if (!$proposal || !$proposal->values) {
+                        continue;
+                    }
+                    $ofertaArray = array_values(
                         array_filter(
                             $proposal->values,
                             function ($item) use ($producto) {
                                 return $item['producto'] === $producto->id;
                             }
                         )
-                    )[0];
+                    );
+                    if (empty($ofertaArray)) {
+                        continue;
+                    }
+                    $oferta = $ofertaArray[0];
 
                     // Obtener puesto de los oferentes
                     $cotizaciones_item = new \StdClass;
                     $cotizaciones_item->producto = $producto->id;
                     $cotizaciones_item->oferente_id = $oferente->id_offerer;
-                    $cotizaciones_item->cotizacion = $oferta['cotizacion'];
-                    $cotizaciones_item->cantidad = $oferta['cantidad'];
+                    $cotizaciones_item->cotizacion = (float) $oferta['cotizacion'];
+                    $cotizaciones_item->cantidad = (float) $oferta['cantidad'];
                     $cotizaciones_item->creado = Carbon::createFromFormat('Y-m-d H:i:s', $oferta['creado']);
-                    $cotizaciones_item->empatado = $mejores_cotizaciones->where('cotizacion', $oferta['cotizacion'])->count() > 1;
+                    $cotizaciones_item->empatado = $mejores_cotizaciones->where('cotizacion', (float) $oferta['cotizacion'])->count() > 1;
                     $cotizaciones_item->valores_mejor = (array) $mejor_cotizacion;
                     $cotizaciones = $cotizaciones->push($cotizaciones_item);
                 }
@@ -848,8 +874,8 @@ class Concurso extends Model
                         $oferta = null;
                     }
 
-                    $mejor_oferta_cotizacion = $valores_mejor ? $valores_mejor['cotizacion'] : null;
-                    $mejor_oferta_cantidad = $valores_mejor ? $valores_mejor['cantidad'] : null;
+                    $mejor_oferta_cotizacion = $valores_mejor ? (float) $valores_mejor['cotizacion'] : null;
+                    $mejor_oferta_cantidad = $valores_mejor ? (float) $valores_mejor['cantidad'] : null;
                     $mejor_oferta_oferente = $valores_mejor ? $valores_mejor['oferente'] : null;
                     $timezone_cliente = $this->cliente->customer_company->timeZone ?? 'UTC';
                     $timezone_servidor = config('app.timezone') ?? 'America/Argentina/Cordoba';
@@ -884,8 +910,8 @@ class Concurso extends Model
                         'unidades' => Measurement::getList(),
                         'valores' => [
                             'producto' => $oferta ? $oferta['producto'] : null,
-                            'cotizacion' => $oferta ? $oferta['cotizacion'] : null,
-                            'cantidad' => $oferta ? $oferta['cantidad'] : null,
+                            'cotizacion' => $oferta ? (float) $oferta['cotizacion'] : null,
+                            'cantidad' => $oferta ? (float) $oferta['cantidad'] : null,
                             'fecha' => $oferta ? $oferta['fecha'] : null,
                             'creado' => $oferta ? (isset($oferta['creado']) ? $oferta['creado'] : null) : null
                         ],
