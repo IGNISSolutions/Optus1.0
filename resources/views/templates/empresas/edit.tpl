@@ -43,11 +43,10 @@
                                 <div class="form-group required" data-bind="validationElement: Entity.Cuit">
                                     <label class="control-label visible-ie8 visible-ie9" style="display: block;">Código Fiscal</label>
                                     <input 
-                                        data-bind="textInput: Entity.Cuit, event: { keypress: onlyNumbers, blur: onCuitBlur }" 
+                                        data-bind="textInput: Entity.Cuit, event: { blur: onCuitBlur }" 
                                         class="form-control placeholder-no-fix"
                                         type="text" name="cuit" id="cuit" maxlength="11" placeholder="Por ejemplo, 123456780"
-                                        pattern="\d*" inputmode="numeric"
-                                        onpaste="return false;" ondrop="return false;" autocomplete="off" />
+                                        autocomplete="off" />
                                 </div>
                             </div>
                             <div class="col-md-4">

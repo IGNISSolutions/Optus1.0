@@ -664,8 +664,10 @@ class CompanyController extends BaseController
             // Refrescar la empresa para obtener las relaciones actualizadas
             if (!$creation && $company) {
                 $company->refresh();
-                // Limpiar la caché de relaciones para asegurar datos frescos
-                $company->load('alcances');
+                // Limpiar la caché de relaciones para asegurar datos frescos (solo oferentes usan alcances)
+                if ($role === 'offerer') {
+                    $company->load('alcances');
+                }
             }
 
             $common = [
