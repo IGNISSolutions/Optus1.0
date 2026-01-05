@@ -18,6 +18,7 @@ app()->post('/send', 'App\Http\Controllers\Auth\AuthController:sendRecover')->se
 // AUTH0
 app()->get('/a0/login/SCR', 'App\Http\Controllers\A0\A0Controller:loginSCR')->setName('login.scr');
 app()->get('/a0/callback', 'App\Http\Controllers\A0\A0Controller:callback')->setName('a0.callback');
+app()->get('/a0/logout', 'App\Http\Controllers\A0\A0Controller:logoutA0')->setName('a0.logout');
 
 //2FA
 app()->post('/send-code', 'App\Http\Controllers\Auth\AuthController:sendResetCode')->setName('sendResetCode'); 

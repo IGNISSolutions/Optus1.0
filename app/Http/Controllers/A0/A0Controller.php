@@ -105,7 +105,7 @@ class A0Controller extends BaseController
         try {
             $capsule = dependency('db');
             $pdo = $capsule->getConnection()->getPdo();
-            $ip = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'] ?? null;
+            $ip = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'] ?? 'Unknown';
             $fecha = Carbon::now()->format('Y-m-d H:i:s');
 
             $username = $userOrNull->username ?? null;
@@ -113,11 +113,10 @@ class A0Controller extends BaseController
             $offerer_company_id = $userOrNull->offerer_company_id ?? null;
             $user_id = $userOrNull->id ?? null;
 
-            $sql = "INSERT INTO login_logs (accion, username, customer_company_id, offerer_company_id, user_id, estado, detalle, tipo, fecha, ip) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $sql = "INSERT INTO login_logs (username, customer_company_id, offerer_company_id, user_id, estado, detalle, tipo, fecha, ip) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $statement = $pdo->prepare($sql);
             $statement->execute([
-                $accion,
                 $username,
                 $customer_company_id,
                 $offerer_company_id,
@@ -413,7 +412,7 @@ class A0Controller extends BaseController
         }
 
         // Destruir sesión
-        unset($_SESSION);
+        $_SESSION = [];
         session_destroy();
 
         // Configuración de Auth0
