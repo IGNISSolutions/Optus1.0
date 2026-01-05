@@ -3257,9 +3257,9 @@ class ConcursoController extends BaseController
             // status
             $statusDesc = $inv->status->description ?? null;
 
-            // la fecha de respuesta SIEMPRE que no esté "pendiente"
+            // la fecha de respuesta SOLO si fue aceptada o rechazada (no pendiente)
             $fechaRespuesta = null;
-            if ($inv->status_id !== 0) {
+            if ($inv->is_accepted || $inv->is_rejected) {
                 $fechaRespuesta = $inv->updated_at
                     ? $inv->updated_at->format('d-m-Y H:i')
                     : null;
