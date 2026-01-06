@@ -5353,8 +5353,8 @@ class ConcursoController extends BaseController
             $concurso->id_cliente = $user->id; // ID del usuario, no de la compañía
             $concurso->tipo_concurso = Concurso::TYPES['sobrecerrado']; // Licitación sobre cerrado
             $concurso->tipo_operacion = 2; // Licitación
-            $concurso->nombre = "Licitación desde SOLPEDs - " . date('d/m/Y H:i');
-            $concurso->resena = "Licitación creada automáticamente desde SOLPEDs: " . implode(', ', $idsSolpeds);
+            $concurso->nombre = "Licitación desde SOLPEDs - N° de Solped: " . implode(', ', $idsSolpeds) . " - " . date('d/m/Y H:i');
+            $concurso->resena = "";
             $concurso->descripcion = "";
             $concurso->pais = $user->customer_company->country ?? 'Argentina';
             $concurso->provincia = $user->customer_company->province ?? null;
@@ -5506,8 +5506,8 @@ class ConcursoController extends BaseController
             $concurso->id_cliente = $user->id;
             $concurso->tipo_concurso = Concurso::TYPES['online']; // Subasta online
             $concurso->tipo_operacion = 2; // Licitación
-            $concurso->nombre = "Subasta desde SOLPEDs - " . date('d/m/Y H:i');
-            $concurso->resena = "Subasta creada automáticamente desde SOLPEDs: " . implode(', ', $idsSolpeds);
+            $concurso->nombre = "Subasta desde SOLPEDs - N° de Solped: " . implode(', ', $idsSolpeds) . " - " . date('d/m/Y H:i');
+            $concurso->resena = "";
             $concurso->descripcion = "";
             $concurso->pais = $user->customer_company->country ?? 'Argentina';
             $concurso->provincia = $user->customer_company->province ?? null;

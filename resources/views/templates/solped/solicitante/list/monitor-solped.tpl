@@ -62,9 +62,9 @@
     <div class="row">
         <div class="col-md-12 margin-bottom-20">
             <label class="control-label text-center" style="display: block;">
-                Buscar
+                Filtros
             </label>
-            <div style="display: flex; justify-content: center;">
+            <div style="display: flex; justify-content: center; gap: 15px; align-items: flex-end;">
                 <div class="input-group" style="max-width: 14.5vw; width: 100%;">
                     <input type="text" class="form-control"
                         data-bind="value: Filters().searchTerm"
@@ -73,6 +73,15 @@
                         data-bind="visible: Filters().isIdSearch(), style: { color: 'green' }">
                         <i class="fa fa-id-card"></i> Búsqueda por ID
                     </span>
+                </div>
+                
+                <div style="min-width: 180px;">
+                    <select class="form-control" data-bind="value: Filters().urgencyFilter">
+                        <option value="">Todas</option>
+                        <option value="Urgencia">Urgencia</option>
+                        <option value="Normal">Normal</option>
+                        <option value="Regularizacion">Regularizacion</option>
+                    </select>
                 </div>
             </div>
         </div>
@@ -603,16 +612,24 @@
             
             //Search observable
             this.searchTerm = ko.observable(null);
+            
+            //Urgency filter observable
+            this.urgencyFilter = ko.observable('');
 
             //Subscribe to search term changes
-            this.searchTerm = ko.observable(null);
             self.searchTerm.subscribe((value) => {
-                parent.filter(self);
+                parent.applyFilters();
+            });
+            
+            //Subscribe to urgency filter changes
+            self.urgencyFilter.subscribe((value) => {
+                parent.applyFilters();
             });
 
             //Detect if searching by ID (all digits)
             this.isIdSearch = ko.computed(function() {
-                return /^\d+$/.test(self.searchTerm());
+                var term = self.searchTerm();
+                return term && /^\d+$/.test(term);
             });
         };
 
@@ -624,32 +641,47 @@
             var self = this;
 
             this.Breadcrumbs = ko.observableArray(data.breadcrumbs);
+            this.OriginalData = data.list; // Guardar datos originales sin filtrar
             this.Lists = ko.observable(new List(data.list));
             this.UserType = ko.observable(data.userType);
-            this.filter = function(filters) {
-                if (filters) {
-                    $.blockUI()
-                    var data = {};
-                    Services.Post('/solpeds/solicitante/list', {
-                            UserToken: User.Token,
-                            Entity: JSON.stringify(ko.toJS(data)),
-                            Filters: JSON.stringify(ko.toJS(filters))
-                        },
-                        (response) => {
-                            if (response.success) {
-                                self.Lists(new List(response.data.list))
+            
+            // Función para aplicar filtros en el frontend
+            this.applyFilters = function() {
+                var searchTerm = self.Filters().searchTerm();
+                var urgencyFilter = self.Filters().urgencyFilter();
+                
+                // Copiar datos originales
+                var filtered = JSON.parse(JSON.stringify(self.OriginalData));
+                
+                // Aplicar filtro de búsqueda
+                if (searchTerm && searchTerm.trim() !== '') {
+                    const term = searchTerm.trim().toLowerCase();
+                    const isIdSearch = /^\d+$/.test(searchTerm);
+                    
+                    for (let key in filtered) {
+                        filtered[key] = filtered[key].filter(item => {
+                            if (isIdSearch) {
+                                return item.Id == searchTerm;
+                            } else {
+                                return (item.Nombre && item.Nombre.toLowerCase().indexOf(term) !== -1) ||
+                                       (item.Solicitante && item.Solicitante.toLowerCase().indexOf(term) !== -1);
                             }
-                            $.unblockUI();
-                        },
-                        (error) => {
-                            $.unblockUI();
-                            swal('Error', error.message, 'error');
-                        },
-                        null,
-                        null
-                    );
+                        });
+                    }
                 }
+                
+                // Aplicar filtro de urgencia
+                if (urgencyFilter && urgencyFilter.trim() !== '') {
+                    for (let key in filtered) {
+                        filtered[key] = filtered[key].filter(item => {
+                            return item.Urgencia && item.Urgencia.toLowerCase() === urgencyFilter.toLowerCase();
+                        });
+                    }
+                }
+                
+                self.Lists(new List(filtered));
             };
+            
             this.Filters = ko.observable(new Filters(self));
 
             this.goToEdition = function(idSolped) {
@@ -710,7 +742,6 @@
            // Al hacer click en "Convertir en Licitación"
             this.convertirEnLicitacion = function() {
     const seleccionadas = self.SelectedSolpeds();
-    console.log("👉 Solpeds seleccionadas:", seleccionadas);
 
     if (seleccionadas.length === 0) {
         swal("Atención", "Debe seleccionar al menos una solicitud", "warning");
@@ -723,9 +754,13 @@
         text: "Por favor espere mientras se crea la licitación y se envían las notificaciones...",
         icon: "info",
         buttons: false,
+        showConfirmButton: false,
         closeOnClickOutside: false,
         closeOnEsc: false,
-        allowOutsideClick: false
+        allowOutsideClick: false,
+        didOpen: function() {
+            Swal.showLoading();
+        }
     });
 
     $.ajax({
@@ -743,6 +778,7 @@
                     text: "Licitación creada correctamente. Redirigiendo...",
                     icon: "success",
                     buttons: false,
+                    showConfirmButton: false,
                     closeOnClickOutside: false,
                     closeOnEsc: false,
                     allowOutsideClick: false,
@@ -781,12 +817,9 @@
                     title: "Creando Subasta",
                     text: "Por favor espere mientras se crea la subasta y se envían las notificaciones...",
                     icon: "info",
+                    buttons: false,
+                    showConfirmButton: false,
                     didOpen: function() {
-                        // Ocultar botones
-                        const confirmButton = document.querySelector('.swal2-confirm');
-                        const cancelButton = document.querySelector('.swal2-cancel');
-                        if (confirmButton) confirmButton.style.display = 'none';
-                        if (cancelButton) cancelButton.style.display = 'none';
                         // Mostrar spinner
                         Swal.showLoading();
                     },
@@ -811,13 +844,8 @@
                                 title: "¡Éxito!",
                                 text: "Subasta creada correctamente. Redirigiendo...",
                                 icon: "success",
-                                didOpen: function() {
-                                    // Ocultar botones
-                                    const confirmButton = document.querySelector('.swal2-confirm');
-                                    const cancelButton = document.querySelector('.swal2-cancel');
-                                    if (confirmButton) confirmButton.style.display = 'none';
-                                    if (cancelButton) cancelButton.style.display = 'none';
-                                },
+                                buttons: false,
+                                showConfirmButton: false,
                                 closeOnClickOutside: false,
                                 closeOnEsc: false,
                                 allowOutsideClick: false,
