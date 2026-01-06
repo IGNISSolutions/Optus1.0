@@ -444,9 +444,12 @@ class ConcursoController extends BaseController
                     ->where('id_cliente', $user->id)
                     ->get();
             } else {
-                $created = Concurso::where([
-                    ['ficha_tecnica_usuario_evalua', '=', $user->id]
-                ])->get();
+                // Obtener concursos donde el usuario evalúa técnica
+                $created = Concurso::where([['ficha_tecnica_usuario_evalua', '=', $user->id]])->get();
+                
+                // Agregar concursos donde el usuario califica reputación
+                $concursosCalificaReputacion = Concurso::whereRaw("FIND_IN_SET(?, REPLACE(usuario_califica_reputacion, ' ', ''))", [$user->id])->get();
+                $created = $created->merge($concursosCalificaReputacion)->unique('id');
             }
 
             // EVALUATING
@@ -454,6 +457,10 @@ class ConcursoController extends BaseController
                 $evaluating = collect();
             } else {
                 $evaluating = $user->concursos_evalua;
+
+                 // Agregar concursos donde el usuario califica reputación
+                $concursosCalificaReputacion = Concurso::whereRaw("FIND_IN_SET(?, REPLACE(usuario_califica_reputacion, ' ', ''))", [$user->id])->get();
+                $evaluating = collect($evaluating)->merge($concursosCalificaReputacion)->unique('id');
             }
 
             // CREATED WITH TRASHED
@@ -471,6 +478,12 @@ class ConcursoController extends BaseController
                     ['ficha_tecnica_usuario_evalua', '=', $user->id],
                     ['deleted_at', '!=', null]
                 ])->get();
+
+                // Agregar concursos donde el usuario califica reputación
+                $concursosCalificaReputacion = Concurso::withTrashed()
+                    ->whereRaw("FIND_IN_SET(?, REPLACE(usuario_califica_reputacion, ' ', ''))", [$user->id])
+                    ->get();
+                $created_with_trashed = $created_with_trashed->merge($concursosCalificaReputacion)->unique('id');
             }
 
             // DELETED WITH TRASHED
@@ -490,6 +503,12 @@ class ConcursoController extends BaseController
                     ['ficha_tecnica_usuario_evalua', '=', $user->id],
                     ['deleted_at', '!=', null]
                 ])->get();
+
+                // Agregar concursos donde el usuario califica reputación
+                $concursosCalificaReputacion = Concurso::where([['deleted_at', '!=', null]])
+                    ->whereRaw("FIND_IN_SET(?, REPLACE(usuario_califica_reputacion, ' ', ''))", [$user->id])
+                    ->get();
+                $deleted_with_trashed = $deleted_with_trashed->merge($concursosCalificaReputacion)->unique('id');
             }
 
 
@@ -1264,7 +1283,16 @@ class ConcursoController extends BaseController
             } else {
                 $concurso = $user->customer_company->getAllConcursosByCompany()->find($params['id']);
                 $concurso = $concurso ?? $user->concursos_evalua->find($params['id']);
+
+                // Si no lo encuentra, verificar si el usuario califica reputación en este concurso
+                if (!$concurso) {
+                    $concursoTemp = Concurso::find($params['id']);
+                    if ($concursoTemp && $concursoTemp->isUserEvaluador($user->id)) {
+                        $concurso = $concursoTemp;
+                    }
+                }
             }
+
             $list['HabilitaSegundaRonda'] = $concurso->segunda_ronda_habilita;
             $terminos_filename = rootPath(config('app.templates_path')) . '/terminos-cliente.tpl';
 

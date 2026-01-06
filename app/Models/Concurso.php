@@ -1535,4 +1535,19 @@ class Concurso extends Model
     {
         return $this->oferentes()->filtrarPorEtapa();
     }
+
+    /**
+     * Verifica si un usuario es evaluador de reputación de este concurso
+     * @param int $userId ID del usuario a verificar
+     * @return bool
+     */
+    public function isUserEvaluador($userId)
+    {
+        if (empty($this->usuario_califica_reputacion)) {
+            return false;
+        }
+        
+        $evaluadores = array_map('trim', explode(',', $this->usuario_califica_reputacion));
+        return in_array($userId, $evaluadores);
+    }
 }
