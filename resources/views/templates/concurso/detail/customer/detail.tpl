@@ -198,11 +198,13 @@
             <!-- ko if: UserType() != 'customer-approve' -->
             <!-- ko if: !Adjudicado() && !Eliminado() -->
             <div class="{if $tipo eq 'convocatoria-oferentes'}col-md-6{else}col-md-12{/if}">
+                 <!-- ko if: User.Tipo != 4 -->
                 <div class="form-group">
                     <button type="button" class="btn btn-xl red" data-bind="click: CancelConcurso">
                         Cancelar Concurso
                     </button>
                 </div>
+                <!-- /ko -->
             </div>
         {/if}
 

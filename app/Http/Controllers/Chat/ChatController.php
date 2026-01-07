@@ -121,6 +121,10 @@ class ChatController extends BaseController
                 $chat_enabled = $oferente->is_chat_enabled;
             } else {
                 $chat_enabled = $concurso->is_chat_enabled;
+                // Los evaluadores deben poder responder siempre en el muro
+                if ($concurso->isUserEvaluador($user->id)) {
+                    $chat_enabled = true;
+                }
                 $participantes = $concurso->participantesFiltradosPorEtapa()->get();
                 if (count($participantes) > 0) {
                     foreach ($participantes as $prov)
@@ -559,6 +563,11 @@ class ChatController extends BaseController
             if (isOfferer()) {
                 $oferente = $concurso->oferentes->where('id_offerer', (int) $user->offerer_company_id)->first();
                 $chat_enabled = $oferente->is_chat_enabled;
+            } else {
+                // Los evaluadores deben poder responder siempre en el muro
+                if ($concurso->isUserEvaluador($user->id)) {
+                    $chat_enabled = true;
+                }
             }
 
             $success = true;

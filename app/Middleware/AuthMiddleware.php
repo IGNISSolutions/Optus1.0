@@ -6,6 +6,7 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 use Carbon\Carbon;
 use App\Models\User;
+use App\Models\Concurso;
 
 class AuthMiddleware
 {
@@ -45,8 +46,37 @@ class AuthMiddleware
             }
 
             // Validate permissions
-            foreach ($this->permissions as $permission) {
-                abort_if($request, $response, cannot($permission), 404);
+            if (!empty($this->permissions)) {
+                $routeName = $route->getName();
+
+                // Allow chat routes for evaluators assigned to the concurso
+                $isChatRoute = strpos($routeName, 'concursos.chat.') === 0;
+                $isEvaluatorForConcurso = false;
+
+                if ($isChatRoute) {
+                    try {
+                        // Extract concurso id from XHR body (Data JSON)
+                        $payload = $request->getParsedBody();
+                        $data = isset($payload['Data']) ? json_decode($payload['Data'], true) : [];
+                        $concursoId = isset($data['IdConcurso']) ? (int)$data['IdConcurso'] : null;
+                        if ($concursoId) {
+                            $concurso = Concurso::find($concursoId);
+                            if ($concurso) {
+                                $isEvaluatorForConcurso = (bool)$concurso->isUserEvaluador(user()->id);
+                            }
+                        }
+                    } catch (\Throwable $e) {
+                        $isEvaluatorForConcurso = false;
+                    }
+                }
+
+                if ($isChatRoute && $isEvaluatorForConcurso) {
+                    // Skip permission checks for evaluators on chat endpoints
+                } else {
+                    foreach ($this->permissions as $permission) {
+                        abort_if($request, $response, cannot($permission), 404);
+                    }
+                }
             }
         }
 
