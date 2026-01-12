@@ -1739,13 +1739,15 @@ class ConcursoController extends BaseController
                 if($concurso->is_sobrecerrado){
                     $ejecutarNuevaRonda = ($concurso->ronda_actual < Concurso::MAX_RONDAS) ? true : false;
                 }
+
+                // Verificar si la fecha y hora actual es mayor a la fecha límite
+                $fechaLimiteVencida = Carbon::now() > $concurso->fecha_limite;
                 
-                
-                if (!$concurso->adjudicado && $concurso->adjudicacion_anticipada && ($concurso->alguno_presento_economica || $plazoVencidoEconomicas)) {
+                if (!$concurso->adjudicado && $concurso->adjudicacion_anticipada && ($concurso->alguno_presento_economica || $plazoVencidoEconomicas) && $fechaLimiteVencida) {
                     $verOfertasEnable = true;
                 }
 
-                if (!$concurso->adjudicado && !$concurso->adjudicacion_anticipada && ($concurso->todos_presentaron_economica || $plazoVencidoEconomicas)) {
+                if (!$concurso->adjudicado && !$concurso->adjudicacion_anticipada && ($concurso->todos_presentaron_economica || $plazoVencidoEconomicas) && $fechaLimiteVencida) {
                     $verOfertasEnable = true;
                 }
 
