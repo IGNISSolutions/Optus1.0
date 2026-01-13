@@ -1133,6 +1133,20 @@ class ConcursoController extends BaseController
 
                 $concurso->delete();
 
+                // Restaurar SOLPEDs si el concurso fue creado a partir de ellas
+                if (!empty($concurso->created_from_solped)) {
+                    $idsSolpeds = array_map('intval', array_filter(explode(',', $concurso->created_from_solped)));
+                    
+                    if (!empty($idsSolpeds)) {
+                        // Actualizar SOLPEDs a estado "aceptada" y etapa "aceptada"
+                        \App\Models\Solped::whereIn('id', $idsSolpeds)->update([
+                            'estado_actual' => 'aceptada',
+                            'etapa_actual' => 'aceptada',
+                            'fecha_inicio_licitacion' => null  // Limpiar fecha de inicio de licitación
+                        ]);
+                    }
+                }
+
                 // Marcar como rechazados a los oferentes (solo si hay oferentes)
                 $companiesInvited = $concurso->oferentes->pluck('id_offerer');
                 
@@ -5523,6 +5537,7 @@ class ConcursoController extends BaseController
             $concurso->area_sol = "Administración";
             $concurso->moneda = 5; // ARS (Pesos Argentinos) por defecto
             $concurso->tipo_convocatoria = 1; // Privada
+            $concurso->finalizar_si_oferentes_completaron_economicas = 'no';  // No finalizar automáticamente
             $concurso->chat = 'S';
             $concurso->adjudicado = 0;
             $concurso->ronda_actual = 1;
