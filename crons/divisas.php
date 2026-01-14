@@ -27,10 +27,14 @@ try {
         'Peso mexicano' => '//*[@id="tb1_287"]/tbody/tr[60]/td[3]',
         'Sol peruano' => '//*[@id="tb1_287"]/tbody/tr[75]/td[3]',
         'Bolívar venezolano' => '//*[@id="tb1_287"]/tbody/tr[98]/td[3]',
-        'Bolíviano de Bolivia' => '//*[@id="tb1_287"]/tbody/tr[98]/td[3]',
+        'Bolíviano de Bolivia' => '//*[@id="tb1_287"]/tbody/tr[17]/td[3]',
         'Peso uruguayo' => '//*[@id="tb1_287"]/tbody/tr[96]/td[3]',
         'Guarani' => '//*[@id="tb1_287"]/tbody/tr[74]/td[3]',
         'Euro' => '//*[@id="tb1_287"]/tbody/tr[2]/td[3]',   
+        'Colon costarricense' => '//*[@id="tb1_287"]/tbody/tr[30]/td[3]',
+        'Quetzaal guatemalteco' => '//*[@id="tb1_287"]/tbody/tr[39]/td[3]', 
+        'Lempira hondureño' => '//*[@id="tb1_287"]/tbody/tr[40]/td[3]',
+        'Peso dominicano' => '//*[@id="tb1_287"]/tbody/tr[34]/td[3]',
     ];
 
     function loadEnv($file) {

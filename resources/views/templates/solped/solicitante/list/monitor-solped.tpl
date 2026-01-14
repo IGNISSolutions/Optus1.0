@@ -62,9 +62,9 @@
     <div class="row">
         <div class="col-md-12 margin-bottom-20">
             <label class="control-label text-center" style="display: block;">
-                Filtros
+                Buscar
             </label>
-            <div style="display: flex; justify-content: center; gap: 15px; align-items: flex-end;">
+            <div style="display: flex; justify-content: center;">
                 <div class="input-group" style="max-width: 14.5vw; width: 100%;">
                     <input type="text" class="form-control"
                         data-bind="value: Filters().searchTerm"
@@ -73,15 +73,6 @@
                         data-bind="visible: Filters().isIdSearch(), style: { color: 'green' }">
                         <i class="fa fa-id-card"></i> Búsqueda por ID
                     </span>
-                </div>
-                
-                <div style="min-width: 180px;">
-                    <select class="form-control" data-bind="value: Filters().urgencyFilter">
-                        <option value="">Todas</option>
-                        <option value="Urgencia">Urgencia</option>
-                        <option value="Normal">Normal</option>
-                        <option value="Regularizacion">Regularizacion</option>
-                    </select>
                 </div>
             </div>
         </div>
@@ -612,24 +603,16 @@
             
             //Search observable
             this.searchTerm = ko.observable(null);
-            
-            //Urgency filter observable
-            this.urgencyFilter = ko.observable('');
 
             //Subscribe to search term changes
+            this.searchTerm = ko.observable(null);
             self.searchTerm.subscribe((value) => {
-                parent.applyFilters();
-            });
-            
-            //Subscribe to urgency filter changes
-            self.urgencyFilter.subscribe((value) => {
-                parent.applyFilters();
+                parent.filter(self);
             });
 
             //Detect if searching by ID (all digits)
             this.isIdSearch = ko.computed(function() {
-                var term = self.searchTerm();
-                return term && /^\d+$/.test(term);
+                return /^\d+$/.test(self.searchTerm());
             });
         };
 
@@ -641,7 +624,6 @@
             var self = this;
 
             this.Breadcrumbs = ko.observableArray(data.breadcrumbs);
-            this.OriginalData = data.list; // Guardar datos originales sin filtrar
             this.Lists = ko.observable(new List(data.list));
             this.UserType = ko.observable(data.userType);
             this.SolpedActive = ko.observable(!!solpedActiveFlag);
@@ -757,6 +739,7 @@
         return;
     }
     const seleccionadas = self.SelectedSolpeds();
+    console.log("👉 Solpeds seleccionadas:", seleccionadas);
 
     if (seleccionadas.length === 0) {
         swal("Atención", "Debe seleccionar al menos una solicitud", "warning");
@@ -769,13 +752,9 @@
         text: "Por favor espere mientras se crea la licitación y se envían las notificaciones...",
         icon: "info",
         buttons: false,
-        showConfirmButton: false,
         closeOnClickOutside: false,
         closeOnEsc: false,
-        allowOutsideClick: false,
-        didOpen: function() {
-            Swal.showLoading();
-        }
+        allowOutsideClick: false
     });
 
     $.ajax({
@@ -793,7 +772,6 @@
                     text: "Licitación creada correctamente. Redirigiendo...",
                     icon: "success",
                     buttons: false,
-                    showConfirmButton: false,
                     closeOnClickOutside: false,
                     closeOnEsc: false,
                     allowOutsideClick: false,
@@ -835,9 +813,12 @@
                     title: "Creando Subasta",
                     text: "Por favor espere mientras se crea la subasta y se envían las notificaciones...",
                     icon: "info",
-                    buttons: false,
-                    showConfirmButton: false,
                     didOpen: function() {
+                        // Ocultar botones
+                        const confirmButton = document.querySelector('.swal2-confirm');
+                        const cancelButton = document.querySelector('.swal2-cancel');
+                        if (confirmButton) confirmButton.style.display = 'none';
+                        if (cancelButton) cancelButton.style.display = 'none';
                         // Mostrar spinner
                         Swal.showLoading();
                     },
@@ -862,8 +843,13 @@
                                 title: "¡Éxito!",
                                 text: "Subasta creada correctamente. Redirigiendo...",
                                 icon: "success",
-                                buttons: false,
-                                showConfirmButton: false,
+                                didOpen: function() {
+                                    // Ocultar botones
+                                    const confirmButton = document.querySelector('.swal2-confirm');
+                                    const cancelButton = document.querySelector('.swal2-cancel');
+                                    if (confirmButton) confirmButton.style.display = 'none';
+                                    if (cancelButton) cancelButton.style.display = 'none';
+                                },
                                 closeOnClickOutside: false,
                                 closeOnEsc: false,
                                 allowOutsideClick: false,
