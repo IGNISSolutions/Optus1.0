@@ -43,12 +43,11 @@
                                 <div class="form-group required" data-bind="validationElement: Entity.Cuit">
                                     <label class="control-label visible-ie8 visible-ie9" style="display: block;">Código Fiscal</label>
                                     <input 
-                                        data-bind="textInput: Entity.Cuit, event: { blur: onCuitBlur, change: onCuitBlur }" 
+                                        data-bind="textInput: Entity.Cuit, event: { keypress: onlyNumbers, blur: onCuitBlur }" 
                                         class="form-control placeholder-no-fix"
-                                        type="text" name="cuit" id="cuit" maxlength="20" 
-                                        placeholder="Ej: 20123456789 o ABC123456"
-                                        autocomplete="off" 
-                                        style="text-transform: uppercase" />
+                                        type="text" name="cuit" id="cuit" maxlength="11" placeholder="Por ejemplo, 123456780"
+                                        pattern="\d*" inputmode="numeric"
+                                        onpaste="return false;" ondrop="return false;" autocomplete="off" />
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -80,15 +79,18 @@
                                     <label class="control-label visible-ie8 visible-ie9" style="display: block;">Código
                                         Fiscal</label>
                                         <input 
-                                            data-bind="textInput: Entity.Cuit, event: { blur: onCuitBlur, change: onCuitBlur }" 
+                                            data-bind="textInput: Entity.Cuit, event: { keypress: onlyNumbers, blur: onCuitBlur }" 
                                             class="form-control placeholder-no-fix"
                                             type="text" 
                                             name="cuit" 
                                             id="cuit" 
-                                            maxlength="20" 
-                                            placeholder="Ej: 20123456789 o ABC123456"
-                                            autocomplete="off" 
-                                            style="text-transform: uppercase" />
+                                            maxlength="11" 
+                                            placeholder="Por ejemplo, 123456780"
+                                            pattern="\d*"
+                                            inputmode="numeric"
+                                            onpaste="return false;"
+                                            ondrop="return false;"
+                                            autocomplete="off" />
 
                                 </div>
                             </div>
@@ -477,9 +479,6 @@
                 return true;
             };
 
-            // Variable para controlar debounce de verificación de CUIT
-            this.cuitVerificationTimeout = null;
-
             this.Breadcrumbs = ko.observableArray(data.breadcrumbs);
             this.Rubros = ko.observableArray(data.list.Rubros);
             this.Tarifarios = ko.observableArray(data.list.Tarifarios);
@@ -620,61 +619,6 @@
                     return false;
                 }
 
-                // Validación adicional: verificar si es nuevo y si el CUIT ya existe
-                var isnew = params[2] === 'nuevo';
-                if (isnew && params[1] === 'offerer') {
-                    var cuit = String(self.Entity.Cuit() || '').trim().replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
-                    if (cuit.length >= 2) {
-                        console.log('Verificación preventiva de CUIT duplicado antes de guardar:', cuit);
-                        // Hacer una validación rápida antes de guardar
-                        $.blockUI();
-                        var verifyUrl = '/empresas/offerer/by-cuit/' + encodeURIComponent(cuit);
-                        Services.Get(
-                            verifyUrl,
-                            { UserToken: User.Token },
-                            function(verifyResponse) {
-                                $.unblockUI();
-                                
-                                // Si encuentra algo, mostrar alerta y no continuar
-                                if (verifyResponse.success || (verifyResponse.data && verifyResponse.data.already_associated)) {
-                                    swal({
-                                        title: 'Proveedor duplicado',
-                                        text: 'Este proveedor ya existe en el sistema. Por favor, busque y asocie el existente.',
-                                        type: 'warning',
-                                        confirmButtonText: 'Aceptar'
-                                    });
-                                    return false;
-                                }
-                                
-                                // Si no existe, proceder con el guardado
-                                self.proceedWithSave();
-                            },
-                            function(error) {
-                                $.unblockUI();
-                                // En caso de error de conexión, permitir continuar (puede ser timeout)
-                                swal({
-                                    title: 'Advertencia',
-                                    text: 'No se pudo verificar si el proveedor existe. ¿Desea continuar?',
-                                    type: 'warning',
-                                    showCancelButton: true,
-                                    confirmButtonText: 'Sí, continuar',
-                                    cancelButtonText: 'Cancelar'
-                                }, function(shouldContinue) {
-                                    if (shouldContinue) {
-                                        self.proceedWithSave();
-                                    }
-                                });
-                            }
-                        );
-                        return false;
-                    }
-                }
-                
-                // Para ediciones o si no es offerer nuevo, ir directo al guardado
-                self.proceedWithSave();
-            };
-
-            this.proceedWithSave = function() {
                 $.blockUI();
                 var url = '/empresas/' + params[1] + '/save';
                 switch (params[2]) {
@@ -731,96 +675,60 @@
             };
 
             this.onCuitBlur = function () {
-            console.log('onCuitBlur ejecutada - userType:', '{$userType}', 'params[1]:', params[1], 'params[2]:', params[2]);
-            
-            // Solo ejecutar en contexto de cliente nuevo asociando proveedor
-            if ('{$userType}' !== 'customer') {
-                console.log('Saltado: userType no es customer');
-                return;
-            }
-            if (params[1] !== 'offerer') {
-                console.log('Saltado: params[1] no es offerer');
-                return;
-            }
-            if (params[2] !== 'nuevo') {
-                console.log('Saltado: params[2] no es nuevo');
-                return;
-            }
+            if ('{$userType}' !== 'customer') return;
+            if (params[1] !== 'offerer') return;
+            if (params[2] !== 'nuevo') return;
 
-            var raw = self.Entity.Cuit() || '';
-            // IMPORTANTE: Ahora permitimos letras y números (alfanumérico) para códigos fiscales internacionales
-            // Solo removemos espacios y caracteres especiales, pero mantenemos letras y números
-            var cuit = String(raw).trim().replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
-            
-            console.log('Código fiscal ingresado:', raw, 'Procesado:', cuit, 'Longitud:', cuit.length);
-            
-            // Validación de longitud mínima (2 caracteres alfanuméricos)
-            if (cuit.length < 2) {
-                console.log('Saltado: Código fiscal muy corto (menos de 2 caracteres)');
-                return;
-            }
-            
-            // Evitar búsquedas duplicadas con debounce
-            if (self.cuitVerificationTimeout) {
-                clearTimeout(self.cuitVerificationTimeout);
-                console.log('Debounce: cancelada búsqueda anterior');
-            }
-            
-            self.cuitVerificationTimeout = setTimeout(function() {
-                console.log('Iniciando verificación de código fiscal:', cuit);
-                $.blockUI();
-                // Usar encodeURIComponent para manejar correctamente caracteres especiales
-                var url = '/empresas/offerer/by-cuit/' + encodeURIComponent(cuit);
+            var raw  = self.Entity.Cuit() || '';
+            var cuit = String(raw).replace(/\D/g, '');
+            if (cuit.length < 2) return; // usa 8+ para consultar; valida 11 al guardar
 
-                Services.Get(
-                    url,
-                    { UserToken: User.Token },
-                    function (response) {
-                        $.unblockUI();
-                        console.log('Respuesta del servidor:', response);
+            $.blockUI();
+            var url = '/empresas/offerer/by-cuit/' + cuit;
 
-                        // 1) Detectar "ya asociado" sin depender de success/data.id
-                        var msg = (response && response.message) || '';
-                        var alreadyAssociated =
-                            /asociad[oa]/i.test(msg)
-                            || (response && response.data && response.data.already_associated === true)
-                            || (response && response.code === 'ALREADY_ASSOCIATED');
+            Services.Get(
+                url,
+                { UserToken: User.Token },
+                function (response) {
+                $.unblockUI();
 
-                        console.log('¿Ya asociado?', alreadyAssociated, 'Mensaje:', msg);
+                // 1) Detectar "ya asociado" sin depender de success/data.id
+                var msg = (response && response.message) || '';
+                var alreadyAssociated =
+                    /asociad[oa]/i.test(msg)                               // mensaje de tu backend
+                    || (response && response.data && response.data.already_associated === true)
+                    || (response && response.code === 'ALREADY_ASSOCIATED');
 
-                        if (alreadyAssociated) {
-                            swal({
-                                title: 'Proveedor ya asociado',
-                                text: 'Este proveedor ya se encuentra asociado a tu empresa.',
-                                type: 'info',
-                                confirmButtonText: 'Aceptar'
-                            }, function () {
-                                self.Entity.Cuit('');
-                                setTimeout(function(){ document.getElementById('cuit')?.focus(); }, 0);
-                            });
-                            return;
-                        }
+                if (alreadyAssociated) {
+                    swal({
+                    title: 'Proveedor ya asociado',
+                    text: 'Este proveedor ya se encuentra asociado a tu empresa.',
+                    type: 'info',
+                    confirmButtonText: 'Aceptar'
+                    }, function () {
+                    self.Entity.Cuit('');
+                    setTimeout(function(){ document.getElementById('cuit')?.focus(); }, 0);
+                    });
+                    return;
+                }
 
-                        // 2) Existe proveedor (pero no está asociado)
-                        var exists = !!(response && response.success && response.data && response.data.id);
-                        console.log('¿Proveedor existe?', exists);
-                        
-                        if (exists) {
-                            self.showOffererExistsModal(response.data);
-                            return;
-                        }
+                // 2) Existe proveedor (pero no está asociado)
+                var exists = !!(response && response.success && response.data && response.data.id);
+                if (exists) {
+                    self.showOffererExistsModal(response.data); // ofrecer asociar
+                    return;
+                }
 
-                        // 3) No existe: seguir con el alta
-                        console.log('Proveedor no existe, proceder con registro nuevo');
-                    },
-                    function (error) {
-                        $.unblockUI();
-                        console.error('Error en verificación de código fiscal:', error);
-                        var emsg = (error && error.message) ? error.message : 'No se pudo verificar el código fiscal en este momento.';
-                        swal('Aviso', emsg, 'warning');
-                    }
-                );
-            }, 800); // Debounce de 800ms
+                // 3) No existe: seguir con el alta (no limpiar ni alertar)
+                // no-op
+                },
+                function (error) {
+                $.unblockUI();
+                var emsg = (error && error.message) ? error.message : 'No se pudo verificar el CUIT en este momento.';
+                swal('Aviso', emsg, 'warning');
+                // No limpiar el CUIT en errores de red/servidor
+                }
+            );
             };
 
 

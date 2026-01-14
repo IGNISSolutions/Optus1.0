@@ -19893,3 +19893,48 @@ Lista:Array
 
 === listDoFilter FIN ===
 
+=== listDoFilter INICIO ===
+Usuario: ID=7, type_id=3, customer_company=1
+ERROR: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'optus_prod.solpeds' doesn't exist (SQL: select `solpeds`.*, `users`.`customer_company_id` as `laravel_through_key` from `solpeds` inner join `users` on `users`.`id` = `solpeds`.`id_solicitante` where `users`.`deleted_at` is null and `users`.`customer_company_id` = 1 and `solpeds`.`deleted_at` is null)
+=== listDoFilter FIN ===
+
+=== listDoFilter INICIO ===
+Usuario: ID=7, type_id=3, customer_company=1
+ERROR: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'optus_prod.solpeds' doesn't exist (SQL: select `solpeds`.*, `users`.`customer_company_id` as `laravel_through_key` from `solpeds` inner join `users` on `users`.`id` = `solpeds`.`id_solicitante` where `users`.`deleted_at` is null and `users`.`customer_company_id` = 1 and `solpeds`.`deleted_at` is null)
+=== listDoFilter FIN ===
+
+=== listDoFilter INICIO ===
+Usuario: ID=7, type_id=3, customer_company=1
+ERROR: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'optus_prod.solpeds' doesn't exist (SQL: select `solpeds`.*, `users`.`customer_company_id` as `laravel_through_key` from `solpeds` inner join `users` on `users`.`id` = `solpeds`.`id_solicitante` where `users`.`deleted_at` is null and `users`.`customer_company_id` = 1 and `solpeds`.`deleted_at` is null)
+=== listDoFilter FIN ===
+
+=== listDoFilter INICIO ===
+Usuario: ID=7, type_id=3, customer_company=1
+ERROR: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'optus_prod.solpeds' doesn't exist (SQL: select `solpeds`.*, `users`.`customer_company_id` as `laravel_through_key` from `solpeds` inner join `users` on `users`.`id` = `solpeds`.`id_solicitante` where `users`.`deleted_at` is null and `users`.`customer_company_id` = 1 and `solpeds`.`deleted_at` is null)
+=== listDoFilter FIN ===
+
+=== listDoFilter INICIO ===
+Usuario: ID=7, type_id=3, customer_company=1
+ERROR: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'optus_prod.solpeds' doesn't exist (SQL: select `solpeds`.*, `users`.`customer_company_id` as `laravel_through_key` from `solpeds` inner join `users` on `users`.`id` = `solpeds`.`id_solicitante` where `users`.`deleted_at` is null and `users`.`customer_company_id` = 1 and `solpeds`.`deleted_at` is null)
+=== listDoFilter FIN ===
+
+=== listDoFilter INICIO ===
+Usuario: ID=7, type_id=3, customer_company=1
+ERROR: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'optus_prod.solpeds' doesn't exist (SQL: select `solpeds`.*, `users`.`customer_company_id` as `laravel_through_key` from `solpeds` inner join `users` on `users`.`id` = `solpeds`.`id_solicitante` where `users`.`deleted_at` is null and `users`.`customer_company_id` = 1 and `solpeds`.`deleted_at` is null)
+=== listDoFilter FIN ===
+
+=== listDoFilter INICIO ===
+Usuario: ID=7, type_id=3, customer_company=1
+ERROR: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'optus_prod.solpeds' doesn't exist (SQL: select `solpeds`.*, `users`.`customer_company_id` as `laravel_through_key` from `solpeds` inner join `users` on `users`.`id` = `solpeds`.`id_solicitante` where `users`.`deleted_at` is null and `users`.`customer_company_id` = 1 and `solpeds`.`deleted_at` is null)
+=== listDoFilter FIN ===
+
+=== listDoFilter INICIO ===
+Usuario: ID=7, type_id=3, customer_company=1
+ERROR: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'optus_prod.solpeds' doesn't exist (SQL: select `solpeds`.*, `users`.`customer_company_id` as `laravel_through_key` from `solpeds` inner join `users` on `users`.`id` = `solpeds`.`id_solicitante` where `users`.`deleted_at` is null and `users`.`customer_company_id` = 1 and `solpeds`.`deleted_at` is null)
+=== listDoFilter FIN ===
+
+=== listDoFilter INICIO ===
+Usuario: ID=7, type_id=3, customer_company=1
+ERROR: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'optus_prod.solpeds' doesn't exist (SQL: select `solpeds`.*, `users`.`customer_company_id` as `laravel_through_key` from `solpeds` inner join `users` on `users`.`id` = `solpeds`.`id_solicitante` where `users`.`deleted_at` is null and `users`.`customer_company_id` = 1 and `solpeds`.`deleted_at` is null)
+=== listDoFilter FIN ===
+

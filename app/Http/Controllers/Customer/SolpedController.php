@@ -5,7 +5,6 @@ use App\Http\Controllers\BaseController;
 use App\Models\InvitationStatus;
 use App\Models\ProposalStatus;
 use App\Models\Solped;
-use App\Models\SolpedDocument;
 use App\Models\UserType;
 use Carbon\Traits\ToStringFormat;
 use PhpMyAdmin\Console;
@@ -228,22 +227,16 @@ class SolpedController extends BaseController {
                 }
             }
 
-            // FilePath y documentos (misma lógica que en Concurso)
-            $file_path = filePath($solped->file_path, true);
-            $documents = [];
-            foreach ($solped->documents as $doc) {
-                $documents[] = [
-                    'nombre' => $doc->filename,
-                    'imagen' => $doc->filename,
-                    'url' => $file_path . $doc->filename
-                ];
+            // FilePath
+            $file_path = [];
+            if ($solped->file_path) {
+                $file_path = filePath($solped->file_path, true);
             }
 
             $list = array_merge($common_data, [
                 'Productos'        => $productos,
-                'FilePath'         => $documents,
-                'Documents'        => $documents,
-                'FilePathComplete' => $documents ? $file_path . $documents[0]['imagen'] : null,
+                'FilePath'         => $file_path,
+                'FilePathComplete' => $file_path && $solped->filename ? $file_path . $solped->filename : null,
             ]);
 
             // Exponer datos mínimos de adjudicación para vista del solicitante

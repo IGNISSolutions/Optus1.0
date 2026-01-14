@@ -167,7 +167,7 @@
                 <!-- ko if: ConcursoEconomicas.mejoresOfertas.mejorIntegral.items.length > 0  -->
                 <!-- ko if: $root.UserType() !== 'customer-read' -->
                 <button type="button" class="btn btn-primary"
-                    data-bind="click: $root.AdjudicationSend.bind($data, 'integral', ConcursoEconomicas.mejoresOfertas.mejorIntegral.idOferente)">
+                    data-bind="click: $root.AdjudicationSend.bind($data, 'integral', ConcursoEconomicas.mejoresOfertas.mejorIntegral.idOferente), disable: $root.BotonesAdjudicacionDeshabilitados()">
                     Adjudicar Integral
                 </button>
                 <!-- /ko -->
@@ -176,7 +176,7 @@
                 <!-- ko if: $root.UserType() !== 'customer-read' -->
 
                 <button type="button" class="btn btn-primary"
-                    data-bind="click: $root.AdjudicationSend.bind($data, 'individual', ConcursoEconomicas.mejoresOfertas.idOferentes)">
+                    data-bind="click: $root.AdjudicationSend.bind($data, 'individual', ConcursoEconomicas.mejoresOfertas.idOferentes), disable: $root.BotonesAdjudicacionDeshabilitados()">
                     Adjudicar Individual
                 </button>
                 <!-- /ko -->
@@ -185,7 +185,7 @@
                 <!-- ko if: $root.UserType() !== 'customer-read' -->
 
                 <button type="button" class="btn btn-primary"
-                    data-bind="click: $root.AdjudicationSend.bind($data, 'manual'), disable: $root.ManualAdjudication().total() == 0">
+                    data-bind="click: $root.AdjudicationSend.bind($data, 'manual'), disable: $root.ManualAdjudication().total() == 0 || $root.BotonesAdjudicacionDeshabilitados()">
                     Adjudicar Manual
                 </button>
                 <!-- /ko -->
@@ -202,82 +202,52 @@
 <button type="button" class="btn btn-primary" style="width: 100%;"
     data-bind="text:$root.TitleNewRound(), click: $root.ShowModalNewRound, visible: !($root.Adjudicado() || $root.Eliminado())">
 </button>
-
-<div class="modal fade bs-modal-md" id="newRound" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-md">
-        <div class="modal-content">
-
-            <!-- HEADER -->
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                <h4 class="modal-title text-center" data-bind="text:'¿Confirma la ' + $root.NuevaRonda() + '?'"></h4>
-            </div>
-
-            <div class="modal-body text-center">
-                 <!-- FECHA LIMITE NUEVA RONDA -->
-                <span> Indica la fecha limite de la nueva ronda <b style="color: red;">*</b></span>
-                    <br>
-                <span>(Minimo 72 hs a partir de hoy)</span>
-
-                <div class="form-group required" data-bind="validationElement: $root.FechaNewRound()">
-                    <div class="input-group date form_datetime bs-datetime" style="margin: auto;">
-                        <input class="form-control" size="36" type="text" data-bind="dateTimePicker: $root.FechaNewRound, dateTimePickerOptions: {
-                            format: 'dd-mm-yyyy hh:ii',
-                            momentFormat: 'DD-MM-YYYY HH:mm',
-                            startDate: $root.ThreeDaysFromTodayDate(),
-                            value: $root.FechaNewRound(),
-                            todayBtn: false
-                        }">
-                    </div>
-                </div>
-
-                <!-- FECHA LIMITE CIERRE MURO DE CONSULTA -->
-                <span class="text-center" data-bind="text:'Indica la fecha limite para el cierre del muro de consultas'"></span>
-                    <br>
-                <span>(24 hs antes de la fecha limite de la nueva ronda)</span>
-
-                <div class="form-group required" data-bind="validationElement: $root.NuevaFechaCierreMuroConsulta()">
-                    <div class="input-group date form_datetime bs-datetime" style="margin: auto;">
-                        <input id="NuevaFechaCierreMuroConsulta" class="form-control" size="36" type="text" 
-                            data-bind="dateTimePicker: $root.NuevaFechaCierreMuroConsulta, 
-                                        dateTimePickerOptions: {
-                                            format: 'dd-mm-yyyy hh:ii',
-                                            momentFormat: 'DD-MM-YYYY HH:mm',
-                                            startDate: $root.TodayDate(),
-                                            endDate: $root.FechaMaximaCierreDeConsulta(),
-                                            value: $root.NuevaFechaCierreMuroConsulta(),
-                                            todayBtn: false
-                                        },
-                                        enable: $root.FechaNewRound()">
-                    </div>
-                </div>
-                
-                <!-- BOX DE COMENTARIO -->
-                <p>Añada un comentario para la nueva ronda <b style="color: red;">*</b></p>
-                    <textarea rows="3" cols="50" class="form-control" style="resize: none;"data-bind="textInput: $root.ComentarioNuevaRonda">
-                </textarea>
-
-                <span>
-                        Todos los campos marcados con <b style="color: red;">*</b> son oblgatorios
-                    <br>
-                </span>
-            </div>
-
-            <!-- FOOTER CON BOTONES -->
-            <div class="modal-footer">
-                <button type="button" class="btn red BTNC" data-dismiss="modal">
-                    Cancelar
-                </button>
-                <button type="button" class="btn green"  data-dismiss="modal"
-                    data-bind="click: $root.SendNewRound">
-                    Aceptar
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
 <!-- /ko -->
+<!-- /ko -->
+
+<!-- Tabla de Cadena de Aprobación -->
+<!-- ko if: $root.EstrategiaHabilitada() && $root.NivelesAprobacion().length > 0 -->
+<div style="margin-top: 20px; padding: 15px; border: 1px solid #e0e0e0; border-radius: 4px; background-color: #fafafa;">
+    <h4 class="block bold" style="margin-top: 0; padding-top: 0;">Cadena de Aprobación</h4>
+    <!-- ko if: $root.MontoEnDolares() !== null -->
+    <p style="margin-bottom: 10px;">
+        <strong>Valor (En dólares):</strong> <span data-bind="text: 'USD ' + $root.MontoEnDolares().toFixed(2)"></span>
+        <!-- ko if: $root.TipoAdjudicacionSeleccionada() -->
+        <span style="margin-left: 20px;"><strong>Tipo de Adjudicación:</strong> <span data-bind="text: $root.TipoAdjudicacionSeleccionada()"></span></span>
+        <!-- /ko -->
+    </p>
+    <!-- /ko -->
+    <table class="table table-striped table-bordered" id="TablaCadenaAprobacion">
+        <thead class="text-center">
+            <tr>
+                <th class="text-center" style="white-space: nowrap; width: 1%;">Nivel</th>
+                <th class="text-center" style="white-space: nowrap; width: 1%;">Usuario</th>
+                <th class="text-center" style="width: 100px;">Estado</th>
+                <th class="text-center">Fecha de aprobación/rechazo</th>
+                <th class="text-center">Motivo</th>
+            </tr>
+        </thead>
+        <tbody data-bind="foreach: $root.NivelesAprobacion()">
+            <tr>
+                <td class="text-center" style="white-space: nowrap;" data-bind="text: rol"></td>
+                <td class="text-center" style="white-space: nowrap;" data-bind="text: usuario || '-'"></td>
+                <td class="text-center vertical-align-middle">
+                    <span class="label label-sm"
+                          data-bind="
+                            text: estado,
+                            css: {
+                                'label-warning': estado === 'Pendiente',
+                                'label-success': estado === 'Aprobado',
+                                'label-danger':  estado === 'Rechazado'
+                            }">
+                    </span>
+                </td>
+                <td class="text-center" data-bind="text: fecha || '-'"></td>
+                <td class="text-center" data-bind="text: motivo || '-'"></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 <!-- /ko -->
 
 <!-- ko if: $root.Adjudicado()  -->

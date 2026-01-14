@@ -346,7 +346,7 @@
                     { id: 6, text: 'Produccion' },
                     { id: 7, text: 'Mantenimiento' },
                     { id: 8, text: 'Calidad' },
-                    { id: 9, text: 'Seguridad de las Peersonas' },
+                    { id: 9, text: 'Seguridad de las Personas' },
                     { id: 10, text: 'Medio Ambiente' },
                     { id: 11, text: 'Oficina Técnica' },
                     { id: 12, text: 'Informática' },
@@ -354,13 +354,11 @@
                 ]);
 
                 this.Roles = ko.observableArray([
-                    { id: 1, text: 'Jefe de compras' },
-                    { id: 2, text: 'Gerente de Area Solicitante' },
-                    { id: 3, text: 'Gerente de Compras' },
-                    { id: 4, text: 'Gerente de Administración' },
-                    { id: 5, text: 'Gerente General' },
-                    { id: 6, text: 'Comprador' },
-                    { id: 7, text: 'Solicitante' },
+                    { id: 1, text: 'Jefe' },
+                    { id: 2, text: 'Gerente' },
+                    { id: 3, text: 'Gerente General' },
+                    { id: 4, text: 'Comprador' },
+                    { id: 5, text: 'Solicitante' },
                 ]);
 
 

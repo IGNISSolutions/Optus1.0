@@ -32,9 +32,9 @@
   <div class="col-md-6">
     <div class="form-group" data-bind="validationElement: Entity.FechaResolucion">
       <label for="fecha_resolucion" class="control-label">
-        <strong>Fecha de Tratamiento <span style="color: red;">*</span></strong>
+        <strong>Fecha de Resolución <span style="color: red;">*</span></strong>
       </label>
-      <label> (Fecha esperada de tratamiento de la solicitud) </label>
+      <label> (Fecha esperada de resolución de la solicitud) </label>
 
       <div class="input-group date form_datetime bs-datetime">
         <input 
@@ -42,12 +42,13 @@
           size="16" 
           type="text" 
           data-bind="dateTimePicker: Entity.FechaResolucion, dateTimePickerOptions: {
-            format: 'dd-mm-yyyy',
-            momentFormat: 'DD-MM-YYYY',
+            format: 'dd-mm-yyyy hh:ii',
+            momentFormat: 'DD-MM-YYYY HH:mm',
             startDate: Entity.FechaResolucion(),
             value: Entity.FechaResolucion(),
             todayBtn: true,
-            minView: 2,
+            minView: 0,
+            minuteStep: 5,
             initialDate: new Date(new Date().setHours(0, 0, 0, 0))
           }">
         <span class="input-group-addon">
@@ -75,12 +76,13 @@
           size="16" 
           type="text" 
           data-bind="dateTimePicker: Entity.FechaEntrega, dateTimePickerOptions: {
-            format: 'dd-mm-yyyy',
-            momentFormat: 'DD-MM-YYYY',
+            format: 'dd-mm-yyyy hh:ii',
+            momentFormat: 'DD-MM-YYYY HH:mm',
             startDate: Entity.FechaEntrega(),
             value: Entity.FechaEntrega(),
             todayBtn: true,
-            minView: 2,
+            minView: 0,
+            minuteStep: 5,
             initialDate: new Date(new Date().setHours(0, 0, 0, 0))
           }">
         <span class="input-group-addon">

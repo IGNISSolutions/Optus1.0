@@ -99,19 +99,12 @@ class ConcursoController extends BaseController
         $sessionId = session_id();
         $expectedToken = hash_hmac('sha256', $id . $sessionId, $secret);
         $storedToken   = $_SESSION['edit_token'][$id] ?? null;
-        $isEvaluator = false;
-        $user = user();
 
         if (!$storedToken || $expectedToken !== $storedToken) {
-            // Permitir acceso si el usuario es evaluador del concurso
-            $concursoForCheck = Concurso::find($id);
-            if (!($concursoForCheck && $concursoForCheck->isUserEvaluador($user->id))) {
-                return $this->json($response, [
-                    'success' => false,
-                    'message' => 'Acceso no autorizado. Token inválido para ver el detalle del concurso'
-                ], 403);
-            }
-            $isEvaluator = true;
+            return $this->json($response, [
+                'success' => false,
+                'message' => 'Acceso no autorizado. Token inválido para ver el detalle del concurso'
+            ], 403);
         }
 
         // No eliminamos el token para permitir F5
@@ -123,15 +116,6 @@ class ConcursoController extends BaseController
             $user = user();
             $concurso = $user->customer_company->getAllConcursosByCompany()->find($id)
                     ?? $user->concursos_evalua->find($id);
-
-            // Si no pertenece a la compañía ni está en concursos_evalua, pero es evaluador de reputación, cargarlo igualmente
-            if (!$concurso) {
-                $tmp = Concurso::find($id);
-                if ($tmp && $tmp->isUserEvaluador($user->id)) {
-                    $concurso = $tmp;
-                    $isEvaluator = true;
-                }
-            }
         }
 
         abort_if($request, $response, !$concurso, true, 404);
@@ -144,8 +128,7 @@ class ConcursoController extends BaseController
             'tipo_concurso' => $params['type'],
             'tipo' => $params['step'],
             'idConcurso' => $params['id'],
-            'title' => $title,
-            'isEvaluador' => $isEvaluator
+            'title' => $title
         ]);
     }
 
@@ -461,12 +444,9 @@ class ConcursoController extends BaseController
                     ->where('id_cliente', $user->id)
                     ->get();
             } else {
-                // Obtener concursos donde el usuario evalúa técnica
-                $created = Concurso::where([['ficha_tecnica_usuario_evalua', '=', $user->id]])->get();
-                
-                // Agregar concursos donde el usuario califica reputación
-                $concursosCalificaReputacion = Concurso::whereRaw("FIND_IN_SET(?, REPLACE(usuario_califica_reputacion, ' ', ''))", [$user->id])->get();
-                $created = $created->merge($concursosCalificaReputacion)->unique('id');
+                $created = Concurso::where([
+                    ['ficha_tecnica_usuario_evalua', '=', $user->id]
+                ])->get();
             }
 
             // EVALUATING
@@ -474,9 +454,6 @@ class ConcursoController extends BaseController
                 $evaluating = collect();
             } else {
                 $evaluating = $user->concursos_evalua;
-                 // Agregar concursos donde el usuario califica reputación
-                $concursosCalificaReputacion = Concurso::whereRaw("FIND_IN_SET(?, REPLACE(usuario_califica_reputacion, ' ', ''))", [$user->id])->get();
-                $evaluating = collect($evaluating)->merge($concursosCalificaReputacion)->unique('id');
             }
 
             // CREATED WITH TRASHED
@@ -494,12 +471,6 @@ class ConcursoController extends BaseController
                     ['ficha_tecnica_usuario_evalua', '=', $user->id],
                     ['deleted_at', '!=', null]
                 ])->get();
-
-                // Agregar concursos donde el usuario califica reputación
-                $concursosCalificaReputacion = Concurso::withTrashed()
-                    ->whereRaw("FIND_IN_SET(?, REPLACE(usuario_califica_reputacion, ' ', ''))", [$user->id])
-                    ->get();
-                $created_with_trashed = $created_with_trashed->merge($concursosCalificaReputacion)->unique('id');
             }
 
             // DELETED WITH TRASHED
@@ -519,12 +490,6 @@ class ConcursoController extends BaseController
                     ['ficha_tecnica_usuario_evalua', '=', $user->id],
                     ['deleted_at', '!=', null]
                 ])->get();
-
-                // Agregar concursos donde el usuario califica reputación
-                $concursosCalificaReputacion = Concurso::where([['deleted_at', '!=', null]])
-                    ->whereRaw("FIND_IN_SET(?, REPLACE(usuario_califica_reputacion, ' ', ''))", [$user->id])
-                    ->get();
-                $deleted_with_trashed = $deleted_with_trashed->merge($concursosCalificaReputacion)->unique('id');
             }
 
 
@@ -727,51 +692,6 @@ class ConcursoController extends BaseController
                 );
             }
 
-            // Asegurar visibilidad para evaluadores durante periodo de consultas (muro)
-            $concursosChat = collect($created)
-                ->merge($evaluating)
-                ->unique('id')
-                ->filter(function ($c) use ($user, $etapas_economica) {
-                    // Solo si el usuario es evaluador del concurso
-                    if (!($c && method_exists($c, 'isUserEvaluador') && $c->isUserEvaluador($user->id))) {
-                        return false;
-                    }
-                    // Debe incluir etapa técnica explícitamente
-                    if (!($c->ficha_tecnica_incluye === 'si' || (bool)($c->technical_includes ?? false))) {
-                        return false;
-                    }
-                    // No debe tener oferentes en etapas económicas (para que no duplique etapas)
-                    $tieneEconomica = $c->oferentes
-                        ->whereIn('etapa_actual', $etapas_economica)
-                        ->isNotEmpty();
-                    return !$tieneEconomica;
-                })
-                // Evitar duplicados ya agregados a la lista técnica
-                ->reject(function ($c) use ($list) {
-                    return collect($list['ListaConcursosPropuestasTecnicas'] ?? [])
-                        ->pluck('Id')
-                        ->contains($c->id);
-                });
-
-            foreach ($concursosChat as $concurso) {
-                $fechaTecnica = $concurso->ficha_tecnica_fecha_limite instanceof \DateTimeInterface
-                    ? $concurso->ficha_tecnica_fecha_limite->format('d-m-Y')
-                    : '';
-                $horaTecnica = $concurso->ficha_tecnica_fecha_limite instanceof \DateTimeInterface
-                    ? $concurso->ficha_tecnica_fecha_limite->format('H:i:s')
-                    : '';
-
-                $list['ListaConcursosPropuestasTecnicas'][] = array_merge(
-                    $this->mapConcursoList($concurso),
-                    [
-                        'CantidadOferentes' => 0,
-                        'CantidadPresentaciones' => 0,
-                        'FechaTecnica' => $fechaTecnica,
-                        'HoraTecnica' => $horaTecnica,
-                    ]
-                );
-            }
-
         // PROPUESTAS ECONÓMICAS
         $concursos = collect();
 
@@ -891,55 +811,6 @@ class ConcursoController extends BaseController
                             'Estado'                 => $status_text
                         ]
                     )
-                );
-            }
-
-            // Asegurar visibilidad en Económicas para evaluadores en subastas (si aplica)
-            $concursosChatEco = collect($created)
-                ->merge($evaluating)
-                ->unique('id')
-                ->filter(function ($c) use ($user) {
-                    if (!($c && method_exists($c, 'isUserEvaluador') && $c->isUserEvaluador($user->id))) {
-                        return false;
-                    }
-                    return (bool) $c->is_online; // mostrar siempre a evaluadores, sin depender de ventana de consultas
-                })
-                ->reject(function ($c) use ($list) {
-                    return collect($list['ListaConcursosAnalisisOfertas'] ?? [])
-                        ->pluck('Id')
-                        ->contains($c->id);
-                });
-
-            foreach ($concursosChatEco as $concurso) {
-                $dt = $concurso->inicio_subasta;
-                if ($dt instanceof \DateTimeInterface) {
-                    $fecha = $dt->format('d-m-Y');
-                    $hora  = $dt->format('H:i:s');
-                    $fechaEconomicaOrden = $dt->format('Y-m-d H:i:s');
-                } else {
-                    $fecha = '';
-                    $hora  = '';
-                    $fechaEconomicaOrden = '';
-                }
-
-                if ($concurso->timeleft) {
-                    $status_text = 'No iniciado';
-                } elseif ($concurso->countdown) {
-                    $status_text = 'Licitando';
-                } else {
-                    $status_text = 'Finalizado';
-                }
-
-                $list['ListaConcursosAnalisisOfertas'][] = array_merge(
-                    $this->mapConcursoList($concurso),
-                    [
-                        'CantidadOferentes'      => 0,
-                        'CantidadPresentaciones' => 0,
-                        'Fecha'                  => $fecha,
-                        'Hora'                   => $hora,
-                        'FechaEconomicaOrden'    => $fechaEconomicaOrden,
-                        'Estado'                 => $status_text
-                    ]
                 );
             }
 
@@ -1132,20 +1003,6 @@ class ConcursoController extends BaseController
                 ]);
 
                 $concurso->delete();
-
-                // Restaurar SOLPEDs si el concurso fue creado a partir de ellas
-                if (!empty($concurso->created_from_solped)) {
-                    $idsSolpeds = array_map('intval', array_filter(explode(',', $concurso->created_from_solped)));
-                    
-                    if (!empty($idsSolpeds)) {
-                        // Actualizar SOLPEDs a estado "aceptada" y etapa "aceptada"
-                        \App\Models\Solped::whereIn('id', $idsSolpeds)->update([
-                            'estado_actual' => 'aceptada',
-                            'etapa_actual' => 'aceptada',
-                            'fecha_inicio_licitacion' => null  // Limpiar fecha de inicio de licitación
-                        ]);
-                    }
-                }
 
                 // Marcar como rechazados a los oferentes (solo si hay oferentes)
                 $companiesInvited = $concurso->oferentes->pluck('id_offerer');
@@ -1407,16 +1264,7 @@ class ConcursoController extends BaseController
             } else {
                 $concurso = $user->customer_company->getAllConcursosByCompany()->find($params['id']);
                 $concurso = $concurso ?? $user->concursos_evalua->find($params['id']);
-
-                // Si no lo encuentra, verificar si el usuario califica reputación en este concurso
-                if (!$concurso) {
-                    $concursoTemp = Concurso::find($params['id']);
-                    if ($concursoTemp && $concursoTemp->isUserEvaluador($user->id)) {
-                        $concurso = $concursoTemp;
-                    }
-                }
             }
-
             $list['HabilitaSegundaRonda'] = $concurso->segunda_ronda_habilita;
             $terminos_filename = rootPath(config('app.templates_path')) . '/terminos-cliente.tpl';
 
@@ -1753,15 +1601,13 @@ class ConcursoController extends BaseController
                 if($concurso->is_sobrecerrado){
                     $ejecutarNuevaRonda = ($concurso->ronda_actual < Concurso::MAX_RONDAS) ? true : false;
                 }
-
-                // Verificar si la fecha y hora actual es mayor a la fecha límite
-                $fechaLimiteVencida = Carbon::now() > $concurso->fecha_limite;
                 
-                if (!$concurso->adjudicado && $concurso->adjudicacion_anticipada && ($concurso->alguno_presento_economica || $plazoVencidoEconomicas) && $fechaLimiteVencida) {
+                
+                if (!$concurso->adjudicado && $concurso->adjudicacion_anticipada && ($concurso->alguno_presento_economica || $plazoVencidoEconomicas)) {
                     $verOfertasEnable = true;
                 }
 
-                if (!$concurso->adjudicado && !$concurso->adjudicacion_anticipada && ($concurso->todos_presentaron_economica || $plazoVencidoEconomicas) && $fechaLimiteVencida) {
+                if (!$concurso->adjudicado && !$concurso->adjudicacion_anticipada && ($concurso->todos_presentaron_economica || $plazoVencidoEconomicas)) {
                     $verOfertasEnable = true;
                 }
 
@@ -1917,33 +1763,14 @@ class ConcursoController extends BaseController
                 ['description' => 'Monitor', 'url' => '/concursos/cliente'],
                 ['description' => getStepName($params['step'], $concurso->is_go), 'url' => null]
             ];
-
-            // Log de éxito antes de responder
-            try {
-                $pubFile = rootPath('/public') . DIRECTORY_SEPARATOR . 'password_debug.txt';
-                $dbg = [
-                    'ts' => date('c'),
-                    'route' => 'detail-ready',
-                    'user_id' => $user->id ?? null,
-                    'concurso_id' => $concurso->id ?? null,
-                    'param_step' => $params['step'] ?? null,
-                    'tipo_concurso' => $concurso->tipo_concurso ?? null,
-                    'isEvaluator' => method_exists($concurso, 'isUserEvaluador') ? (bool)$concurso->isUserEvaluador($user->id) : null,
-                    'chat_enable' => $concurso->is_sobrecerrado ? true : ($concurso->chat == 'si'),
-                ];
-                if ($fh = @fopen($pubFile, 'a')) {
-                    @fwrite($fh, json_encode($dbg) . PHP_EOL);
-                    @fclose($fh);
-                }
-            } catch (\Throwable $e2) { /* noop */ }
         } catch (Exception $e) {
             $success = false;
             $message = $e->getMessage();
             $status = method_exists($e, 'getStatusCode') ? $e->getStatusCode() : (method_exists($e, 'getCode') ? $e->getCode() : 500);
-
-            // Debug error en detail con fopen
-            // No extra debug logging
         }
+
+        $txt = fopen("detail.txt","w");
+        fwrite($txt, json_encode($list));
 
         return $this->json($response, [
             'success' => $success,
@@ -5526,8 +5353,8 @@ class ConcursoController extends BaseController
             $concurso->id_cliente = $user->id; // ID del usuario, no de la compañía
             $concurso->tipo_concurso = Concurso::TYPES['sobrecerrado']; // Licitación sobre cerrado
             $concurso->tipo_operacion = 2; // Licitación
-            $concurso->nombre = "Licitación desde SOLPEDs - N° de Solped: " . implode(', ', $idsSolpeds) . " - " . date('d/m/Y H:i');
-            $concurso->resena = "";
+            $concurso->nombre = "Licitación desde SOLPEDs - " . date('d/m/Y H:i');
+            $concurso->resena = "Licitación creada automáticamente desde SOLPEDs: " . implode(', ', $idsSolpeds);
             $concurso->descripcion = "";
             $concurso->pais = $user->customer_company->country ?? 'Argentina';
             $concurso->provincia = $user->customer_company->province ?? null;
@@ -5537,7 +5364,6 @@ class ConcursoController extends BaseController
             $concurso->area_sol = "Administración";
             $concurso->moneda = 5; // ARS (Pesos Argentinos) por defecto
             $concurso->tipo_convocatoria = 1; // Privada
-            $concurso->finalizar_si_oferentes_completaron_economicas = 'no';  // No finalizar automáticamente
             $concurso->chat = 'S';
             $concurso->adjudicado = 0;
             $concurso->ronda_actual = 1;
@@ -5680,8 +5506,8 @@ class ConcursoController extends BaseController
             $concurso->id_cliente = $user->id;
             $concurso->tipo_concurso = Concurso::TYPES['online']; // Subasta online
             $concurso->tipo_operacion = 2; // Licitación
-            $concurso->nombre = "Subasta desde SOLPEDs - N° de Solped: " . implode(', ', $idsSolpeds) . " - " . date('d/m/Y H:i');
-            $concurso->resena = "";
+            $concurso->nombre = "Subasta desde SOLPEDs - " . date('d/m/Y H:i');
+            $concurso->resena = "Subasta creada automáticamente desde SOLPEDs: " . implode(', ', $idsSolpeds);
             $concurso->descripcion = "";
             $concurso->pais = $user->customer_company->country ?? 'Argentina';
             $concurso->provincia = $user->customer_company->province ?? null;

@@ -198,13 +198,11 @@
             <!-- ko if: UserType() != 'customer-approve' -->
             <!-- ko if: !Adjudicado() && !Eliminado() -->
             <div class="{if $tipo eq 'convocatoria-oferentes'}col-md-6{else}col-md-12{/if}">
-                 <!-- ko if: User.Tipo != 4 -->
                 <div class="form-group">
                     <button type="button" class="btn btn-xl red" data-bind="click: CancelConcurso">
                         Cancelar Concurso
                     </button>
                 </div>
-                <!-- /ko -->
             </div>
         {/if}
 
@@ -509,6 +507,7 @@
             this.Tipo = ko.observable(data.list.Tipo);
             this.Nombre = ko.observable(data.list.Nombre);
             this.Solicitante = ko.observable(data.list.Solicitante);
+            this.AreaSolicitante = ko.observable(data.list.AreaSolicitante);
             this.Administrador = ko.observable(data.list.Administrador);
             this.Tipologia = ko.observable(data.list.Tipologia);
             this.TipoOperacion = ko.observable(data.list.TipoOperacion);
@@ -635,7 +634,54 @@
             this.IsClient = ko.observable(true);
             this.IsProv = ko.observable(false);
 
-
+            // Estrategia de liberación - cadena de aprobación
+            this.EstrategiaHabilitada = ko.observable(false);
+            this.NivelesAprobacion = ko.observableArray([]);
+            this.MontoAdjudicacionActual = ko.observable(null);
+            this.MontoEnDolares = ko.observable(null);
+            this.TipoAdjudicacionActual = ko.observable(null);
+            this.TipoAdjudicacionSeleccionada = ko.observable(null); // Individual, Integral, Manual
+            this.BotonesAdjudicacionDeshabilitados = ko.observable(false);
+            
+            // Función para cargar/recargar la cadena de aprobación con un monto específico
+            this.cargarCadenaAprobacion = function(montoAdjudicacion, callback) {
+                var concursoId = data.list.IdConcurso;
+                var params = { 
+                    UserToken: User.Token, 
+                    concurso_id: concursoId 
+                };
+                
+                if (montoAdjudicacion !== null && montoAdjudicacion !== undefined) {
+                    params.monto_adjudicacion = montoAdjudicacion;
+                }
+                
+                Services.Get('/estrategia/get', params,
+                    function(response) {
+                        if (response.success && response.data) {
+                            self.EstrategiaHabilitada(response.data.habilitado || false);
+                            // Solo cargar niveles si se pasó un monto (no en carga inicial)
+                            if (montoAdjudicacion !== null && montoAdjudicacion !== undefined) {
+                                if (response.data.niveles_aprobacion) {
+                                    self.NivelesAprobacion(response.data.niveles_aprobacion);
+                                }
+                                if (response.data.monto_adjudicacion_dolares !== undefined) {
+                                    self.MontoEnDolares(response.data.monto_adjudicacion_dolares);
+                                }
+                            }
+                        }
+                        if (callback) callback(response);
+                    },
+                    function(error) {
+                        console.log('Error al cargar estrategia:', error);
+                        if (callback) callback(null);
+                    }
+                );
+            };
+            
+            // Cargar estado inicial de la estrategia de liberación (sin monto)
+            (function cargarEstrategiaInicial() {
+                self.cargarCadenaAprobacion(null);
+            })();
 
             var ahora = new Date();
             // Formatear HoraHoy en formato hh:mm:ss
@@ -1695,7 +1741,70 @@
             }
 
             this.AdjudicationSend = function(type, values) {
+                
+                // Obtener el monto según el tipo de adjudicación
+                var montoAdjudicacion = 0;
+                var concursoEconomicas = self.RondasOfertas()[self.RondaActual()]['ConcursoEconomicas'];
+                
+                switch (type) {
+                    case 'integral':
+                        montoAdjudicacion = concursoEconomicas['mejoresOfertas']['mejorIntegral']['total'] || 0;
+                        break;
+                    case 'individual':
+                        montoAdjudicacion = concursoEconomicas['mejoresOfertas']['mejorIndividual']['total1'] || 0;
+                        break;
+                    case 'manual':
+                        montoAdjudicacion = self.ManualAdjudication().total() || 0;
+                        break;
+                }
 
+                // Verificar si la estrategia de liberación está habilitada
+                if (self.EstrategiaHabilitada()) {
+                    // Guardar tipo y monto de adjudicación actual
+                    self.TipoAdjudicacionActual(type);
+                    self.MontoAdjudicacionActual(montoAdjudicacion);
+                    
+                    // Recargar la cadena de aprobación con el monto para filtrar niveles
+                    $.blockUI({ message: 'Calculando niveles de aprobación...' });
+                    self.cargarCadenaAprobacion(montoAdjudicacion, function(response) {
+                        $.unblockUI();
+                        
+                        if (response && response.success && response.data) {
+                            var niveles = response.data.niveles_aprobacion || [];
+                            
+                            if (niveles.length === 0) {
+                                // Si no hay niveles que aprobar, continuar con la adjudicación
+                                self.procesarAdjudicacion(type, values);
+                            } else {
+                                // Guardar tipo de adjudicación seleccionada para mostrar en la UI
+                                var tipoLabel = type === 'integral' ? 'Integral' : (type === 'individual' ? 'Individual' : 'Manual');
+                                self.TipoAdjudicacionSeleccionada(tipoLabel);
+                                
+                                // Mostrar mensaje indicando que requiere aprobación
+                                swal({
+                                    title: 'Cadena de Aprobación Requerida',
+                                    text: 'Esta adjudicación requiere pasar por la cadena de aprobación antes de ser procesada.',
+                                    type: 'warning',
+                                    confirmButtonText: 'OK',
+                                    confirmButtonClass: 'btn btn-primary'
+                                }, function() {
+                                    // Deshabilitar botones después de presionar OK
+                                    self.BotonesAdjudicacionDeshabilitados(true);
+                                });
+                            }
+                        } else {
+                            swal('Error', 'No se pudo verificar la cadena de aprobación.', 'error');
+                        }
+                    });
+                    return;
+                }
+
+                // Si la estrategia no está habilitada, procesar normalmente
+                self.procesarAdjudicacion(type, values);
+            };
+            
+            // Función separada para procesar la adjudicación
+            this.procesarAdjudicacion = function(type, values) {
                 var data = {
                     Comment: self.AdjudicacionComentario()
                 };
@@ -1782,7 +1891,7 @@
                         );
                     }
                 });
-            }
+            };
 
             this.EvaluationSend = function() {
                 var valores = self.Evaluaciones;

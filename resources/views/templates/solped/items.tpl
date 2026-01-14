@@ -112,58 +112,6 @@
   </div>
 </div>
 
-<!-- Sección de descarga de plantilla e importación -->
-<div class="row margin-bottom-40">
-  <div class="col-md-12">
-    <div class="portlet light bordered">
-      <div class="portlet-title">
-        <div class="btn-group">
-          <a data-bind="click: downloadPlantillaExcel" class="btn sbold blue" title="Exportar Plantilla">
-            Exportar la plantilla para la importación
-            <i class="fa fa-download" aria-hidden="true"></i>
-          </a>
-        </div>
-      </div>
-
-      <div class="portlet-title">
-        <table class="table table-striped table-bordered" id="ListaProductosImportacion">
-          <tbody>
-            <tr>
-              <td colspan="3">
-                <h4>Instrucciones para importar materiales desde excel</h4>
-                <ul class="list-unstyled">
-                  <li>1. Adjunte archivo con sus materiales en formato XLS, XLSX.</li>
-                  <li>2. Procese el archivo.</li>
-                  <li>3. En caso de existir inconsistencias en la estructura del archivo se indicará error y todos los registros serán rechazados.</li>
-                </ul>
-              </td>
-            </tr>
-          </tbody>
-          <tbody>
-            <tr>
-              <td class="col-md-5 vertical-align-middle">
-                <input type="file" data-bind="fileUploadExcel: uploadFile">
-              </td>
-              <td class="col-md-3 text-center vertical-align-middle">
-                <!-- ko if: uploadFile -->
-                <a data-bind="click: uploadFileProcesar" class="btn btn-xl green" title="Importar">
-                  Importar
-                  <i class="fa fa-download"></i>
-                </a>
-                <a data-bind="click: uploadFileclear" class="btn btn-xl red" title="Limpiar">
-                  Limpiar
-                  <i class="fa fa-download"></i>
-                </a>
-                <!-- /ko -->
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-</div>
-
 <!-- Lista de items -->
 <div class="table-responsive">
   <table class="table table-bordered paleRows" id="products" style="table-layout:fixed; width:100%;">

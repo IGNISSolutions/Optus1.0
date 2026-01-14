@@ -1,31 +1,31 @@
 {
     "IsGo": false,
-    "IsSobrecerrado": false,
-    "IsOnline": true,
-    "IdConcurso": 405,
-    "UserId": 19,
-    "OferenteId": 2519,
-    "Nombre": "Larala",
-    "Solicitante": "ARCOR SAIC",
-    "Administrador": "Uarcor Abastecimiento",
-    "TipoConcurso": "Subasta",
+    "IsSobrecerrado": true,
+    "IsOnline": false,
+    "IdConcurso": 914,
+    "UserId": 24,
+    "OferenteId": 7763,
+    "Nombre": "001 Estrategia liberacion ",
+    "Solicitante": "CLIENTE DEMO - OPTUS",
+    "Administrador": "Ucoca Cola",
+    "TipoConcurso": "Licitaci\u00f3n",
     "TipoOperacion": "Solo Proveedores Asociados",
     "Portrait": "default.gif",
     "ImagePath": "\/storage\/img\/concursos\/",
-    "FilePath": "https:\/\/estudiogcg.ddns.net\/storage\/pliegos\/30502793175\/",
+    "FilePath": "https:\/\/optus.dev\/storage\/pliegos\/30529135943\\",
     "FilePathOferente": "\/storage",
-    "TerminosCondiciones": "<p class=\"MsoNormal\" style=\"margin-bottom:11.25pt;line-height:normal;mso-outline-level:\n3;vertical-align:baseline\"><b><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;\nmso-fareast-font-family:&quot;Times New Roman&quot;;color:#333333;text-transform:uppercase;\nmso-fareast-language:ES\">TERMINOS Y CONDICIONES DE USO<o:p><\/o:p><\/span><\/b><\/p>\n\n<p class=\"MsoNormal\" style=\"margin:0cm;margin-bottom:.0001pt;text-indent:-18.0pt;\nline-height:normal;mso-outline-level:4;mso-list:l0 level1 lfo1;tab-stops:list 36.0pt;\nvertical-align:baseline\">\n<!--[if !supportLists]-->\n<span lang=\"ES\" style=\"font-size:\n10.0pt;mso-bidi-font-size:11.0pt;font-family:Symbol;mso-fareast-font-family:\nSymbol;mso-bidi-font-family:Symbol;color:#3E6D94;mso-fareast-language:ES;\nmso-bidi-font-weight:bold\"><span style=\"font-variant-numeric: normal; font-stretch: normal; font-size: 7pt; line-height: normal; font-family: &quot;Times New Roman&quot;;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<\/span><\/span>\n<!--[endif]-->\n<b><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;\nmso-fareast-font-family:&quot;Times New Roman&quot;;color:#3E6D94;mso-fareast-language:\nES\">REGLAS GENERALES<o:p><\/o:p><\/span><\/b><\/p><p class=\"MsoNormal\" style=\"margin-bottom:11.25pt;line-height:normal;vertical-align:\nbaseline\"><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:\n&quot;Times New Roman&quot;;color:#333333;mso-fareast-language:ES\">\n\n<p class=\"MsoNormal\" style=\"margin-bottom:11.25pt;line-height:normal;vertical-align:\nbaseline\"><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:\n&quot;Times New Roman&quot;;color:#333333;mso-fareast-language:ES\">Los siguientes t\u00e9rminos de uso abarcan el uso del sistema Optus y de sus servicios ofrecidos a sus usuarios, sean estos oferentes o receptores; \nal utilizar el sistema Optus, El Usuario acepta estos t\u00e9rminos completamente siendo estos de car\u00e1cter obligatorio. Si no est\u00e1 de acuerdo con estos t\u00e9rminos de uso, alguna parte de ellos,\no las pol\u00edticas y principios que se adhieren, El Usuario no debe utilizar el sistema Optus.\nEl Usuario debe leer, entender y aceptar todas las condiciones establecidas en los T\u00e9rminos y Condiciones y en las Pol\u00edticas de Privacidad as\u00ed como en los dem\u00e1s documentos incorporados a los mismos por referencia,\npreviamente a su inscripci\u00f3n como usuario registrado en Optus.<o:p><\/o:p><\/span><\/p>\n\n<p class=\"MsoNormal\" style=\"margin-bottom:11.25pt;line-height:normal;vertical-align:\nbaseline\"><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:\n&quot;Times New Roman&quot;;color:#333333;mso-fareast-language:ES\">A no ser que se establezca lo contrario, Optus es due\u00f1o de los derechos de propiedad intelectual y material del sitio.\n Todos estos derechos de propiedad intelectual est\u00e1n reservados. <o:p><\/o:p><\/span><\/p>\n\n<p class=\"MsoNormal\" style=\"margin:0cm;margin-bottom:.0001pt;text-indent:-18.0pt;\nline-height:normal;mso-outline-level:4;mso-list:l0 level1 lfo1;tab-stops:list 36.0pt;\nvertical-align:baseline\">\n<!--[if !supportLists]-->\n<span lang=\"ES\" style=\"font-size:\n10.0pt;mso-bidi-font-size:11.0pt;font-family:Symbol;mso-fareast-font-family:\nSymbol;mso-bidi-font-family:Symbol;color:#3E6D94;mso-fareast-language:ES;\nmso-bidi-font-weight:bold\"><span style=\"font-variant-numeric: normal; font-stretch: normal; font-size: 7pt; line-height: normal; font-family: &quot;Times New Roman&quot;;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<\/span><\/span>\n<!--[endif]-->\n<b><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;\nmso-fareast-font-family:&quot;Times New Roman&quot;;color:#3E6D94;mso-fareast-language:\nES\">Queda expresamente prohibido al usuario:<o:p><\/o:p><\/span><\/b><\/p>\n\n<p class=\"MsoNormal\" style=\"margin-bottom:11.25pt;line-height:normal;vertical-align:\nbaseline\"><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:\n&quot;Times New Roman&quot;;color:#333333;mso-fareast-language:ES\"> \n<li>Republicar material de este sitio web (incluido re publicaciones en otro sitio web).<\/li>\n<li>Vender, alquilar o sub-licenciar material de este sitio web.<\/li>\n<li>Mostrar cualquier material restringido de este sitio web p\u00fablicamente (incluye correos electr\u00f3nicos de profesionales o empresas publicados, \n    informaci\u00f3n estad\u00edstica del sitio, y todo material \u00fanicamente disponible para determinado tipo de usuario).<\/li>\n<li>Editar o modificar cualquier material del sitio a no ser que sea de su pertenencia.<\/li>\n<li>Cuando el contenido est\u00e9 espec\u00edficamente disponible para la redistribuci\u00f3n, solo puede ser redistribuido dentro de su organizaci\u00f3n.<\/li>\n<\/span><\/p>\n\n<p class=\"MsoNormal\" style=\"margin:0cm;margin-bottom:.0001pt;text-indent:-18.0pt;\nline-height:normal;mso-outline-level:4;mso-list:l0 level1 lfo1;tab-stops:list 36.0pt;\nvertical-align:baseline\">\n<!--[if !supportLists]-->\n<span lang=\"ES\" style=\"font-size:\n10.0pt;mso-bidi-font-size:11.0pt;font-family:Symbol;mso-fareast-font-family:\nSymbol;mso-bidi-font-family:Symbol;color:#3E6D94;mso-fareast-language:ES;\nmso-bidi-font-weight:bold\"><span style=\"font-variant-numeric: normal; font-stretch: normal; font-size: 7pt; line-height: normal; font-family: &quot;Times New Roman&quot;;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<\/span><\/span>\n<!--[endif]-->\n<b><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;\nmso-fareast-font-family:&quot;Times New Roman&quot;;color:#3E6D94;mso-fareast-language:\nES\">Requisitos para el uso del servicio<o:p><\/o:p><\/span><\/b><\/p>\n\n<p class=\"MsoNormal\" style=\"margin-bottom:11.25pt;line-height:normal;vertical-align:\nbaseline\"><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:\n&quot;Times New Roman&quot;;color:#333333;mso-fareast-language:ES\">Usuario registrado: Cualquier usuario que fuera previamente registrado\ngratuitamente en el sitio proveyendo datos personales. <o:p><\/o:p><\/span><\/p>\n\n<p class=\"MsoNormal\" style=\"margin:0cm;margin-bottom:.0001pt;text-indent:-18.0pt;\nline-height:normal;mso-outline-level:4;mso-list:l0 level1 lfo1;tab-stops:list 36.0pt;\nvertical-align:baseline\">\n<!--[if !supportLists]-->\n<span lang=\"ES\" style=\"font-size:\n10.0pt;mso-bidi-font-size:11.0pt;font-family:Symbol;mso-fareast-font-family:\nSymbol;mso-bidi-font-family:Symbol;color:#3E6D94;mso-fareast-language:ES;\nmso-bidi-font-weight:bold\"><span style=\"font-variant-numeric: normal; font-stretch: normal; font-size: 7pt; line-height: normal; font-family: &quot;Times New Roman&quot;;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<\/span><\/span>\n<!--[endif]-->\n<b><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;\nmso-fareast-font-family:&quot;Times New Roman&quot;;color:#3E6D94;mso-fareast-language:\nES\">Uso Correcto del Sitio<o:p><\/o:p><\/span><\/b><\/p>\n\n<p class=\"MsoNormal\" style=\"margin-bottom:11.25pt;line-height:normal;vertical-align:\nbaseline\"><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:\n&quot;Times New Roman&quot;;color:#333333;mso-fareast-language:ES\">El Usuario no debe utilizar el sistema Optus en cualquier modo que cause, o pueda causar, da\u00f1o al servicio, defectos en la disponibilidad o accesibilidad; o en cualquier modo que sea il\u00edcito, ilegal, \nfraudulento o da\u00f1ino, o en relaci\u00f3n con cualquier prop\u00f3sito o actividad il\u00edcita, ilegal, fraudulenta o da\u00f1ina.<br>\nEl Usuario no debe usar el sistema Optus para copiar, almacenar, hostear, transmitir, enviar, usar, publicar o distribuir cualquier material que consista de (o este hipervinculado con) cualquier spyware, virus de computador, troyanos, gusanos, escuchador de teclado,\nrootkits u otro software de computador malicioso.<br>\nCualquier intromisi\u00f3n, tentativa o actividad violatoria o contraria a las leyes sobre derecho de propiedad intelectual y\/o a las prohibiciones estipuladas en este contrato har\u00e1n pasible a su responsable de las acciones legales pertinentes, \ny a las sanciones previstas por este acuerdo, as\u00ed como lo har\u00e1 responsable de indemnizar los da\u00f1os ocasionados.<o:p><\/o:p><\/span><\/p>\n\n<p class=\"MsoNormal\" style=\"margin-bottom:11.25pt;line-height:normal;vertical-align:\nbaseline\"><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:\n&quot;Times New Roman&quot;;color:#333333;mso-fareast-language:ES\">\nEl Usuario no puede realizar cualquier actividad de recolecci\u00f3n de datos sistem\u00e1tica o automatizada sobre o en relaci\u00f3n con el sistema Optus.<br>\nEl Usuario no debe usar el sistema Optus para transmitir o enviar comunicados comerciales que no son solicitados.<br>\nEl Usuario no puede realizar cualquier actividad de recolecci\u00f3n de datos sistem\u00e1tica o automatizada sobre o en relaci\u00f3n con el sistema Optus.<br>\nEl Usuario no debe usar el sistema Optus para cualquier prop\u00f3sito relacionado a marketing sin nuestro expreso consentimiento por medio escrito.<br>\nEl usuario no podr\u00e1 insultar a ning\u00fan otro usuario del sitio. Cualquier usuario tiene el derecho de reclamar por estas faltas.<o:p><\/o:p><\/span><\/p>\n\n<p class=\"MsoNormal\" style=\"margin-bottom:11.25pt;line-height:normal;vertical-align:\nbaseline\"><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:\n&quot;Times New Roman&quot;;color:#333333;mso-fareast-language:ES\">Optus podr\u00e1 advertir, suspender o inhabilitar una cuenta de usuario si:<br>\n    <li>El usuario quebranta la ley.<\/li>\n    <li>No acata los t\u00e9rminos y condiciones y los documentos anexos.<\/li>\n    <li>El usuario provee informaci\u00f3n inv\u00e1lida.<\/li>\n    <li>Un usuario realiza fraude en el pago del pedido realizado.<\/li>\n<o:p><\/o:p><\/span><\/b><\/p>\n\n<!--[if !supportLists]-->\n<span lang=\"ES\" style=\"font-size:\n10.0pt;mso-bidi-font-size:11.0pt;font-family:Symbol;mso-fareast-font-family:\nSymbol;mso-bidi-font-family:Symbol;color:#3E6D94;mso-fareast-language:ES;\nmso-bidi-font-weight:bold\">\u00b7<span style=\"font-variant-numeric: normal; font-stretch: normal; font-size: 7pt; line-height: normal; font-family: &quot;Times New Roman&quot;;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<\/span><\/span>\n<!--[endif]-->\n<b><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;\nmso-fareast-font-family:&quot;Times New Roman&quot;;color:#3E6D94;mso-fareast-language:\nES\">Acceso restringido<o:p><\/o:p><\/span><\/b><\/p>\n\n<p class=\"MsoNormal\" style=\"margin-bottom:11.25pt;line-height:normal;vertical-align:\nbaseline\"><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:\n&quot;Times New Roman&quot;;color:#333333;mso-fareast-language:ES\">El acceso a ciertas \u00e1reas del sistema Optus es restringido. \nOptus se reserva el derecho de restringir el acceso a otras \u00e1reas del sistema Optus, o efectivamente al sitio web completo, a su discreci\u00f3n.<br>\nSi Optus le proveyere con un Identificador de usuario y una contrase\u00f1a la cual lo habilita al Usuario a ingresar \u00e1reas restringidas del sistema \nOptus u otros contenidos o servicios, El Usuario debe asegurarse que el identificador de usuario y la contrase\u00f1a son guardadas\ncon confidencialidad, las mismas tiene car\u00e1cter de uso personal y son intrasnferibles.<br>\nOptus deshabilitar\u00e1 su identificador de usuario y contrase\u00f1a a su discreci\u00f3n sin ninguna notificaci\u00f3n o explicaci\u00f3n si constata, \nverifica o entiende que El Usuario no cumple con lo establecido en los t\u00e9rminos y condiciones o en los otros documentos relacionados \nal uso correcto del sitio.<br><o:p><\/o:p><\/span><\/p>\n\n<!--[if !supportLists]-->\n<span lang=\"ES\" style=\"font-size:\n10.0pt;mso-bidi-font-size:11.0pt;font-family:Symbol;mso-fareast-font-family:\nSymbol;mso-bidi-font-family:Symbol;color:#3E6D94;mso-fareast-language:ES;\nmso-bidi-font-weight:bold\">\u00b7<span style=\"font-variant-numeric: normal; font-stretch: normal; font-size: 7pt; line-height: normal; font-family: &quot;Times New Roman&quot;;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<\/span><\/span>\n<!--[endif]-->\n<b><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;\nmso-fareast-font-family:&quot;Times New Roman&quot;;color:#3E6D94;mso-fareast-language:\nES\">Contenido generado por el usuario publicado<o:p><\/o:p><\/span><\/b><\/p>\n\n<p class=\"MsoNormal\" style=\"margin-bottom:11.25pt;line-height:normal;vertical-align:\nbaseline\"><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:\n&quot;Times New Roman&quot;;color:#333333;mso-fareast-language:ES\">LEn estos t\u00e9rminos de uso, \"su contenido de usuario\" significa \nel material (incluye cualquier informaci\u00f3n o archivo que el sitio le solicite al usuario) que El Usuario provee al sistema Optus, \npara el prop\u00f3sito que sea. El Usuario tambi\u00e9n concede el derecho de sub licenciar estos derechos, \ny el derecho de tomar acciones por infringir de estos derechos.<br>\nSu contenido de no debe ser ilegal o il\u00edcito, no debe infringir cualquier derecho legal de terceros, \ny no debe ser causante de la toma de acciones legales ya sea contra El Usuario, o de Optus o terceros.\n(En cualquier caso bajo cualquier ley aplicable).<br>\nOptus se reserva el derecho de editar o eliminar cualquier material provisto\na el sistema Optus, almacenado en nuestros servidores, alojado o publicado en el sistema Optus.<br><o:p><\/o:p><\/span><\/p>\n<!--[if !supportLists]-->\n<span lang=\"ES\" style=\"font-size:\n10.0pt;mso-bidi-font-size:11.0pt;font-family:Symbol;mso-fareast-font-family:\nSymbol;mso-bidi-font-family:Symbol;color:#3E6D94;mso-fareast-language:ES;\nmso-bidi-font-weight:bold\">\u00b7<span style=\"font-variant-numeric: normal; font-stretch: normal; font-size: 7pt; line-height: normal; font-family: &quot;Times New Roman&quot;;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<\/span><\/span>\n<!--[endif]-->\n<b><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;\nmso-fareast-font-family:&quot;Times New Roman&quot;;color:#3E6D94;mso-fareast-language:\nES\"><o:p><\/o:p>Garant\u00edas Limitadas<\/span><\/b><\/p>\n\n<p class=\"MsoNormal\" style=\"margin-bottom:11.25pt;line-height:normal;vertical-align:\nbaseline\"><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:\n&quot;Times New Roman&quot;;color:#333333;mso-fareast-language:ES\">Optus no garantiza respecto de la informaci\u00f3n suministrada\npor los usuarios, su completitud o exactitud; ni se compromete a asegurar que el sitio web se mantenga disponible o que el\nmaterial en el sitio web est\u00e9 actualizado. Optus no se responsabiliza por la certeza de los datos. Los usuarios adheridos ser\u00e1n \nlos que respondan por la veracidad de sus datos personales.<o:p><\/o:p><\/span><\/p>\n\n<p class=\"MsoNormal\" style=\"margin:0cm;margin-bottom:.0001pt;text-indent:-18.0pt;\nline-height:normal;mso-outline-level:4;mso-list:l0 level1 lfo1;tab-stops:list 36.0pt;\nvertical-align:baseline\">\n<!--[if !supportLists]-->\n<span lang=\"ES\" style=\"font-size:\n10.0pt;mso-bidi-font-size:11.0pt;font-family:Symbol;mso-fareast-font-family:\nSymbol;mso-bidi-font-family:Symbol;color:#3E6D94;mso-fareast-language:ES;\nmso-bidi-font-weight:bold\">\u00b7<span style=\"font-variant-numeric: normal; font-stretch: normal; font-size: 7pt; line-height: normal; font-family: &quot;Times New Roman&quot;;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<\/span><\/span>\n<!--[endif]-->\n<b><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;\nmso-fareast-font-family:&quot;Times New Roman&quot;;color:#3E6D94;mso-fareast-language:\nES\">Limitaciones de Responsabilidad<o:p><\/o:p><\/span><\/b><\/p>\n\n<p class=\"MsoNormal\" style=\"margin-bottom:11.25pt;line-height:normal;vertical-align:\nbaseline\"><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:\n&quot;Times New Roman&quot;;color:#333333;mso-fareast-language:ES\">La responsabilidad hacia El Usuario en relaci\u00f3n al uso del sistema\nOptus web o bajo o en conexi\u00f3n con estos t\u00e9rminos de uso, tanto en contrato, agravio (incluyendo negligencia) o de lo contrario,\nser\u00e1 limitado por lo siguiente:<br>\nOptus no se responsabiliza por cualquier p\u00e9rdida o da\u00f1o de cualquier naturaleza.<br>\nOptus no se responsabiliza por cualquier da\u00f1o, perjuicio o p\u00e9rdida al usuario causados por fallas en el sistema, en el servidor \no en Internet.<br>\nOptus tampoco ser\u00e1 responsable por cualquier virus que pudiera infectar el equipo del usuario como consecuencia del acceso,\nuso o examen de su sitio web o a ra\u00edz de cualquier transferencia de datos en el mismo. Los usuarios no podr\u00e1n imputarle a\nOptus responsabilidad alguna ni exigir pago por lucro cesante, en virtud de perjuicios resultantes de dificultades t\u00e9cnicas \no fallas en los sistemas o en Internet.<br>\nOptus no garantiza el acceso y uso continuado o ininterrumpido de su sitio. El sistema puede eventualmente no estar disponible\ndebido a dificultades t\u00e9cnicas o fallas de Internet, o por cualquier otra circunstancia ajena a Optus; en tales casos se procurar\u00e1\nrestablecerlo con la mayor celeridad posible sin que por ello pueda imput\u00e1rsele alg\u00fan tipo de responsabilidad.<br>\nOptus no ser\u00e1 responsable por ning\u00fan error u omisi\u00f3n contenidos en su sitio web. No seremos responsables por cualquier consecuencia \npor la p\u00e9rdida o da\u00f1o indirecta o directa. No seremos responsables por cualquier p\u00e9rdida de ganancias, ingreso, rentas, contratos, \nnegocios, reputaci\u00f3n, datos o informaci\u00f3n, o por los incumplimientos de las partes en cuanto a las contrataciones convenidas.<br>\nOptus no es responsable por cualquier p\u00e9rdida o da\u00f1o resultante de cualquier evento o eventos fuera de nuestro control razonable.\nEn caso que uno o m\u00e1s usuarios o alg\u00fan tercero inicien cualquier tipo de reclamo o acciones legales contra otro u otros usuarios, \ntodos y cada uno de los usuarios involucrados en dichos reclamos o acciones eximen de toda responsabilidad a Optus y a sus \ndirectores, gerentes, empleados, agentes, operarios, representantes y apoderados.<br><o:p><\/o:p><\/span><\/p>\n\n<p class=\"MsoNormal\" style=\"margin:0cm;margin-bottom:.0001pt;text-indent:-18.0pt;\nline-height:normal;mso-outline-level:4;mso-list:l0 level1 lfo1;tab-stops:list 36.0pt;\nvertical-align:baseline\">\n<!--[if !supportLists]-->\n<span lang=\"ES\" style=\"font-size:\n10.0pt;mso-bidi-font-size:11.0pt;font-family:Symbol;mso-fareast-font-family:\nSymbol;mso-bidi-font-family:Symbol;color:#3E6D94;mso-fareast-language:ES;\nmso-bidi-font-weight:bold\">\u00b7<span style=\"font-variant-numeric: normal; font-stretch: normal; font-size: 7pt; line-height: normal; font-family: &quot;Times New Roman&quot;;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<\/span><\/span>\n<!--[endif]-->\n<b><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;\nmso-fareast-font-family:&quot;Times New Roman&quot;;color:#3E6D94;mso-fareast-language:\nES\">Variaci\u00f3n<o:p><\/o:p><\/span><\/b><\/p>\n\n<p class=\"MsoNormal\" style=\"margin-bottom:11.25pt;line-height:normal;vertical-align:\nbaseline\"><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:\n&quot;Times New Roman&quot;;color:#333333;mso-fareast-language:ES\">Optus podr\u00e1 revisar estos t\u00e9rminos de uso cada cierto tiempo. Los t\u00e9rminos de uso revisados, modificados,\n aplicar\u00e1n al uso del sitio web desde la fecha de publicaci\u00f3n de los t\u00e9rminos de uso revisados en el sistema Optus. <o:p><\/o:p><\/span><\/p>\n<!--[if !supportLists]-->\n<span lang=\"ES\" style=\"font-size:\n10.0pt;mso-bidi-font-size:11.0pt;font-family:Symbol;mso-fareast-font-family:\nSymbol;mso-bidi-font-family:Symbol;color:#3E6D94;mso-fareast-language:ES;\nmso-bidi-font-weight:bold\">\u00b7<span style=\"font-variant-numeric: normal; font-stretch: normal; font-size: 7pt; line-height: normal; font-family: &quot;Times New Roman&quot;;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<\/span><\/span>\n<!--[endif]-->\n<b><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;\nmso-fareast-font-family:&quot;Times New Roman&quot;;color:#3E6D94;mso-fareast-language:\nES\">Confidencialidad<o:p><\/o:p><\/span><\/b><\/p>\n\n<p class=\"MsoNormal\" style=\"margin-bottom:11.25pt;line-height:normal;vertical-align:\nbaseline\"><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:\n&quot;Times New Roman&quot;;color:#333333;mso-fareast-language:ES\">La existencia y el contenido de toda la informaci\u00f3n, sea escrita \nu oral, proporcionada por o en nombre de Optus y\/o por cualquier Receptor, relacionada o concerniente a productos y\/o \nservicios deber\u00e1 ser tratada por los Usuarios como secreta y confidencial y no deber\u00e1, salvo previo consentimiento escrito \nde Optus y del Receptor, ni ser\u00e1 revelada o divulgada por los Usuarios a nadie fuera de su organizaci\u00f3n.<o:p><\/o:p><\/span><\/p>\n\n<p class=\"MsoNormal\" style=\"margin:0cm;margin-bottom:.0001pt;text-indent:-18.0pt;\nline-height:normal;mso-outline-level:4;mso-list:l0 level1 lfo1;tab-stops:list 36.0pt;\nvertical-align:baseline\">\n<!--[if !supportLists]-->\n<span lang=\"ES\" style=\"font-size:\n10.0pt;mso-bidi-font-size:11.0pt;font-family:Symbol;mso-fareast-font-family:\nSymbol;mso-bidi-font-family:Symbol;color:#3E6D94;mso-fareast-language:ES;\nmso-bidi-font-weight:bold\">\u00b7<span style=\"font-variant-numeric: normal; font-stretch: normal; font-size: 7pt; line-height: normal; font-family: &quot;Times New Roman&quot;;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<\/span><\/span>\n<!--[endif]-->\n<b><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;\nmso-fareast-font-family:&quot;Times New Roman&quot;;color:#3E6D94;mso-fareast-language:\nES\">Jurisdicci\u00f3n y ley aplicable<o:p><\/o:p><\/span><\/b><\/p>\n\n<p class=\"MsoNormal\" style=\"margin-bottom:11.25pt;line-height:normal;vertical-align:\nbaseline\"><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:\n&quot;Times New Roman&quot;;color:#333333;mso-fareast-language:ES\">Este acuerdo estar\u00e1 regido en todos sus puntos por las leyes\nvigentes del pa\u00eds de uso destino del sistema. Para cualquier divergencia que pudiera surgir de la interpretaci\u00f3n y la aplicaci\u00f3n\ndel presente contrato, a la competencia de los Tribunales Ordinarios de la ciudad de C\u00f3rdoba, renunciando a todo otro fuero o \njurisdicci\u00f3n que pudiera corresponderle, inclusive la Federal.<o:p><\/o:p><\/span><\/p>\n\n<p class=\"MsoNormal\" style=\"margin:0cm;margin-bottom:.0001pt;text-indent:-18.0pt;\nline-height:normal;mso-outline-level:4;mso-list:l0 level1 lfo1;tab-stops:list 36.0pt;\nvertical-align:baseline\">\n<!--[if !supportLists]-->\n<span lang=\"ES\" style=\"font-size:\n10.0pt;mso-bidi-font-size:11.0pt;font-family:Symbol;mso-fareast-font-family:\nSymbol;mso-bidi-font-family:Symbol;color:#3E6D94;mso-fareast-language:ES;\nmso-bidi-font-weight:bold\"><span style=\"font-variant-numeric: normal; font-stretch: normal; font-size: 7pt; line-height: normal; font-family: &quot;Times New Roman&quot;;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<\/span><\/span>\n<!--[endif]-->\n<b><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;\nmso-fareast-font-family:&quot;Times New Roman&quot;;color:#3E6D94;mso-fareast-language:\nES\">REGLAS PARTICULARES<o:p><\/o:p><\/span><\/b><\/p><p class=\"MsoNormal\" style=\"margin-bottom:11.25pt;line-height:normal;vertical-align:\nbaseline\"><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:\n&quot;Times New Roman&quot;;color:#333333;mso-fareast-language:ES\">\n\n<p class=\"MsoNormal\" style=\"margin-bottom:11.25pt;line-height:normal;vertical-align:\nbaseline\"><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:\n&quot;Times New Roman&quot;;color:#333333;mso-fareast-language:ES\">Estas Reglas rigen todas las Invitaciones emitidas por cualquiera de los usuarios de Optus\n(incluyendo cualquier Invitaci\u00f3n emitida a trav\u00e9s del Sitio de Optus) para la provisi\u00f3n de productos y\/o servicios.<o:p><\/o:p><\/span><\/p>\n\n<p class=\"MsoNormal\" style=\"margin:0cm;margin-bottom:.0001pt;text-indent:-18.0pt;\nline-height:normal;mso-outline-level:4;mso-list:l0 level1 lfo1;tab-stops:list 36.0pt;\nvertical-align:baseline\">\n<!--[if !supportLists]-->\n<span lang=\"ES\" style=\"font-size:\n10.0pt;mso-bidi-font-size:11.0pt;font-family:Symbol;mso-fareast-font-family:\nSymbol;mso-bidi-font-family:Symbol;color:#3E6D94;mso-fareast-language:ES;\nmso-bidi-font-weight:bold\">\u00b7<span style=\"font-variant-numeric: normal; font-stretch: normal; font-size: 7pt; line-height: normal; font-family: &quot;Times New Roman&quot;;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<\/span><\/span>\n<!--[endif]-->\n<b><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;\nmso-fareast-font-family:&quot;Times New Roman&quot;;color:#3E6D94;mso-fareast-language:\nES\">Invitaci\u00f3n a realizar ofertas para la provisi\u00f3n de productos o servicios<br>\nRevocabilidad de la Invitaci\u00f3n<o:p><\/o:p><\/span><\/b><\/p>\n\n<p class=\"MsoNormal\" style=\"margin-bottom:11.25pt;line-height:normal;vertical-align:\nbaseline\"><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:\n&quot;Times New Roman&quot;;color:#333333;mso-fareast-language:ES\">Todas las Invitaciones son revocables y pueden ser modificadas \no retiradas por Optus o por el Receptor sin aviso previo en cualquier momento antes de la Aceptaci\u00f3n.\nOptus no asume ninguna obligaci\u00f3n que surja de la Invitaci\u00f3n, su revocaci\u00f3n o modificaci\u00f3n.<o:p><\/o:p><\/span><\/p>\n\n<p class=\"MsoNormal\" style=\"margin:0cm;margin-bottom:.0001pt;text-indent:-18.0pt;\nline-height:normal;mso-outline-level:4;mso-list:l0 level1 lfo1;tab-stops:list 36.0pt;\nvertical-align:baseline\">\n<!--[if !supportLists]-->\n<span lang=\"ES\" style=\"font-size:\n10.0pt;mso-bidi-font-size:11.0pt;font-family:Symbol;mso-fareast-font-family:\nSymbol;mso-bidi-font-family:Symbol;color:#3E6D94;mso-fareast-language:ES;\nmso-bidi-font-weight:bold\"><span style=\"font-variant-numeric: normal; font-stretch: normal; font-size: 7pt; line-height: normal; font-family: &quot;Times New Roman&quot;;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<\/span><\/span>\n<!--[endif]-->\n<b><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;\nmso-fareast-font-family:&quot;Times New Roman&quot;;color:#3E6D94;mso-fareast-language:\nES\">Derechos de Optus<o:p><\/o:p><\/span><\/b><\/p><p class=\"MsoNormal\" style=\"margin-bottom:11.25pt;line-height:normal;vertical-align:\nbaseline\"><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:\n&quot;Times New Roman&quot;;color:#333333;mso-fareast-language:ES\">\n\n<p class=\"MsoNormal\" style=\"margin-bottom:11.25pt;line-height:normal;vertical-align:\nbaseline\"><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:\n&quot;Times New Roman&quot;;color:#333333;mso-fareast-language:ES\">Optus podr\u00e1:\n(a) rechazar sin aviso cualquier oferta antes o despu\u00e9s de su apertura;<br>\u00a0\n(b) llevar a cabo negociaciones con cualquier persona para la adquisici\u00f3n de productos o servicios id\u00e9nticos o similares,\nincluso si dicha persona no ha participado en el proceso de licitaci\u00f3n;\u00a0<br>\n(c) modificar la Invitaci\u00f3n, las Reglas, los T\u00e9rminos Generales, los T\u00e9rminos Especiales y\/o la Orden en cualquier momento\nprevio a la recepci\u00f3n de la Orden por parte del Oferente;\u00a0<br>\n(d) revocar la Invitaci\u00f3n, suspender o cancelar el procedimiento de contrataci\u00f3n; y <br>\u00a0\n(e) llevar a cabo cualquier medida que considere sea en su mejor inter\u00e9s, sin incurrir en ning\u00fan tipo de responsabilidad \nrespecto de cualquier persona invitada a realizar ofertas, con independencia que dicha persona haya o no realizado una oferta. <o:p><\/o:p><\/span><\/p>\n\n<p class=\"MsoNormal\" style=\"margin:0cm;margin-bottom:.0001pt;text-indent:-18.0pt;\nline-height:normal;mso-outline-level:4;mso-list:l0 level1 lfo1;tab-stops:list 36.0pt;\nvertical-align:baseline\">\n<!--[if !supportLists]-->\n<span lang=\"ES\" style=\"font-size:\n10.0pt;mso-bidi-font-size:11.0pt;font-family:Symbol;mso-fareast-font-family:\nSymbol;mso-bidi-font-family:Symbol;color:#3E6D94;mso-fareast-language:ES;\nmso-bidi-font-weight:bold\">\u00b7<span style=\"font-variant-numeric: normal; font-stretch: normal; font-size: 7pt; line-height: normal; font-family: &quot;Times New Roman&quot;;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<\/span><\/span>\n<!--[endif]-->\n<b><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;\nmso-fareast-font-family:&quot;Times New Roman&quot;;color:#3E6D94;mso-fareast-language:\nES\">Inexistencia de la obligaci\u00f3n de rembolsar los costos<o:p><\/o:p><\/span><\/b><\/p>\n\n<p class=\"MsoNormal\" style=\"margin-bottom:11.25pt;line-height:normal;vertical-align:\nbaseline\"><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:\n&quot;Times New Roman&quot;;color:#333333;mso-fareast-language:ES\">Salvo que se haya acordado por escrito de otra manera, ni Optus ni el Receptor ser\u00e1n responsables por:<br>\u00a0\n(i) ning\u00fan costo o gasto incurrido por el Oferente en relaci\u00f3n con la participaci\u00f3n en el proceso licitatorio;<br> \u00a0\n(ii)ni costos o gastos que cualquier Oferente pudiere incurrir como resultado de los cambios que pudiere efectuar a su oferta,\n independientemente de la causa de tales cambios.<o:p><\/o:p><\/span><\/p>\n\n<p class=\"MsoNormal\" style=\"margin:0cm;margin-bottom:.0001pt;text-indent:-18.0pt;\nline-height:normal;mso-outline-level:4;mso-list:l0 level1 lfo1;tab-stops:list 36.0pt;\nvertical-align:baseline\">\n<!--[if !supportLists]-->\n<span lang=\"ES\" style=\"font-size:\n10.0pt;mso-bidi-font-size:11.0pt;font-family:Symbol;mso-fareast-font-family:\nSymbol;mso-bidi-font-family:Symbol;color:#3E6D94;mso-fareast-language:ES;\nmso-bidi-font-weight:bold\">\u00b7<span style=\"font-variant-numeric: normal; font-stretch: normal; font-size: 7pt; line-height: normal; font-family: &quot;Times New Roman&quot;;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<\/span><\/span>\n<!--[endif]-->\n<b><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;\nmso-fareast-font-family:&quot;Times New Roman&quot;;color:#3E6D94;mso-fareast-language:\nES\">Ofertas<br> \nPresentaci\u00f3n de ofertas<o:p><\/o:p><\/span><\/b><\/p>\n\n<p class=\"MsoNormal\" style=\"margin-bottom:11.25pt;line-height:normal;vertical-align:\nbaseline\"><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:\n&quot;Times New Roman&quot;;color:#333333;mso-fareast-language:ES\">Las ofertas deben ser enviadas por los Oferentes a trav\u00e9s del Sitio\n de Optus por medio de un Mensaje Electr\u00f3nico o a trav\u00e9s del medio que Optus haya indicado como v\u00e1lido a cualquier Oferente.\n Optus no considerar\u00e1 ninguna presentaci\u00f3n tard\u00eda de ofertas, ni considerar\u00e1 solicitudes de extensi\u00f3n de la Fecha L\u00edmite.\n Optus podr\u00e1, sin embargo, a su sola discreci\u00f3n, extender la Fecha L\u00edmite para todos o para cualquier Oferente.<br>\nCualquier modificaci\u00f3n a una oferta debe ser recibida antes de la Fecha L\u00edmite.<o:p><\/o:p><\/span><\/p>\n\n<p class=\"MsoNormal\" style=\"margin:0cm;margin-bottom:.0001pt;text-indent:-18.0pt;\nline-height:normal;mso-outline-level:4;mso-list:l0 level1 lfo1;tab-stops:list 36.0pt;\nvertical-align:baseline\">\n<!--[if !supportLists]-->\n<span lang=\"ES\" style=\"font-size:\n10.0pt;mso-bidi-font-size:11.0pt;font-family:Symbol;mso-fareast-font-family:\nSymbol;mso-bidi-font-family:Symbol;color:#3E6D94;mso-fareast-language:ES;\nmso-bidi-font-weight:bold\">\u00b7<span style=\"font-variant-numeric: normal; font-stretch: normal; font-size: 7pt; line-height: normal; font-family: &quot;Times New Roman&quot;;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<\/span><\/span>\n<!--[endif]-->\n<b><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;\nmso-fareast-font-family:&quot;Times New Roman&quot;;color:#3E6D94;mso-fareast-language:\nES\">Implicancias de la presentaci\u00f3n de ofertas<o:p><\/o:p><\/span><\/b><\/p>\n\n<p class=\"MsoNormal\" style=\"margin-bottom:11.25pt;line-height:normal;vertical-align:\nbaseline\"><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:\n&quot;Times New Roman&quot;;color:#333333;mso-fareast-language:ES\">La mera participaci\u00f3n en el proceso licitatorio o la presentaci\u00f3n \nde una oferta implica que los Oferentes:<br>\n    a. Han examinado cuidadosamente la Invitaci\u00f3n, las especificaciones y toda la informaci\u00f3n disponible en el Sitio de Optus o \n    de cualquier otra forma enviada por Optus al Oferente, de manera de permitir al Oferente realizar una propuesta o decisi\u00f3n informada; <br>\n    b. Declaran y garantizan a Optus que la oferta y cualquier Contrato son obligaciones legales y vinculantes del Oferente,\n     y que las personas que han firmado la oferta cuentan con todos los requisitos societarios y con poderes suficientes \n     para obligar al Oferente bajo la oferta y el Contrato;<br>\n    c. Declaran y garantizan a Optus que cuentan con suficiente poder y autoridad, y han adoptado todas las acciones necesarias,\n     para firmar y presentar una oferta v\u00e1lida y vinculante, ejecutable contra el Oferente, y que tal oferta no se encuentra \n     sujeta a autorizaci\u00f3n de persona u organismo alguno, dentro o fuera de la organizaci\u00f3n del Oferente;<br>\n    d. Han considerado completamente\u00a0<br>\n(i) la distribuci\u00f3n de riesgos resultante de los documentos aqu\u00ed mencionados y\u00a0<br>\n(ii) todas las leyes y regulaciones que podr\u00edan afectar la oferta. El Receptor no asumir\u00e1 ninguna responsabilidad al \nOferente o contratista en relaci\u00f3n con tales leyes y regulaciones, distintas a las provistas en el Contrato, y el \nReceptor no indemnizar\u00e1 al contratista por cambios en dichas leyes y regulaciones.<br>\nAl enviar la oferta, los Oferentes se encontrar\u00e1n obligados a entregar los bienes o servicios objeto de la oferta de acuerdo \ncon la Orden.<o:p><\/o:p><\/span><\/p>\n\n<p class=\"MsoNormal\" style=\"margin:0cm;margin-bottom:.0001pt;text-indent:-18.0pt;\nline-height:normal;mso-outline-level:4;mso-list:l0 level1 lfo1;tab-stops:list 36.0pt;\nvertical-align:baseline\">\n<!--[if !supportLists]-->\n<span lang=\"ES\" style=\"font-size:\n10.0pt;mso-bidi-font-size:11.0pt;font-family:Symbol;mso-fareast-font-family:\nSymbol;mso-bidi-font-family:Symbol;color:#3E6D94;mso-fareast-language:ES;\nmso-bidi-font-weight:bold\">\u00b7<span style=\"font-variant-numeric: normal; font-stretch: normal; font-size: 7pt; line-height: normal; font-family: &quot;Times New Roman&quot;;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<\/span><\/span>\n<!--[endif]-->\n<b><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;\nmso-fareast-font-family:&quot;Times New Roman&quot;;color:#3E6D94;mso-fareast-language:\nES\">Validez de la oferta<o:p><\/o:p><\/span><\/b><\/p>\n\n<p class=\"MsoNormal\" style=\"margin-bottom:11.25pt;line-height:normal;vertical-align:\nbaseline\"><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:\n&quot;Times New Roman&quot;;color:#333333;mso-fareast-language:ES\">Las ofertas deber\u00e1n ser firmes, irrevocables, vinculantes y \nejecutables contra los Oferentes por un plazo que se determine por sistema.\nOptus se reserva el derecho a requerir informaci\u00f3n adicional o m\u00e1s detallada o aclaraciones sobre cualquier oferta y puede\n tambi\u00e9n requerir a los Oferentes prueba satisfactoria sobre su solidez financiera, solvencia crediticia y capacidad para entrar \n en una relaci\u00f3n contractual.<br>\nLos Oferentes acuerdan no cuestionar y renuncian expresamente a cualquier derecho a objetar la validez y\/o admisibilidad de cualquier\n Invitaci\u00f3n, correo electr\u00f3nico, oferta o Mensaje electr\u00f3nico intercambiado en relaci\u00f3n con ello, por la sola raz\u00f3n de que la \n comunicaci\u00f3n se llev\u00f3 a cabo por medios electr\u00f3nicos que carecen de encriptaci\u00f3n y certificaci\u00f3n de autor. En tal sentido,\n  los Oferentes acuerdan que todas las comunicaciones u otras acciones tomadas por ellos y Optus o cualquier Receptor(es) mediante \n  el uso de correos electr\u00f3nicos y Mensajes electr\u00f3nicos satisfacen todos los requisitos legales para considerar dichas \n  comunicaciones se realizaron por escrito.<o:p><\/o:p><\/span><\/p>\n\n <p class=\"MsoNormal\" style=\"margin:0cm;margin-bottom:.0001pt;text-indent:-18.0pt;\nline-height:normal;mso-outline-level:4;mso-list:l0 level1 lfo1;tab-stops:list 36.0pt;\nvertical-align:baseline\">\n<!--[if !supportLists]-->\n<span lang=\"ES\" style=\"font-size:\n10.0pt;mso-bidi-font-size:11.0pt;font-family:Symbol;mso-fareast-font-family:\nSymbol;mso-bidi-font-family:Symbol;color:#3E6D94;mso-fareast-language:ES;\nmso-bidi-font-weight:bold\">\u00b7<span style=\"font-variant-numeric: normal; font-stretch: normal; font-size: 7pt; line-height: normal; font-family: &quot;Times New Roman&quot;;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<\/span><\/span>\n<!--[endif]-->\n<b><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;\nmso-fareast-font-family:&quot;Times New Roman&quot;;color:#3E6D94;mso-fareast-language:\nES\">Aceptaci\u00f3n<o:p><\/o:p><\/span><\/b><\/p>\n\n<p class=\"MsoNormal\" style=\"margin-bottom:11.25pt;line-height:normal;vertical-align:\nbaseline\"><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:\n&quot;Times New Roman&quot;;color:#333333;mso-fareast-language:ES\">La oferta se considerar\u00e1 aceptada y el Contrato entrar\u00e1 en vigor,\n por la recepci\u00f3n por parte del Oferente de un correo electr\u00f3nico a la cuenta proporcionada por el usuario. \nOptus se reserva el derecho de rechazar todas las ofertas por cualquier raz\u00f3n y no adjudicar la Orden a ning\u00fan Oferente.\n La orden, si resulta adjudicada, ser\u00e1 adjudicada al Oferente que, a criterio de Optus, mejor satisfaga las necesidades del Receptor\n  y de Optus, y dichas necesidades ser\u00e1n determinadas e interpretadas exclusivamente por Optus. Optus se reserva el derecho de\n   adjudicar la Orden a un Oferente que no sea el que presente el precio m\u00e1s bajo.<br>\nOptus no estar\u00e1 obligado a proporcionar ninguna informaci\u00f3n a los Oferentes que no hayan obtenido la adjudicaci\u00f3n de la Orden, \nni a explicar las razones por las cuales rechaz\u00f3 cualquier oferta.<o:p><\/o:p><\/span><\/p> \n\n<p class=\"MsoNormal\" style=\"margin:0cm;margin-bottom:.0001pt;text-indent:-18.0pt;\nline-height:normal;mso-outline-level:4;mso-list:l0 level1 lfo1;tab-stops:list 36.0pt;\nvertical-align:baseline\">\n<!--[if !supportLists]-->\n<span lang=\"ES\" style=\"font-size:\n10.0pt;mso-bidi-font-size:11.0pt;font-family:Symbol;mso-fareast-font-family:\nSymbol;mso-bidi-font-family:Symbol;color:#3E6D94;mso-fareast-language:ES;\nmso-bidi-font-weight:bold\">\u00b7<span style=\"font-variant-numeric: normal; font-stretch: normal; font-size: 7pt; line-height: normal; font-family: &quot;Times New Roman&quot;;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n<\/span><\/span>\n<!--[endif]-->\n<b><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;\nmso-fareast-font-family:&quot;Times New Roman&quot;;color:#3E6D94;mso-fareast-language:\nES\">Exclusi\u00f3n de responsabilidad<o:p><\/o:p><\/span><\/b><\/p>\n\n<p class=\"MsoNormal\" style=\"margin-bottom:11.25pt;line-height:normal;vertical-align:\nbaseline\"><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:\n&quot;Times New Roman&quot;;color:#333333;mso-fareast-language:ES\">La recepci\u00f3n de la Invitaci\u00f3n por parte del Oferente no implica la \nexistencia de un contrato o compromiso de o con Optus y\/o cualquier Receptor para ning\u00fan prop\u00f3sito.\nLa informaci\u00f3n contenida en la Invitaci\u00f3n no pretende contener toda la informaci\u00f3n que el Oferente puede requerir.\nOptus y\/o cualquier Receptor no representan ni garantizan la exactitud ni completitud de la Invitaci\u00f3n, o la razonabilidad de \nlas suposiciones en las cuales dicho documento puede estar basado.<br>\nOptus y\/o cualquier Receptor no asumen responsabilidad de ning\u00fan tipo frente a los Oferentes por su participaci\u00f3n en el \nproceso de licitaci\u00f3n.<o:p><\/o:p><\/span><\/p> ",
+    "TerminosCondiciones": "<p class=\"MsoNormal\" style=\"margin-bottom:11.25pt;line-height:normal;mso-outline-level:\r\n3;vertical-align:baseline\"><b><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;\r\nmso-fareast-font-family:&quot;Times New Roman&quot;;color:#333333;text-transform:uppercase;\r\nmso-fareast-language:ES\">TERMINOS Y CONDICIONES DE USO<o:p><\/o:p><\/span><\/b><\/p>\r\n\r\n<p class=\"MsoNormal\" style=\"margin:0cm;margin-bottom:.0001pt;text-indent:-18.0pt;\r\nline-height:normal;mso-outline-level:4;mso-list:l0 level1 lfo1;tab-stops:list 36.0pt;\r\nvertical-align:baseline\">\r\n<!--[if !supportLists]-->\r\n<span lang=\"ES\" style=\"font-size:\r\n10.0pt;mso-bidi-font-size:11.0pt;font-family:Symbol;mso-fareast-font-family:\r\nSymbol;mso-bidi-font-family:Symbol;color:#3E6D94;mso-fareast-language:ES;\r\nmso-bidi-font-weight:bold\"><span style=\"font-variant-numeric: normal; font-stretch: normal; font-size: 7pt; line-height: normal; font-family: &quot;Times New Roman&quot;;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\r\n<\/span><\/span>\r\n<!--[endif]-->\r\n<b><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;\r\nmso-fareast-font-family:&quot;Times New Roman&quot;;color:#3E6D94;mso-fareast-language:\r\nES\">REGLAS GENERALES<o:p><\/o:p><\/span><\/b><\/p><p class=\"MsoNormal\" style=\"margin-bottom:11.25pt;line-height:normal;vertical-align:\r\nbaseline\"><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:\r\n&quot;Times New Roman&quot;;color:#333333;mso-fareast-language:ES\">\r\n\r\n<p class=\"MsoNormal\" style=\"margin-bottom:11.25pt;line-height:normal;vertical-align:\r\nbaseline\"><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:\r\n&quot;Times New Roman&quot;;color:#333333;mso-fareast-language:ES\">Los siguientes t\u00e9rminos de uso abarcan el uso del sistema Optus y de sus servicios ofrecidos a sus usuarios, sean estos oferentes o receptores; \r\nal utilizar el sistema Optus, El Usuario acepta estos t\u00e9rminos completamente siendo estos de car\u00e1cter obligatorio. Si no est\u00e1 de acuerdo con estos t\u00e9rminos de uso, alguna parte de ellos,\r\no las pol\u00edticas y principios que se adhieren, El Usuario no debe utilizar el sistema Optus.\r\nEl Usuario debe leer, entender y aceptar todas las condiciones establecidas en los T\u00e9rminos y Condiciones y en las Pol\u00edticas de Privacidad as\u00ed como en los dem\u00e1s documentos incorporados a los mismos por referencia,\r\npreviamente a su inscripci\u00f3n como usuario registrado en Optus.<o:p><\/o:p><\/span><\/p>\r\n\r\n<p class=\"MsoNormal\" style=\"margin-bottom:11.25pt;line-height:normal;vertical-align:\r\nbaseline\"><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:\r\n&quot;Times New Roman&quot;;color:#333333;mso-fareast-language:ES\">A no ser que se establezca lo contrario, Optus es due\u00f1o de los derechos de propiedad intelectual y material del sitio.\r\n Todos estos derechos de propiedad intelectual est\u00e1n reservados. <o:p><\/o:p><\/span><\/p>\r\n\r\n<p class=\"MsoNormal\" style=\"margin:0cm;margin-bottom:.0001pt;text-indent:-18.0pt;\r\nline-height:normal;mso-outline-level:4;mso-list:l0 level1 lfo1;tab-stops:list 36.0pt;\r\nvertical-align:baseline\">\r\n<!--[if !supportLists]-->\r\n<span lang=\"ES\" style=\"font-size:\r\n10.0pt;mso-bidi-font-size:11.0pt;font-family:Symbol;mso-fareast-font-family:\r\nSymbol;mso-bidi-font-family:Symbol;color:#3E6D94;mso-fareast-language:ES;\r\nmso-bidi-font-weight:bold\"><span style=\"font-variant-numeric: normal; font-stretch: normal; font-size: 7pt; line-height: normal; font-family: &quot;Times New Roman&quot;;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\r\n<\/span><\/span>\r\n<!--[endif]-->\r\n<b><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;\r\nmso-fareast-font-family:&quot;Times New Roman&quot;;color:#3E6D94;mso-fareast-language:\r\nES\">Queda expresamente prohibido al usuario:<o:p><\/o:p><\/span><\/b><\/p>\r\n\r\n<p class=\"MsoNormal\" style=\"margin-bottom:11.25pt;line-height:normal;vertical-align:\r\nbaseline\"><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:\r\n&quot;Times New Roman&quot;;color:#333333;mso-fareast-language:ES\"> \r\n<li>Republicar material de este sitio web (incluido re publicaciones en otro sitio web).<\/li>\r\n<li>Vender, alquilar o sub-licenciar material de este sitio web.<\/li>\r\n<li>Mostrar cualquier material restringido de este sitio web p\u00fablicamente (incluye correos electr\u00f3nicos de profesionales o empresas publicados, \r\n    informaci\u00f3n estad\u00edstica del sitio, y todo material \u00fanicamente disponible para determinado tipo de usuario).<\/li>\r\n<li>Editar o modificar cualquier material del sitio a no ser que sea de su pertenencia.<\/li>\r\n<li>Cuando el contenido est\u00e9 espec\u00edficamente disponible para la redistribuci\u00f3n, solo puede ser redistribuido dentro de su organizaci\u00f3n.<\/li>\r\n<\/span><\/p>\r\n\r\n<p class=\"MsoNormal\" style=\"margin:0cm;margin-bottom:.0001pt;text-indent:-18.0pt;\r\nline-height:normal;mso-outline-level:4;mso-list:l0 level1 lfo1;tab-stops:list 36.0pt;\r\nvertical-align:baseline\">\r\n<!--[if !supportLists]-->\r\n<span lang=\"ES\" style=\"font-size:\r\n10.0pt;mso-bidi-font-size:11.0pt;font-family:Symbol;mso-fareast-font-family:\r\nSymbol;mso-bidi-font-family:Symbol;color:#3E6D94;mso-fareast-language:ES;\r\nmso-bidi-font-weight:bold\"><span style=\"font-variant-numeric: normal; font-stretch: normal; font-size: 7pt; line-height: normal; font-family: &quot;Times New Roman&quot;;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\r\n<\/span><\/span>\r\n<!--[endif]-->\r\n<b><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;\r\nmso-fareast-font-family:&quot;Times New Roman&quot;;color:#3E6D94;mso-fareast-language:\r\nES\">Requisitos para el uso del servicio<o:p><\/o:p><\/span><\/b><\/p>\r\n\r\n<p class=\"MsoNormal\" style=\"margin-bottom:11.25pt;line-height:normal;vertical-align:\r\nbaseline\"><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:\r\n&quot;Times New Roman&quot;;color:#333333;mso-fareast-language:ES\">Usuario registrado: Cualquier usuario que fuera previamente registrado\r\ngratuitamente en el sitio proveyendo datos personales. <o:p><\/o:p><\/span><\/p>\r\n\r\n<p class=\"MsoNormal\" style=\"margin:0cm;margin-bottom:.0001pt;text-indent:-18.0pt;\r\nline-height:normal;mso-outline-level:4;mso-list:l0 level1 lfo1;tab-stops:list 36.0pt;\r\nvertical-align:baseline\">\r\n<!--[if !supportLists]-->\r\n<span lang=\"ES\" style=\"font-size:\r\n10.0pt;mso-bidi-font-size:11.0pt;font-family:Symbol;mso-fareast-font-family:\r\nSymbol;mso-bidi-font-family:Symbol;color:#3E6D94;mso-fareast-language:ES;\r\nmso-bidi-font-weight:bold\"><span style=\"font-variant-numeric: normal; font-stretch: normal; font-size: 7pt; line-height: normal; font-family: &quot;Times New Roman&quot;;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\r\n<\/span><\/span>\r\n<!--[endif]-->\r\n<b><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;\r\nmso-fareast-font-family:&quot;Times New Roman&quot;;color:#3E6D94;mso-fareast-language:\r\nES\">Uso Correcto del Sitio<o:p><\/o:p><\/span><\/b><\/p>\r\n\r\n<p class=\"MsoNormal\" style=\"margin-bottom:11.25pt;line-height:normal;vertical-align:\r\nbaseline\"><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:\r\n&quot;Times New Roman&quot;;color:#333333;mso-fareast-language:ES\">El Usuario no debe utilizar el sistema Optus en cualquier modo que cause, o pueda causar, da\u00f1o al servicio, defectos en la disponibilidad o accesibilidad; o en cualquier modo que sea il\u00edcito, ilegal, \r\nfraudulento o da\u00f1ino, o en relaci\u00f3n con cualquier prop\u00f3sito o actividad il\u00edcita, ilegal, fraudulenta o da\u00f1ina.<br>\r\nEl Usuario no debe usar el sistema Optus para copiar, almacenar, hostear, transmitir, enviar, usar, publicar o distribuir cualquier material que consista de (o este hipervinculado con) cualquier spyware, virus de computador, troyanos, gusanos, escuchador de teclado,\r\nrootkits u otro software de computador malicioso.<br>\r\nCualquier intromisi\u00f3n, tentativa o actividad violatoria o contraria a las leyes sobre derecho de propiedad intelectual y\/o a las prohibiciones estipuladas en este contrato har\u00e1n pasible a su responsable de las acciones legales pertinentes, \r\ny a las sanciones previstas por este acuerdo, as\u00ed como lo har\u00e1 responsable de indemnizar los da\u00f1os ocasionados.<o:p><\/o:p><\/span><\/p>\r\n\r\n<p class=\"MsoNormal\" style=\"margin-bottom:11.25pt;line-height:normal;vertical-align:\r\nbaseline\"><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:\r\n&quot;Times New Roman&quot;;color:#333333;mso-fareast-language:ES\">\r\nEl Usuario no puede realizar cualquier actividad de recolecci\u00f3n de datos sistem\u00e1tica o automatizada sobre o en relaci\u00f3n con el sistema Optus.<br>\r\nEl Usuario no debe usar el sistema Optus para transmitir o enviar comunicados comerciales que no son solicitados.<br>\r\nEl Usuario no puede realizar cualquier actividad de recolecci\u00f3n de datos sistem\u00e1tica o automatizada sobre o en relaci\u00f3n con el sistema Optus.<br>\r\nEl Usuario no debe usar el sistema Optus para cualquier prop\u00f3sito relacionado a marketing sin nuestro expreso consentimiento por medio escrito.<br>\r\nEl usuario no podr\u00e1 insultar a ning\u00fan otro usuario del sitio. Cualquier usuario tiene el derecho de reclamar por estas faltas.<o:p><\/o:p><\/span><\/p>\r\n\r\n<p class=\"MsoNormal\" style=\"margin-bottom:11.25pt;line-height:normal;vertical-align:\r\nbaseline\"><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:\r\n&quot;Times New Roman&quot;;color:#333333;mso-fareast-language:ES\">Optus podr\u00e1 advertir, suspender o inhabilitar una cuenta de usuario si:<br>\r\n    <li>El usuario quebranta la ley.<\/li>\r\n    <li>No acata los t\u00e9rminos y condiciones y los documentos anexos.<\/li>\r\n    <li>El usuario provee informaci\u00f3n inv\u00e1lida.<\/li>\r\n    <li>Un usuario realiza fraude en el pago del pedido realizado.<\/li>\r\n<o:p><\/o:p><\/span><\/b><\/p>\r\n\r\n<!--[if !supportLists]-->\r\n<span lang=\"ES\" style=\"font-size:\r\n10.0pt;mso-bidi-font-size:11.0pt;font-family:Symbol;mso-fareast-font-family:\r\nSymbol;mso-bidi-font-family:Symbol;color:#3E6D94;mso-fareast-language:ES;\r\nmso-bidi-font-weight:bold\">\u00b7<span style=\"font-variant-numeric: normal; font-stretch: normal; font-size: 7pt; line-height: normal; font-family: &quot;Times New Roman&quot;;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\r\n<\/span><\/span>\r\n<!--[endif]-->\r\n<b><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;\r\nmso-fareast-font-family:&quot;Times New Roman&quot;;color:#3E6D94;mso-fareast-language:\r\nES\">Acceso restringido<o:p><\/o:p><\/span><\/b><\/p>\r\n\r\n<p class=\"MsoNormal\" style=\"margin-bottom:11.25pt;line-height:normal;vertical-align:\r\nbaseline\"><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:\r\n&quot;Times New Roman&quot;;color:#333333;mso-fareast-language:ES\">El acceso a ciertas \u00e1reas del sistema Optus es restringido. \r\nOptus se reserva el derecho de restringir el acceso a otras \u00e1reas del sistema Optus, o efectivamente al sitio web completo, a su discreci\u00f3n.<br>\r\nSi Optus le proveyere con un Identificador de usuario y una contrase\u00f1a la cual lo habilita al Usuario a ingresar \u00e1reas restringidas del sistema \r\nOptus u otros contenidos o servicios, El Usuario debe asegurarse que el identificador de usuario y la contrase\u00f1a son guardadas\r\ncon confidencialidad, las mismas tiene car\u00e1cter de uso personal y son intrasnferibles.<br>\r\nOptus deshabilitar\u00e1 su identificador de usuario y contrase\u00f1a a su discreci\u00f3n sin ninguna notificaci\u00f3n o explicaci\u00f3n si constata, \r\nverifica o entiende que El Usuario no cumple con lo establecido en los t\u00e9rminos y condiciones o en los otros documentos relacionados \r\nal uso correcto del sitio.<br><o:p><\/o:p><\/span><\/p>\r\n\r\n<!--[if !supportLists]-->\r\n<span lang=\"ES\" style=\"font-size:\r\n10.0pt;mso-bidi-font-size:11.0pt;font-family:Symbol;mso-fareast-font-family:\r\nSymbol;mso-bidi-font-family:Symbol;color:#3E6D94;mso-fareast-language:ES;\r\nmso-bidi-font-weight:bold\">\u00b7<span style=\"font-variant-numeric: normal; font-stretch: normal; font-size: 7pt; line-height: normal; font-family: &quot;Times New Roman&quot;;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\r\n<\/span><\/span>\r\n<!--[endif]-->\r\n<b><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;\r\nmso-fareast-font-family:&quot;Times New Roman&quot;;color:#3E6D94;mso-fareast-language:\r\nES\">Contenido generado por el usuario publicado<o:p><\/o:p><\/span><\/b><\/p>\r\n\r\n<p class=\"MsoNormal\" style=\"margin-bottom:11.25pt;line-height:normal;vertical-align:\r\nbaseline\"><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:\r\n&quot;Times New Roman&quot;;color:#333333;mso-fareast-language:ES\">LEn estos t\u00e9rminos de uso, \"su contenido de usuario\" significa \r\nel material (incluye cualquier informaci\u00f3n o archivo que el sitio le solicite al usuario) que El Usuario provee al sistema Optus, \r\npara el prop\u00f3sito que sea. El Usuario tambi\u00e9n concede el derecho de sub licenciar estos derechos, \r\ny el derecho de tomar acciones por infringir de estos derechos.<br>\r\nSu contenido de no debe ser ilegal o il\u00edcito, no debe infringir cualquier derecho legal de terceros, \r\ny no debe ser causante de la toma de acciones legales ya sea contra El Usuario, o de Optus o terceros.\r\n(En cualquier caso bajo cualquier ley aplicable).<br>\r\nOptus se reserva el derecho de editar o eliminar cualquier material provisto\r\na el sistema Optus, almacenado en nuestros servidores, alojado o publicado en el sistema Optus.<br><o:p><\/o:p><\/span><\/p>\r\n<!--[if !supportLists]-->\r\n<span lang=\"ES\" style=\"font-size:\r\n10.0pt;mso-bidi-font-size:11.0pt;font-family:Symbol;mso-fareast-font-family:\r\nSymbol;mso-bidi-font-family:Symbol;color:#3E6D94;mso-fareast-language:ES;\r\nmso-bidi-font-weight:bold\">\u00b7<span style=\"font-variant-numeric: normal; font-stretch: normal; font-size: 7pt; line-height: normal; font-family: &quot;Times New Roman&quot;;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\r\n<\/span><\/span>\r\n<!--[endif]-->\r\n<b><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;\r\nmso-fareast-font-family:&quot;Times New Roman&quot;;color:#3E6D94;mso-fareast-language:\r\nES\"><o:p><\/o:p>Garant\u00edas Limitadas<\/span><\/b><\/p>\r\n\r\n<p class=\"MsoNormal\" style=\"margin-bottom:11.25pt;line-height:normal;vertical-align:\r\nbaseline\"><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:\r\n&quot;Times New Roman&quot;;color:#333333;mso-fareast-language:ES\">Optus no garantiza respecto de la informaci\u00f3n suministrada\r\npor los usuarios, su completitud o exactitud; ni se compromete a asegurar que el sitio web se mantenga disponible o que el\r\nmaterial en el sitio web est\u00e9 actualizado. Optus no se responsabiliza por la certeza de los datos. Los usuarios adheridos ser\u00e1n \r\nlos que respondan por la veracidad de sus datos personales.<o:p><\/o:p><\/span><\/p>\r\n\r\n<p class=\"MsoNormal\" style=\"margin:0cm;margin-bottom:.0001pt;text-indent:-18.0pt;\r\nline-height:normal;mso-outline-level:4;mso-list:l0 level1 lfo1;tab-stops:list 36.0pt;\r\nvertical-align:baseline\">\r\n<!--[if !supportLists]-->\r\n<span lang=\"ES\" style=\"font-size:\r\n10.0pt;mso-bidi-font-size:11.0pt;font-family:Symbol;mso-fareast-font-family:\r\nSymbol;mso-bidi-font-family:Symbol;color:#3E6D94;mso-fareast-language:ES;\r\nmso-bidi-font-weight:bold\">\u00b7<span style=\"font-variant-numeric: normal; font-stretch: normal; font-size: 7pt; line-height: normal; font-family: &quot;Times New Roman&quot;;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\r\n<\/span><\/span>\r\n<!--[endif]-->\r\n<b><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;\r\nmso-fareast-font-family:&quot;Times New Roman&quot;;color:#3E6D94;mso-fareast-language:\r\nES\">Limitaciones de Responsabilidad<o:p><\/o:p><\/span><\/b><\/p>\r\n\r\n<p class=\"MsoNormal\" style=\"margin-bottom:11.25pt;line-height:normal;vertical-align:\r\nbaseline\"><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:\r\n&quot;Times New Roman&quot;;color:#333333;mso-fareast-language:ES\">La responsabilidad hacia El Usuario en relaci\u00f3n al uso del sistema\r\nOptus web o bajo o en conexi\u00f3n con estos t\u00e9rminos de uso, tanto en contrato, agravio (incluyendo negligencia) o de lo contrario,\r\nser\u00e1 limitado por lo siguiente:<br>\r\nOptus no se responsabiliza por cualquier p\u00e9rdida o da\u00f1o de cualquier naturaleza.<br>\r\nOptus no se responsabiliza por cualquier da\u00f1o, perjuicio o p\u00e9rdida al usuario causados por fallas en el sistema, en el servidor \r\no en Internet.<br>\r\nOptus tampoco ser\u00e1 responsable por cualquier virus que pudiera infectar el equipo del usuario como consecuencia del acceso,\r\nuso o examen de su sitio web o a ra\u00edz de cualquier transferencia de datos en el mismo. Los usuarios no podr\u00e1n imputarle a\r\nOptus responsabilidad alguna ni exigir pago por lucro cesante, en virtud de perjuicios resultantes de dificultades t\u00e9cnicas \r\no fallas en los sistemas o en Internet.<br>\r\nOptus no garantiza el acceso y uso continuado o ininterrumpido de su sitio. El sistema puede eventualmente no estar disponible\r\ndebido a dificultades t\u00e9cnicas o fallas de Internet, o por cualquier otra circunstancia ajena a Optus; en tales casos se procurar\u00e1\r\nrestablecerlo con la mayor celeridad posible sin que por ello pueda imput\u00e1rsele alg\u00fan tipo de responsabilidad.<br>\r\nOptus no ser\u00e1 responsable por ning\u00fan error u omisi\u00f3n contenidos en su sitio web. No seremos responsables por cualquier consecuencia \r\npor la p\u00e9rdida o da\u00f1o indirecta o directa. No seremos responsables por cualquier p\u00e9rdida de ganancias, ingreso, rentas, contratos, \r\nnegocios, reputaci\u00f3n, datos o informaci\u00f3n, o por los incumplimientos de las partes en cuanto a las contrataciones convenidas.<br>\r\nOptus no es responsable por cualquier p\u00e9rdida o da\u00f1o resultante de cualquier evento o eventos fuera de nuestro control razonable.\r\nEn caso que uno o m\u00e1s usuarios o alg\u00fan tercero inicien cualquier tipo de reclamo o acciones legales contra otro u otros usuarios, \r\ntodos y cada uno de los usuarios involucrados en dichos reclamos o acciones eximen de toda responsabilidad a Optus y a sus \r\ndirectores, gerentes, empleados, agentes, operarios, representantes y apoderados.<br><o:p><\/o:p><\/span><\/p>\r\n\r\n<p class=\"MsoNormal\" style=\"margin:0cm;margin-bottom:.0001pt;text-indent:-18.0pt;\r\nline-height:normal;mso-outline-level:4;mso-list:l0 level1 lfo1;tab-stops:list 36.0pt;\r\nvertical-align:baseline\">\r\n<!--[if !supportLists]-->\r\n<span lang=\"ES\" style=\"font-size:\r\n10.0pt;mso-bidi-font-size:11.0pt;font-family:Symbol;mso-fareast-font-family:\r\nSymbol;mso-bidi-font-family:Symbol;color:#3E6D94;mso-fareast-language:ES;\r\nmso-bidi-font-weight:bold\">\u00b7<span style=\"font-variant-numeric: normal; font-stretch: normal; font-size: 7pt; line-height: normal; font-family: &quot;Times New Roman&quot;;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\r\n<\/span><\/span>\r\n<!--[endif]-->\r\n<b><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;\r\nmso-fareast-font-family:&quot;Times New Roman&quot;;color:#3E6D94;mso-fareast-language:\r\nES\">Variaci\u00f3n<o:p><\/o:p><\/span><\/b><\/p>\r\n\r\n<p class=\"MsoNormal\" style=\"margin-bottom:11.25pt;line-height:normal;vertical-align:\r\nbaseline\"><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:\r\n&quot;Times New Roman&quot;;color:#333333;mso-fareast-language:ES\">Optus podr\u00e1 revisar estos t\u00e9rminos de uso cada cierto tiempo. Los t\u00e9rminos de uso revisados, modificados,\r\n aplicar\u00e1n al uso del sitio web desde la fecha de publicaci\u00f3n de los t\u00e9rminos de uso revisados en el sistema Optus. <o:p><\/o:p><\/span><\/p>\r\n<!--[if !supportLists]-->\r\n<span lang=\"ES\" style=\"font-size:\r\n10.0pt;mso-bidi-font-size:11.0pt;font-family:Symbol;mso-fareast-font-family:\r\nSymbol;mso-bidi-font-family:Symbol;color:#3E6D94;mso-fareast-language:ES;\r\nmso-bidi-font-weight:bold\">\u00b7<span style=\"font-variant-numeric: normal; font-stretch: normal; font-size: 7pt; line-height: normal; font-family: &quot;Times New Roman&quot;;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\r\n<\/span><\/span>\r\n<!--[endif]-->\r\n<b><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;\r\nmso-fareast-font-family:&quot;Times New Roman&quot;;color:#3E6D94;mso-fareast-language:\r\nES\">Confidencialidad<o:p><\/o:p><\/span><\/b><\/p>\r\n\r\n<p class=\"MsoNormal\" style=\"margin-bottom:11.25pt;line-height:normal;vertical-align:\r\nbaseline\"><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:\r\n&quot;Times New Roman&quot;;color:#333333;mso-fareast-language:ES\">La existencia y el contenido de toda la informaci\u00f3n, sea escrita \r\nu oral, proporcionada por o en nombre de Optus y\/o por cualquier Receptor, relacionada o concerniente a productos y\/o \r\nservicios deber\u00e1 ser tratada por los Usuarios como secreta y confidencial y no deber\u00e1, salvo previo consentimiento escrito \r\nde Optus y del Receptor, ni ser\u00e1 revelada o divulgada por los Usuarios a nadie fuera de su organizaci\u00f3n.<o:p><\/o:p><\/span><\/p>\r\n\r\n<p class=\"MsoNormal\" style=\"margin:0cm;margin-bottom:.0001pt;text-indent:-18.0pt;\r\nline-height:normal;mso-outline-level:4;mso-list:l0 level1 lfo1;tab-stops:list 36.0pt;\r\nvertical-align:baseline\">\r\n<!--[if !supportLists]-->\r\n<span lang=\"ES\" style=\"font-size:\r\n10.0pt;mso-bidi-font-size:11.0pt;font-family:Symbol;mso-fareast-font-family:\r\nSymbol;mso-bidi-font-family:Symbol;color:#3E6D94;mso-fareast-language:ES;\r\nmso-bidi-font-weight:bold\">\u00b7<span style=\"font-variant-numeric: normal; font-stretch: normal; font-size: 7pt; line-height: normal; font-family: &quot;Times New Roman&quot;;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\r\n<\/span><\/span>\r\n<!--[endif]-->\r\n<b><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;\r\nmso-fareast-font-family:&quot;Times New Roman&quot;;color:#3E6D94;mso-fareast-language:\r\nES\">Jurisdicci\u00f3n y ley aplicable<o:p><\/o:p><\/span><\/b><\/p>\r\n\r\n<p class=\"MsoNormal\" style=\"margin-bottom:11.25pt;line-height:normal;vertical-align:\r\nbaseline\"><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:\r\n&quot;Times New Roman&quot;;color:#333333;mso-fareast-language:ES\">Este acuerdo estar\u00e1 regido en todos sus puntos por las leyes\r\nvigentes del pa\u00eds de uso destino del sistema. Para cualquier divergencia que pudiera surgir de la interpretaci\u00f3n y la aplicaci\u00f3n\r\ndel presente contrato, a la competencia de los Tribunales Ordinarios de la ciudad de C\u00f3rdoba, renunciando a todo otro fuero o \r\njurisdicci\u00f3n que pudiera corresponderle, inclusive la Federal.<o:p><\/o:p><\/span><\/p>\r\n\r\n<p class=\"MsoNormal\" style=\"margin:0cm;margin-bottom:.0001pt;text-indent:-18.0pt;\r\nline-height:normal;mso-outline-level:4;mso-list:l0 level1 lfo1;tab-stops:list 36.0pt;\r\nvertical-align:baseline\">\r\n<!--[if !supportLists]-->\r\n<span lang=\"ES\" style=\"font-size:\r\n10.0pt;mso-bidi-font-size:11.0pt;font-family:Symbol;mso-fareast-font-family:\r\nSymbol;mso-bidi-font-family:Symbol;color:#3E6D94;mso-fareast-language:ES;\r\nmso-bidi-font-weight:bold\"><span style=\"font-variant-numeric: normal; font-stretch: normal; font-size: 7pt; line-height: normal; font-family: &quot;Times New Roman&quot;;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\r\n<\/span><\/span>\r\n<!--[endif]-->\r\n<b><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;\r\nmso-fareast-font-family:&quot;Times New Roman&quot;;color:#3E6D94;mso-fareast-language:\r\nES\">REGLAS PARTICULARES<o:p><\/o:p><\/span><\/b><\/p><p class=\"MsoNormal\" style=\"margin-bottom:11.25pt;line-height:normal;vertical-align:\r\nbaseline\"><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:\r\n&quot;Times New Roman&quot;;color:#333333;mso-fareast-language:ES\">\r\n\r\n<p class=\"MsoNormal\" style=\"margin-bottom:11.25pt;line-height:normal;vertical-align:\r\nbaseline\"><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:\r\n&quot;Times New Roman&quot;;color:#333333;mso-fareast-language:ES\">Estas Reglas rigen todas las Invitaciones emitidas por cualquiera de los usuarios de Optus\r\n(incluyendo cualquier Invitaci\u00f3n emitida a trav\u00e9s del Sitio de Optus) para la provisi\u00f3n de productos y\/o servicios.<o:p><\/o:p><\/span><\/p>\r\n\r\n<p class=\"MsoNormal\" style=\"margin:0cm;margin-bottom:.0001pt;text-indent:-18.0pt;\r\nline-height:normal;mso-outline-level:4;mso-list:l0 level1 lfo1;tab-stops:list 36.0pt;\r\nvertical-align:baseline\">\r\n<!--[if !supportLists]-->\r\n<span lang=\"ES\" style=\"font-size:\r\n10.0pt;mso-bidi-font-size:11.0pt;font-family:Symbol;mso-fareast-font-family:\r\nSymbol;mso-bidi-font-family:Symbol;color:#3E6D94;mso-fareast-language:ES;\r\nmso-bidi-font-weight:bold\">\u00b7<span style=\"font-variant-numeric: normal; font-stretch: normal; font-size: 7pt; line-height: normal; font-family: &quot;Times New Roman&quot;;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\r\n<\/span><\/span>\r\n<!--[endif]-->\r\n<b><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;\r\nmso-fareast-font-family:&quot;Times New Roman&quot;;color:#3E6D94;mso-fareast-language:\r\nES\">Invitaci\u00f3n a realizar ofertas para la provisi\u00f3n de productos o servicios<br>\r\nRevocabilidad de la Invitaci\u00f3n<o:p><\/o:p><\/span><\/b><\/p>\r\n\r\n<p class=\"MsoNormal\" style=\"margin-bottom:11.25pt;line-height:normal;vertical-align:\r\nbaseline\"><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:\r\n&quot;Times New Roman&quot;;color:#333333;mso-fareast-language:ES\">Todas las Invitaciones son revocables y pueden ser modificadas \r\no retiradas por Optus o por el Receptor sin aviso previo en cualquier momento antes de la Aceptaci\u00f3n.\r\nOptus no asume ninguna obligaci\u00f3n que surja de la Invitaci\u00f3n, su revocaci\u00f3n o modificaci\u00f3n.<o:p><\/o:p><\/span><\/p>\r\n\r\n<p class=\"MsoNormal\" style=\"margin:0cm;margin-bottom:.0001pt;text-indent:-18.0pt;\r\nline-height:normal;mso-outline-level:4;mso-list:l0 level1 lfo1;tab-stops:list 36.0pt;\r\nvertical-align:baseline\">\r\n<!--[if !supportLists]-->\r\n<span lang=\"ES\" style=\"font-size:\r\n10.0pt;mso-bidi-font-size:11.0pt;font-family:Symbol;mso-fareast-font-family:\r\nSymbol;mso-bidi-font-family:Symbol;color:#3E6D94;mso-fareast-language:ES;\r\nmso-bidi-font-weight:bold\"><span style=\"font-variant-numeric: normal; font-stretch: normal; font-size: 7pt; line-height: normal; font-family: &quot;Times New Roman&quot;;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\r\n<\/span><\/span>\r\n<!--[endif]-->\r\n<b><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;\r\nmso-fareast-font-family:&quot;Times New Roman&quot;;color:#3E6D94;mso-fareast-language:\r\nES\">Derechos de Optus<o:p><\/o:p><\/span><\/b><\/p><p class=\"MsoNormal\" style=\"margin-bottom:11.25pt;line-height:normal;vertical-align:\r\nbaseline\"><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:\r\n&quot;Times New Roman&quot;;color:#333333;mso-fareast-language:ES\">\r\n\r\n<p class=\"MsoNormal\" style=\"margin-bottom:11.25pt;line-height:normal;vertical-align:\r\nbaseline\"><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:\r\n&quot;Times New Roman&quot;;color:#333333;mso-fareast-language:ES\">Optus podr\u00e1:\r\n(a) rechazar sin aviso cualquier oferta antes o despu\u00e9s de su apertura;<br>\u00a0\r\n(b) llevar a cabo negociaciones con cualquier persona para la adquisici\u00f3n de productos o servicios id\u00e9nticos o similares,\r\nincluso si dicha persona no ha participado en el proceso de licitaci\u00f3n;\u00a0<br>\r\n(c) modificar la Invitaci\u00f3n, las Reglas, los T\u00e9rminos Generales, los T\u00e9rminos Especiales y\/o la Orden en cualquier momento\r\nprevio a la recepci\u00f3n de la Orden por parte del Oferente;\u00a0<br>\r\n(d) revocar la Invitaci\u00f3n, suspender o cancelar el procedimiento de contrataci\u00f3n; y <br>\u00a0\r\n(e) llevar a cabo cualquier medida que considere sea en su mejor inter\u00e9s, sin incurrir en ning\u00fan tipo de responsabilidad \r\nrespecto de cualquier persona invitada a realizar ofertas, con independencia que dicha persona haya o no realizado una oferta. <o:p><\/o:p><\/span><\/p>\r\n\r\n<p class=\"MsoNormal\" style=\"margin:0cm;margin-bottom:.0001pt;text-indent:-18.0pt;\r\nline-height:normal;mso-outline-level:4;mso-list:l0 level1 lfo1;tab-stops:list 36.0pt;\r\nvertical-align:baseline\">\r\n<!--[if !supportLists]-->\r\n<span lang=\"ES\" style=\"font-size:\r\n10.0pt;mso-bidi-font-size:11.0pt;font-family:Symbol;mso-fareast-font-family:\r\nSymbol;mso-bidi-font-family:Symbol;color:#3E6D94;mso-fareast-language:ES;\r\nmso-bidi-font-weight:bold\">\u00b7<span style=\"font-variant-numeric: normal; font-stretch: normal; font-size: 7pt; line-height: normal; font-family: &quot;Times New Roman&quot;;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\r\n<\/span><\/span>\r\n<!--[endif]-->\r\n<b><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;\r\nmso-fareast-font-family:&quot;Times New Roman&quot;;color:#3E6D94;mso-fareast-language:\r\nES\">Inexistencia de la obligaci\u00f3n de rembolsar los costos<o:p><\/o:p><\/span><\/b><\/p>\r\n\r\n<p class=\"MsoNormal\" style=\"margin-bottom:11.25pt;line-height:normal;vertical-align:\r\nbaseline\"><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:\r\n&quot;Times New Roman&quot;;color:#333333;mso-fareast-language:ES\">Salvo que se haya acordado por escrito de otra manera, ni Optus ni el Receptor ser\u00e1n responsables por:<br>\u00a0\r\n(i) ning\u00fan costo o gasto incurrido por el Oferente en relaci\u00f3n con la participaci\u00f3n en el proceso licitatorio;<br> \u00a0\r\n(ii)ni costos o gastos que cualquier Oferente pudiere incurrir como resultado de los cambios que pudiere efectuar a su oferta,\r\n independientemente de la causa de tales cambios.<o:p><\/o:p><\/span><\/p>\r\n\r\n<p class=\"MsoNormal\" style=\"margin:0cm;margin-bottom:.0001pt;text-indent:-18.0pt;\r\nline-height:normal;mso-outline-level:4;mso-list:l0 level1 lfo1;tab-stops:list 36.0pt;\r\nvertical-align:baseline\">\r\n<!--[if !supportLists]-->\r\n<span lang=\"ES\" style=\"font-size:\r\n10.0pt;mso-bidi-font-size:11.0pt;font-family:Symbol;mso-fareast-font-family:\r\nSymbol;mso-bidi-font-family:Symbol;color:#3E6D94;mso-fareast-language:ES;\r\nmso-bidi-font-weight:bold\">\u00b7<span style=\"font-variant-numeric: normal; font-stretch: normal; font-size: 7pt; line-height: normal; font-family: &quot;Times New Roman&quot;;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\r\n<\/span><\/span>\r\n<!--[endif]-->\r\n<b><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;\r\nmso-fareast-font-family:&quot;Times New Roman&quot;;color:#3E6D94;mso-fareast-language:\r\nES\">Ofertas<br> \r\nPresentaci\u00f3n de ofertas<o:p><\/o:p><\/span><\/b><\/p>\r\n\r\n<p class=\"MsoNormal\" style=\"margin-bottom:11.25pt;line-height:normal;vertical-align:\r\nbaseline\"><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:\r\n&quot;Times New Roman&quot;;color:#333333;mso-fareast-language:ES\">Las ofertas deben ser enviadas por los Oferentes a trav\u00e9s del Sitio\r\n de Optus por medio de un Mensaje Electr\u00f3nico o a trav\u00e9s del medio que Optus haya indicado como v\u00e1lido a cualquier Oferente.\r\n Optus no considerar\u00e1 ninguna presentaci\u00f3n tard\u00eda de ofertas, ni considerar\u00e1 solicitudes de extensi\u00f3n de la Fecha L\u00edmite.\r\n Optus podr\u00e1, sin embargo, a su sola discreci\u00f3n, extender la Fecha L\u00edmite para todos o para cualquier Oferente.<br>\r\nCualquier modificaci\u00f3n a una oferta debe ser recibida antes de la Fecha L\u00edmite.<o:p><\/o:p><\/span><\/p>\r\n\r\n<p class=\"MsoNormal\" style=\"margin:0cm;margin-bottom:.0001pt;text-indent:-18.0pt;\r\nline-height:normal;mso-outline-level:4;mso-list:l0 level1 lfo1;tab-stops:list 36.0pt;\r\nvertical-align:baseline\">\r\n<!--[if !supportLists]-->\r\n<span lang=\"ES\" style=\"font-size:\r\n10.0pt;mso-bidi-font-size:11.0pt;font-family:Symbol;mso-fareast-font-family:\r\nSymbol;mso-bidi-font-family:Symbol;color:#3E6D94;mso-fareast-language:ES;\r\nmso-bidi-font-weight:bold\">\u00b7<span style=\"font-variant-numeric: normal; font-stretch: normal; font-size: 7pt; line-height: normal; font-family: &quot;Times New Roman&quot;;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\r\n<\/span><\/span>\r\n<!--[endif]-->\r\n<b><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;\r\nmso-fareast-font-family:&quot;Times New Roman&quot;;color:#3E6D94;mso-fareast-language:\r\nES\">Implicancias de la presentaci\u00f3n de ofertas<o:p><\/o:p><\/span><\/b><\/p>\r\n\r\n<p class=\"MsoNormal\" style=\"margin-bottom:11.25pt;line-height:normal;vertical-align:\r\nbaseline\"><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:\r\n&quot;Times New Roman&quot;;color:#333333;mso-fareast-language:ES\">La mera participaci\u00f3n en el proceso licitatorio o la presentaci\u00f3n \r\nde una oferta implica que los Oferentes:<br>\r\n    a. Han examinado cuidadosamente la Invitaci\u00f3n, las especificaciones y toda la informaci\u00f3n disponible en el Sitio de Optus o \r\n    de cualquier otra forma enviada por Optus al Oferente, de manera de permitir al Oferente realizar una propuesta o decisi\u00f3n informada; <br>\r\n    b. Declaran y garantizan a Optus que la oferta y cualquier Contrato son obligaciones legales y vinculantes del Oferente,\r\n     y que las personas que han firmado la oferta cuentan con todos los requisitos societarios y con poderes suficientes \r\n     para obligar al Oferente bajo la oferta y el Contrato;<br>\r\n    c. Declaran y garantizan a Optus que cuentan con suficiente poder y autoridad, y han adoptado todas las acciones necesarias,\r\n     para firmar y presentar una oferta v\u00e1lida y vinculante, ejecutable contra el Oferente, y que tal oferta no se encuentra \r\n     sujeta a autorizaci\u00f3n de persona u organismo alguno, dentro o fuera de la organizaci\u00f3n del Oferente;<br>\r\n    d. Han considerado completamente\u00a0<br>\r\n(i) la distribuci\u00f3n de riesgos resultante de los documentos aqu\u00ed mencionados y\u00a0<br>\r\n(ii) todas las leyes y regulaciones que podr\u00edan afectar la oferta. El Receptor no asumir\u00e1 ninguna responsabilidad al \r\nOferente o contratista en relaci\u00f3n con tales leyes y regulaciones, distintas a las provistas en el Contrato, y el \r\nReceptor no indemnizar\u00e1 al contratista por cambios en dichas leyes y regulaciones.<br>\r\nAl enviar la oferta, los Oferentes se encontrar\u00e1n obligados a entregar los bienes o servicios objeto de la oferta de acuerdo \r\ncon la Orden.<o:p><\/o:p><\/span><\/p>\r\n\r\n<p class=\"MsoNormal\" style=\"margin:0cm;margin-bottom:.0001pt;text-indent:-18.0pt;\r\nline-height:normal;mso-outline-level:4;mso-list:l0 level1 lfo1;tab-stops:list 36.0pt;\r\nvertical-align:baseline\">\r\n<!--[if !supportLists]-->\r\n<span lang=\"ES\" style=\"font-size:\r\n10.0pt;mso-bidi-font-size:11.0pt;font-family:Symbol;mso-fareast-font-family:\r\nSymbol;mso-bidi-font-family:Symbol;color:#3E6D94;mso-fareast-language:ES;\r\nmso-bidi-font-weight:bold\">\u00b7<span style=\"font-variant-numeric: normal; font-stretch: normal; font-size: 7pt; line-height: normal; font-family: &quot;Times New Roman&quot;;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\r\n<\/span><\/span>\r\n<!--[endif]-->\r\n<b><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;\r\nmso-fareast-font-family:&quot;Times New Roman&quot;;color:#3E6D94;mso-fareast-language:\r\nES\">Validez de la oferta<o:p><\/o:p><\/span><\/b><\/p>\r\n\r\n<p class=\"MsoNormal\" style=\"margin-bottom:11.25pt;line-height:normal;vertical-align:\r\nbaseline\"><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:\r\n&quot;Times New Roman&quot;;color:#333333;mso-fareast-language:ES\">Las ofertas deber\u00e1n ser firmes, irrevocables, vinculantes y \r\nejecutables contra los Oferentes por un plazo que se determine por sistema.\r\nOptus se reserva el derecho a requerir informaci\u00f3n adicional o m\u00e1s detallada o aclaraciones sobre cualquier oferta y puede\r\n tambi\u00e9n requerir a los Oferentes prueba satisfactoria sobre su solidez financiera, solvencia crediticia y capacidad para entrar \r\n en una relaci\u00f3n contractual.<br>\r\nLos Oferentes acuerdan no cuestionar y renuncian expresamente a cualquier derecho a objetar la validez y\/o admisibilidad de cualquier\r\n Invitaci\u00f3n, correo electr\u00f3nico, oferta o Mensaje electr\u00f3nico intercambiado en relaci\u00f3n con ello, por la sola raz\u00f3n de que la \r\n comunicaci\u00f3n se llev\u00f3 a cabo por medios electr\u00f3nicos que carecen de encriptaci\u00f3n y certificaci\u00f3n de autor. En tal sentido,\r\n  los Oferentes acuerdan que todas las comunicaciones u otras acciones tomadas por ellos y Optus o cualquier Receptor(es) mediante \r\n  el uso de correos electr\u00f3nicos y Mensajes electr\u00f3nicos satisfacen todos los requisitos legales para considerar dichas \r\n  comunicaciones se realizaron por escrito.<o:p><\/o:p><\/span><\/p>\r\n\r\n <p class=\"MsoNormal\" style=\"margin:0cm;margin-bottom:.0001pt;text-indent:-18.0pt;\r\nline-height:normal;mso-outline-level:4;mso-list:l0 level1 lfo1;tab-stops:list 36.0pt;\r\nvertical-align:baseline\">\r\n<!--[if !supportLists]-->\r\n<span lang=\"ES\" style=\"font-size:\r\n10.0pt;mso-bidi-font-size:11.0pt;font-family:Symbol;mso-fareast-font-family:\r\nSymbol;mso-bidi-font-family:Symbol;color:#3E6D94;mso-fareast-language:ES;\r\nmso-bidi-font-weight:bold\">\u00b7<span style=\"font-variant-numeric: normal; font-stretch: normal; font-size: 7pt; line-height: normal; font-family: &quot;Times New Roman&quot;;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\r\n<\/span><\/span>\r\n<!--[endif]-->\r\n<b><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;\r\nmso-fareast-font-family:&quot;Times New Roman&quot;;color:#3E6D94;mso-fareast-language:\r\nES\">Aceptaci\u00f3n<o:p><\/o:p><\/span><\/b><\/p>\r\n\r\n<p class=\"MsoNormal\" style=\"margin-bottom:11.25pt;line-height:normal;vertical-align:\r\nbaseline\"><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:\r\n&quot;Times New Roman&quot;;color:#333333;mso-fareast-language:ES\">La oferta se considerar\u00e1 aceptada y el Contrato entrar\u00e1 en vigor,\r\n por la recepci\u00f3n por parte del Oferente de un correo electr\u00f3nico a la cuenta proporcionada por el usuario. \r\nOptus se reserva el derecho de rechazar todas las ofertas por cualquier raz\u00f3n y no adjudicar la Orden a ning\u00fan Oferente.\r\n La orden, si resulta adjudicada, ser\u00e1 adjudicada al Oferente que, a criterio de Optus, mejor satisfaga las necesidades del Receptor\r\n  y de Optus, y dichas necesidades ser\u00e1n determinadas e interpretadas exclusivamente por Optus. Optus se reserva el derecho de\r\n   adjudicar la Orden a un Oferente que no sea el que presente el precio m\u00e1s bajo.<br>\r\nOptus no estar\u00e1 obligado a proporcionar ninguna informaci\u00f3n a los Oferentes que no hayan obtenido la adjudicaci\u00f3n de la Orden, \r\nni a explicar las razones por las cuales rechaz\u00f3 cualquier oferta.<o:p><\/o:p><\/span><\/p> \r\n\r\n<p class=\"MsoNormal\" style=\"margin:0cm;margin-bottom:.0001pt;text-indent:-18.0pt;\r\nline-height:normal;mso-outline-level:4;mso-list:l0 level1 lfo1;tab-stops:list 36.0pt;\r\nvertical-align:baseline\">\r\n<!--[if !supportLists]-->\r\n<span lang=\"ES\" style=\"font-size:\r\n10.0pt;mso-bidi-font-size:11.0pt;font-family:Symbol;mso-fareast-font-family:\r\nSymbol;mso-bidi-font-family:Symbol;color:#3E6D94;mso-fareast-language:ES;\r\nmso-bidi-font-weight:bold\">\u00b7<span style=\"font-variant-numeric: normal; font-stretch: normal; font-size: 7pt; line-height: normal; font-family: &quot;Times New Roman&quot;;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\r\n<\/span><\/span>\r\n<!--[endif]-->\r\n<b><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;\r\nmso-fareast-font-family:&quot;Times New Roman&quot;;color:#3E6D94;mso-fareast-language:\r\nES\">Exclusi\u00f3n de responsabilidad<o:p><\/o:p><\/span><\/b><\/p>\r\n\r\n<p class=\"MsoNormal\" style=\"margin-bottom:11.25pt;line-height:normal;vertical-align:\r\nbaseline\"><span lang=\"ES\" style=\"font-family:&quot;Arial&quot;,&quot;sans-serif&quot;;mso-fareast-font-family:\r\n&quot;Times New Roman&quot;;color:#333333;mso-fareast-language:ES\">La recepci\u00f3n de la Invitaci\u00f3n por parte del Oferente no implica la \r\nexistencia de un contrato o compromiso de o con Optus y\/o cualquier Receptor para ning\u00fan prop\u00f3sito.\r\nLa informaci\u00f3n contenida en la Invitaci\u00f3n no pretende contener toda la informaci\u00f3n que el Oferente puede requerir.\r\nOptus y\/o cualquier Receptor no representan ni garantizan la exactitud ni completitud de la Invitaci\u00f3n, o la razonabilidad de \r\nlas suposiciones en las cuales dicho documento puede estar basado.<br>\r\nOptus y\/o cualquier Receptor no asumen responsabilidad de ning\u00fan tipo frente a los Oferentes por su participaci\u00f3n en el \r\nproceso de licitaci\u00f3n.<o:p><\/o:p><\/span><\/p> ",
     "Resena": "",
     "Descripcion": "<div><p><\/p><\/div>",
-    "Pais": "BO",
-    "Provincia": "Provincia de Buenos Aires",
-    "Localidad": "Baradero",
-    "Direccion": "General Roca 435",
+    "Pais": "Argentina",
+    "Provincia": "C\u00f3rdoba",
+    "Localidad": "C\u00f3rdoba",
+    "Direccion": "Paran\u00e1 699-599",
     "Cp": "",
-    "Latitud": "-33.8189449",
-    "Longitud": "-59.51606349999999",
-    "TipoConcursoPath": "online",
-    "AdjudicacionAnticipada": true,
+    "Latitud": "-31.4262641",
+    "Longitud": "-64.1806631",
+    "TipoConcursoPath": "sobrecerrado",
+    "AdjudicacionAnticipada": false,
     "FechaDesde": null,
     "HoraDesde": null,
     "FechaHasta": null,
@@ -36,24 +36,34 @@
     "CiudadHastaNombre": "",
     "AceptoInvitacion": "Aceptada",
     "IsInvitacionPendiente": false,
-    "AceptacionInvitacion": "05-05-2025",
-    "AceptacionInvitacionHora": "08:51:00",
-    "CierreMuroConsultas": "05-05-2025",
-    "CierreMuroConsultasHora": "08:51:00",
+    "AceptacionInvitacion": "12-01-2026",
+    "AceptacionInvitacionHora": "23:00:00",
+    "CierreMuroConsultas": "12-01-2026",
+    "CierreMuroConsultasHora": "23:00:00",
     "IncluyeTecnica": false,
+    "FechaHoyFull": "2026-01-09 10:25:41",
     "PresentacionTecnicas": null,
     "PresentacionTecnicasHora": null,
-    "PresentacionEconomicas": null,
-    "PresentacionEconomicasHora": null,
+    "PresentacionEconomicas": "15-01-2026",
+    "PresentacionEconomicasHora": "23:00:00",
     "IncluyeEconomicaSegundaRonda": false,
     "PresentacionEconomicasSegundaRonda": null,
     "PresentacionEconomicasSegundaRondaHora": null,
-    "InicioSubasta": "06-05-2025",
-    "InicioSubastaHora": "08:51:00",
-    "EstadoSubasta": "En curso",
+    "IncluyeEconomicaTerceraRonda": false,
+    "PresentacionEconomicasTerceraRonda": null,
+    "PresentacionEconomicasTerceraRondaHora": null,
+    "IncluyeEconomicaCuartaRonda": false,
+    "PresentacionEconomicasCuartaRonda": null,
+    "PresentacionEconomicasCuartaRondaHora": null,
+    "IncluyeEconomicaQuintaRonda": false,
+    "PresentacionEconomicasQuintaRonda": null,
+    "PresentacionEconomicasQuintaRondaHora": null,
+    "InicioSubasta": null,
+    "InicioSubastaHora": null,
+    "EstadoSubasta": null,
     "EstadoTecnica": "Pendiente",
-    "EstadoEconomica": "Plazo Vencido",
-    "EstadoChat": "Deshabilitado",
+    "EstadoEconomica": "Pendiente",
+    "EstadoChat": "Habilitado",
     "Moneda": "ARS",
     "Estado": "pendiente",
     "IsInvitacionRechazada": false,
@@ -64,7 +74,7 @@
     "IsEconomicaPendienteSegundaRonda": true,
     "IsEconomicaPresentada": false,
     "HasEconomicaRevisada": false,
-    "HasEconomicaVencida": true,
+    "HasEconomicaVencida": false,
     "IsAdjudicacionPendiente": false,
     "IsAdjudicacionAceptada": false,
     "IsAdjudicacionRechazada": false,
@@ -78,14 +88,14 @@
     "EnableEconomic": true,
     "Adjudicado": false,
     "Eliminado": false,
-    "ZonaHoraria": "America\/Mexico_City (GMT-06:00)",
+    "ZonaHoraria": "America\/Argentina\/Cordoba (GMT-03:00)",
     "DescripcionTitle": null,
     "DescripcionDescription": null,
     "DescripcionUrl": null,
     "DescripcionImagen": null,
     "CondicionPago": "no",
-    "urlChatMuro": "\/concursos\/oferente\/online\/chat-muro-consultas\/405",
-    "ChatEnable": false,
+    "urlChatMuro": "\/concursos\/oferente\/sobrecerrado\/chat-muro-consultas\/914",
+    "ChatEnable": true,
     "ShowChatButton": true,
     "Costs": "no",
     "AnalisisApu": "no",
@@ -171,19 +181,37 @@
         ],
         "values": [
             {
-                "product_id": 947,
-                "product_name": "GRRR",
+                "product_id": 4076,
+                "product_name": "Hola",
                 "product_description": null,
                 "currency_id": 5,
                 "currency_name": "ARS",
-                "minimum_quantity": 10,
-                "total_quantity": 15,
-                "measurement_id": 5,
-                "measurement_name": "UN",
-                "cotizacion": null,
-                "cantidad": null,
-                "fecha": null,
+                "minimum_quantity": 1,
+                "total_quantity": 1,
+                "measurement_id": 4,
+                "measurement_name": "Tn",
+                "cotizacion": 0,
+                "cantidad": 0,
+                "fecha": 0,
                 "creado": null,
+                "selected": null,
+                "maximum_cotizacion": null
+            },
+            {
+                "product_id": 4077,
+                "product_name": "XD",
+                "product_description": null,
+                "currency_id": 5,
+                "currency_name": "ARS",
+                "minimum_quantity": 1,
+                "total_quantity": 1,
+                "measurement_id": 3,
+                "measurement_name": "Lts",
+                "cotizacion": 0,
+                "cantidad": 0,
+                "fecha": 0,
+                "creado": null,
+                "selected": null,
                 "maximum_cotizacion": null
             }
         ],
@@ -211,36 +239,36 @@
             }
         ]
     },
-    "Descendente": false,
+    "Descendente": true,
     "PermiteAnularOferta": false,
-    "CantidadOferentes": 3,
-    "Duracion": "120 minutos 00 segundos",
-    "TiempoAdicional": 10,
-    "Countdown": 7119,
+    "CantidadOferentes": 1,
+    "Duracion": " 0 minutos 0 segundos",
+    "TiempoAdicional": 0,
+    "Countdown": null,
     "Timeleft": null,
-    "UnidadMinima": 500,
+    "UnidadMinima": null,
     "VerNumOferentesParticipan": false,
     "VerOfertaGanadora": false,
     "VerRanking": false,
-    "VerTiempoRestante": true,
+    "VerTiempoRestante": false,
     "Chat": false,
-    "SoloOfertasMejores": true,
-    "PrecioMaximo": "9999999999999.99",
-    "PrecioMinimo": "100.00",
+    "SoloOfertasMejores": false,
+    "PrecioMaximo": null,
+    "PrecioMinimo": null,
     "RondaActual": 1,
     "Title": "",
     "Items": [
         {
-            "id": 947,
-            "id_oferente": 19,
-            "nombre": "GRRR",
+            "id": 4076,
+            "id_oferente": 24,
+            "nombre": "Hola",
             "descripcion": null,
-            "cantidad": 15,
+            "cantidad": 1,
             "oferta_puesto": null,
             "empatado": false,
-            "oferta_minima": 10,
-            "unidad": "UN",
-            "unidadID": 5,
+            "oferta_minima": 1,
+            "unidad": "Tn",
+            "unidadID": 4,
             "unidades": [
                 {
                     "id": "1",
@@ -433,6 +461,26 @@
                 {
                     "id": "49",
                     "text": "Semana"
+                },
+                {
+                    "id": "50",
+                    "text": "Global"
+                },
+                {
+                    "id": "51",
+                    "text": "Pallet"
+                },
+                {
+                    "id": "52",
+                    "text": "Viaje"
+                },
+                {
+                    "id": "53",
+                    "text": "dam2"
+                },
+                {
+                    "id": "54",
+                    "text": "dam3"
                 }
             ],
             "valores": {
@@ -448,9 +496,247 @@
                 "oferente": null,
                 "hora": null
             },
-            "ranking": []
+            "ranking": null
+        },
+        {
+            "id": 4077,
+            "id_oferente": 24,
+            "nombre": "XD",
+            "descripcion": null,
+            "cantidad": 1,
+            "oferta_puesto": null,
+            "empatado": false,
+            "oferta_minima": 1,
+            "unidad": "Lts",
+            "unidadID": 3,
+            "unidades": [
+                {
+                    "id": "1",
+                    "text": "M"
+                },
+                {
+                    "id": "2",
+                    "text": "cm"
+                },
+                {
+                    "id": "3",
+                    "text": "Lts"
+                },
+                {
+                    "id": "4",
+                    "text": "Tn"
+                },
+                {
+                    "id": "5",
+                    "text": "UN"
+                },
+                {
+                    "id": "7",
+                    "text": "M2"
+                },
+                {
+                    "id": "8",
+                    "text": "M3"
+                },
+                {
+                    "id": "9",
+                    "text": "kg"
+                },
+                {
+                    "id": "10",
+                    "text": "$\/t\/km"
+                },
+                {
+                    "id": "11",
+                    "text": "HH"
+                },
+                {
+                    "id": "12",
+                    "text": "Seg"
+                },
+                {
+                    "id": "13",
+                    "text": "Min"
+                },
+                {
+                    "id": "14",
+                    "text": "Hs"
+                },
+                {
+                    "id": "15",
+                    "text": "D\u00eda"
+                },
+                {
+                    "id": "16",
+                    "text": "gr"
+                },
+                {
+                    "id": "17",
+                    "text": "mg"
+                },
+                {
+                    "id": "18",
+                    "text": "Oz"
+                },
+                {
+                    "id": "19",
+                    "text": "Libra"
+                },
+                {
+                    "id": "20",
+                    "text": "Watt"
+                },
+                {
+                    "id": "21",
+                    "text": "kWatt"
+                },
+                {
+                    "id": "22",
+                    "text": "CV"
+                },
+                {
+                    "id": "23",
+                    "text": "HP"
+                },
+                {
+                    "id": "24",
+                    "text": "kcal\/h"
+                },
+                {
+                    "id": "25",
+                    "text": "kcal\/h"
+                },
+                {
+                    "id": "26",
+                    "text": "Cal"
+                },
+                {
+                    "id": "27",
+                    "text": "Frig"
+                },
+                {
+                    "id": "28",
+                    "text": "mm"
+                },
+                {
+                    "id": "29",
+                    "text": "km"
+                },
+                {
+                    "id": "30",
+                    "text": "pe"
+                },
+                {
+                    "id": "31",
+                    "text": "pulg"
+                },
+                {
+                    "id": "32",
+                    "text": "mm2"
+                },
+                {
+                    "id": "33",
+                    "text": "cm2"
+                },
+                {
+                    "id": "34",
+                    "text": "km2"
+                },
+                {
+                    "id": "35",
+                    "text": "Ha"
+                },
+                {
+                    "id": "36",
+                    "text": "Yarda"
+                },
+                {
+                    "id": "37",
+                    "text": "Pe2"
+                },
+                {
+                    "id": "38",
+                    "text": "Pul2"
+                },
+                {
+                    "id": "39",
+                    "text": "mL"
+                },
+                {
+                    "id": "40",
+                    "text": "cL"
+                },
+                {
+                    "id": "41",
+                    "text": "cm3"
+                },
+                {
+                    "id": "42",
+                    "text": "dm3"
+                },
+                {
+                    "id": "43",
+                    "text": "mm3"
+                },
+                {
+                    "id": "44",
+                    "text": "C\/U"
+                },
+                {
+                    "id": "45",
+                    "text": "%"
+                },
+                {
+                    "id": "46",
+                    "text": "Pza"
+                },
+                {
+                    "id": "47",
+                    "text": "Mes"
+                },
+                {
+                    "id": "48",
+                    "text": "A\u00f1o"
+                },
+                {
+                    "id": "49",
+                    "text": "Semana"
+                },
+                {
+                    "id": "50",
+                    "text": "Global"
+                },
+                {
+                    "id": "51",
+                    "text": "Pallet"
+                },
+                {
+                    "id": "52",
+                    "text": "Viaje"
+                },
+                {
+                    "id": "53",
+                    "text": "dam2"
+                },
+                {
+                    "id": "54",
+                    "text": "dam3"
+                }
+            ],
+            "valores": {
+                "producto": null,
+                "cotizacion": null,
+                "cantidad": null,
+                "fecha": null,
+                "creado": null
+            },
+            "valores_mejor": {
+                "cotizacion": null,
+                "cantidad": null,
+                "oferente": null,
+                "hora": null
+            },
+            "ranking": null
         }
-    ],
-    "ItemsMejores": [],
-    "Log": []
+    ]
 }

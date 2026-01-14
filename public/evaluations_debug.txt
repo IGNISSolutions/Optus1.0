@@ -1,0 +1,17 @@
+Array
+(
+    [0] => Array
+        (
+            [Id] => 24
+            [RazonSocial] => TRANSPORTE MATTIOZZI SA
+            [Puntualidad] => 0
+            [Calidad] => 0
+            [OrdenYlimpieza] => 0
+            [MedioAmbiente] => 0
+            [HigieneYseguridad] => 0
+            [Experiencia] => 4
+            [Comentario] => 
+            [PermitirEnvio] => true
+        )
+
+)

@@ -276,32 +276,31 @@
     <!--ko if: EstadoActual() !== 'cancelada'-->
     <!-- Documento -->
     <div class="m-heading-1 border-default m-bordered text-left">
-        <h4 class="block bold" style="margin-top: 0; padding-top: 0;">Documentación</h4>
-        
-        <!-- ko if: FilePath().length > 0 -->
-        <table class="table table-striped table-bordered" id="ListaDocumentos">
-            <tbody data-bind="foreach: FilePath()">
-                <tr>
-                    <td class="col-md-6 text-center" style="vertical-align: middle;" data-bind="text: nombre"></td>
-                    <td class="col-md-6 text-center" style="vertical-align: middle;">
-                        <a data-bind="click: $root.downloadFile.bind($data, imagen, 'solped', $root.IdSolicitud())"
-                            download class="btn btn-xl green" title="Descargar">
-                            Descargar
-                            <i class="fa fa-download"></i>
-                        </a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <!-- /ko -->
+    <h4 class="block bold" style="margin-top: 0; padding-top: 0;">Documentación</h4>
+    <table class="table table-striped table-bordered" id="ListaConcursosEconomicas">
+        <tbody data-bind="foreach: FilePath()">
 
-        <!-- ko if: FilePath().length === 0 -->
-        <div class="alert alert-info text-center">
-            No hay documentos disponibles
-        </div>
-        <!-- /ko -->
+            <tr>
+                <td class="col-md-6 text-center" style="vertical-align: middle;" data-bind="text: nombre">
+
+                </td>
+                <td class="col-md-6 text-center" style="vertical-align: middle;">
+                    <a data-bind="click: $root.downloadFile.bind($data, imagen, 'solped', $root.IdSolped())"
+                        download class="btn btn-xl green" title="Descargar">
+                        Descargar
+                        <i class="fa fa-download"></i>
+                    </a>
+                </td>
+            </tr>
+
+        </tbody>
+    </table>
+
+    <div class="alert alert-success text-center">
+        No hay documentos
     </div>
-    <!--/ko-->
+</div>
+<!--/ko-->
     <!-- Items/Productos -->
     <div class="col-sm-12">
         <div class="m-heading-1 border-default m-bordered text-left">
@@ -396,7 +395,7 @@
             this.CompradorDevolucionFecha = ko.observable(data.list.CompradorDevolucionFecha);
 
             this.Eliminado = ko.observable(data.list.eliminado);
-            this.FilePath = ko.observableArray(Array.isArray(data.list.FilePath) ? data.list.FilePath : []);
+            this.FilePath = ko.observable(data.list.file_path);
 
             this.Etapa = ko.observable(data.list.Etapa);
             this.EstadoActual = ko.observable(data.list.EstadoActual);
@@ -409,10 +408,7 @@
                 return this.Solicitante() + ' - ' + this.FechaCancelacion();
             }, this);
 
-            this.downloadFile = function(filename, type, id) {
-                var url = '/storage/img/' + data.list.file_path + filename;
-                window.open(url, '_blank');
-            };
+
 
             this.aceptarSolicitud = function() {
                 var self = this;

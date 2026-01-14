@@ -174,6 +174,13 @@ app()->group('/concursos', function () {
     $this->post('/cliente/auction-from-solpeds', 'App\Http\Controllers\Customer\ConcursoController:createAuctionFromSolpeds')->add(new AuthMiddleware())->setName('concursos.cliente.createAuctionFromSolpeds');
 });
 
+// ESTRATEGIA DE LIBERACIÓN
+app()->group('/estrategia', function () {
+    $this->get('/matriz', 'App\Http\Controllers\Estrategia\EstrategiaController:serveMatriz')->add(new AuthMiddleware())->setName('estrategia.serveMatriz');
+    $this->get('/get', 'App\Http\Controllers\Estrategia\EstrategiaController:get')->add(new AuthMiddleware())->setName('estrategia.get');
+    $this->post('/store', 'App\Http\Controllers\Estrategia\EstrategiaController:store')->add(new AuthMiddleware())->setName('estrategia.store');
+});
+
 // SOLPED
 app()->group('/solped', function () {
 
