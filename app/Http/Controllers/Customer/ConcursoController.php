@@ -93,29 +93,42 @@ class ConcursoController extends BaseController
             session_start();
         }
 
-        $secret = getenv('TOKEN_SECRET_KEY');
-
         $id = (int) $params['id'];
+        $user = user();
+        $hasAccess = false;
+
+        $secret = getenv('TOKEN_SECRET_KEY');
         $sessionId = session_id();
         $expectedToken = hash_hmac('sha256', $id . $sessionId, $secret);
-        $storedToken   = $_SESSION['edit_token'][$id] ?? null;
+        $storedToken = $_SESSION['edit_token'][$id] ?? null;
 
-        if (!$storedToken || $expectedToken !== $storedToken) {
+        if ($storedToken && $expectedToken === $storedToken) {
+            $hasAccess = true;
+        }
+
+        // Check para usuarios approvers
+        if (!$hasAccess && !isAdmin()) {
+            $hasAccess = $this->isUserApprover($id, $user);
+            
+            if ($hasAccess) {
+                $_SESSION['edit_token'] = $_SESSION['edit_token'] ?? [];
+                $_SESSION['edit_token'][$id] = $expectedToken;
+            }
+        }
+
+        if (!$hasAccess && !isAdmin()) {
             return $this->json($response, [
                 'success' => false,
                 'message' => 'Acceso no autorizado. Token inválido para ver el detalle del concurso'
             ], 403);
         }
 
-        // No eliminamos el token para permitir F5
-        // unset($_SESSION['edit_token'][$id]);
-
         if (isAdmin()) {
             $concurso = Concurso::find($id);
         } else {
-            $user = user();
             $concurso = $user->customer_company->getAllConcursosByCompany()->find($id)
-                    ?? $user->concursos_evalua->find($id);
+                    ?? $user->concursos_evalua->find($id)
+                    ?? Concurso::find($id); // Fallback para approvers
         }
 
         abort_if($request, $response, !$concurso, true, 404);
@@ -1264,6 +1277,11 @@ class ConcursoController extends BaseController
             } else {
                 $concurso = $user->customer_company->getAllConcursosByCompany()->find($params['id']);
                 $concurso = $concurso ?? $user->concursos_evalua->find($params['id']);
+                
+                // Da acceso a la cadena de aprobación (Estrategia de liberación)
+                if (!$concurso && $this->isUserApprover($params['id'], $user)) {
+                    $concurso = Concurso::find($params['id']);
+                }
             }
             $list['HabilitaSegundaRonda'] = $concurso->segunda_ronda_habilita;
             $terminos_filename = rootPath(config('app.templates_path')) . '/terminos-cliente.tpl';
@@ -2191,68 +2209,68 @@ class ConcursoController extends BaseController
         ]);
     }
 
-   private function createOrEditAuction($create, $list, $user, $concurso, $is_copy)
-    {
-        return array_merge($list, [
-            'InicioSubasta' => $create ? $this->addBusinessHours(Carbon::now(), 72)->format('d-m-Y H:i') : $concurso->inicio_subasta->format('d-m-Y H:i'),
-            'Duracion' => $create && !$is_copy ? null : ($concurso->parsed_duracion[0] . $concurso->parsed_duracion[1]),
-            'TiempoAdicional' => $create && !$is_copy ? 0 : $concurso->tiempo_adicional,
-            'TiposValoresOfertar' => $this->GetTiposValoresOfertar(),
-            'TipoValorOfertar' => $create && !$is_copy ? null : $concurso->tipo_valor_ofertar,
-            'Chat' => $create && !$is_copy ? 'no' : ($concurso->chat === 'si' ? 'si' : 'no'),
-            'VerNumOferentesParticipan' => $create && !$is_copy ? 'no' : ($concurso->ver_num_oferentes_participan === 'si' ? 'si' : 'no'),
-            'VerOfertaGanadora' => $create && !$is_copy ? 'no' : ($concurso->ver_oferta_ganadora === 'si' ? 'si' : 'no'),
-            'VerRanking' => $create && !$is_copy ? 'no' : ($concurso->ver_ranking === 'si' ? 'si' : 'no'),
-            'VerTiempoRestante' => $create && !$is_copy ? 'no' : ($concurso->ver_tiempo_restante === 'si' ? 'si' : 'no'),
-            'PermitirAnularOferta' => $create && !$is_copy ? 'no' : ($concurso->permitir_anular_oferta === 'si' ? 'si' : 'no'),
-            'SubastaVistaCiega' => $create && !$is_copy ? 'no' : ($concurso->subastavistaciega === 'si' ? 'si' : 'no'),
-            'PrecioMinimo' => $create && !$is_copy ? null : $concurso->precio_minimo,
-            'PrecioMaximo' => $create && !$is_copy ? '' : $concurso->precio_maximo,
-            'SoloOfertasMejores' => $create && !$is_copy ? 'no' : ($concurso->solo_ofertas_mejores === 'si' ? 'si' : 'no'),
-            'UnidadMinima' => $create && !$is_copy ? '' : $concurso->unidad_minima,
-            'ImagePath' => filePath(config('app.images_path')),
-            'Portrait' => $create && !$is_copy ? null : $concurso->portrait,
-            'FechaLimiteTecnica' => $create
-            ? $this->addBusinessHours(Carbon::now(), 48)->format('d-m-Y H:i')
-            : ($concurso->ficha_tecnica_fecha_limite
-                ? $concurso->ficha_tecnica_fecha_limite->minute(0)->second(0)->format('d-m-Y H:i')
-                : null
-            ),
+       private function createOrEditAuction($create, $list, $user, $concurso, $is_copy)
+        {
+            return array_merge($list, [
+                'InicioSubasta' => $create ? $this->addBusinessHours(Carbon::now(), 72)->format('d-m-Y H:i') : $concurso->inicio_subasta->format('d-m-Y H:i'),
+                'Duracion' => $create && !$is_copy ? null : ($concurso->parsed_duracion[0] . $concurso->parsed_duracion[1]),
+                'TiempoAdicional' => $create && !$is_copy ? 0 : $concurso->tiempo_adicional,
+                'TiposValoresOfertar' => $this->GetTiposValoresOfertar(),
+                'TipoValorOfertar' => $create && !$is_copy ? null : $concurso->tipo_valor_ofertar,
+                'Chat' => $create && !$is_copy ? 'no' : ($concurso->chat === 'si' ? 'si' : 'no'),
+                'VerNumOferentesParticipan' => $create && !$is_copy ? 'no' : ($concurso->ver_num_oferentes_participan === 'si' ? 'si' : 'no'),
+                'VerOfertaGanadora' => $create && !$is_copy ? 'no' : ($concurso->ver_oferta_ganadora === 'si' ? 'si' : 'no'),
+                'VerRanking' => $create && !$is_copy ? 'no' : ($concurso->ver_ranking === 'si' ? 'si' : 'no'),
+                'VerTiempoRestante' => $create && !$is_copy ? 'no' : ($concurso->ver_tiempo_restante === 'si' ? 'si' : 'no'),
+                'PermitirAnularOferta' => $create && !$is_copy ? 'no' : ($concurso->permitir_anular_oferta === 'si' ? 'si' : 'no'),
+                'SubastaVistaCiega' => $create && !$is_copy ? 'no' : ($concurso->subastavistaciega === 'si' ? 'si' : 'no'),
+                'PrecioMinimo' => $create && !$is_copy ? null : $concurso->precio_minimo,
+                'PrecioMaximo' => $create && !$is_copy ? '' : $concurso->precio_maximo,
+                'SoloOfertasMejores' => $create && !$is_copy ? 'no' : ($concurso->solo_ofertas_mejores === 'si' ? 'si' : 'no'),
+                'UnidadMinima' => $create && !$is_copy ? '' : $concurso->unidad_minima,
+                'ImagePath' => filePath(config('app.images_path')),
+                'Portrait' => $create && !$is_copy ? null : $concurso->portrait,
+                'FechaLimiteTecnica' => $create
+                ? $this->addBusinessHours(Carbon::now(), 48)->format('d-m-Y H:i')
+                : ($concurso->ficha_tecnica_fecha_limite
+                    ? $concurso->ficha_tecnica_fecha_limite->minute(0)->second(0)->format('d-m-Y H:i')
+                    : null
+                ),
 
-            'PlantillasTecnicas' => PlantillaTecnicaTipo::getList(),
-            'PlantillaTecnica' => $create && !$is_copy ? null : $concurso->ficha_tecnica_plantilla,
-            'PlantillaTecnicaSeleccionada' => $create && !$is_copy ? null : ($concurso->technical_includes ? $concurso->plantilla_tecnica->parsed_items : null),
-            'UsuariosEvaluanTecnica' => $user->getEvaluadoresTecnicaList(),
-            'UsuarioEvaluaTecnica' => $create && !$is_copy ? null : array_map('intval', explode(',', $concurso->ficha_tecnica_usuario_evalua)),
-        ]);
-    }
-
-    private function createOrEditGo($create, $list, $user, $concurso, $is_copy)
-    {
-        $document_cuota_ap = null;
-        $policy_amount_cuota_ap = null;
-        $document_no_rep_art = null;
-        $document_benef = null;
-        $additional_driver_documents = [];
-        $additional_vehicle_documents = [];
-        if (!$create) {
-            $document_cuota_ap = $concurso->go->documents->filter(function ($go_document) {
-                return $go_document->document->gcg_code === 'OPTUS_CUOTA AP';
-            })->first();
-
-            $document_no_rep_art = $concurso->go->documents->filter(function ($go_document) {
-                return $go_document->document->gcg_code === 'NOGCG_NO_REP_ART';
-            })->first();
-
-            $document_benef = $concurso->go->documents->filter(function ($go_document) {
-                return $go_document->document->gcg_code === 'NOGCG_BENEF';
-            })->first();
-
-            $additional_driver_documents = $concurso->go->additional_documents->where('type', GoDocumentAdditional::TYPE_SLUGS['driver']);
-            $additional_driver_documents = $additional_driver_documents ? $additional_driver_documents->pluck('name') : [];
-            $additional_vehicle_documents = $concurso->go->additional_documents->where('type', GoDocumentAdditional::TYPE_SLUGS['vehicle']);
-            $additional_vehicle_documents = $additional_vehicle_documents ? $additional_vehicle_documents->pluck('name') : [];
+                'PlantillasTecnicas' => PlantillaTecnicaTipo::getList(),
+                'PlantillaTecnica' => $create && !$is_copy ? null : $concurso->ficha_tecnica_plantilla,
+                'PlantillaTecnicaSeleccionada' => $create && !$is_copy ? null : ($concurso->technical_includes ? $concurso->plantilla_tecnica->parsed_items : null),
+                'UsuariosEvaluanTecnica' => $user->getEvaluadoresTecnicaList(),
+                'UsuarioEvaluaTecnica' => $create && !$is_copy ? null : array_map('intval', explode(',', $concurso->ficha_tecnica_usuario_evalua)),
+            ]);
         }
+
+        private function createOrEditGo($create, $list, $user, $concurso, $is_copy)
+        {
+            $document_cuota_ap = null;
+            $policy_amount_cuota_ap = null;
+            $document_no_rep_art = null;
+            $document_benef = null;
+            $additional_driver_documents = [];
+            $additional_vehicle_documents = [];
+            if (!$create) {
+                $document_cuota_ap = $concurso->go->documents->filter(function ($go_document) {
+                    return $go_document->document->gcg_code === 'OPTUS_CUOTA AP';
+                })->first();
+
+                $document_no_rep_art = $concurso->go->documents->filter(function ($go_document) {
+                    return $go_document->document->gcg_code === 'NOGCG_NO_REP_ART';
+                })->first();
+
+                $document_benef = $concurso->go->documents->filter(function ($go_document) {
+                    return $go_document->document->gcg_code === 'NOGCG_BENEF';
+                })->first();
+
+                $additional_driver_documents = $concurso->go->additional_documents->where('type', GoDocumentAdditional::TYPE_SLUGS['driver']);
+                $additional_driver_documents = $additional_driver_documents ? $additional_driver_documents->pluck('name') : [];
+                $additional_vehicle_documents = $concurso->go->additional_documents->where('type', GoDocumentAdditional::TYPE_SLUGS['vehicle']);
+                $additional_vehicle_documents = $additional_vehicle_documents ? $additional_vehicle_documents->pluck('name') : [];
+            }
 
         return array_merge($list, [
             'PaymentMethods' => GoPaymentMethod::getList(),
@@ -5628,5 +5646,40 @@ class ConcursoController extends BaseController
                 'data' => []
             ], $status);
         }
+    }
+
+    // Helper para estrategia de liberacion 
+    private function isUserApprover($contestId, $user)
+    {
+        $pendingApprovals = \App\Models\AdjudicationApproval::where('contest_id', $contestId)
+            ->where('status', 'pending')
+            ->get();
+        
+        foreach ($pendingApprovals as $approval) {
+            // User match
+            if ($approval->user_id && $approval->user_id == $user->id) {
+                return true;
+            }
+            
+            // Match basado en roles; "Gerente de Compras" debe matchear con el rol de usuario "Gerente" y el area "Compras"
+            // Esto esta horrible, pero es la unica forma que se me ocurrió lmao
+            if (!$approval->user_id && $user->rol) {
+                $expectedRole = $user->rol;
+                if ($user->area) {
+                    $expectedRole .= ' de ' . $user->area;
+                }
+                
+                if ($approval->role === $expectedRole) {
+                    return true;
+                }
+                
+                // Check para "Gerente General" que no tiene area
+                if ($approval->role === $user->rol && !$approval->area) {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
     }
 }

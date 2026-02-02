@@ -5,39 +5,31 @@
     <title>{$title}</title>
     <style>
         body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
-        .header { background-color: #d9534f; color: white; padding: 20px; text-align: center; border-radius: 5px 5px 0 0; }
+        .header { background-color: #337ab7; color: white; padding: 20px; text-align: center; border-radius: 5px 5px 0 0; }
         .content { background-color: #f9f9f9; padding: 20px; border: 1px solid #ddd; border-top: none; }
         .info-box { background-color: #fff; border: 1px solid #e0e0e0; border-radius: 4px; padding: 15px; margin: 15px 0; }
         .btn { display: inline-block; padding: 12px 30px; background-color: #337ab7; color: white; text-decoration: none; border-radius: 4px; margin-top: 15px; }
-        .danger { background-color: #f2dede; border: 1px solid #ebccd1; color: #a94442; padding: 15px; border-radius: 4px; margin: 15px 0; }
-        .reason-box { background-color: #fff; border-left: 4px solid #d9534f; padding: 15px; margin: 15px 0; }
+        .warning { background-color: #fcf8e3; border: 1px solid #faebcc; color: #8a6d3b; padding: 15px; border-radius: 4px; margin: 15px 0; }
         .footer { text-align: center; padding: 20px; color: #777; font-size: 12px; }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>✗ {$title}</h1>
+        <h1>{$title}</h1>
     </div>
     <div class="content">
-        <p>Dear <strong>{$user->first_name} {$user->last_name}</strong>,</p>
-        <div class="danger">
-            <strong>Notice:</strong> El pedido de adjudicacion ha sido rechazado por alguno de los usuarios en la estrategia de liberación.
-        </div>
+        <p>Querído <strong>{$user->first_name} {$user->last_name}</strong>,</p>
+        <p>Un pedido de adjudicacion requiere su aprobación</p>
         <div class="info-box">
             <p><strong>Concurso:</strong> #{$concurso->id} - {$concurso->nombre}</p>
             <p><strong>Tipo:</strong> {$approval->adjudication_type|ucfirst}</p>
             <p><strong>Cantidad:</strong> ${$approval->amount|number_format:2:',':'.'}</p>
-            <p><strong>Rechazado por:</strong> {$approval->role}</p>
+            <p><strong>Cantidad USD:</strong> ${$approval->amount_usd|number_format:2:',':'.'}</p>
+            <p><strong>Su rol:</strong> {$approval->role}</p>
         </div>
-        <div class="reason-box">
-            <p style="margin: 0 0 5px 0;"><strong>Motivo:</strong></p>
-            <p style="margin: 0;">{$reason}</p>
+        <div class="warning">
+            <strong>Acción requerída:</strong> Por favor apruebe o niegue el pedido de adjudicación.
         </div>
-        <p><strong>Opciones:</strong></p>
-        <ul>
-            <li>Lanzar segunda ronda</li>
-            <li>Finalizar concurso</li>
-        </ul>
         <p style="text-align: center;">
             <a href="{$app_url}/concursos/cliente/por-etapa/adjudicacion/{$concurso->id}" class="btn">Ver Concurso</a>
         </p>
