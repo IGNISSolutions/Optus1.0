@@ -280,7 +280,7 @@ function setOferente($concurso, $oferente, $ronda)
                     }
 
                     $cotizacion = isset($propuesta['cotizacion']) ? (float)$propuesta['cotizacion'] : 0.00;
-                    $cantidad   = isset($propuesta['cantidad'])   ? (int)$propuesta['cantidad']   : 0;
+                    $cantidad   = isset($propuesta['cantidad'])   ? (float)$propuesta['cantidad']   : 0;
 
                     // Targetcost y unidad protegidos
                     $targetcost = isset($producto->targetcost) ? (float)$producto->targetcost : 0.00;
@@ -293,7 +293,7 @@ function setOferente($concurso, $oferente, $ronda)
 
                     // Denominador "pedido" (para %)
                     $prodConcurso  = $concurso->productos->firstWhere('id', $producto->id);
-                    $qtySolicitada = $prodConcurso ? (int)$prodConcurso->cantidad : $cantidad; // fallback
+                    $qtySolicitada = $prodConcurso ? (float)$prodConcurso->cantidad : $cantidad; // fallback
                     $subTC_solicitado = $targetcost * $qtySolicitada;
 
                     // Ahorro por ítem
@@ -317,7 +317,7 @@ function setOferente($concurso, $oferente, $ronda)
                         'nombre'           => $producto->nombre,
                         'descripcion'      => $producto->descripcion ?? null,
                         'cotizacion'       => $cotizacion,
-                        'cantidad'         => (int)$cantidad,
+                        'cantidad'         => (float)$cantidad,
                         'fecha'            => $propuesta['fecha'] ?? 0,
                         'subtotal'         => $subtotal,
                         'oferente_id'      => isset($oferente->company) ? $oferente->company->id : null,
@@ -626,7 +626,7 @@ function setMejorIndividual($concurso, $oferentes)
     // Recorremos productos del concurso
     foreach ($concurso->productos as $producto) {
         $prodId         = $producto->id;
-        $prodCantidad   = (int) $producto->cantidad;
+        $prodCantidad   = (float) $producto->cantidad;
 
         // Pool por oferente (solo si tiene ese producto)
         $plazos        = []; // oferenteId => fecha
@@ -646,7 +646,7 @@ function setMejorIndividual($concurso, $oferentes)
             $item = $row['items'][$itemIndex];
 
             $cotizacion = isset($item['cotizacion']) ? (float)$item['cotizacion'] : 0.00;
-            $cantidad   = isset($item['cantidad'])   ? (int)$item['cantidad']   : 0;
+            $cantidad   = isset($item['cantidad'])   ? (float)$item['cantidad']   : 0;
             $fecha      = isset($item['fecha'])      ? $item['fecha']           : 0;
 
             // Guardar referencias y valores
@@ -761,7 +761,7 @@ function setMejorIndividual($concurso, $oferentes)
             $TipoAdjudicacion = $row['tipoAdjudicacion'] ?? $TipoAdjudicacion;
 
             $cotizacion = (float)($item['cotizacion'] ?? 0.00);
-            $cantidad   = (int)($item['cantidad'] ?? 0);
+            $cantidad   = (float)($item['cantidad'] ?? 0);
             $subtotal   = $cotizacion * $cantidad;
 
             $targetcost = (float)($item['targetcost'] ?? 0.00);
