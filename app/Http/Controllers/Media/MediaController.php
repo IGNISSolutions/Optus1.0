@@ -317,6 +317,19 @@ class MediaController extends BaseController
             return $t !== '' ? strtolower($t) : 'concurso';
         };
 
+        // Sanitizador para archivos - preserva extensión
+        $sanitizeFile = function ($filename) {
+            $ext = pathinfo($filename, PATHINFO_EXTENSION);
+            $base = pathinfo($filename, PATHINFO_FILENAME);
+
+            $base = @iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $base);
+            if ($base === false) { $base = pathinfo($filename, PATHINFO_FILENAME); }
+            $base = preg_replace('/[^A-Za-z0-9]+/', '_', $base);
+            $base = trim(preg_replace('/_+/', '_', $base), '_');
+
+            return $ext ? strtolower($base . '.' . $ext) : strtolower($base);
+        };
+
         $safeConcursoName = $sanitize($concurso->nombre ?? $concurso->Nombre ?? 'concurso');
         $filename = "{$concurso->id}_{$safeConcursoName}.zip";
 
@@ -342,7 +355,7 @@ class MediaController extends BaseController
                 case 'pliego': $folder = 'concurso/pliegos/'; break;
                 default:       $folder = 'concurso/otros/';   break;
             }
-            $safeInnerName = $sanitize(pathinfo($attachment->filename, PATHINFO_BASENAME));
+            $safeInnerName = $sanitizeFile(pathinfo($attachment->filename, PATHINFO_BASENAME));
             $attachment_path = rootPath() . $attachment->path;
             if (is_file($attachment_path)) {
                 $zip->addFile($attachment_path, $folder . $safeInnerName);
@@ -365,7 +378,7 @@ class MediaController extends BaseController
                 $folder = $baseOffererFolder . 'tecnica/';
                 foreach ($technical_proposal->documents as $document) {
                     $attachment_path = rootPath() . $file_path_prefix . $document->filename;
-                    $safeDocName = $sanitize(pathinfo($document->filename, PATHINFO_BASENAME));
+                    $safeDocName = $sanitizeFile(pathinfo($document->filename, PATHINFO_BASENAME));
                     if (is_file($attachment_path)) {
                         // Opcional: sólo crear directorio lógico, ZipArchive lo maneja al agregar archivo
                         $zip->addFile($attachment_path, $folder . $safeDocName);
@@ -380,7 +393,7 @@ class MediaController extends BaseController
                 $folder = $baseOffererFolder . 'economica/';
                 foreach ($economic_proposal->documents as $document) {
                     $attachment_path = rootPath() . $file_path_prefix . $document->filename;
-                    $safeDocName = $sanitize(pathinfo($document->filename, PATHINFO_BASENAME));
+                    $safeDocName = $sanitizeFile(pathinfo($document->filename, PATHINFO_BASENAME));
                     if (is_file($attachment_path)) {
                         $zip->addFile($attachment_path, $folder . $safeDocName);
                         $filesAdded++;
