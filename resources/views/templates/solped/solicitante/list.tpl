@@ -19,7 +19,8 @@
     <div class="portlet light bordered">
       <div class="portlet-title">
         <div class="btn-group">
-          <a href="/solped/nuevo" class="btn sbold green">
+          <a href="javascript:void(0);" class="btn sbold green"
+             data-bind="click: function(){ if (!guardSolpedActive()) return; window.location.href = '/solped/nuevo'; }, css: { disabled: !SolpedActive() }">
             Agregar Nueva Solicitud De Pedido
             <i class="fa fa-plus"></i>
           </a>
@@ -43,17 +44,17 @@
               <td class="vertical-align-middle" data-bind="text: Nombre"></td>
               <td class="vertical-align-middle" data-bind="text: CreadoPor"></td>
               <td class="text-center vertical-align-middle">
-                <a href="javascript:void(0);"
+                 <a href="javascript:void(0);"
                    class="btn btn-xs green"
                    title="Editar"
-                   data-bind="click: function(){ $root.EditarSolped(Id) }">
+                   data-bind="click: function(){ if (!$root.guardSolpedActive()) return; $root.EditarSolped(Id) }, css: { disabled: !$root.SolpedActive() }">
                    Editar <i class="fa fa-pencil"></i>
                 </a>
 
                 <a href="javascript:void(0);"
                    class="btn btn-xs btn-danger"
                    title="Eliminar"
-                   data-bind="click: function(){ $root.Eliminar(Id) }">
+                   data-bind="click: function(){ if (!$root.guardSolpedActive()) return; $root.Eliminar(Id) }, css: { disabled: !$root.SolpedActive() }">
                    Eliminar <i class="fa fa-trash-o"></i>
                 </a>
               </td>
@@ -69,6 +70,7 @@
 
 {block 'knockout' append}
 <script>
+var solpedActiveFlag = {if isSolpedActive()}true{else}false{/if};
 var SolpedListado = function (data) {
   var self = this;
 
@@ -76,6 +78,15 @@ var SolpedListado = function (data) {
   console.log("datos", data)
   this.ListaSolpeds  = ko.observableArray(data.list || []);
   this.Breadcrumbs   = ko.observableArray(data.breadcrumbs || []);
+  this.SolpedActive  = ko.observable(!!solpedActiveFlag);
+
+  this.guardSolpedActive = function() {
+    if (self.SolpedActive()) {
+      return true;
+    }
+    swal('Atención', 'El módulo de Solped está desactivado para tu empresa.', 'warning');
+    return false;
+  };
 
   // Acciones
   this.EditarSolped = function(id) {

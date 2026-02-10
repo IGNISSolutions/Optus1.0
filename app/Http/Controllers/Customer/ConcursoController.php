@@ -5490,6 +5490,14 @@ class ConcursoController extends BaseController
 
     public function createFromSolpeds(Request $request, Response $response)
     {
+
+        if (!isSolpedActive() && !isAdmin()) {
+            return $this->json($response, [
+                'success' => false,
+                'message' => 'El módulo de Solped está desactivado para tu empresa.'
+            ], 403);
+        }
+        
         $success = false;
         $message = null;
         $status = 200;
@@ -5639,6 +5647,14 @@ class ConcursoController extends BaseController
 
      public function createAuctionFromSolpeds(Request $request, Response $response)
     {
+
+        if (!isSolpedActive() && !isAdmin()) {
+            return $this->json($response, [
+                'success' => false,
+                'message' => 'El módulo de Solped está desactivado para tu empresa.'
+            ], 403);
+        }
+
         $success = false;
         $message = null;
         $status = 200;

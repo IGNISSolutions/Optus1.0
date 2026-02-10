@@ -339,12 +339,12 @@
 
     <!--ko if : User.Tipo === 3 -->
         <!-- ko if: EstadoActual() === 'esperando-revision' || EstadoActual() === 'revisada' ||  EstadoActual() === 'esperando-revision-2' || EstadoActual() === 'revisada-2' -->
-    <a data-bind="click: aceptarSolicitud" class="btn green btn-sm">
+    <a data-bind="click: aceptarSolicitud, css: { disabled: !SolpedActive() }" class="btn green btn-sm">
         <i class="fa fa-check"></i> Aceptar Solicitud</a>
-    <a data-bind="click: rechazarSolicitud" class="btn red btn-sm">
+    <a data-bind="click: rechazarSolicitud, css: { disabled: !SolpedActive() }" class="btn red btn-sm">
         <i class="fa fa-times"></i> Rechazar Solicitud</a>
         <!-- ko if: EstadoActual() === 'esperando-revision' || EstadoActual() === 'revisada' -->
-    <a data-bind="click: devolverSolicitud" class="btn yellow-gold btn-sm">
+    <a data-bind="click: devolverSolicitud, css: { disabled: !SolpedActive() }" class="btn yellow-gold btn-sm">
         <i class="fa fa-undo"></i> Devolver Solicitud</a>
         <!-- /ko -->
         <!-- /ko -->
@@ -357,13 +357,26 @@
 {block 'knockout'}
     <script type="text/javascript">
 
+    var solpedActiveFlag = {if isSolpedActive()}true{else}false{/if};
+
         console.log("Usuario", User)
 
         var SolpedPorEtapaSolicitante = function(data) {
             console.log("data", data);
 
+            var self = this;
+
 
             this.Breadcrumbs = ko.observableArray(data.breadcrumbs);
+
+            this.SolpedActive = ko.observable(!!solpedActiveFlag);
+            this.guardSolpedActive = function() {
+                if (self.SolpedActive()) {
+                    return true;
+                }
+                swal('Atención', 'El módulo de Solped está desactivado para tu empresa.', 'warning');
+                return false;
+            };
 
             this.IdSolicitud = ko.observable(data.list.IdSolicitud);
             this.Nombre = ko.observable(data.list.Nombre);
@@ -415,6 +428,9 @@
             };
 
             this.aceptarSolicitud = function() {
+                if (!self.guardSolpedActive()) {
+                    return;
+                }
                 var self = this;
                 swal({  title: 'Aceptar Solicitud', 
                         text: '¿Esta seguro que desea aceptar la solicitud?', 
@@ -459,6 +475,9 @@
             };
 
             this.rechazarSolicitud = function() {
+                if (!self.guardSolpedActive()) {
+                    return;
+                }
                 var self = this;
                 swal({
                     title: 'Rechazar Solicitud',
@@ -530,6 +549,9 @@
 
 
             this.devolverSolicitud = function() {
+                if (!self.guardSolpedActive()) {
+                    return;
+                }
                 var self = this;
                 swal({
                     title: 'Devolver Solicitud',

@@ -648,11 +648,9 @@ class CompanyController extends BaseController
         $breadcrumbs = [];
         $list = [];
 
-
         try {
             $role = $params['role'];
             $creation = $params['action'] === 'nuevo';
-
 
             $action_description = $creation ? 'Creación' : 'Edición';
 
@@ -667,30 +665,18 @@ class CompanyController extends BaseController
                     break;
             }
 
-            if (!$creation && !$company) {
-                throw new \Exception('Empresa no encontrada.', 404);
-            }
-
             // Refrescar la empresa para obtener las relaciones actualizadas
             if (!$creation && $company) {
                 $company->refresh();
                 // Limpiar la caché de relaciones para asegurar datos frescos
-                if ($role === 'offerer') {
-                    $company->load('alcances');
-                }
+                $company->load('alcances');
             }
-
-            $solpedActive = $role === 'client'
-                ? ($creation ? 'no' : (isset($company->solped_active) ? $company->solped_active : 'no'))
-                : null;
-
-            $statusId = $creation ? null : ($company && $company->status ? $company->status->id : null);
 
             $common = [
                 'Tipo' => $role,
                 'Id' => $creation ? null : $company->id,
                 'Estados' => $role === 'clientes' ? CustomerCompanyStatus::getList() : OffererCompanyStatus::getList(),
-                'Estado' => $statusId,
+                'Estado' => $creation ? null : $company->status->id,
                 'RazonSocial' => $creation ? null : strtoupper($company->business_name),
                 'Cuit' => $creation ? null : $company->cuit,
                 'Pais' => $creation ? null : $company->country,
@@ -707,8 +693,7 @@ class CompanyController extends BaseController
                 'Email' => $creation ? null : $company->email,
                 'SitioWeb' => $creation ? null : $company->website,
                 'Observaciones' => $creation ? null : $company->comments,
-                'timeZone' => $creation ? null : $company->timeZone,
-                'SolpedActive' => $solpedActive
+                'timeZone' => $creation ? null : $company->timeZone
             ];
 
             if ($role == 'offerer') {
@@ -797,7 +782,7 @@ class CompanyController extends BaseController
             } elseif ($role == 'client') {
                 $list = array_merge($common, [
                     'Tarifarios' => RateSystem::getList(),
-                    'Tarifario' => $creation ? null : ($company->rate_system ? $company->rate_system->id : null),
+                    'Tarifario' => $creation ? null : $company->rate_system->id,
                     'timeZones' => $this->getTimeZones(),
                 ]);
             }
@@ -1330,26 +1315,10 @@ class CompanyController extends BaseController
         ];
         $company_status = CustomerCompanyStatus::find((int) $body->Estado);
         $rate_system = RateSystem::find((int) $body->Tarifario);
-        $solpedActive = 'no';
-        if (isset($body->SolpedActive)) {
-            if (is_bool($body->SolpedActive)) {
-                $solpedActive = $body->SolpedActive ? 'si' : 'no';
-            } else {
-                $value = strtolower(trim((string) $body->SolpedActive));
-                $solpedActive = ($value === 'si' || $value === '1' || $value === 'true') ? 'si' : 'no';
-            }
-        } elseif (!$creation) {
-            $existingCompany = CustomerCompany::find((int) $params['id']);
-            if ($existingCompany && isset($existingCompany->solped_active)) {
-                $solpedActive = $existingCompany->solped_active;
-            }
-        }
-
         $fields = array_merge($fields, [
             'status_id' => $company_status ? $company_status->id : 1,
             'rate_system_id' => $rate_system ? $rate_system->id : null,
-            'timeZone' => $body->TimeZone,
-            'solped_active' => $solpedActive
+            'timeZone' => $body->TimeZone
         ]);
 
         $validator = $this->validate($fields, $role);

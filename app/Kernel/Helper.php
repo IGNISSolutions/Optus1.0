@@ -316,6 +316,20 @@ if (!function_exists('isSolicitante')) {
 	}
 }
 
+if (!function_exists('isSolpedActive')) {
+    function isSolpedActive()
+    {
+        if (isAdmin()) {
+            return true;
+        }
+        $user = user();
+        if (!$user || !$user->customer_company) {
+            return false;
+        }
+        return $user->customer_company->solped_active === 'si';
+    }
+}
+
 if (!function_exists('can')) {
 	function can($permission)
 	{

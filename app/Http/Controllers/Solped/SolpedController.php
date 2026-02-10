@@ -44,6 +44,13 @@ use stdClass;
 
 class SolpedController extends BaseController
 {
+    private function ensureSolpedActive(Request $request, Response $response)
+    {
+        if (isAdmin()) {
+            return;
+        }
+        abort_if($request, $response, !isSolpedActive(), 404);
+    }
 
 
     public function serveTypeList(Request $request, Response $response, $params)
@@ -91,7 +98,6 @@ class SolpedController extends BaseController
     }
 
     public function detail(Request $request, Response $response, $params) {
-
         date_default_timezone_set(user()->customer_company->timeZone);
         $success = false;
         $message = null;
@@ -304,6 +310,13 @@ class SolpedController extends BaseController
         $message = null;
         $status  = 200;
 
+        if (!isSolpedActive() && !isAdmin()) {
+            return $this->json($response, [
+                'success' => false,
+                'message' => 'El módulo de Solped está desactivado para tu empresa.'
+            ], 403);
+        }
+
         try {
             // Parseo defensivo del body
             $parsed = $request->getParsedBody();
@@ -356,7 +369,6 @@ class SolpedController extends BaseController
 
     public function list(Request $request, Response $response)
     {
-
         $result = $this->listDoFilter();
         $success = $result['success'];
         $message = $result['message'];
@@ -812,6 +824,28 @@ class SolpedController extends BaseController
     // Log informativo
     if (isset($LOG)) { $LOG('DOCS', ['filename' => $portraitFileName, 'url' => $portraitUrl]); }
 
+            // === Sheets (mismo formato que licitaciones) ===
+            $sheets = [];
+            $documentsForSheets = [];
+            if (!$create && $solped) {
+                $documentsForSheets = \App\Models\SolpedDocument::where('solped_id', $solped->id)
+                    ->orderBy('id')
+                    ->get()
+                    ->values();
+            }
+            $sheetIndex = 0;
+            foreach (SheetType::all() as $sheet_type) {
+                $doc = isset($documentsForSheets[$sheetIndex]) ? $documentsForSheets[$sheetIndex] : null;
+                $sheets[] = [
+                    'id' => $doc ? $doc->id : null,
+                    'filename' => $doc ? $doc->filename : null,
+                    'type_id' => $sheet_type->id,
+                    'type_name' => $sheet_type->description,
+                    'action' => null
+                ];
+                $sheetIndex++;
+            }
+
 
             // === Compradores sugeridos ===
             // Single (lo que usa el front actual)
@@ -885,6 +919,8 @@ class SolpedController extends BaseController
                 'CompradoresSugeridosSelected' => $compradoresSelected, // multi compat
 
                 'Products'                => $create ? [] : $products,
+                'Sheets'                  => $sheets,
+                'FilePath'                => $publicBase,
 
                 // Archivo (strings, nunca objetos)
                 // Archivo (strings, nunca objetos)
@@ -936,6 +972,13 @@ class SolpedController extends BaseController
     $success = false;
     $message = null;
     $status  = 200;
+
+    if (!isSolpedActive() && !isAdmin()) {
+        return $this->json($response, [
+            'success' => false,
+            'message' => 'El módulo de Solped está desactivado para tu empresa.'
+        ], 403);
+    }
 
     // Debug liviano
     $logFile = './solped_store_debug.log';
@@ -1050,16 +1093,39 @@ class SolpedController extends BaseController
 
         // Documentos
         $docs = [];
+        $docsProvided = false;
+
+        if (!empty($entity['Sheets']) && is_array($entity['Sheets'])) {
+            $docsProvided = true;
+            foreach ($entity['Sheets'] as $sheet) {
+                $filename = '';
+                $action = '';
+                if (is_array($sheet)) {
+                    $filename = isset($sheet['filename']) ? (string)$sheet['filename'] : '';
+                    $action = isset($sheet['action']) ? (string)$sheet['action'] : '';
+                }
+                if ($filename !== '' && $action !== 'delete' && $action !== 'clear') {
+                    $docs[] = $filename;
+                }
+            }
+        }
+
         if (!empty($entity['Documents']) && is_array($entity['Documents'])) {
+            $docsProvided = true;
             foreach ($entity['Documents'] as $d) {
                 if (is_string($d) && $d !== '') $docs[] = $d;
                 if (is_array($d) && !empty($d['filename'])) $docs[] = (string)$d['filename'];
             }
         }
+
         if (!empty($entity['DescripcionPortrait']['filename'])) {
+            $docsProvided = true;
             $docs[] = (string)$entity['DescripcionPortrait']['filename'];
         }
+
+        $docs = array_values(array_unique($docs));
         if (!empty($entity['Portrait']['filename'])) {
+            $docsProvided = true;
             $docs[] = (string)$entity['Portrait']['filename'];
         }
         $docs = array_values(array_unique(array_filter(array_map('strval', $docs), function($s){ return trim($s) !== ''; })));
@@ -1275,7 +1341,7 @@ class SolpedController extends BaseController
             }
 
             // Documentos - actualizar si es necesario
-            if (!empty($docs)) {
+            if ($docsProvided) {
                 // Eliminar documentos existentes
                 \App\Models\SolpedDocument::where('solped_id', $solped->id)->delete();
                 
@@ -1359,6 +1425,13 @@ class SolpedController extends BaseController
         $success = false;
         $message = null;
         $status = 200;
+
+        if (!isSolpedActive() && !isAdmin()) {
+            return $this->json($response, [
+                'success' => false,
+                'message' => 'El módulo de Solped está desactivado para tu empresa.'
+            ], 403);
+        }
 
         // Log para debugging
         error_log("=== SOLPED SEND DEBUG ===");
@@ -1545,6 +1618,12 @@ class SolpedController extends BaseController
     public function delete(Request $request, Response $response, $params)
     {
         try {
+            if (!isSolpedActive() && !isAdmin()) {
+                return $this->json($response, [
+                    'success' => false,
+                    'message' => 'El módulo de Solped está desactivado para tu empresa.'
+                ], 403);
+            }
             $user = user();
             $id = (int)($params['id'] ?? 0);
 
@@ -1687,6 +1766,13 @@ class SolpedController extends BaseController
         $success = false;
         $message = null;
         $status = 200;
+
+        if (!isSolpedActive() && !isAdmin()) {
+            return $this->json($response, [
+                'success' => false,
+                'message' => 'El módulo de Solped está desactivado para tu empresa.'
+            ], 403);
+        }
 
         // Log para debugging
         error_log("=== SOLPED CANCEL DEBUG ===");

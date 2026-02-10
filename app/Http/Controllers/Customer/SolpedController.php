@@ -43,6 +43,14 @@ use stdClass;
 
 class SolpedController extends BaseController {
 
+    private function ensureSolpedActive(Request $request, Response $response)
+    {
+        if (isAdmin()) {
+            return;
+        }
+        abort_if($request, $response, !isSolpedActive(), 404);
+    }
+
    public function serveDetail(Request $request, Response $response, $params)
     {
         try {
@@ -95,7 +103,6 @@ class SolpedController extends BaseController {
     }
 
     public function detail(Request $request, Response $response, $params) {
-
         // Eliminar o comentar temporalmente todo el logging para debug
         
         $logFile = __DIR__ . '/debug_detail_cust.txt';
@@ -231,12 +238,17 @@ class SolpedController extends BaseController {
             // FilePath y documentos (misma lógica que en Concurso)
             $file_path = filePath($solped->file_path, true);
             $documents = [];
+            $sheetTypes = SheetType::all()->values();
+            $docIndex = 0;
             foreach ($solped->documents as $doc) {
+                $sheetType = isset($sheetTypes[$docIndex]) ? $sheetTypes[$docIndex] : null;
                 $documents[] = [
-                    'nombre' => $doc->filename,
+                    'nombre' => $sheetType ? $sheetType->description : $doc->filename,
+                    'type_name' => $sheetType ? $sheetType->description : null,
                     'imagen' => $doc->filename,
                     'url' => $file_path . $doc->filename
                 ];
+                $docIndex++;
             }
 
             $list = array_merge($common_data, [
@@ -314,6 +326,13 @@ class SolpedController extends BaseController {
         $status = 200;
         $result = [];
         $redirect_url = null;
+
+        if (!isSolpedActive() && !isAdmin()) {
+            return $this->json($response, [
+                'success' => false,
+                'message' => 'El módulo de Solped está desactivado para tu empresa.'
+            ], 403);
+        }
 
         // Archivo de log
         $logFile = __DIR__ . '/debug_reject_cust.txt';
@@ -421,6 +440,13 @@ class SolpedController extends BaseController {
         $result = [];
         $redirect_url = null;
 
+        if (!isSolpedActive() && !isAdmin()) {
+            return $this->json($response, [
+                'success' => false,
+                'message' => 'El módulo de Solped está desactivado para tu empresa.'
+            ], 403);
+        }
+
         // Archivo de log
         $logFile = __DIR__ . '/debug_sendback_cust.txt';
         $fp = fopen($logFile, 'a');
@@ -526,6 +552,13 @@ class SolpedController extends BaseController {
         $status = 200;
         $result = [];
         $redirect_url = null;
+
+        if (!isSolpedActive() && !isAdmin()) {
+            return $this->json($response, [
+                'success' => false,
+                'message' => 'El módulo de Solped está desactivado para tu empresa.'
+            ], 403);
+        }
 
         // Archivo de log
         $logFile = __DIR__ . '/debug_approve_cust.txt';

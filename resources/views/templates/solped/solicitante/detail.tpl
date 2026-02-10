@@ -345,20 +345,20 @@
         Volver al listado
     </a>
     <!-- ko if: EstadoActual() !== 'aceptada' && EstadoActual() !== 'rechazada' && EstadoActual() !== 'cancelada' && EstadoActual() !== 'licitando' && EstadoActual() !== 'adjudicada' -->
-   <a data-bind="click: cancelarSolicitud" class="btn btn-danger">
+   <a data-bind="click: cancelarSolicitud, css: { disabled: !SolpedActive() }" class="btn btn-danger">
         <i class="fa fa-times"></i> Cancelar Solicitud
     </a>
     <!-- /ko -->
     <!-- ko if: EstadoActual() === 'esperando-revision' || EstadoActual() === 'esperando-revision-2' -->
-    <a data-bind="attr: { href: '/solped/edicion/' + IdSolicitud() }" class="btn btn-success">
+    <a data-bind="attr: { href: SolpedActive() ? '/solped/edicion/' + IdSolicitud() : 'javascript:void(0);' }, css: { disabled: !SolpedActive() }, click: function(){ if (!SolpedActive()) { guardSolpedActive(); } }" class="btn btn-success">
         <i class="fa fa-edit"></i> Editar
     </a>
     <!-- /ko -->
     <!-- ko if: EstadoActual() === 'devuelta' -->
-    <a data-bind="attr: { href: '/solped/edicion/' + IdSolicitud() }" class="btn btn-warning">
+    <a data-bind="attr: { href: SolpedActive() ? '/solped/edicion/' + IdSolicitud() : 'javascript:void(0);' }, css: { disabled: !SolpedActive() }, click: function(){ if (!SolpedActive()) { guardSolpedActive(); } }" class="btn btn-warning">
         <i class="fa fa-edit"></i> Editar
     </a>
-    <a data-bind="click: enviarSolicitudCorregida" class="btn btn-success">
+    <a data-bind="click: enviarSolicitudCorregida, css: { disabled: !SolpedActive() }" class="btn btn-success">
         <i class="fa fa-send"></i> Enviar Solicitud Corregida
     </a>
     <!-- /ko -->
@@ -369,7 +369,9 @@
 <!-- KNOCKOUT -->
 {block 'knockout'}
     <script type="text/javascript">
+        var solpedActiveFlag = {if isSolpedActive()}true{else}false{/if};
         var SolpedPorEtapaSolicitante = function(data) {
+            var self = this;
             console.log("data", data);
             console.log("CompradorFirstRevision:", data.list.CompradorFirstRevision);
             console.log("FechaFirstRevision:", data.list.FechaFirstRevision);
@@ -377,6 +379,15 @@
             console.log("EstadoActual:", data.list.EstadoActual);
 
             this.Breadcrumbs = ko.observableArray(data.breadcrumbs);
+
+            this.SolpedActive = ko.observable(!!solpedActiveFlag);
+            this.guardSolpedActive = function() {
+                if (self.SolpedActive()) {
+                    return true;
+                }
+                swal('Atención', 'El módulo de Solped está desactivado para tu empresa.', 'warning');
+                return false;
+            };
 
 
             this.IdSolicitud = ko.observable(data.list.IdSolicitud);
@@ -462,6 +473,9 @@
 
 
             this.enviarSolicitudCorregida = function() {
+                if (!self.guardSolpedActive()) {
+                    return;
+                }
                 swal({
                     title: '¿Desea enviar la solicitud corregida?',
                     text: 'Esta a punto de reenviar las notificaciones para esta solicitud corregida.',
@@ -523,6 +537,9 @@
             };
 
             this.cancelarSolicitud = function() {
+                if (!self.guardSolpedActive()) {
+                    return;
+                }
                 swal({
                     title: 'Cancelar Solicitud',
                     text: 'Por favor, proporcione una justificación para cancelar esta solicitud:',

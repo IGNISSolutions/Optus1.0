@@ -394,6 +394,43 @@
         </div>
     </div>
 
+    {if isAdmin() && $tipo eq 'client'}
+        <div class="row" id="modulos">
+            <div class="col-md-12 ">
+                <div class="portlet light bg-inverse">
+                    <div class="portlet-title">
+                        <div class="caption font-red-sunglo">
+                            <span class="caption-subject bold uppercase">Modulos</span>
+                        </div>
+                        <div class="tools">
+                            <a href="javascript:;" class="collapse" data-original-title="Retraer/Expandir"
+                                title="Retraer/Expandir"> </a>
+                        </div>
+                    </div>
+                    <div class="portlet-body form expandir-modulos" style="display: block;">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="control-label visible-ie8 visible-ie9" style="display: block;">
+                                        Solped activo
+                                    </label>
+                                    <input
+                                        type="checkbox"
+                                        data-on-color="success"
+                                        data-off-color="danger"
+                                        data-size="mini"
+                                        data-on-text="SI"
+                                        data-off-text="NO"
+                                        data-bind="bootstrapSwitchOn: Entity.SolpedActive" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {/if}
+
     <div class="row">
         <div class="col-md-12">
             <div class="form-group pull-right">
@@ -461,6 +498,7 @@
             this.Observaciones = ko.observable(data.list.Observaciones);
             this.TimeZone = ko.observable(data.list.timeZone).extend({ required: true });
             this.TimeZones = ko.observable(data.list.timeZones);
+            this.SolpedActive = ko.observable((data.list.SolpedActive || 'no') === 'si');
 
 
         }
@@ -690,6 +728,9 @@
                 if (!entityData.CiudadesSelected) entityData.CiudadesSelected = [];
                 if (!entityData.RubrosSelected) entityData.RubrosSelected = [];
                 if (!entityData.ClienteAsociado) entityData.ClienteAsociado = [];
+                if (params[1] === 'client') {
+                    entityData.SolpedActive = entityData.SolpedActive ? 'si' : 'no';
+                }
                 
                 // Debug: Verificar datos de alcance antes de enviar
                 console.log('Datos de alcance a enviar:', {

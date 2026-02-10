@@ -31,7 +31,7 @@
                 </li>
             {/if}
 
-            {if isSolicitante() || isCustomer() || isAdmin()}
+            {if (isSolicitante() || isCustomer() || isAdmin())}
             <li class="nav-item{if $page eq 'solped'} active open{/if}">
                 <a href="#" class="nav-link nav-toggle">
                     <i class="icon-map"></i>
@@ -116,7 +116,7 @@
                             </a>
                         </li>
                     {/if}
-                    {if can('concursos-list')}
+                    {if can('concursos-list')  }
                         {if isOfferer() || isAdmin() }
                             <li class="nav-item{if $accion eq 'listado-oferente'} active open{/if}">
                                 <a href="/concursos/oferente" class="nav-link ">
