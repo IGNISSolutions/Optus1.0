@@ -199,7 +199,7 @@
             <!-- ko if: !Adjudicado() && !Eliminado() -->
             <div class="{if $tipo eq 'convocatoria-oferentes'}col-md-6{else}col-md-12{/if}">
                 <div class="form-group">
-                    <button type="button" class="btn btn-xl red" data-bind="click: CancelConcurso">
+                    <button type="button" class="btn btn-xl red" data-bind="click: CancelConcurso, disable: IsChainApprover()">
                         Cancelar Concurso
                     </button>
                 </div>
@@ -637,6 +637,7 @@
             // Estrategia de liberación - cadena de aprobación
             this.EstrategiaHabilitada = ko.observable(false);
             this.NivelesAprobacion = ko.observableArray([]);
+            this.RejectedHistory = ko.observableArray([]); // Historial de cadenas rechazadas anteriores
             this.MontoAdjudicacionActual = ko.observable(null);
             this.MontoEnDolares = ko.observable(null);
             this.TipoAdjudicacionActual = ko.observable(null);
@@ -646,6 +647,7 @@
             this.AdjudicationRejected = ko.observable(false);
             this.ApprovalChainComplete = ko.observable(false);
             this.CanApproveInChain = ko.observable(false);
+            this.IsChainApprover = ko.observable(false); // Si el usuario pertenece a la cadena de aprobación
             this.PendingApprovalId = ko.observable(null);
             this.RequesterUserId = ko.observable(null);
 
@@ -670,6 +672,7 @@
                         self.AdjudicationRejected(d.chain_rejected || false);
                         self.ApprovalChainComplete(d.chain_complete || false);
                         self.CanApproveInChain(d.can_approve || false);
+                        self.IsChainApprover(d.is_chain_approver || false);
                         self.PendingApprovalId(d.pending_approval_id || null);
                         
                         if (d.levels && d.levels.length > 0) {
@@ -698,6 +701,13 @@
                                 self.RequesterUserId(d.requester_user_id);
                             }
                         }
+                        
+                        // Cargar historial de cadenas rechazadas
+                        if (d.rejected_history && d.rejected_history.length > 0) {
+                            self.RejectedHistory(d.rejected_history);
+                        } else {
+                            self.RejectedHistory([]);
+                        }
                     }
                     if (callback) callback(response);
                 },
@@ -716,10 +726,6 @@
                 }
                 return false;
             };
-
-            this.IsOriginalRequester = ko.computed(function() {
-                return self.RequesterUserId() === User.Id;
-            });
             
             // Función para cargar/recargar la cadena de aprobación con un monto específico
             this.cargarCadenaAprobacion = function(montoAdjudicacion, callback) {
@@ -1981,6 +1987,18 @@
                 function(response) {
                     $.unblockUI();
                     
+                    // DEBUG: Show approval start response
+                    console.log('=== APPROVAL START RESPONSE ===');
+                    console.log('Full response:', response);
+                    if (response.data && response.data.debug) {
+                        console.log('First Approver User ID:', response.data.debug.first_approver_user_id);
+                        console.log('First Approver Email:', response.data.debug.first_approver_email);
+                        console.log('First Approver Name:', response.data.debug.first_approver_name);
+                        console.log('Email Sent:', response.data.debug.email_sent);
+                        console.log('Email Error:', response.data.debug.email_error);
+                    }
+                    console.log('================================');
+                    
                     if (response.success) {
                         if (response.data && response.data.requires_approval === false) {
                             self.procesarAdjudicacion(type, null);
@@ -2088,45 +2106,6 @@
                 function(error) {
                     $.unblockUI();
                     swal('Error', 'Error de comunicación con el servidor', 'error');
-                });
-            };
-
-            this.CancelApprovalRequest = function() {
-                swal({
-                    title: '¿Cancelar solicitud?',
-                    text: 'Se cancelará la solicitud de aprobación.',
-                    type: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Sí, cancelar',
-                    cancelButtonText: 'No',
-                    confirmButtonClass: 'btn btn-danger',
-                    cancelButtonClass: 'btn btn-default'
-                }, function(confirmed) {
-                    if (confirmed) {
-                        $.blockUI({ message: 'Cancelando solicitud...' });
-                        
-                        Services.Post('/approval/cancel', {
-                            UserToken: User.Token,
-                            Data: JSON.stringify({ contest_id: self.IdConcurso() })
-                        },
-                        function(response) {
-                            $.unblockUI();
-                            if (response.success) {
-                                self.AdjudicationPendingApproval(false);
-                                self.AdjudicationRejected(false);
-                                self.ApprovalChainComplete(false);
-                                self.NivelesAprobacion([]);
-                                self.BotonesAdjudicacionDeshabilitados(false);
-                                swal('Cancelado', 'La solicitud ha sido cancelada.', 'success');
-                            } else {
-                                swal('Error', response.message || 'Error al cancelar', 'error');
-                            }
-                        },
-                        function(error) {
-                            $.unblockUI();
-                            swal('Error', 'Error de comunicación con el servidor', 'error');
-                        });
-                    }
                 });
             };
 

@@ -43,7 +43,7 @@
                 </td>
                 <td data-bind="number: targetcost, precision: 2"
                     class="text-center vertical-align-middle dt-head-center"></td>
-                class="text-center vertical-align-middle dt-head-center"></td>
+                </td>
                 <td data-bind="text: descripcion || '—'"
                     class="text-center vertical-align-middle dt-head-center"></td>
                 <!-- ko foreach: $parent.ConcursoEconomicas.proveedores -->

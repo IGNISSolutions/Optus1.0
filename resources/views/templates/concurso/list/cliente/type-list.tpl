@@ -90,8 +90,7 @@
         </div>
 
         <!-- Pendientes de Aprobación -->
-        <!-- ko if: Lists().ListaConcursosPendientesAprobacion && Lists().ListaConcursosPendientesAprobacion().length > 0 -->
-        <div class="col-md-12">
+        <div class="col-md-12" data-bind="visible: Lists().ListaConcursosPendientesAprobacion && Lists().ListaConcursosPendientesAprobacion().length > 0">
             <div class="portlet box green-jungle">
                 <div class="portlet-title">
                     <div class="caption">
@@ -121,7 +120,7 @@
                                 <th class="text-center"> Acciones </th>
                             </tr>
                         </thead>
-                        <tbody data-bind="dataTablesForEach: { data: Lists().ListaConcursosPendientesAprobacion, options: { paging: false } }">
+                        <tbody data-bind="foreach: Lists().ListaConcursosPendientesAprobacion">
                             <tr>
                                 <td data-bind="text: ContestId()" class="vertical-align-middle"></td>
                                 <td data-bind="text: ContestName()" class="vertical-align-middle"></td>
@@ -145,7 +144,6 @@
                 </div>
             </div>
         </div>
-        <!-- /ko -->
 
         <!-- ko if: $root.UserType() == 'customer' || $root.UserType() == 'supervisor'-->
         <div class="col-md-12">

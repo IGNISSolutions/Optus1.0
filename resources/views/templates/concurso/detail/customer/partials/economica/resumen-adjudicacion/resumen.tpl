@@ -150,13 +150,13 @@
         </tr>
         <!-- /ko -->
         
-        <!-- ko if: !$root.Adjudicado() && !$root.Eliminado() && active && !$root.AdjudicationPendingApproval() && !$root.AdjudicationRejected() -->
+        <!-- ko if: !$root.Adjudicado() && !$root.Eliminado() && active && (!$root.AdjudicationPendingApproval() || $root.AdjudicationRejected()) -->
         <tr>
             <td class="text-center" colspan="4">
                 <!-- ko if: ConcursoEconomicas.mejoresOfertas.mejorIntegral.items.length > 0  -->
                 <!-- ko if: $root.UserType() !== 'customer-read' -->
                 <button type="button" class="btn btn-primary"
-                    data-bind="click: $root.AdjudicationSend.bind($data, 'integral', ConcursoEconomicas.mejoresOfertas.mejorIntegral.idOferente), disable: $root.BotonesAdjudicacionDeshabilitados()">
+                    data-bind="click: $root.AdjudicationSend.bind($data, 'integral', ConcursoEconomicas.mejoresOfertas.mejorIntegral.idOferente), disable: $root.BotonesAdjudicacionDeshabilitados() || $root.IsChainApprover() || $root.ApprovalChainComplete()">
                     Adjudicar Integral
                 </button>
                 <!-- /ko -->
@@ -164,7 +164,7 @@
                 <!-- ko if: ConcursoEconomicas.mejoresOfertas.mejorIndividual.individual.length > 0 -->
                 <!-- ko if: $root.UserType() !== 'customer-read' -->
                 <button type="button" class="btn btn-primary"
-                    data-bind="click: $root.AdjudicationSend.bind($data, 'individual', ConcursoEconomicas.mejoresOfertas.idOferentes), disable: $root.BotonesAdjudicacionDeshabilitados()">
+                    data-bind="click: $root.AdjudicationSend.bind($data, 'individual', ConcursoEconomicas.mejoresOfertas.idOferentes), disable: $root.BotonesAdjudicacionDeshabilitados() || $root.IsChainApprover() || $root.ApprovalChainComplete()">
                     Adjudicar Individual
                 </button>
                 <!-- /ko -->
@@ -172,26 +172,10 @@
                 <!-- ko if: ConcursoEconomicas.proveedores.length > 0 -->
                 <!-- ko if: $root.UserType() !== 'customer-read' -->
                 <button type="button" class="btn btn-primary"
-                    data-bind="click: $root.AdjudicationSend.bind($data, 'manual'), disable: $root.ManualAdjudication().total() == 0 || $root.BotonesAdjudicacionDeshabilitados()">
+                    data-bind="click: $root.AdjudicationSend.bind($data, 'manual'), disable: $root.ManualAdjudication().total() == 0 || $root.BotonesAdjudicacionDeshabilitados() || $root.IsChainApprover() || $root.ApprovalChainComplete()">
                     Adjudicar Manual
                 </button>
                 <!-- /ko -->
-                <!-- /ko -->
-            </td>
-        </tr>
-        <!-- /ko -->
-
-        <!-- ko if: !$root.Adjudicado() && !$root.Eliminado() && active && $root.ApprovalChainComplete() -->
-        <tr>
-            <td class="text-center" colspan="4">
-                <div class="alert alert-success" style="margin-bottom: 10px;">
-                    <i class="fa fa-check-circle"></i> La cadena de aprobación está completa. Puede proceder con la adjudicación.
-                </div>
-                <!-- ko if: $root.UserType() !== 'customer-read' -->
-                <button type="button" class="btn btn-success btn-lg"
-                    data-bind="click: $root.ProcessApprovedAdjudication">
-                    <i class="fa fa-gavel"></i> Procesar Adjudicación Aprobada
-                </button>
                 <!-- /ko -->
             </td>
         </tr>
@@ -203,7 +187,7 @@
 <!-- ko if: $root.UserType() !== 'customer-read' -->
 <!-- ko if: !$root.AdjudicationPendingApproval() || $root.AdjudicationRejected() -->
 <button type="button" class="btn btn-primary" style="width: 100%;"
-    data-bind="text:$root.TitleNewRound(), click: $root.ShowModalNewRound, visible: !($root.Adjudicado() || $root.Eliminado())">
+    data-bind="text:$root.TitleNewRound(), click: $root.ShowModalNewRound, visible: !($root.Adjudicado() || $root.Eliminado()), disable: $root.IsChainApprover() || $root.ApprovalChainComplete()">
 </button>
 <!-- /ko -->
 <!-- /ko -->
@@ -242,7 +226,7 @@
     <div class="alert alert-danger" style="margin-bottom: 15px;">
         <i class="fa fa-times-circle"></i> 
         <strong>Adjudicación rechazada.</strong> 
-        La adjudicación fue rechazada por uno de los aprobadores. Puede lanzar una nueva ronda o cancelar el concurso.
+        La adjudicación fue rechazada por uno de los aprobadores. Puede volver a adjudicar para iniciar una nueva cadena de aprobación.
     </div>
     <!-- /ko -->
     
@@ -251,6 +235,35 @@
         <i class="fa fa-check-circle"></i> 
         <strong>Cadena de aprobación completa.</strong> 
         Todos los niveles han aprobado la adjudicación.
+    </div>
+    <!-- /ko -->
+    
+    <!-- Historial de cadenas rechazadas anteriores -->
+    <!-- ko if: $root.RejectedHistory().length > 0 -->
+    <div style="margin-bottom: 15px; padding: 15px; background-color: #fff3cd; border: 1px solid #ffc107; border-radius: 4px;">
+        <h5 class="text-warning" style="margin-top: 0;">
+            <i class="fa fa-history"></i> Historial de Rechazos Anteriores
+        </h5>
+        <!-- ko foreach: $root.RejectedHistory() -->
+        <div style="padding: 10px; margin-bottom: 10px; background-color: #fff; border-left: 4px solid #dc3545; border-radius: 4px;">
+            <p style="margin-bottom: 5px;">
+                <strong>Intento #<span data-bind="text: batch_id"></span></strong> 
+                <span class="label label-info" data-bind="text: adjudication_type" style="margin-left: 5px;"></span>
+                <span style="margin-left: 10px; color: #666;">
+                    USD <span data-bind="text: amount_usd ? amount_usd.toFixed(2) : '-'"></span>
+                </span>
+            </p>
+            <p style="margin-bottom: 5px; color: #dc3545;">
+                <i class="fa fa-times-circle"></i>
+                <strong>Rechazado por:</strong> <span data-bind="text: rejected_by || '-'"></span>
+                (<span data-bind="text: rejected_at_level || '-'"></span>)
+                - <span data-bind="text: rejected_at || '-'"></span>
+            </p>
+            <p style="margin-bottom: 0; font-style: italic; background-color: #f8f8f8; padding: 8px; border-radius: 4px;">
+                <strong>Motivo:</strong> <span data-bind="text: rejection_reason || 'Sin motivo especificado'"></span>
+            </p>
+        </div>
+        <!-- /ko -->
     </div>
     <!-- /ko -->
     
@@ -306,12 +319,16 @@
         </tbody>
     </table>
     
-    <!-- ko if: $root.AdjudicationPendingApproval() && !$root.AdjudicationRejected() && $root.IsOriginalRequester() -->
-    <div style="margin-top: 15px; text-align: right;">
-        <button type="button" class="btn btn-default" 
-                data-bind="click: $root.CancelApprovalRequest">
-            <i class="fa fa-times"></i> Cancelar solicitud de aprobación
+    <!-- Botón de Procesar Adjudicación - Debajo de la tabla de cadena -->
+    <!-- Solo visible para el solicitante (no para aprobadores de la cadena) -->
+    <!-- ko if: !$root.Adjudicado() && !$root.Eliminado() && $root.ApprovalChainComplete() && !$root.IsChainApprover() -->
+    <div class="text-center" style="margin-top: 20px; padding: 15px; background-color: #dff0d8; border-radius: 4px;">
+        <!-- ko if: $root.UserType() !== 'customer-read' -->
+        <button type="button" class="btn btn-success btn-lg"
+            data-bind="click: $root.ProcessApprovedAdjudication">
+            <i class="fa fa-gavel"></i> Procesar Adjudicación Aprobada
         </button>
+        <!-- /ko -->
     </div>
     <!-- /ko -->
 </div>

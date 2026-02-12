@@ -209,10 +209,6 @@ app()->group('/approval', function () {
         ->add(new AuthMiddleware())
         ->setName('approval.reject');
     
-    $this->post('/cancel', 'App\Http\Controllers\Approval\ApprovalController:cancel')
-        ->add(new AuthMiddleware())
-        ->setName('approval.cancel');
-    
     $this->post('/process', 'App\Http\Controllers\Approval\ApprovalController:processAdjudication')
         ->add(new AuthMiddleware())
         ->setName('approval.process');
