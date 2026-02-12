@@ -431,7 +431,6 @@
                 if (!self.guardSolpedActive()) {
                     return;
                 }
-                var self = this;
                 swal({  title: 'Aceptar Solicitud', 
                         text: '¿Esta seguro que desea aceptar la solicitud?', 
                         icon: 'info' }, function (result) {
@@ -478,7 +477,6 @@
                 if (!self.guardSolpedActive()) {
                     return;
                 }
-                var self = this;
                 swal({
                     title: 'Rechazar Solicitud',
                     text: '¿Por qué deseas rechazar la solicitud?',
@@ -552,7 +550,6 @@
                 if (!self.guardSolpedActive()) {
                     return;
                 }
-                var self = this;
                 swal({
                     title: 'Devolver Solicitud',
                     text: '¿Por qué deseas devolver la solicitud para su modificación?',
