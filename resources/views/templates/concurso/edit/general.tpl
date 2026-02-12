@@ -51,6 +51,23 @@
     <div class="col-md-6">
         <!-- ko if: IsSobrecerrado() || IsOnline() -->
         <div class="row" style="margin: 0; padding: 0;">
+            <!-- ko if: IsSobrecerrado() -->
+            <div class="col-md-12">
+                <div class="form-group required" data-bind="validationElement: Entity.TipoLicitacion">
+                    <label class="control-label visible-ie8 visible-ie9" style="display: block;">Tipo de licitación</label>
+                    <div class="selectRequerido">
+                        <select data-bind="value: Entity.TipoLicitacion,
+                        valueAllowUnset: true,
+                        options: Entity.TiposLicitacion,
+                        optionsText: 'text',
+                        optionsValue: 'id',
+                        select2: { placeholder: 'Seleccionar...' },
+                        disable: ReadOnly()">
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <!-- /ko -->
             <div class="col-md-12">
                 <div class="form-group" data-bind="validationElement: Entity.ImagePath">
                     <label class="control-label visible-ie8 visible-ie9" style="display: block;">Imagen / Icono</label>
