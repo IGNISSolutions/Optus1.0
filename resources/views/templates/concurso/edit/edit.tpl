@@ -564,6 +564,24 @@
                     self.Sheets.push(new Sheet(item));
                 });
             }
+
+                        
+            this.SheetsAdjudicado = ko.observableArray([]);
+            if (data.list.SheetsAdjudicado && data.list.SheetsAdjudicado.length > 0) {
+                data.list.SheetsAdjudicado.forEach(item => {
+                    self.SheetsAdjudicado.push(new Sheet(item));
+                });
+            } else {
+                // Asegurar que siempre hay al menos un Sheet adjudicado para poder subir archivos
+                self.SheetsAdjudicado.push(new Sheet({
+                    id: null,
+                    filename: null,
+                    type_id: null,
+                    type_name: 'Archivos Solo Adjudicado',
+                    action: null
+                }));
+            }
+            
             this.Visible = ko.observable(!!data.list.Visible);
 
             this.Pais = ko.observable(data.list.Pais);

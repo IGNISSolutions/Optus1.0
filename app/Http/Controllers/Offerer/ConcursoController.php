@@ -639,19 +639,20 @@ class ConcursoController extends BaseController
                 'ShowChatButton' => $oferente->has_invitacion_aceptada
             ];
 
-            // INVITACIÓN
+           // INVITACIÓN
             if ($params['step'] === Step::STEPS['offerer']['invitacion']) {
-                $file_path = filePath($concurso->file_path, true);
                 $media = [];
                 foreach ($concurso->sheets as $sheet) {
-                    $media[] = [
-                        'indice' => $sheet->type->id,
-                        'nombre' => $sheet->type->description,
-                        'imagen' => $sheet->filename,
-                        'path' => filePath($file_path . $sheet->filename)
-                    ];
+                    // Excluir sheets de adjudicado en etapa de invitación
+                    if ($sheet->type->code !== 'adjudicado') {
+                        $media[] = [
+                            'indice' => $sheet->type->id,
+                            'nombre' => $sheet->type->description,
+                            'imagen' => $sheet->filename,
+                            'path' => filePath($concurso->file_path . $sheet->filename)
+                        ];
+                    }
                 }
-                $products = [];
                 foreach ($concurso->productos as $product) {
                     array_push($products, [
                         'product_id' => $product->id,
@@ -1002,8 +1003,26 @@ class ConcursoController extends BaseController
                 ]));
             }
 
-            // ADJUDICACIÓN
+             // ADJUDICACIÓN
             if ($params['step'] === Step::STEPS['offerer']['adjudicado']) {
+                $mediaAdjudicado = [];
+                
+                // Solo mostrar archivos adjudicados si el oferente fue adjudicado
+                $isAdjudicado = str_starts_with((string)$oferente->etapa_actual, 'adjudicacion-aceptada');
+                
+                if ($isAdjudicado) {
+                    foreach ($concurso->sheets as $sheet) {
+                        // Solo mostrar sheets de adjudicado
+                        if ($sheet->type->code === 'adjudicado') {
+                            $mediaAdjudicado[] = [
+                                'indice' => $sheet->type->id,
+                                'nombre' => $sheet->type->description,
+                                'imagen' => $sheet->filename,
+                                'path' => filePath($concurso->file_path . '/adjudicado/' . $sheet->filename)
+                            ];
+                        }
+                    }
+                }
 
                 $list = array_merge($list, array_merge($common, [
                     'EstadoTran' => isset($oferente->payment->paid) ? $oferente->payment->paid : '',
@@ -1016,6 +1035,8 @@ class ConcursoController extends BaseController
                     'Items' => $concurso->adjudicacion_items,
                     'Resultados' => $concurso->adjudicacion_resultados_output,
                     'AceptoAdjudicacion' => (string) $oferente->acepta_adjudicacion,
+                    'MediaAdjudicado' => $mediaAdjudicado,
+                    'IsAdjudicado' => $isAdjudicado,
                     
                 ]));
             }

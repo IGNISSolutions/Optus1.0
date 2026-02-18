@@ -622,6 +622,8 @@
             this.ImagePath = ko.observable(data.list.ImagePath);
             this.Portrait = ko.observable(data.list.Portrait);
             this.Adjudicado = ko.observable(data.list.Adjudicado);
+            this.MediaAdjudicado = ko.observableArray(data.list.MediaAdjudicado || []);
+            this.IsAdjudicado = ko.observable(data.list.IsAdjudicado || false);
             this.Eliminado = ko.observable(data.list.Eliminado);
             this.AceptoInvitacion = ko.observable(data.list.AceptoInvitacion);
             this.IsInvitacionPendiente = ko.observable(data.list.IsInvitacionPendiente);
@@ -1363,6 +1365,12 @@
                     null
                 );
             }
+
+            this.downloadFileAdjudicado = function(path) {
+                // For adjudicado files, download directly using the relative path
+                var url = path.startsWith('/') ? path : '/' + path;
+                window.location.href = url;
+            };
 
             this.EconomicSend = function(isUpdate = false) {
                 const items = self.EconomicProposal().values();

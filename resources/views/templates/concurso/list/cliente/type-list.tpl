@@ -78,10 +78,6 @@
                     <input type="text" class="form-control"
                         data-bind="value: Filters().searchTerm"
                         placeholder="Nombre, Solicitante o ID de concurso">
-                    <span class="input-group-addon" 
-                        data-bind="visible: Filters().isIdSearch(), style: { color: 'green' }">
-                        <i class="fa fa-id-card"></i> Búsqueda por ID
-                    </span>
                 </div>
             </div>
         </div>

@@ -212,6 +212,54 @@
         </div>
     </div>
 </div>
+
+<!-- DOCUMENTOS EXCLUSIVOS DEL ADJUDICADO -->
+<!-- ko if: MediaAdjudicado && MediaAdjudicado().length > 0 -->
+<div class="row" style="margin-top: 20px;">
+    <div class="col-md-12">
+        <div class="portlet light bg-inverse">
+            <div class="portlet-title">
+                <div class="caption font-purple-seance">
+                    <i class="fa fa-file-archive-o"></i>
+                    <span class="caption-subject bold uppercase">
+                        Documentos para Adjudicados
+                    </span>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="alert alert-info">
+                    <strong>Información:</strong> Los siguientes documentos han sido preparados específicamente para usted, como proveedor adjudicado en esta licitación.
+                </div>
+                <table class="table table-striped table-bordered table-light">
+                    <thead>
+                        <tr>
+                            <th width="80%">Documento</th>
+                            <th width="20%" class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody data-bind="foreach: MediaAdjudicado">
+                        <tr>
+                            <td data-bind="text: nombre" class="vertical-align-middle"></td>
+                            <td class="text-center vertical-align-middle">
+                                <!-- ko if: imagen -->
+                                <a data-bind="click: function() { $root.downloadFileAdjudicado(path); }"
+                                    class="btn btn-xs green" title="Descargar">
+                                    Descargar <i class="fa fa-download"></i>
+                                </a>
+                                <!-- /ko -->
+                                <!-- ko if: !imagen -->
+                                <span class="label label-danger">Sin archivo</span>
+                                <!-- /ko -->
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /ko -->
+
 <!-- /ko -->
 <!-- ko if: IsAdjudicacionRechazada() -->
 <div class="row">

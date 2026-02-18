@@ -2055,19 +2055,38 @@ class ConcursoController extends BaseController
             }
 
             $sheets = [];
+            $sheetsAdjudicado = [];
+            
+            // Asegurar que el SheetType adjudicado existe
+            $adjudicadoType = SheetType::where('code', 'adjudicado')->first();
+            if (!$adjudicadoType) {
+                $adjudicadoType = SheetType::create([
+                    'code' => 'adjudicado',
+                    'description' => 'Archivos Solo Adjudicado'
+                ]);
+            }
+
             foreach (SheetType::all() as $sheet_type) {
                 if ($create) {
                     $sheet = $is_copy ? $concurso->sheets->where('type_id', $sheet_type->id)->first() : null;
                 } else {
                     $sheet = $concurso->sheets->where('type_id', $sheet_type->id)->first();
                 }
-                $sheets[] = [
+                
+                $sheetData = [
                     'id' => $sheet ? $sheet->id : null,
                     'filename' => $sheet ? $sheet->filename : null,
                     'type_id' => $sheet_type->id,
                     'type_name' => $sheet_type->description,
                     'action' => null
                 ];
+                
+                // Separar sheets de adjudicado del resto
+                if ($sheet_type->code === 'adjudicado') {
+                    $sheetsAdjudicado[] = $sheetData;
+                } else {
+                    $sheets[] = $sheetData;
+                }
             }
 
             // COMMON
@@ -3708,9 +3727,11 @@ class ConcursoController extends BaseController
     private function storeSheets($concurso, $entity)
     {
         $absolute_path = filePath($concurso->file_path, true);
+        $adjudicado_path = $absolute_path . 'adjudicado' . DIRECTORY_SEPARATOR;
+
         $documentChange = false;
         $documentDeleted = false;
-        // Pliegos
+        // Pliegos regulares
         foreach ($entity->Sheets as $sheet) {
             switch ($sheet->action) {
                 case 'upload':
@@ -3742,6 +3763,45 @@ class ConcursoController extends BaseController
                     break;
                 default:
                     break;
+            }
+        }
+
+        // Pliegos adjudicados (igual lógica que regulares, pero en carpeta adjudicado)
+        if (isset($entity->SheetsAdjudicado) && is_array($entity->SheetsAdjudicado)) {
+            foreach ($entity->SheetsAdjudicado as $sheet) {
+                switch ($sheet->action ?? null) {
+                    case 'upload':
+                        // Si había un archivo previo, lo eliminamos.
+                        if ($sheet->id) {
+                            $to_delete = Sheet::find($sheet->id);
+                            @unlink($adjudicado_path . $to_delete->filename);
+                            $to_delete->delete();
+                        }
+
+                        // Guardamos el nuevo archivo en la carpeta adjudicado
+                        if (!empty($sheet->filename)) {
+                            $new_sheet = new Sheet([
+                                'concurso_id' => $concurso->id,
+                                'type_id' => (int) $sheet->type_id,
+                                'filename' => $sheet->filename
+                            ]);
+                            $new_sheet->save();
+                            $documentChange = true;
+                        }
+                        break;
+                    case 'clear':
+                    case 'delete':
+                        // Si el archivo ya estaba guardado
+                        if ($sheet->id) {
+                            $to_delete = Sheet::find($sheet->id);
+                            @unlink($adjudicado_path . $to_delete->filename);
+                            $to_delete->delete();
+                        }
+                        $documentDeleted = true;
+                        break;
+                    default:
+                        break;
+                }
             }
         }
 
