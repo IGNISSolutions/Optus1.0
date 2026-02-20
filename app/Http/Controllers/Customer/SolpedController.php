@@ -236,7 +236,7 @@ class SolpedController extends BaseController {
             }
 
             // FilePath y documentos (misma lógica que en Concurso)
-            // Agregar /img/ a la ruta ya que los archivos se guardan en storage/img/solped/...
+            // Usar la estructura CUIT/AÑO a través del método file_path del modelo
             $file_path = '/storage/img/' . $solped->file_path;            
             $documents = [];
             $sheetTypes = SheetType::all()->values();

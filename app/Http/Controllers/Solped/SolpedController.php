@@ -198,11 +198,15 @@ class SolpedController extends BaseController
             }
             fwrite($fp, "Total productos: " . count($productos) . "\n");
 
-            // FilePath (usar el mismo path público donde se mueven los archivos: /storage/img/solpeds/)
-            $file_path = '/storage/img/solpeds/';
+            // FilePath - usar la estructura CUIT/AÑO
+            $cuit = $solped->cliente->customer_company->cuit ?? '';
+            $year = $solped->fecha_alta instanceof \Carbon\Carbon 
+                ? $solped->fecha_alta->format('Y') 
+                : substr($solped->fecha_alta ?? date('Y'), 0, 4);
+            $file_path = '/storage/img/solpeds/' . $cuit . '/' . $year . '/';
             $document = SolpedDocument::where('solped_id', $solped->id)->first();
             fwrite($fp, "FilePath base: {$file_path}\n");
-            fwrite($fp, "Document encontrado: " . ($document ? $document : 'NO') . "\n");
+            fwrite($fp, "Document encontrado: " . ($document ? $document->filename : 'NO') . "\n");
 
             // Siempre llenamos $list
             $list = array_merge($common_data, [
@@ -783,12 +787,22 @@ class SolpedController extends BaseController
             $measurementList = \App\Models\Measurement::getList();
             $buyersList      = $user->getCompradoresByCompanyList();
 
-            // === DOCS (un solo archivo) - SIEMPRE en storage/img/solpeds ===
+            // === DOCS - Ruta dinámica con estructura CUIT/AÑO ===
+            // Construir ruta base usando CUIT del usuario y año actual
+            $cuit = $user->customer_company->cuit ?? '';
+            $year = date('Y');
+            $filePath = 'solpeds/' . $cuit . '/' . $year . '/';
+            
             // Ruta absoluta en el servidor
-            $diskDir = realpath(__DIR__ . '/../../../../storage/img/solpeds');
+            $diskDir = __DIR__ . '/../../../../storage/img/' . $filePath;
+            
+            // Si la ruta no existe, crearla
+            if (!is_dir($diskDir)) {
+                @mkdir($diskDir, 0777, true);
+            }
 
-            // URL pública base (ajustá si tu "public" apunta a /)
-            $publicBase = '/storage/img/solpeds/';
+            // URL pública base
+            $publicBase = '/storage/img/' . $filePath;
 
 
     $portraitFileName = '';
