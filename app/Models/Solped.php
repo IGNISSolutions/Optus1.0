@@ -161,9 +161,9 @@ class Solped extends Model
     {
         // Retornar ruta base usando el solicitante (cliente)
         if ($this->cliente) {
-            return 'solped/' . $this->cliente->customer_company->cuit . '/' . substr($this->fecha_alta, 0, 4) . '/';
+            return 'solpeds/' . $this->cliente->customer_company->cuit . '/' . substr($this->fecha_alta, 0, 4) . '/';
         }
-        return 'solped/';
+        return 'solpeds/';
     }
 
     public function getSolpedsEnPreparacionAttribute()

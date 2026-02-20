@@ -236,7 +236,8 @@ class SolpedController extends BaseController {
             }
 
             // FilePath y documentos (misma lógica que en Concurso)
-            $file_path = filePath($solped->file_path, true);
+            // Agregar /img/ a la ruta ya que los archivos se guardan en storage/img/solped/...
+            $file_path = '/storage/img/' . $solped->file_path;            
             $documents = [];
             $sheetTypes = SheetType::all()->values();
             $docIndex = 0;
@@ -256,6 +257,8 @@ class SolpedController extends BaseController {
                 'FilePath'         => $documents,
                 'Documents'        => $documents,
                 'FilePathComplete' => $documents ? $file_path . $documents[0]['imagen'] : null,
+                'file_path'        => $solped->file_path,  // Agregar la ruta relativa para la vista
+
             ]);
 
             // Exponer datos mínimos de adjudicación para vista del solicitante
