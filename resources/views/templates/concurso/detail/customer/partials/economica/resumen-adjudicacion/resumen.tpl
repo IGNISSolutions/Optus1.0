@@ -284,6 +284,58 @@
 <div class="alert alert-success"
     data-bind="text: 'Este concurso ya ha sido adjudicado de manera ' + $root.TipoAdjudicacion() + '.'">
 </div>
+
+<!-- Información de contacto del/los oferente(s) adjudicado(s) -->
+<div class="m-heading-1 border-success m-bordered">
+    <h4 class="block bold" style="margin: 0 0 15px 0; padding: 10px; background-color: #f0f8f0; color: #2d8a2d;">
+        <i class="fa fa-building"></i> Datos de contacto del proveedor adjudicado
+    </h4>
+    <div class="row" style="padding: 0 15px;">
+        <!-- ko foreach: ConcursoEconomicas.proveedores.filter(function(p) { 
+            return p.isAdjudicado; 
+        }) -->
+        <div class="col-md-6" style="margin-bottom: 20px;">
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <i class="fa fa-briefcase"></i>
+                        <strong data-bind="text: razonSocial"></strong>
+                    </h4>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-borderless">
+                        <tbody>
+                            <tr>
+                                <td style="width: 30%; vertical-align: top;">
+                                    <i class="fa fa-envelope" style="color: #2d8a2d;"></i>
+                                    <strong>Email:</strong>
+                                </td>
+                                <td>
+                                    <span data-bind="text: email || 'No disponible'"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="vertical-align: top;">
+                                    <i class="fa fa-phone" style="color: #2d8a2d;"></i>
+                                    <strong>Teléfono:</strong>
+                                </td>
+                                <td data-bind="text: telefono || 'No disponible'"></td>
+                            </tr>
+                            <tr>
+                                <td style="vertical-align: top;">
+                                    <i class="fa fa-map-marker" style="color: #2d8a2d;"></i>
+                                    <strong>Dirección:</strong>
+                                </td>
+                                <td data-bind="text: direccion || 'No disponible'"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- /ko -->
+    </div>
+</div>
 <!-- /ko -->
 
 <!-- ko if: $root.Eliminado()  -->
