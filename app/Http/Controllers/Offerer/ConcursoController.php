@@ -167,34 +167,26 @@ class ConcursoController extends BaseController
                 if ($searchTerm) {
                     $searchTerm = trim($searchTerm);
             
-                    //Checks if the input is numeric (ID filtering)
-                    if (is_numeric($searchTerm)) {
-                        //Search by exact ID
-                        $invited = $invited->filter(function ($item) use ($searchTerm) {
-                            return $item->id == $searchTerm;
-                        });
-            
-                        $invited_with_trashed = $invited_with_trashed->filter(function ($item) use ($searchTerm) {
-                            return $item->id == $searchTerm;
-                        });
-                    } else {
-                        //Plain text search in name and business_name
-                        $invited = $invited->filter(function ($item) use ($searchTerm) {
-                            return 
-                                    !!stristr($item->nombre, trim($searchTerm)) ||
-                                    !!stristr($item->cliente->customer_company->business_name, trim($searchTerm)) ||
-                                    !!stristr($item->cliente->full_name, trim($searchTerm)) ||
-                                    !!stristr($item->area_sol, trim($searchTerm));
-                        });
-            
-                        $invited_with_trashed = $invited_with_trashed->filter(function ($item) use ($searchTerm) {
-                            return 
-                                    !!stristr($item->nombre, trim($searchTerm)) ||
-                                    !!stristr($item->cliente->customer_company->business_name, trim($searchTerm)) ||
-                                    !!stristr($item->cliente->full_name, trim($searchTerm)) ||
-                                    !!stristr($item->area_sol, trim($searchTerm));
-                        });
-                    }
+                    //Search in all relevant fields regardless of numeric input
+                    //This allows finding clients whose name is only numbers (e.g., "0938")
+                    //Also searches partial matches in ID (e.g., "29" finds 529, 129, etc.)
+                    $invited = $invited->filter(function ($item) use ($searchTerm) {
+                        return 
+                                !!stristr((string)$item->id, trim($searchTerm)) ||
+                                !!stristr($item->nombre, trim($searchTerm)) ||
+                                !!stristr($item->cliente->customer_company->business_name, trim($searchTerm)) ||
+                                !!stristr($item->cliente->full_name, trim($searchTerm)) ||
+                                !!stristr($item->area_sol, trim($searchTerm));
+                    });
+        
+                    $invited_with_trashed = $invited_with_trashed->filter(function ($item) use ($searchTerm) {
+                        return 
+                                !!stristr((string)$item->id, trim($searchTerm)) ||
+                                !!stristr($item->nombre, trim($searchTerm)) ||
+                                !!stristr($item->cliente->customer_company->business_name, trim($searchTerm)) ||
+                                !!stristr($item->cliente->full_name, trim($searchTerm)) ||
+                                !!stristr($item->area_sol, trim($searchTerm));
+                    });
                 }
             }
 

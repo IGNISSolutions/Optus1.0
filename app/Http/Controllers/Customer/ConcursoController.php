@@ -530,78 +530,67 @@ class ConcursoController extends BaseController
 
 
             
-                //Check if Knockout has passed filters
+//Check if Knockout has passed filters
                 if ($filters) {
                     $searchTerm = $filters->searchTerm ?? null;
                     
                     //Checks for a text input to exist
                     if ($searchTerm) {
-                        //Checks if search is numeric, (ID search)
-                        if (is_numeric($searchTerm)) {
-
-                            //Exact ID match
-                            $created = $created->filter(function ($item) use ($searchTerm) {
-                                return $item->id == $searchTerm || $item->solicitud_compra == $searchTerm;
-                            });
-                            
-                            $evaluating = $evaluating->filter(function ($item) use ($searchTerm) {
-                                return $item->id == $searchTerm || $item->solicitud_compra == $searchTerm;
-                            });
-                            
-                            $created_with_trashed = $created_with_trashed->filter(function ($item) use ($searchTerm) {
-                                 return $item->id == $searchTerm || $item->solicitud_compra == $searchTerm;
-                             });
-                            
-
-                        } else {
-                            //Plain text search in name and business_name
-                            $created = $created->filter(function ($item) use ($searchTerm) {
+                        // Buscar en todos los campos relevantes, sin importar si es numérico o no
+                        // Esto permite encontrar clientes cuyo nombre es solo números (ej: "0938")
+                        // También busca coincidencias parciales en ID (ej: "29" encuentra 529, 129, etc.)
+                        $created = $created->filter(function ($item) use ($searchTerm) {
+                            return 
+                                !!stristr((string)$item->id, trim($searchTerm)) ||
+                                !!stristr($item->nombre, trim($searchTerm)) ||
+                                !!stristr($item->cliente->customer_company->business_name, trim($searchTerm)) ||
+                                !!stristr($item->cliente->full_name, trim($searchTerm)) ||
+                                !!stristr($item->solicitud_compra, trim($searchTerm)) ||
+                                !!stristr($item->area_sol, trim($searchTerm));
                                 
-                                return 
-                                    !!stristr($item->nombre, trim($searchTerm)) ||
-                                    !!stristr($item->cliente->customer_company->business_name, trim($searchTerm)) ||
-                                    !!stristr($item->cliente->full_name, trim($searchTerm)) ||
-                                    !!stristr($item->solicitud_compra, trim($searchTerm)) ||
-                                    !!stristr($item->area_sol, trim($searchTerm));
-                                    
-                            });
-                            
-                            $evaluating = $evaluating->filter(function ($item) use ($searchTerm) {
-                                return 
-                                    !!stristr($item->nombre, trim($searchTerm)) ||
-                                    !!stristr($item->cliente->customer_company->business_name, trim($searchTerm)) ||
-                                    !!stristr($item->cliente->full_name, trim($searchTerm)) ||
-                                    !!stristr($item->solicitud_compra, trim($searchTerm)) ||
-                                    !!stristr($item->area_sol, trim($searchTerm));
-                            });
-                            
-                            $created_with_trashed = $created_with_trashed->filter(function ($item) use ($searchTerm) {
-                                return 
-                                    !!stristr($item->nombre, trim($searchTerm)) ||
-                                    !!stristr($item->cliente->customer_company->business_name, trim($searchTerm)) ||  
-                                    !!stristr($item->cliente->full_name, trim($searchTerm)) ||
-                                    !!stristr($item->solicitud_compra, trim($searchTerm)) ||  
-                                    !!stristr($item->area_sol, trim($searchTerm));
-                            });
-
-                            $deleted_with_trashed = $deleted_with_trashed->filter(function ($item) use ($searchTerm) {
-                                return
+                        });
+                        
+                        $evaluating = $evaluating->filter(function ($item) use ($searchTerm) {
+                            return 
+                                !!stristr((string)$item->id, trim($searchTerm)) ||
+                                !!stristr($item->nombre, trim($searchTerm)) ||
+                                !!stristr($item->cliente->customer_company->business_name, trim($searchTerm)) ||
+                                !!stristr($item->cliente->full_name, trim($searchTerm)) ||
+                                !!stristr($item->solicitud_compra, trim($searchTerm)) ||
+                                !!stristr($item->area_sol, trim($searchTerm));
+                        });
+                        
+                        $created_with_trashed = $created_with_trashed->filter(function ($item) use ($searchTerm) {
+                            return 
+                                !!stristr((string)$item->id, trim($searchTerm)) ||
                                 !!stristr($item->nombre, trim($searchTerm)) ||
                                 !!stristr($item->cliente->customer_company->business_name, trim($searchTerm)) ||  
                                 !!stristr($item->cliente->full_name, trim($searchTerm)) ||
                                 !!stristr($item->solicitud_compra, trim($searchTerm)) ||  
                                 !!stristr($item->area_sol, trim($searchTerm));
-                            });
-                        }
+                        });
+
+                        $deleted_with_trashed = $deleted_with_trashed->filter(function ($item) use ($searchTerm) {
+                            return
+                                !!stristr((string)$item->id, trim($searchTerm)) ||
+                                !!stristr($item->nombre, trim($searchTerm)) ||
+                                !!stristr($item->cliente->customer_company->business_name, trim($searchTerm)) ||  
+                                !!stristr($item->cliente->full_name, trim($searchTerm)) ||
+                                !!stristr($item->solicitud_compra, trim($searchTerm)) ||  
+                                !!stristr($item->area_sol, trim($searchTerm));
+                        });
                     }
                 }
 
-            // EN PREPARACI��N
+            // EN PREPARACIÓN
             $concursos = collect();
 
             $concursos = $concursos->merge(
                 $created->filter(function ($concurso) {
-                    return $concurso->oferentes_etapa_preparacion->count() > 0;
+                    // Incluir concursos con oferentes en etapa preparación
+                    // O concursos sin oferentes (que están en preparación por definición)
+                    return $concurso->oferentes_etapa_preparacion->count() > 0 
+                           || $concurso->oferentes->count() == 0;
                 })
             )->sortBy('id');
             foreach ($concursos as $concurso) {
@@ -1036,19 +1025,15 @@ class ConcursoController extends BaseController
                     $searchTerm = $filters->searchTerm ?? null;
 
                     if ($searchTerm) {
-                        if (is_numeric($searchTerm)) {
-                            $concursos = $concursos->filter(function ($item) use ($searchTerm) {
-                                return $item->id == $searchTerm;
-                            });
-                        } else {
-                            $concursos = $concursos->filter(function ($item) use ($searchTerm) {
-                                return 
-                                    !!stristr($item->nombre, trim($searchTerm)) ||
-                                    !!stristr($item->cliente->customer_company->business_name, trim($searchTerm)) ||
-                                    !!stristr($item->cliente->full_name, trim($searchTerm)) ||
-                                    !!stristr($item->area_sol, trim($searchTerm));
-                            });
-                        }
+                        // Buscar en todos los campos relevantes, sin importar si es numérico o no
+                        // Esto permite encontrar clientes cuyo nombre es solo números (ej: "0938")
+                        // También busca coincidencias parciales en ID (ej: "29" encuentra 529, 129, etc.)
+                        $concursos = $concursos->filter(function ($item) use ($searchTerm) {
+                            return 
+                                !!stristr((string)$item->id, trim($searchTerm)) ||
+                                !!stristr($item->nombre, trim($searchTerm)) ||
+                                !!stristr($item->cliente->full_name, trim($searchTerm));
+                        });
                     }
                 }
 

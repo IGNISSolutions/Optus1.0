@@ -678,10 +678,6 @@
                 parent.filter(self);
             });
 
-            //Detect if searching by ID (all digits)
-            this.isIdSearch = ko.computed(function() {
-                return /^\d+$/.test(self.searchTerm());
-            });
         };
 
         
