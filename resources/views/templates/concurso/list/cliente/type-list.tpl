@@ -386,20 +386,31 @@
                         <i class="fa fa-star"></i>
                         <span class="caption-subject bold">Evaluación de reputación</span>
                         <span class="caption-helper font-white"
-                            data-bind="text: Lists().ListaConcursosEvaluacionReputacion().length">
+                            data-bind="text: EvaluacionReputacionTotal() > 0 ? EvaluacionReputacionTotal() : '' ">
                         </span>
                     </div>
                     <div class="tools">
-                        <a href="javascript:;" data-original-title="" data-bind="css: { 
-                            'collapse': Lists().ListaConcursosEvaluacionReputacion().length > 0,
-                            'expand': Lists().ListaConcursosEvaluacionReputacion().length == 0 
-                        }" title="">
+                        <a href="javascript:;" data-original-title="" 
+                            data-bind="click: expandEvaluacionReputacion, css: { 
+                                'collapse': EvaluacionReputacionExpanded(),
+                                'expand': !EvaluacionReputacionExpanded()
+                            }" title="Expandir/Colapsar">
                         </a>
                     </div>
                 </div>
                 <div class="portlet-body" data-bind="style: { 
-                    'display': Lists().ListaConcursosEvaluacionReputacion().length > 0 ? 'block' : 'none'
+                    'display': EvaluacionReputacionExpanded() ? 'block' : 'none'
                 }">
+                    <!-- Cargando inicial -->
+                    <!-- ko if: EvaluacionReputacionLoading() -->
+                    <div class="text-center" style="padding: 20px;">
+                        <i class="fa fa-spinner fa-spin" style="font-size: 24px;"></i>
+                        <p>Cargando datos de evaluación de reputación...</p>
+                    </div>
+                    <!-- /ko -->
+
+                    <!-- Tabla con datos -->
+                    <!-- ko if: !EvaluacionReputacionLoading() && Lists().ListaConcursosEvaluacionReputacion().length > 0 -->
                     <table class="table table-striped table-bordered ListaConcursos"
                         id="ListaConcursosEvaluacionReputacion">
                         <thead>
@@ -414,8 +425,7 @@
                                 <th class="text-center"> Acciones </th>
                             </tr>
                         </thead>
-                        <tbody
-                            data-bind="dataTablesForEach : { data: Lists().ListaConcursosEvaluacionReputacion, options: { paging: false }}">
+                        <tbody data-bind="foreach: Lists().ListaConcursosEvaluacionReputacion">
                             <tr>
                                 <td data-bind="text: Id()" class="vertical-align-middle"></td>
                                 <td data-bind="text: Nombre()" class="vertical-align-middle"></td>
@@ -440,6 +450,31 @@
                             </tr>
                         </tbody>
                     </table>
+
+                    <!-- Botón cargar más -->
+                    <!-- ko if: EvaluacionReputacionHasMore() -->
+                    <div class="text-center margin-top-20 margin-bottom-20">
+                        <button type="button" class="btn btn-info"
+                            data-bind="click: loadMoreEvaluacionReputacion, 
+                                       css: { 'btn-disabled': EvaluacionReputacionLoadingMore() }"
+                            style="padding: 10px 20px; font-size: 14px;">
+                            <i class="fa fa-chevron-down" data-bind="visible: !EvaluacionReputacionLoadingMore()"></i>
+                            <i class="fa fa-spinner fa-spin" data-bind="visible: EvaluacionReputacionLoadingMore()"></i>
+                            <span data-bind="text: EvaluacionReputacionLoadingMore() ? ' Cargando...' : ' Cargar más licitaciones'"></span>
+                        </button>
+                        <div style="margin-top: 10px; color: #666; font-size: 12px;">
+                            <small data-bind="text: 'Mostrando ' + Lists().ListaConcursosEvaluacionReputacion().length + ' de ' + EvaluacionReputacionTotal() + ' licitaciones | Página ' + EvaluacionReputacionCurrentPage() + ' de ' + EvaluacionReputacionTotalPages()"></small>
+                        </div>
+                    </div>
+                    <!-- /ko -->
+                    <!-- /ko -->
+
+                    <!-- Sin datos -->
+                    <!-- ko if: !EvaluacionReputacionLoading() && Lists().ListaConcursosEvaluacionReputacion().length == 0 -->
+                    <div class="text-center" style="padding: 20px;">
+                        <p>No hay licitaciones en evaluación de reputación.</p>
+                    </div>
+                    <!-- /ko -->
                 </div>
             </div>
         </div>
@@ -678,6 +713,10 @@
                 parent.filter(self);
             });
 
+            //Detect if searching by ID (all digits)
+            this.isIdSearch = ko.computed(function() {
+                return /^\d+$/.test(self.searchTerm());
+            });
         };
 
         
@@ -686,9 +725,114 @@
             var self = this;
 
             this.Breadcrumbs = ko.observableArray(data.breadcrumbs);
+            
+            // Variables para Evaluación de Reputación (carga lazy) - DEBEN definirse ANTES de crear List
+            this.EvaluacionReputacionExpanded = ko.observable(false);
+            this.EvaluacionReputacionLoading = ko.observable(false);
+            this.EvaluacionReputacionLoadingMore = ko.observable(false);
+            this.EvaluacionReputacionTotal = ko.observable(0);
+            this.EvaluacionReputacionCurrentPage = ko.observable(1);
+            this.EvaluacionReputacionTotalPages = ko.observable(1);
+            this.EvaluacionReputacionHasMore = ko.observable(false);
+            
             this.Lists = ko.observable(new List(data.list));
             this.Conectados = ko.observable('0');
             this.UserType = ko.observable(data.userType);
+            
+            // Método para expandir y cargar Evaluación de Reputación
+            this.expandEvaluacionReputacion = function() {
+                if (self.EvaluacionReputacionExpanded()) {
+                    // Colapsar
+                    self.EvaluacionReputacionExpanded(false);
+                } else {
+                    // Expandir y cargar si es la primera vez
+                    self.EvaluacionReputacionExpanded(true);
+                    if (self.Lists().ListaConcursosEvaluacionReputacion().length === 0) {
+                        self.loadEvaluacionReputacionInitial();
+                    }
+                }
+            };
+            
+            // Cargar datos iniciales de Evaluación de Reputación
+            this.loadEvaluacionReputacionInitial = function() {
+                self.EvaluacionReputacionLoading(true);
+                var data = { page: 1 };
+                
+                console.log('Iniciando carga de Evaluación de Reputación...');
+                
+                Services.Post('/concursos/cliente/list/evaluacion-reputacion-lazy', {
+                        UserToken: User.Token,
+                        Data: JSON.stringify(data)
+                    },
+                    (response) => {
+                        console.log('Respuesta Evaluación de Reputación:', response);
+                        self.EvaluacionReputacionLoading(false);
+                        if (response.success) {
+                            // Agregar items a la lista
+                            response.data.items.forEach(item => {
+                                self.Lists().ListaConcursosEvaluacionReputacion.push(new ListItem(item));
+                            });
+                            
+                            // Actualizar paginación
+                            self.EvaluacionReputacionTotal(response.data.totalItems);
+                            self.EvaluacionReputacionCurrentPage(response.data.page);
+                            self.EvaluacionReputacionTotalPages(response.data.totalPages);
+                            self.EvaluacionReputacionHasMore(response.data.hasMore);
+                            console.log('Datos cargados exitosamente. Total:', response.data.totalItems);
+                        } else {
+                            swal('Error', response.message || 'Error al cargar evaluaciones de reputación', 'error');
+                            console.error('Error en response:', response.message);
+                        }
+                    },
+                    (error) => {
+                        console.error('Error en Services.Post:', error);
+                        self.EvaluacionReputacionLoading(false);
+                        swal('Error', error.message, 'error');
+                    },
+                    null,
+                    null
+                );
+            };
+            
+            // Cargar más Evaluación de Reputación
+            this.loadMoreEvaluacionReputacion = function() {
+                if (self.EvaluacionReputacionLoadingMore() || !self.EvaluacionReputacionHasMore()) {
+                    return;
+                }
+                
+                self.EvaluacionReputacionLoadingMore(true);
+                var nextPage = self.EvaluacionReputacionCurrentPage() + 1;
+                var data = { page: nextPage };
+                
+                Services.Post('/concursos/cliente/list/evaluacion-reputacion-lazy', {
+                        UserToken: User.Token,
+                        Data: JSON.stringify(data)
+                    },
+                    (response) => {
+                        self.EvaluacionReputacionLoadingMore(false);
+                        if (response.success) {
+                            // Agregar items a la lista
+                            response.data.items.forEach(item => {
+                                self.Lists().ListaConcursosEvaluacionReputacion.push(new ListItem(item));
+                            });
+                            
+                            // Actualizar paginación
+                            self.EvaluacionReputacionCurrentPage(response.data.page);
+                            self.EvaluacionReputacionTotalPages(response.data.totalPages);
+                            self.EvaluacionReputacionHasMore(response.data.hasMore);
+                        } else {
+                            swal('Error', response.message || 'Error al cargar más licitaciones', 'error');
+                        }
+                    },
+                    (error) => {
+                        self.EvaluacionReputacionLoadingMore(false);
+                        swal('Error', error.message, 'error');
+                    },
+                    null,
+                    null
+                );
+            };
+            
             this.filter = function(filters) {
                 if (filters) {
                     $.blockUI()

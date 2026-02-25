@@ -933,26 +933,8 @@ class ConcursoController extends BaseController
             }
 
 
-            // EVALUACIÓN
-            $concursos = collect();
-
-            $concursos = $concursos
-                ->merge($created->where('adjudicado', true))
-                ->merge($evaluating->where('adjudicado', true))
-                ->unique('id')
-                ->filter(function ($concurso) {
-                    // Excluir concursos online usando el flag booleano
-                    if ((bool)($concurso->is_online ?? false)) {
-                        return false;
-                    }
-                    // Mantener sólo los que tienen oferentes en etapa de evaluación
-                    return $concurso->oferentes_etapa_evaluacion->count() > 0;
-                })
-                ->sortBy('id');
-
-            foreach ($concursos as $concurso) {
-                $list['ListaConcursosEvaluacionReputacion'][] = $this->mapConcursoList($concurso);
-            }
+            // EVALUACIÓN - NO CARGAR EN CARGA INICIAL
+            // Se cargarán lazy cuando el usuario expanda la sección
 
 
 
@@ -1074,7 +1056,87 @@ class ConcursoController extends BaseController
             
         ];
     }
+    
+     public function getEvaluacionReputacionLazy(Request $request, Response $response)
+    {
+        $body = json_decode($request->getParsedBody()['Data'] ?? '{}');
+        $page = (int)($body->page ?? 1);
 
+        try {
+            $user = user();
+            
+            // CREATED - Mismo lógica que listDoFilter
+            if (isAdmin()) {
+                $created = Concurso::all();
+            } else if ($user->type_id != 7 && $user->type_id != 3 && $user->type_id != 4 && $user->type_id != 2) {
+                $created = $user->customer_company->getAllConcursosByCompany()->get();
+            } else if ($user->type_id == 3) {
+                $created = $user->customer_company->getAllConcursosByCompany()
+                    ->where('id_cliente', $user->id)
+                    ->get();
+            } else {
+                // type_id == 7 (evaluador técnico) o type_id == 4 (calificador reputación)
+                $created = Concurso::where([['ficha_tecnica_usuario_evalua', '=', $user->id]])->get();
+                
+                // Agregar concursos donde el usuario califica reputación
+                $concursosCalificaReputacion = Concurso::whereRaw("FIND_IN_SET(?, REPLACE(usuario_califica_reputacion, ' ', ''))", [$user->id])->get();
+                $created = $created->merge($concursosCalificaReputacion)->unique('id');
+            }
+
+            // EVALUATING
+            if (isAdmin()) {
+                $evaluating = collect();
+            } else {
+                $evaluating = $user->concursos_evalua;
+                // Agregar concursos donde el usuario califica reputación
+                $concursosCalificaReputacion = Concurso::whereRaw("FIND_IN_SET(?, REPLACE(usuario_califica_reputacion, ' ', ''))", [$user->id])->get();
+                $evaluating = collect($evaluating)->merge($concursosCalificaReputacion)->unique('id');
+            }
+
+            // Filtrar concursos en evaluación de reputación
+            $concursos = collect()
+                ->merge($created->where('adjudicado', true))
+                ->merge($evaluating->where('adjudicado', true))
+                ->unique('id')
+                ->filter(function ($concurso) {
+                    // Excluir concursos online usando el flag booleano
+                    if ((bool)($concurso->is_online ?? false)) {
+                        return false;
+                    }
+                    // Mantener sólo los que tienen oferentes en etapa de evaluación
+                    return $concurso->oferentes_etapa_evaluacion->count() > 0;
+                })
+                ->sortBy('id');
+
+            $itemsPerPage = 30;
+            $totalItems = count($concursos);
+            $offset = ($page - 1) * $itemsPerPage;
+
+            // Obtener items para la página solicitada
+            $concursosPage = $concursos->slice($offset, $itemsPerPage)->values();
+            $items = [];
+
+            foreach ($concursosPage as $concurso) {
+                $items[] = $this->mapConcursoList($concurso);
+            }
+
+            return $this->json($response, [
+                'success' => true,
+                'data' => [
+                    'items' => $items,
+                    'page' => $page,
+                    'totalPages' => ceil($totalItems / $itemsPerPage),
+                    'totalItems' => $totalItems,
+                    'hasMore' => ($offset + $itemsPerPage) < $totalItems
+                ]
+            ], 200);
+        } catch (\Exception $e) {
+            return $this->json($response, [
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
 
     public function delete(Request $request, Response $response, $params)
     {

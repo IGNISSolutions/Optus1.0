@@ -75,6 +75,7 @@ app()->group('/concursos', function () {
     $this->get('/cliente', 'App\Http\Controllers\Customer\ConcursoController:serveList')->add(new AuthMiddleware())->setName('concursos.cliente.serveList');
     $this->get('/cliente/list', 'App\Http\Controllers\Customer\ConcursoController:list')->add(new AuthMiddleware())->setName('concursos.cliente.list');
     $this->post('/cliente/list', 'App\Http\Controllers\Customer\ConcursoController:listFilter')->add(new AuthMiddleware())->setName('concursos.cliente.listFilter');
+    $this->post('/cliente/list/evaluacion-reputacion-lazy', 'App\Http\Controllers\Customer\ConcursoController:getEvaluacionReputacionLazy')->add(new AuthMiddleware())->setName('concursos.cliente.getEvaluacionReputacionLazy');    
     // Lista por Tipo
     $this->get('/cliente/{type}', 'App\Http\Controllers\Customer\ConcursoController:serveTypeList')->add(new AuthMiddleware())->setName('concursos.cliente.serveTypeList');
     $this->get('/cliente/{type}/list', 'App\Http\Controllers\Customer\ConcursoController:typeList')->add(new AuthMiddleware())->setName('concursos.cliente.type.list');
