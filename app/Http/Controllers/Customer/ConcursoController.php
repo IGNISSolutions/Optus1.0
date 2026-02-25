@@ -1804,14 +1804,15 @@ class ConcursoController extends BaseController
                 // Verificar si la fecha y hora actual es mayor a la fecha límite
                 $fechaLimiteVencida = Carbon::now() > $concurso->fecha_limite;
                 
-                if (!$concurso->adjudicado && $concurso->adjudicacion_anticipada && ($concurso->alguno_presento_economica || $plazoVencidoEconomicas) && $fechaLimiteVencida) {
+               // Si todos presentaron la economica, habilitar sin importar la fecha
+                if (!$concurso->adjudicado && $concurso->todos_presentaron_economica) {
                     $verOfertasEnable = true;
                 }
 
-                if (!$concurso->adjudicado && !$concurso->adjudicacion_anticipada && ($concurso->todos_presentaron_economica || $plazoVencidoEconomicas) && $fechaLimiteVencida) {
+                if (!$verOfertasEnable && !$concurso->adjudicado && $concurso->adjudicacion_anticipada
+                    && ($concurso->alguno_presento_economica || $plazoVencidoEconomicas) && $fechaLimiteVencida) {
                     $verOfertasEnable = true;
                 }
-
                 if ($concurso->technical_includes) {
                     $proveedores = $concurso->oferentes->where('has_tecnica_aprobada');
                 } else {
@@ -1927,11 +1928,17 @@ class ConcursoController extends BaseController
                 }
                 $verOfertasEnable = false;
                 $ejecutarNuevaRonda = $concurso->ronda_actual === Concurso::MAX_RONDAS ? false : true;
-                if (!$concurso->adjudicado && $concurso->adjudicacion_anticipada && ($concurso->alguno_presento_economica || $plazoVencidoEconomicas)) {
+                // Si todos presentaron la economica, habilitar sin importar la fecha
+                if (!$concurso->adjudicado && $concurso->todos_presentaron_economica) {
                     $verOfertasEnable = true;
                 }
                
-                if (!$concurso->adjudicado && !$concurso->adjudicacion_anticipada && ($concurso->todos_presentaron_economica || $plazoVencidoEconomicas)) {
+                if (!$verOfertasEnable && !$concurso->adjudicado && $concurso->adjudicacion_anticipada
+                    && ($concurso->alguno_presento_economica || $plazoVencidoEconomicas)) {
+                    $verOfertasEnable = true;
+                }
+               
+                if (!$verOfertasEnable && !$concurso->adjudicado && !$concurso->adjudicacion_anticipada && $plazoVencidoEconomicas) {
                     $verOfertasEnable = true;
                 }
 
