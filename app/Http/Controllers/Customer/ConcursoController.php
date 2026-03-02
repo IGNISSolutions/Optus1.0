@@ -2110,24 +2110,29 @@ class ConcursoController extends BaseController
 
             $sheets = [];
             $sheetsAdjudicado = [];
-            
-            // Asegurar que el SheetType adjudicado existe
-            $adjudicadoType = SheetType::where('code', 'adjudicado')->first();
-            if (!$adjudicadoType) {
-                $adjudicadoType = SheetType::create([
-                    'code' => 'adjudicado',
-                    'description' => 'Archivos Solo Adjudicado'
-                ]);
+            $tempAdjudicadoKey = null;
+            if ($create) {
+                try {
+                    $tempAdjudicadoKey = bin2hex(random_bytes(8));
+                } catch (\Throwable $e) {
+                    $tempAdjudicadoKey = uniqid('adj_', true);
+                }
             }
-
+            
+            $adjudicadoTypeId = null;
             foreach (SheetType::all() as $sheet_type) {
+                // Guardar el ID del tipo 'adjudicado'
+                if ($sheet_type->code === 'adjudicado') {
+                    $adjudicadoTypeId = $sheet_type->id;
+                }
+                
                 if ($create) {
                     $sheet = $is_copy ? $concurso->sheets->where('type_id', $sheet_type->id)->first() : null;
                 } else {
                     $sheet = $concurso->sheets->where('type_id', $sheet_type->id)->first();
                 }
                 
-                $sheetData = [
+                $sheet_data = [
                     'id' => $sheet ? $sheet->id : null,
                     'filename' => $sheet ? $sheet->filename : null,
                     'type_id' => $sheet_type->id,
@@ -2135,14 +2140,13 @@ class ConcursoController extends BaseController
                     'action' => null
                 ];
                 
-                // Separar sheets de adjudicado del resto
+                // Separar los adjudicados de los demás
                 if ($sheet_type->code === 'adjudicado') {
-                    $sheetsAdjudicado[] = $sheetData;
+                    $sheetsAdjudicado[] = $sheet_data;
                 } else {
-                    $sheets[] = $sheetData;
+                    $sheets[] = $sheet_data;
                 }
             }
-
             // COMMON
             $list = [
                 'Id' => $create ? 0 : $concurso->id,
@@ -3820,41 +3824,48 @@ class ConcursoController extends BaseController
             }
         }
 
-        // Pliegos adjudicados (igual lógica que regulares, pero en carpeta adjudicado)
+        // Archivos Solo Adjudicado
         if (isset($entity->SheetsAdjudicado) && is_array($entity->SheetsAdjudicado)) {
-            foreach ($entity->SheetsAdjudicado as $sheet) {
-                switch ($sheet->action ?? null) {
-                    case 'upload':
-                        // Si había un archivo previo, lo eliminamos.
-                        if ($sheet->id) {
-                            $to_delete = Sheet::find($sheet->id);
-                            @unlink($adjudicado_path . $to_delete->filename);
-                            $to_delete->delete();
-                        }
+            $adjudicadoType = SheetType::where('code', 'adjudicado')->first();
+            $adjudicadoTypeId = $adjudicadoType ? (int) $adjudicadoType->id : null;
+            
+            if ($adjudicadoTypeId) {
+                foreach ($entity->SheetsAdjudicado as $sheet) {
+                    switch ($sheet->action ?? 'upload') {
+                        case 'upload':
+                            // Si había un archivo previo, lo eliminamos.
+                            if (isset($sheet->id) && $sheet->id) {
+                                $to_delete = Sheet::find($sheet->id);
+                                if ($to_delete) {
+                                    @unlink($absolute_path . $to_delete->filename);
+                                    $to_delete->delete();
+                                }
+                            }
 
-                        // Guardamos el nuevo archivo en la carpeta adjudicado
-                        if (!empty($sheet->filename)) {
+                            // Guardamos el nuevo archivo con type_id adjudicado
                             $new_sheet = new Sheet([
                                 'concurso_id' => $concurso->id,
-                                'type_id' => (int) $sheet->type_id,
+                                'type_id' => $adjudicadoTypeId,
                                 'filename' => $sheet->filename
                             ]);
                             $new_sheet->save();
                             $documentChange = true;
-                        }
-                        break;
-                    case 'clear':
-                    case 'delete':
-                        // Si el archivo ya estaba guardado
-                        if ($sheet->id) {
-                            $to_delete = Sheet::find($sheet->id);
-                            @unlink($adjudicado_path . $to_delete->filename);
-                            $to_delete->delete();
-                        }
-                        $documentDeleted = true;
-                        break;
-                    default:
-                        break;
+                            break;
+                        case 'clear':
+                        case 'delete':
+                            // Si el archivo ya estaba guardado
+                            if (isset($sheet->id) && $sheet->id) {
+                                $to_delete = Sheet::find($sheet->id);
+                                if ($to_delete) {
+                                    @unlink($absolute_path . $to_delete->filename);
+                                    $to_delete->delete();
+                                }
+                            }
+                            $documentDeleted = true;
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
         }

@@ -428,6 +428,12 @@ class ConcursoController extends BaseController
 
             // Obtener concurso
             $concurso = $user->concursos_invitado->find($params['id']);
+            
+            // Eager load sheets con su tipo para evitar N+1 queries
+            if ($concurso) {
+                $concurso->load('sheets.type');
+            }
+            
             $rondaActual = $concurso->ronda_actual;
             $title = $rondaActual > 1 ? Concurso::NUEVAS_RONDAS[$rondaActual] : '';
             $timezone = $concurso->cliente->customer_company->timeZone ?? 'UTC';
@@ -634,6 +640,7 @@ class ConcursoController extends BaseController
            // INVITACIÓN
             if ($params['step'] === Step::STEPS['offerer']['invitacion']) {
                 $media = [];
+                $products = [];
                 foreach ($concurso->sheets as $sheet) {
                     // Excluir sheets de adjudicado en etapa de invitación
                     if ($sheet->type->code !== 'adjudicado') {
@@ -1010,7 +1017,7 @@ class ConcursoController extends BaseController
                                 'indice' => $sheet->type->id,
                                 'nombre' => $sheet->type->description,
                                 'imagen' => $sheet->filename,
-                                'path' => filePath($concurso->file_path . '/adjudicado/' . $sheet->filename)
+                                'path' => filePath('/concursos/' . $concurso->cliente->customer_company->cuit . '/' . $concurso->id . '/' . $sheet->filename)
                             ];
                         }
                     }
@@ -1047,11 +1054,6 @@ class ConcursoController extends BaseController
             $success = true;
 
                     // Aquí agregamos las líneas para escribir $list en el archivo
-        $file2 = fopen("Lista3.txt", "w");
-        fwrite($file2, json_encode($list, JSON_PRETTY_PRINT)); // Usé json_encode para que sea legible
-        fclose($file2); // Cerramos el archivo después de escribir
-
-            
         } catch (\Exception $e) {
             $success = false;
             $message = $e->getMessage();
@@ -1059,13 +1061,26 @@ class ConcursoController extends BaseController
 
         }
 
+        // Escapar FilePath y FilePathOferente - pueden contener caracteres problemáticos
+        if(!empty($list['FilePath'])) {
+            $list['FilePath'] = htmlspecialchars($list['FilePath'], ENT_QUOTES, 'UTF-8');
+        }
+        if(!empty($list['FilePathOferente'])) {
+            $list['FilePathOferente'] = htmlspecialchars($list['FilePathOferente'], ENT_QUOTES, 'UTF-8');
+        }
+
+        // Re-codificar steps para asegurar JSON-safe (especialmente URLs)
+        $steps_raw = Step::getByConcurso($concurso, $params['step']);
+        $steps_json = json_encode($steps_raw, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        $steps = json_decode($steps_json, true);
+
         return $this->json($response, [
             'success' => $success,
             'message' => $message,
             'data' => [
                 'list' => $list,
                 'breadcrumbs' => $breadcrumbs,
-                'steps' => Step::getByConcurso($concurso, $params['step'])
+                'steps' => $steps
             ]
         ], $status);
 
