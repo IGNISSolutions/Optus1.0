@@ -2165,12 +2165,19 @@ class ConcursoController extends BaseController
                 'AreaUsr' => $create && !$is_copy ? '' : $concurso->area_sol,
                 'FechaAlta' => $create ? Carbon::now()->format('Y-m-d H:i:s') : $concurso->fecha_alta->format('Y-m-d H:i:s'),
                 'FilePath' => filePath($user->file_path_customer),
+                'TempAdjudicadoKey' => $tempAdjudicadoKey,
+                'FilePathAdjudicado' => $create
+                    ? filePath('/concursos/' . $user->customer_company->cuit . '/tmp/' . $tempAdjudicadoKey . '/')
+                    : filePath('/concursos/' . $user->customer_company->cuit . '/' . ($concurso ? $concurso->id : '0') . '/'),
+                'CUITCliente' => $user->customer_company->cuit,
+                'NROLicitacion' => $create ? 0 : $concurso->id,
                 'SolicitudCompra' => $create ? '' : $concurso->solicitud_compra,
                 'OrdenCompra' => $create ? '' : $concurso->orden_compra,
                 'Resena' => $create && !$is_copy ? '' : $concurso->resena,
                 'Descripcion' => $create && !$is_copy ? '' : $concurso->descripcion,
                 'DescriptionLimit' => $this::$description_limit,
                 'Sheets' => $sheets,
+                'SheetsAdjudicado' => $sheetsAdjudicado,
                 'Pais' => $create && !$is_copy ? '' : $concurso->pais,
                 'Provincia' => $create && !$is_copy ? '' : $concurso->provincia,
                 'Localidad' => $create && !$is_copy ? '' : $concurso->localidad,
@@ -2565,6 +2572,9 @@ class ConcursoController extends BaseController
 
     public function store(Request $request, Response $response, $params)
     {
+        $storeOutputBufferLevel = ob_get_level();
+        ob_start();
+
         $entity = json_decode($request->getParsedBody()['Entity'], false);
 
         $success = false;
@@ -2953,6 +2963,14 @@ class ConcursoController extends BaseController
                 'redirect' => ''
             ]
         ];
+
+        $storeOutputNoise = '';
+        while (ob_get_level() > $storeOutputBufferLevel) {
+            $storeOutputNoise .= (string) ob_get_clean();
+        }
+        if (trim($storeOutputNoise) !== '') {
+            error_log('[ConcursoController::store output noise] ' . $storeOutputNoise);
+        }
 
         return $this->json($response, $result, $status);
     }
@@ -3744,6 +3762,10 @@ class ConcursoController extends BaseController
 
     private function storePortrait($old_image, $entity)
     {
+        if (!isset($entity->Portrait) || !is_object($entity->Portrait)) {
+            return;
+        }
+
         $portait = $entity->Portrait;
         $absolute_path = filePath(config('app.images_path'), true);
         if (isset($portait->action))
@@ -3764,6 +3786,10 @@ class ConcursoController extends BaseController
 
     private function storePortraitDescription($old_image, $entity)
     {
+        if (!isset($entity->DescripcionPortrait) || !is_object($entity->DescripcionPortrait)) {
+            return;
+        }
+
         $portait = $entity->DescripcionPortrait;
         $absolute_path = filePath(config('app.images_path'), true);
         if (isset($portait->action))
@@ -3785,19 +3811,28 @@ class ConcursoController extends BaseController
     private function storeSheets($concurso, $entity)
     {
         $absolute_path = filePath($concurso->file_path, true);
-        $adjudicado_path = $absolute_path . 'adjudicado' . DIRECTORY_SEPARATOR;
 
         $documentChange = false;
         $documentDeleted = false;
+
+        $regularSheets = (isset($entity->Sheets) && is_array($entity->Sheets)) ? $entity->Sheets : [];
+
         // Pliegos regulares
-        foreach ($entity->Sheets as $sheet) {
-            switch ($sheet->action) {
+        foreach ($regularSheets as $sheet) {
+            $sheetAction = $sheet->action ?? null;
+            switch ($sheetAction) {
                 case 'upload':
+                    if (empty($sheet->filename) || empty($sheet->type_id)) {
+                        break;
+                    }
+
                     // Si había un archivo previo, lo eliminamos.
-                    if ($sheet->id) {
+                    if (!empty($sheet->id)) {
                         $to_delete = Sheet::find($sheet->id);
-                        @unlink($absolute_path . $to_delete->filename);
-                        $to_delete->delete();
+                        if ($to_delete) {
+                            @unlink($absolute_path . $to_delete->filename);
+                            $to_delete->delete();
+                        }
                     }
 
                     // Guardamos el nuevo archivo
@@ -3812,10 +3847,12 @@ class ConcursoController extends BaseController
                 case 'clear':
                 case 'delete':
                     // Si el archivo ya estaba guardado
-                    if ($sheet->id) {
+                    if (!empty($sheet->id)) {
                         $to_delete = Sheet::find($sheet->id);
-                        @unlink($absolute_path . $to_delete->filename);
-                        $to_delete->delete();
+                        if ($to_delete) {
+                            @unlink($absolute_path . $to_delete->filename);
+                            $to_delete->delete();
+                        }
                     }
                     $documentDeleted = true;
                     break;
@@ -3831,8 +3868,13 @@ class ConcursoController extends BaseController
             
             if ($adjudicadoTypeId) {
                 foreach ($entity->SheetsAdjudicado as $sheet) {
-                    switch ($sheet->action ?? 'upload') {
+                    $sheetAction = $sheet->action ?? 'upload';
+                    switch ($sheetAction) {
                         case 'upload':
+                            if (empty($sheet->filename)) {
+                                break;
+                            }
+
                             // Si había un archivo previo, lo eliminamos.
                             if (isset($sheet->id) && $sheet->id) {
                                 $to_delete = Sheet::find($sheet->id);
@@ -3874,6 +3916,57 @@ class ConcursoController extends BaseController
             'documentChange' => $documentChange,
             'documentDeleted' => $documentDeleted
         ];
+    }
+
+    private function moveAdjudicadoTempFiles($concurso, $entity)
+    {
+        if (empty($entity->TempAdjudicadoKey)) {
+            return;
+        }
+
+        $cuit = $concurso->cliente->customer_company->cuit ?? user()->customer_company->cuit;
+        if (empty($cuit)) {
+            return;
+        }
+
+        $tempDir = rootPath() . filePath('/concursos/' . $cuit . '/tmp/' . $entity->TempAdjudicadoKey . '/');
+        $finalDir = rootPath() . filePath('/concursos/' . $cuit . '/' . $concurso->id . '/');
+
+        if (!is_dir($tempDir)) {
+            return;
+        }
+        if (!is_dir($finalDir)) {
+            @mkdir($finalDir, 0777, true);
+        }
+
+        $filenames = [];
+        if (isset($entity->SheetsAdjudicado) && is_array($entity->SheetsAdjudicado)) {
+            foreach ($entity->SheetsAdjudicado as $sheet) {
+                if (!empty($sheet->filename)) {
+                    $filenames[] = $sheet->filename;
+                }
+            }
+        }
+
+        $filenames = array_values(array_unique($filenames));
+        foreach ($filenames as $filename) {
+            $source = $tempDir . $filename;
+            $dest = $finalDir . $filename;
+            if (!file_exists($source)) {
+                continue;
+            }
+            if (file_exists($dest)) {
+                @unlink($source);
+                continue;
+            }
+            if (!@rename($source, $dest)) {
+                if (@copy($source, $dest)) {
+                    @unlink($source);
+                }
+            }
+        }
+
+        @rmdir($tempDir);
     }
 
     public function checkProducts(Request $request, Response $response)
@@ -4985,6 +5078,9 @@ class ConcursoController extends BaseController
             $this->storePortraitDescription($old_image_descripcion, $entity);
         }
 
+        // Mover archivos adjudicados de temp a carpeta final
+        $this->moveAdjudicadoTempFiles($concurso, $entity);
+
         $documentsChanged = $this->storeSheets($concurso, $entity);
 
         // Productos
@@ -5381,7 +5477,8 @@ class ConcursoController extends BaseController
             $this->storePortraitDescription($old_image_descripcion, $entity);
         }
 
-
+        // Mover archivos adjudicados de temp a carpeta final
+        $this->moveAdjudicadoTempFiles($concurso, $entity);
 
         // Pliegos
         $documentsChanged = $this->storeSheets($concurso, $entity);
