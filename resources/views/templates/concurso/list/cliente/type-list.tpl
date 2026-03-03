@@ -756,7 +756,10 @@
             // Cargar datos iniciales de Evaluación de Reputación
             this.loadEvaluacionReputacionInitial = function() {
                 self.EvaluacionReputacionLoading(true);
-                var data = { page: 1 };
+                var data = { 
+                    page: 1,
+                    searchTerm: self.Filters() ? self.Filters().searchTerm() : null
+                };
                 
                 console.log('Iniciando carga de Evaluación de Reputación...');
                 
@@ -802,7 +805,10 @@
                 
                 self.EvaluacionReputacionLoadingMore(true);
                 var nextPage = self.EvaluacionReputacionCurrentPage() + 1;
-                var data = { page: nextPage };
+                var data = { 
+                    page: nextPage,
+                    searchTerm: self.Filters() ? self.Filters().searchTerm() : null
+                };
                 
                 Services.Post('/concursos/cliente/list/evaluacion-reputacion-lazy', {
                         UserToken: User.Token,
@@ -844,7 +850,25 @@
                         },
                         (response) => {
                             if (response.success) {
-                                self.Lists(new List(response.data.list))
+                                self.Lists(new List(response.data.list));
+                                
+                                // Sincronizar estado de Evaluación de Reputación después del filtro
+                                var currentSearchTerm = self.Filters() ? self.Filters().searchTerm() : null;
+                                var reputacionCount = response.data.list.ListaConcursosEvaluacionReputacion ? response.data.list.ListaConcursosEvaluacionReputacion.length : 0;
+                                
+                                if (currentSearchTerm) {
+                                    self.EvaluacionReputacionTotal(reputacionCount);
+                                    self.EvaluacionReputacionCurrentPage(1);
+                                    self.EvaluacionReputacionTotalPages(1);
+                                    self.EvaluacionReputacionHasMore(false);
+                                    self.EvaluacionReputacionExpanded(reputacionCount > 0);
+                                } else {
+                                    self.EvaluacionReputacionTotal(0);
+                                    self.EvaluacionReputacionCurrentPage(1);
+                                    self.EvaluacionReputacionTotalPages(1);
+                                    self.EvaluacionReputacionHasMore(false);
+                                    self.EvaluacionReputacionExpanded(false);
+                                }
                             }
                             $.unblockUI();
                         },
