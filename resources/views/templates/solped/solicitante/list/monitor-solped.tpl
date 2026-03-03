@@ -119,13 +119,13 @@
 
                                 <td class="text-center vertical-align-middle">
                                     <a href="javascript:void(0);"
-                                        data-bind="click: function() { $root.goToEdition(Id(), TipoConcursoPath()) }"
+                                        data-bind="click: function() { $root.goToEdition(Id(), TipoConcursoPath()) }, css: { disabled: !$root.SolpedActive() }"
                                         class="btn btn-xs purple" title="Editar">
                                         Editar
                                         <i class="fa fa-edit"></i>
                                     </a>
 
-                                    <a data-bind="click: function() { $root.sendSolicitud(Id()) }"
+                                    <a data-bind="click: function() { $root.sendSolicitud(Id()) }, css: { disabled: !$root.SolpedActive() }"
                                         class="btn btn-xs purple" title="Enviar Solicitud">
                                         Enviar Solicitud
                                         <i class="fa fa-send"></i>
@@ -243,7 +243,7 @@
 
                                     <!-- ko if: User.Tipo === 4 -->
                                     <a href="javascript:void(0);"
-                                        data-bind="click: function() { $root.goToEdition(Id(), TipoConcursoPath()) }"
+                                        data-bind="click: function() { $root.goToEdition(Id(), TipoConcursoPath()) }, css: { disabled: !$root.SolpedActive() }"
                                         class="btn btn-xs yellow-gold" title="Editar">
                                         Editar
                                         <i class="fa fa-edit"></i>
@@ -497,11 +497,11 @@
         <!-- ko if: User.Tipo === 3 -->
         <div class="text-right margin-top-10" data-bind="visible: hasSelected">
             <button class="btn btn-primary"
-                    data-bind="click: convertirEnLicitacion">
+                    data-bind="click: convertirEnLicitacion, enable: SolpedActive">
                 Convertir Solicitudes en Licitación
             </button>
             <button class="btn btn-success"
-                    data-bind="click: convertirEnSubasta">
+                    data-bind="click: convertirEnSubasta, enable: SolpedActive">
                 Convertir Solicitudes en Subasta
             </button>
         </div>
@@ -514,7 +514,7 @@
 <!-- KNOCKOUT JS -->
 {block 'knockout' append}
     <script type="text/javascript">
-
+        var solpedActiveFlag = {if isSolpedActive()}true{else}false{/if};
         console.log("User", User.Tipo);
         var ListItem = function(data) {
             console.log("datos", data);
@@ -626,33 +626,59 @@
             this.Breadcrumbs = ko.observableArray(data.breadcrumbs);
             this.Lists = ko.observable(new List(data.list));
             this.UserType = ko.observable(data.userType);
-            this.filter = function(filters) {
-                if (filters) {
-                    $.blockUI()
-                    var data = {};
-                    Services.Post('/solpeds/solicitante/list', {
-                            UserToken: User.Token,
-                            Entity: JSON.stringify(ko.toJS(data)),
-                            Filters: JSON.stringify(ko.toJS(filters))
-                        },
-                        (response) => {
-                            if (response.success) {
-                                self.Lists(new List(response.data.list))
-                            }
-                            $.unblockUI();
-                        },
-                        (error) => {
-                            $.unblockUI();
-                            swal('Error', error.message, 'error');
-                        },
-                        null,
-                        null
-                    );
+            this.SolpedActive = ko.observable(!!solpedActiveFlag);
+
+            this.guardSolpedActive = function() {
+                if (self.SolpedActive()) {
+                    return true;
                 }
+                swal('Atención', 'El módulo de Solped está desactivado para tu empresa.', 'warning');
+                return false;
             };
+            
+            // Función para aplicar filtros en el frontend
+            this.applyFilters = function() {
+                var searchTerm = self.Filters().searchTerm();
+                var urgencyFilter = self.Filters().urgencyFilter();
+                
+                // Copiar datos originales
+                var filtered = JSON.parse(JSON.stringify(self.OriginalData));
+                
+                // Aplicar filtro de búsqueda
+                if (searchTerm && searchTerm.trim() !== '') {
+                    const term = searchTerm.trim().toLowerCase();
+                    const isIdSearch = /^\d+$/.test(searchTerm);
+                    
+                    for (let key in filtered) {
+                        filtered[key] = filtered[key].filter(item => {
+                            if (isIdSearch) {
+                                return item.Id == searchTerm;
+                            } else {
+                                return (item.Nombre && item.Nombre.toLowerCase().indexOf(term) !== -1) ||
+                                       (item.Solicitante && item.Solicitante.toLowerCase().indexOf(term) !== -1);
+                            }
+                        });
+                    }
+                }
+                
+                // Aplicar filtro de urgencia
+                if (urgencyFilter && urgencyFilter.trim() !== '') {
+                    for (let key in filtered) {
+                        filtered[key] = filtered[key].filter(item => {
+                            return item.Urgencia && item.Urgencia.toLowerCase() === urgencyFilter.toLowerCase();
+                        });
+                    }
+                }
+                
+                self.Lists(new List(filtered));
+            };
+            
             this.Filters = ko.observable(new Filters(self));
 
             this.goToEdition = function(idSolped) {
+                if (!self.guardSolpedActive()) {
+                    return;
+                }
                 try {
                     window.location.href = '/solped/edicion/' + idSolped;
                 } catch (error) {
@@ -709,6 +735,9 @@
             // Acciones
            // Al hacer click en "Convertir en Licitación"
             this.convertirEnLicitacion = function() {
+    if (!self.guardSolpedActive()) {
+        return;
+    }
     const seleccionadas = self.SelectedSolpeds();
     console.log("👉 Solpeds seleccionadas:", seleccionadas);
 
@@ -768,6 +797,9 @@
 
 
             this.convertirEnSubasta = function() {
+                if (!self.guardSolpedActive()) {
+                    return;
+                }
                 const seleccionadas = self.SelectedSolpeds();
                 console.log("👉 Solpeds seleccionadas para subasta:", seleccionadas);
 
@@ -841,6 +873,9 @@
 
 
             this.sendSolicitud = function(IdSolped) {
+                if (!self.guardSolpedActive()) {
+                    return;
+                }
                 // Extraer el valor si es un observable de Knockout
                 var solpedId = ko.isObservable(IdSolped) ? IdSolped() : IdSolped;
                 

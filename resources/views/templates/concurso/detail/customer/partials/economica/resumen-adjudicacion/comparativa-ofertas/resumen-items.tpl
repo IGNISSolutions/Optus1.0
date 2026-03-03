@@ -54,7 +54,7 @@
                        style: { background: $data.items[$parentContext.$index()].isMenorPlazo ? '#c6e0b4' : '#ffffff' }">
         </td>
         <td class="text-center vertical-align-middle dt-head-center"
-            data-bind="number: $data.items[$parentContext.$index()].cantidad, precision: 0,
+            data-bind="number: $data.items[$parentContext.$index()].cantidad, precision: 2,
                        style: { background: $data.items[$parentContext.$index()].isMenorCantidad ? '#c6e0b4' : '#ffffff' }">
         </td>
         <td class="text-center vertical-align-middle dt-head-center"

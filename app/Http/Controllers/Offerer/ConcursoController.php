@@ -167,34 +167,26 @@ class ConcursoController extends BaseController
                 if ($searchTerm) {
                     $searchTerm = trim($searchTerm);
             
-                    //Checks if the input is numeric (ID filtering)
-                    if (is_numeric($searchTerm)) {
-                        //Search by exact ID
-                        $invited = $invited->filter(function ($item) use ($searchTerm) {
-                            return $item->id == $searchTerm;
-                        });
-            
-                        $invited_with_trashed = $invited_with_trashed->filter(function ($item) use ($searchTerm) {
-                            return $item->id == $searchTerm;
-                        });
-                    } else {
-                        //Plain text search in name and business_name
-                        $invited = $invited->filter(function ($item) use ($searchTerm) {
-                            return 
-                                    !!stristr($item->nombre, trim($searchTerm)) ||
-                                    !!stristr($item->cliente->customer_company->business_name, trim($searchTerm)) ||
-                                    !!stristr($item->cliente->full_name, trim($searchTerm)) ||
-                                    !!stristr($item->area_sol, trim($searchTerm));
-                        });
-            
-                        $invited_with_trashed = $invited_with_trashed->filter(function ($item) use ($searchTerm) {
-                            return 
-                                    !!stristr($item->nombre, trim($searchTerm)) ||
-                                    !!stristr($item->cliente->customer_company->business_name, trim($searchTerm)) ||
-                                    !!stristr($item->cliente->full_name, trim($searchTerm)) ||
-                                    !!stristr($item->area_sol, trim($searchTerm));
-                        });
-                    }
+                    //Search in all relevant fields regardless of numeric input
+                    //This allows finding clients whose name is only numbers (e.g., "0938")
+                    //Also searches partial matches in ID (e.g., "29" finds 529, 129, etc.)
+                    $invited = $invited->filter(function ($item) use ($searchTerm) {
+                        return 
+                                !!stristr((string)$item->id, trim($searchTerm)) ||
+                                !!stristr($item->nombre, trim($searchTerm)) ||
+                                !!stristr($item->cliente->customer_company->business_name, trim($searchTerm)) ||
+                                !!stristr($item->cliente->full_name, trim($searchTerm)) ||
+                                !!stristr($item->area_sol, trim($searchTerm));
+                    });
+        
+                    $invited_with_trashed = $invited_with_trashed->filter(function ($item) use ($searchTerm) {
+                        return 
+                                !!stristr((string)$item->id, trim($searchTerm)) ||
+                                !!stristr($item->nombre, trim($searchTerm)) ||
+                                !!stristr($item->cliente->customer_company->business_name, trim($searchTerm)) ||
+                                !!stristr($item->cliente->full_name, trim($searchTerm)) ||
+                                !!stristr($item->area_sol, trim($searchTerm));
+                    });
                 }
             }
 
@@ -436,6 +428,12 @@ class ConcursoController extends BaseController
 
             // Obtener concurso
             $concurso = $user->concursos_invitado->find($params['id']);
+            
+            // Eager load sheets con su tipo para evitar N+1 queries
+            if ($concurso) {
+                $concurso->load('sheets.type');
+            }
+            
             $rondaActual = $concurso->ronda_actual;
             $title = $rondaActual > 1 ? Concurso::NUEVAS_RONDAS[$rondaActual] : '';
             $timezone = $concurso->cliente->customer_company->timeZone ?? 'UTC';
@@ -639,19 +637,21 @@ class ConcursoController extends BaseController
                 'ShowChatButton' => $oferente->has_invitacion_aceptada
             ];
 
-            // INVITACIÓN
+           // INVITACIÓN
             if ($params['step'] === Step::STEPS['offerer']['invitacion']) {
-                $file_path = filePath($concurso->file_path, true);
                 $media = [];
-                foreach ($concurso->sheets as $sheet) {
-                    $media[] = [
-                        'indice' => $sheet->type->id,
-                        'nombre' => $sheet->type->description,
-                        'imagen' => $sheet->filename,
-                        'path' => filePath($file_path . $sheet->filename)
-                    ];
-                }
                 $products = [];
+                foreach ($concurso->sheets as $sheet) {
+                    // Excluir sheets de adjudicado en etapa de invitación
+                    if ($sheet->type->code !== 'adjudicado') {
+                        $media[] = [
+                            'indice' => $sheet->type->id,
+                            'nombre' => $sheet->type->description,
+                            'imagen' => $sheet->filename,
+                            'path' => filePath($concurso->file_path . $sheet->filename)
+                        ];
+                    }
+                }
                 foreach ($concurso->productos as $product) {
                     array_push($products, [
                         'product_id' => $product->id,
@@ -1002,8 +1002,26 @@ class ConcursoController extends BaseController
                 ]));
             }
 
-            // ADJUDICACIÓN
+             // ADJUDICACIÓN
             if ($params['step'] === Step::STEPS['offerer']['adjudicado']) {
+                $mediaAdjudicado = [];
+                
+                // Solo mostrar archivos adjudicados si el oferente fue adjudicado
+                $isAdjudicado = str_starts_with((string)$oferente->etapa_actual, 'adjudicacion-aceptada');
+                
+                if ($isAdjudicado) {
+                    foreach ($concurso->sheets as $sheet) {
+                        // Solo mostrar sheets de adjudicado
+                        if ($sheet->type->code === 'adjudicado') {
+                            $mediaAdjudicado[] = [
+                                'indice' => $sheet->type->id,
+                                'nombre' => $sheet->type->description,
+                                'imagen' => $sheet->filename,
+                                'path' => filePath('/concursos/' . $concurso->cliente->customer_company->cuit . '/' . $concurso->id . '/' . $sheet->filename)
+                            ];
+                        }
+                    }
+                }
 
                 $list = array_merge($list, array_merge($common, [
                     'EstadoTran' => isset($oferente->payment->paid) ? $oferente->payment->paid : '',
@@ -1016,6 +1034,8 @@ class ConcursoController extends BaseController
                     'Items' => $concurso->adjudicacion_items,
                     'Resultados' => $concurso->adjudicacion_resultados_output,
                     'AceptoAdjudicacion' => (string) $oferente->acepta_adjudicacion,
+                    'MediaAdjudicado' => $mediaAdjudicado,
+                    'IsAdjudicado' => $isAdjudicado,
                     
                 ]));
             }
@@ -1034,11 +1054,6 @@ class ConcursoController extends BaseController
             $success = true;
 
                     // Aquí agregamos las líneas para escribir $list en el archivo
-        $file2 = fopen("Lista3.txt", "w");
-        fwrite($file2, json_encode($list, JSON_PRETTY_PRINT)); // Usé json_encode para que sea legible
-        fclose($file2); // Cerramos el archivo después de escribir
-
-            
         } catch (\Exception $e) {
             $success = false;
             $message = $e->getMessage();
@@ -1046,13 +1061,26 @@ class ConcursoController extends BaseController
 
         }
 
+        // Escapar FilePath y FilePathOferente - pueden contener caracteres problemáticos
+        if(!empty($list['FilePath'])) {
+            $list['FilePath'] = htmlspecialchars($list['FilePath'], ENT_QUOTES, 'UTF-8');
+        }
+        if(!empty($list['FilePathOferente'])) {
+            $list['FilePathOferente'] = htmlspecialchars($list['FilePathOferente'], ENT_QUOTES, 'UTF-8');
+        }
+
+        // Re-codificar steps para asegurar JSON-safe (especialmente URLs)
+        $steps_raw = Step::getByConcurso($concurso, $params['step']);
+        $steps_json = json_encode($steps_raw, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        $steps = json_decode($steps_json, true);
+
         return $this->json($response, [
             'success' => $success,
             'message' => $message,
             'data' => [
                 'list' => $list,
                 'breadcrumbs' => $breadcrumbs,
-                'steps' => Step::getByConcurso($concurso, $params['step'])
+                'steps' => $steps
             ]
         ], $status);
 

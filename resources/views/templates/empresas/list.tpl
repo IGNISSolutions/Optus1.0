@@ -105,6 +105,14 @@
                                         <i class="fa fa-pencil"></i>
                                     </a>
 
+                                    {if isAdmin() && $tipo === 'client'}
+                                        <a href="javascript:void(0);" class="btn btn-xs purple"
+                                            data-bind="click: function() { $root.ModulosEmpresa(Id()) }" title="Modulos">
+                                            Modulos
+                                            <i class="fa fa-sliders"></i>
+                                        </a>
+                                    {/if}
+
                                     <a
                                     data-bind="attr: {ldelim} href: '/empresas/{$tipo}/usuarios/' + Id() {rdelim}"
                                     class="btn btn-xs btn-warning"
@@ -235,6 +243,18 @@
                     }
                 }).fail(function () {
                     swal('Error', 'No se pudo abrir el detalle.', 'error');
+                });
+            };
+
+            self.ModulosEmpresa = function(id) {
+                $.post('/empresas/guardar-id-edicion', { id: id }, function(response) {
+                    if (response.success) {
+                        window.location.href = '/empresas/' + params[1] + '/edicion/' + id + '#modulos';
+                    } else {
+                        swal('Error', response.message, 'error');
+                    }
+                }).fail(function () {
+                    swal('Error', 'No se pudo abrir los modulos.', 'error');
                 });
             };
 

@@ -42,6 +42,14 @@ use stdClass;
 
 class SolpedController extends BaseController {
 
+    private function ensureSolpedActive(Request $request, Response $response)
+    {
+        if (isAdmin()) {
+            return;
+        }
+        abort_if($request, $response, !isSolpedActive(), 404);
+    }
+
    public function serveDetail(Request $request, Response $response, $params)
     {
         try {
@@ -94,7 +102,6 @@ class SolpedController extends BaseController {
     }
 
     public function detail(Request $request, Response $response, $params) {
-
         // Eliminar o comentar temporalmente todo el logging para debug
         
         $logFile = __DIR__ . '/debug_detail_cust.txt';
@@ -227,16 +234,30 @@ class SolpedController extends BaseController {
                 }
             }
 
-            // FilePath
-            $file_path = [];
-            if ($solped->file_path) {
-                $file_path = filePath($solped->file_path, true);
+            // FilePath y documentos (misma lógica que en Concurso)
+            // Usar la estructura CUIT/AÑO a través del método file_path del modelo
+            $file_path = '/storage/img/' . $solped->file_path;            
+            $documents = [];
+            $sheetTypes = SheetType::all()->values();
+            $docIndex = 0;
+            foreach ($solped->documents as $doc) {
+                $sheetType = isset($sheetTypes[$docIndex]) ? $sheetTypes[$docIndex] : null;
+                $documents[] = [
+                    'nombre' => $sheetType ? $sheetType->description : $doc->filename,
+                    'type_name' => $sheetType ? $sheetType->description : null,
+                    'imagen' => $doc->filename,
+                    'url' => $file_path . $doc->filename
+                ];
+                $docIndex++;
             }
 
             $list = array_merge($common_data, [
                 'Productos'        => $productos,
-                'FilePath'         => $file_path,
-                'FilePathComplete' => $file_path && $solped->filename ? $file_path . $solped->filename : null,
+                'FilePath'         => $documents,
+                'Documents'        => $documents,
+                'FilePathComplete' => $documents ? $file_path . $documents[0]['imagen'] : null,
+                'file_path'        => $solped->file_path,  // Agregar la ruta relativa para la vista
+
             ]);
 
             // Exponer datos mínimos de adjudicación para vista del solicitante
@@ -307,6 +328,13 @@ class SolpedController extends BaseController {
         $status = 200;
         $result = [];
         $redirect_url = null;
+
+        if (!isSolpedActive() && !isAdmin()) {
+            return $this->json($response, [
+                'success' => false,
+                'message' => 'El módulo de Solped está desactivado para tu empresa.'
+            ], 403);
+        }
 
         // Archivo de log
         $logFile = __DIR__ . '/debug_reject_cust.txt';
@@ -414,6 +442,13 @@ class SolpedController extends BaseController {
         $result = [];
         $redirect_url = null;
 
+        if (!isSolpedActive() && !isAdmin()) {
+            return $this->json($response, [
+                'success' => false,
+                'message' => 'El módulo de Solped está desactivado para tu empresa.'
+            ], 403);
+        }
+
         // Archivo de log
         $logFile = __DIR__ . '/debug_sendback_cust.txt';
         $fp = fopen($logFile, 'a');
@@ -519,6 +554,13 @@ class SolpedController extends BaseController {
         $status = 200;
         $result = [];
         $redirect_url = null;
+
+        if (!isSolpedActive() && !isAdmin()) {
+            return $this->json($response, [
+                'success' => false,
+                'message' => 'El módulo de Solped está desactivado para tu empresa.'
+            ], 403);
+        }
 
         // Archivo de log
         $logFile = __DIR__ . '/debug_approve_cust.txt';

@@ -147,6 +147,18 @@ class Solped extends Model
         return $this::TYPE_DESCRIPTION[$this->attributes['tipo_compra']];
     }
 
+     public function getFilePathAttribute()
+    {
+        // Retornar ruta base usando el solicitante (cliente)
+        if ($this->cliente && $this->fecha_alta) {
+            $year = $this->fecha_alta instanceof \Carbon\Carbon 
+                ? $this->fecha_alta->format('Y') 
+                : substr($this->fecha_alta, 0, 4);
+            return 'solpeds/' . $this->cliente->customer_company->cuit . '/' . $year . '/';
+        }
+        return 'solpeds/';
+    }
+
     public function getSolpedsEnPreparacionAttribute()
     {
         return $this->etapa_actual === 'en-preparacion' && $this->estado_actual === 'borrador';

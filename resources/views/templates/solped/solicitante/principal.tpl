@@ -198,13 +198,13 @@
         </div>
         <div class="col-sm-6 text-right">
             <div class="form-group" style="display:inline-block; margin-left:10px;">
-                <button type="button" class="btn btn-primary" data-bind="click: store">
+                <button type="button" class="btn btn-primary" data-bind="click: store, enable: SolpedActive">
                     Guardar Datos
                 </button>
             </div>
             <div class="form-group" style="display:inline-block; margin-left:10px;">
                 <button type="button" class="btn btn-success"
-                        data-bind="click: sendSolpeds">
+                        data-bind="click: sendSolpeds, enable: SolpedActive">
                     Enviar Solicitud
                 </button>
             </div>
@@ -218,6 +218,7 @@
 
 {block 'knockout' append}
     <script >
+        var solpedActiveFlag = {if isSolpedActive()}true{else}false{/if};
         ko.validation.locale('es-ES');
         ko.validation.init({
             insertMessages: false,
@@ -279,6 +280,13 @@
             if (data.list.DescripcionPortrait) {
                 self.DescripcionPortrait(new Portrait(data.list.DescripcionPortrait));
             }
+        this.Sheets = ko.observableArray([]);
+        var sheets = Array.isArray(data.list.Sheets) ? data.list.Sheets : [];
+        if (sheets.length > 0) {
+            sheets.forEach(item => {
+                self.Sheets.push(new Sheet(item));
+            });
+        }
         this.Portrait = ko.observable(new Portrait());
             if (data.list.Portrait) {
                 self.Portrait(new Portrait(data.list.Portrait));
@@ -302,6 +310,16 @@
             var self = this;
 
             this.filename = ko.observable(filename ? filename : null);
+            this.action = ko.observable(null);
+        }
+
+    var Sheet = function(data) {
+            var self = this;
+
+            this.id = ko.observable(data.id);
+            this.filename = ko.observable(data.filename);
+            this.type_id = ko.observable(data.type_id);
+            this.type_name = ko.observable(data.type_name);
             this.action = ko.observable(null);
         }
 
@@ -358,8 +376,46 @@
             : []
         );
 
-        
+        this.SolpedActive = ko.observable(!!solpedActiveFlag);
+        this.guardSolpedActive = function() {
+            if (self.SolpedActive()) {
+                return true;
+            }
+            swal('Atención', 'El módulo de Solped está desactivado para tu empresa.', 'warning');
+            return false;
+        };
+
         this.ReadOnly = ko.observable(false);
+        this.FilePath = ko.observable(data.list.FilePath || data.list.DescripcionImagePath || 'storage/img/solpeds');
+        this.downloadFile = function(path, type = null, id = null) {
+            $.blockUI();
+            var data = {
+                Id: id,
+                Type: type,
+                Path: path,
+            };
+            var url = '/media/file/download';
+
+            Services.Post(url, {
+                UserToken: User.Token,
+                Entity: JSON.stringify(ko.toJS(data))
+            },
+            (response) => {
+                $.unblockUI();
+                if (response.success) {
+                    window.open(response.data.public_path);
+                } else {
+                    swal('Error', response.message, 'error');
+                }
+            },
+            (error) => {
+                $.unblockUI();
+                swal('Error', typeof error.message != 'undefined' ? error.message : error.responseJSON.message, 'error');
+            },
+            null,
+            null
+            );
+        }
         this.NewProduct = ko.observable(new Product());
 
 
@@ -447,6 +503,9 @@
         this.Entity = new Form(data, self);
 
         this.sendSolpeds = function() {
+                if (!self.guardSolpedActive()) {
+                    return;
+                }
                 swal({
                     title: '¿Desea enviar la Solicitud de Pedido?',
                     text: 'Esta a punto de enviar las notificaciones para esta solicitud.',
@@ -506,6 +565,166 @@
                 }
             }
         }
+
+        // Descargar plantilla Excel
+        this.downloadPlantillaExcel = function() {
+            var materiales = self.Filters().MaterialesList();
+            var unidades = self.ProductMeasurementList();
+
+            var materialesList = materiales.flatMap(item => item.materiales.map(m => ({
+                text: m.text,
+                targetcost: m.targetcost,
+                unidad: m.unidad
+            })));
+
+            var wb = XLSX.utils.book_new();
+            wb.Props = {
+                Title: "Plantilla para importación de Productos a SOLPED",
+                Subject: "Plantilla para importación de Productos a SOLPED",
+                Author: "Optus",
+                CreatedDate: new Date()
+            };
+            wb.SheetNames.push("Productos");
+            wb.SheetNames.push("Lista - Productos");
+            wb.SheetNames.push("Lista - Unidades");
+            
+            var ws_data = [
+                [
+                    'Nombre Producto',
+                    'Descripcion',
+                    'Cantidad Solicitada',
+                    'Cantidad Mínima',
+                    'Unidad de Medida',
+                    'Costo Objetivo Unitario'
+                ]
+            ];
+
+            var ws_dataLC = [
+                [
+                    'Nombre Producto',
+                    'Costo Objetivo Unitario',
+                    'Unidad Id'
+                ]
+            ];
+            materialesList.forEach(item => {
+                var vItem = [];
+                vItem.push(item['text'], item['targetcost'], item['unidad']);
+                ws_dataLC.push(vItem);
+            });
+
+            var ws_dataLU = [
+                [
+                    'Unidad Id',
+                    'Nombre'
+                ]
+            ];
+            unidades.forEach(item => {
+                var vItem = [];
+                vItem.push(item['id'], item['text']);
+                ws_dataLU.push(vItem);
+            });
+
+            var ws = XLSX.utils.aoa_to_sheet(ws_data);
+            var wsLC = XLSX.utils.aoa_to_sheet(ws_dataLC);
+            var wsLU = XLSX.utils.aoa_to_sheet(ws_dataLU);
+
+            if (!ws.A1.c) ws.A1.c = [];
+            ws.A1.c.push({
+                a: "SheetJS",
+                t: "Ingrese el nombre del producto (Obligatorio)"
+            });
+
+            if (!ws.C1.c) ws.C1.c = [];
+            ws.C1.c.push({
+                a: "SheetJS",
+                t: "Ingrese la Cantidad a solicitar (Obligatorio)"
+            });
+
+            if (!ws.D1.c) ws.D1.c = [];
+            ws.D1.c.push({
+                a: "SheetJS",
+                t: "Ingrese la Cantidad minima (Obligatorio)"
+            });
+
+            if (!ws.E1.c) ws.E1.c = [];
+            ws.E1.c.push({
+                a: "SheetJS",
+                t: "Ingrese el Id de la unidad de medida (Obligatorio)"
+            });
+
+            wb.Sheets["Productos"] = ws;
+            wb.Sheets["Lista - Productos"] = wsLC;
+            wb.Sheets["Lista - Unidades"] = wsLU;
+
+            XLSX.writeFile(wb, 'Productos_SOLPED_Importacion.xlsx');
+        };
+
+        // Observable para archivo seleccionado
+        this.uploadFile = ko.observable(null);
+        this.uploadName = ko.computed(function() {
+            return !!self.uploadFile() ? self.uploadFile().name : '-';
+        });
+
+        // Limpiar archivo seleccionado
+        this.uploadFileclear = function() {
+            self.uploadFile(null);
+        };
+
+        // Procesar archivo importado
+        this.uploadFileProcesar = function() {
+            var file = self.uploadFile();
+            if (!file) {
+                swal('Error', 'Por favor seleccione un archivo', 'error');
+                return;
+            }
+
+            var fileReader = new FileReader();
+            fileReader.readAsBinaryString(file);
+
+            fileReader.onload = (event) => {
+                var data = event.target.result;
+                var workbook = XLSX.read(data, { type: "binary" });
+                var resultRowObject = null;
+
+                workbook.SheetNames.forEach(sheet => {
+                    if (sheet === 'Productos') {
+                        resultRowObject = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheet]);
+                    }
+                });
+
+                if (resultRowObject === null) {
+                    swal('Error', 'No se encontró la hoja "Productos"', 'error');
+                } else {
+                    // Validar que las filas tengan datos
+                    var validRows = resultRowObject.filter(item => item['Nombre Producto'] && item['Cantidad Solicitada']);
+                    
+                    if (validRows.length === 0) {
+                        swal('Error', 'No se encontraron productos válidos en el archivo', 'error');
+                        self.uploadFile(null);
+                        return;
+                    }
+
+                    // Crear productos usando Product y agregarlos
+                    var newProducts = [];
+                    self.Entity.Products().forEach(item => {
+                        newProducts.push(item);
+                    });
+
+                    validRows.forEach(item => {
+                        var product = new Product(item);
+                        newProducts.push(product);
+                    });
+
+                    self.Entity.Products.removeAll();
+                    self.Entity.Products(newProducts);
+
+                    swal('Éxito', 'Se importaron ' + validRows.length + ' productos correctamente', 'success');
+                }
+
+                self.uploadFile(null);
+            };
+        };
+
         this.Filters = ko.observable();
 
         this.initFilters = function() {
@@ -520,6 +739,9 @@
         self.initFilters();
 
         self.store = function () {
+        if (!self.guardSolpedActive()) {
+            return;
+        }
         // Validación en cliente con detalle de faltantes
         var entityErrors = ko.validation.group(self.Entity, { deep: true });
         var hasItems = self.Entity.Products().length > 0;

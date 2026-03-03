@@ -430,6 +430,7 @@ class ConcursoController extends BaseController
         $success = false;
         $message = null;
         $status = 200;
+        $searchTerm = null;
         $list = [
             'ListaConcursosEnPreparacion' => [],
             'ListaConcursosConvocatoriaOferentes' => [],
@@ -510,76 +511,45 @@ class ConcursoController extends BaseController
             
                 //Check if Knockout has passed filters
                 if ($filters) {
-                    $searchTerm = $filters->searchTerm ?? null;
+                    $searchTerm = isset($filters->searchTerm) ? trim((string) $filters->searchTerm) : null;
                     
                     //Checks for a text input to exist
-                    if ($searchTerm) {
-                        //Checks if search is numeric, (ID search)
-                        if (is_numeric($searchTerm)) {
+                    if (!empty($searchTerm)) {
+                        $matchesSearch = function ($item) use ($searchTerm) {
+                            $term = trim((string)$searchTerm);
+                            $isNumericTerm = is_numeric($term);
 
-                            //Exact ID match
-                            $created = $created->filter(function ($item) use ($searchTerm) {
-                                return $item->id == $searchTerm || $item->solicitud_compra == $searchTerm;
-                            });
-                            
-                            $evaluating = $evaluating->filter(function ($item) use ($searchTerm) {
-                                return $item->id == $searchTerm || $item->solicitud_compra == $searchTerm;
-                            });
-                            
-                            $created_with_trashed = $created_with_trashed->filter(function ($item) use ($searchTerm) {
-                                 return $item->id == $searchTerm || $item->solicitud_compra == $searchTerm;
-                             });
-                            
+                            $exactNumericMatch = $isNumericTerm && (
+                                (string)$item->id === $term ||
+                                (string)$item->solicitud_compra === $term
+                            );
 
-                        } else {
-                            //Plain text search in name and business_name
-                            $created = $created->filter(function ($item) use ($searchTerm) {
-                                
-                                return 
-                                    !!stristr($item->nombre, trim($searchTerm)) ||
-                                    !!stristr($item->cliente->customer_company->business_name, trim($searchTerm)) ||
-                                    !!stristr($item->cliente->full_name, trim($searchTerm)) ||
-                                    !!stristr($item->solicitud_compra, trim($searchTerm)) ||
-                                    !!stristr($item->area_sol, trim($searchTerm));
-                                    
-                            });
-                            
-                            $evaluating = $evaluating->filter(function ($item) use ($searchTerm) {
-                                return 
-                                    !!stristr($item->nombre, trim($searchTerm)) ||
-                                    !!stristr($item->cliente->customer_company->business_name, trim($searchTerm)) ||
-                                    !!stristr($item->cliente->full_name, trim($searchTerm)) ||
-                                    !!stristr($item->solicitud_compra, trim($searchTerm)) ||
-                                    !!stristr($item->area_sol, trim($searchTerm));
-                            });
-                            
-                            $created_with_trashed = $created_with_trashed->filter(function ($item) use ($searchTerm) {
-                                return 
-                                    !!stristr($item->nombre, trim($searchTerm)) ||
-                                    !!stristr($item->cliente->customer_company->business_name, trim($searchTerm)) ||  
-                                    !!stristr($item->cliente->full_name, trim($searchTerm)) ||
-                                    !!stristr($item->solicitud_compra, trim($searchTerm)) ||  
-                                    !!stristr($item->area_sol, trim($searchTerm));
-                            });
+                            $partialMatch =
+                                !!stristr((string)$item->nombre, $term) ||
+                                !!stristr((string)$item->cliente->customer_company->business_name, $term) ||
+                                !!stristr((string)$item->cliente->full_name, $term) ||
+                                !!stristr((string)$item->solicitud_compra, $term) ||
+                                !!stristr((string)$item->area_sol, $term);
 
-                            $deleted_with_trashed = $deleted_with_trashed->filter(function ($item) use ($searchTerm) {
-                                return
-                                !!stristr($item->nombre, trim($searchTerm)) ||
-                                !!stristr($item->cliente->customer_company->business_name, trim($searchTerm)) ||  
-                                !!stristr($item->cliente->full_name, trim($searchTerm)) ||
-                                !!stristr($item->solicitud_compra, trim($searchTerm)) ||  
-                                !!stristr($item->area_sol, trim($searchTerm));
-                            });
-                        }
+                            return $exactNumericMatch || $partialMatch;
+                        };
+
+                        $created = $created->filter($matchesSearch);
+                        $evaluating = $evaluating->filter($matchesSearch);
+                        $created_with_trashed = $created_with_trashed->filter($matchesSearch);
+                        $deleted_with_trashed = $deleted_with_trashed->filter($matchesSearch);
                     }
                 }
 
-            // EN PREPARACI��N
+            // EN PREPARACIÓN
             $concursos = collect();
 
             $concursos = $concursos->merge(
                 $created->filter(function ($concurso) {
-                    return $concurso->oferentes_etapa_preparacion->count() > 0;
+                    // Incluir concursos con oferentes en etapa preparación
+                    // O concursos sin oferentes (que están en preparación por definición)
+                    return $concurso->oferentes_etapa_preparacion->count() > 0 
+                           || $concurso->oferentes->count() == 0;
                 })
             )->sortBy('id');
             foreach ($concursos as $concurso) {
@@ -827,27 +797,58 @@ class ConcursoController extends BaseController
                 );
             }
 
-
-            // EVALUACIÓN
-            $concursos = collect();
-
-            $concursos = $concursos
-                ->merge($created->where('adjudicado', true))
-                ->merge($evaluating->where('adjudicado', true))
+            // Asegurar visibilidad en Económicas para evaluadores en subastas (si aplica)
+            $concursosChatEco = collect($created)
+                ->merge($evaluating)
                 ->unique('id')
-                ->filter(function ($concurso) {
-                    // Excluir concursos online usando el flag booleano
-                    if ((bool)($concurso->is_online ?? false)) {
+                ->filter(function ($c) use ($user) {
+                    if (!($c && method_exists($c, 'isUserEvaluador') && $c->isUserEvaluador($user->id))) {
                         return false;
                     }
-                    // Mantener sólo los que tienen oferentes en etapa de evaluación
-                    return $concurso->oferentes_etapa_evaluacion->count() > 0;
+                    return (bool) $c->is_online; // mostrar siempre a evaluadores, sin depender de ventana de consultas
                 })
-                ->sortBy('id');
+                ->reject(function ($c) use ($list) {
+                    return collect($list['ListaConcursosAnalisisOfertas'] ?? [])
+                        ->pluck('Id')
+                        ->contains($c->id);
+                });
 
-            foreach ($concursos as $concurso) {
-                $list['ListaConcursosEvaluacionReputacion'][] = $this->mapConcursoList($concurso);
+            foreach ($concursosChatEco as $concurso) {
+                $dt = $concurso->inicio_subasta;
+                if ($dt instanceof \DateTimeInterface) {
+                    $fecha = $dt->format('d-m-Y');
+                    $hora  = $dt->format('H:i:s');
+                    $fechaEconomicaOrden = $dt->format('Y-m-d H:i:s');
+                } else {
+                    $fecha = '';
+                    $hora  = '';
+                    $fechaEconomicaOrden = '';
+                }
+
+                if ($concurso->timeleft) {
+                    $status_text = 'No iniciado';
+                } elseif ($concurso->countdown) {
+                    $status_text = 'Licitando';
+                } else {
+                    $status_text = 'Finalizado';
+                }
+
+                $list['ListaConcursosAnalisisOfertas'][] = array_merge(
+                    $this->mapConcursoList($concurso),
+                    [
+                        'CantidadOferentes'      => 0,
+                        'CantidadPresentaciones' => 0,
+                        'Fecha'                  => $fecha,
+                        'Hora'                   => $hora,
+                        'FechaEconomicaOrden'    => $fechaEconomicaOrden,
+                        'Estado'                 => $status_text
+                    ]
+                );
             }
+
+
+            // EVALUACIÓN - NO CARGAR EN CARGA INICIAL
+            // Se cargarán lazy cuando el usuario expanda la sección
 
 
 
@@ -897,6 +898,29 @@ class ConcursoController extends BaseController
         foreach ($concursos as $concurso) {
             $list['ListaConcursosInformes'][] = $this->mapConcursoList($concurso);
         }
+
+            // EVALUACIÓN
+            // Se cargan lazy cuando el usuario expanda la sección.
+            // Si hay búsqueda activa, incluir resultados para que el monitor los encuentre.
+            if (!empty($searchTerm)) {
+                $concursos = collect()
+                    ->merge($created->where('adjudicado', true))
+                    ->merge($evaluating->where('adjudicado', true))
+                    ->unique('id')
+                    ->filter(function ($concurso) {
+                        if ((bool)($concurso->is_online ?? false)) {
+                            return false;
+                        }
+
+                        return $concurso->oferentes_etapa_evaluacion->count() > 0;
+                    })
+                    ->sortBy('id');
+
+                foreach ($concursos as $concurso) {
+                    $list['ListaConcursosEvaluacionReputacion'][] = $this->mapConcursoList($concurso);
+                }
+            }
+
             // CANCELADOS
                 $concursos = collect();
                if ($user->type_id == 7) {
@@ -916,24 +940,25 @@ class ConcursoController extends BaseController
                 }
 
                 // Aplico los mismos filtros que al principio
-                if ($filters) {
-                    $searchTerm = $filters->searchTerm ?? null;
+                if ($filters && !empty($searchTerm)) {
+                    $concursos = $concursos->filter(function ($item) use ($searchTerm) {
+                        $term = trim((string)$searchTerm);
+                        $isNumericTerm = is_numeric($term);
 
-                    if ($searchTerm) {
-                        if (is_numeric($searchTerm)) {
-                            $concursos = $concursos->filter(function ($item) use ($searchTerm) {
-                                return $item->id == $searchTerm;
-                            });
-                        } else {
-                            $concursos = $concursos->filter(function ($item) use ($searchTerm) {
-                                return 
-                                    !!stristr($item->nombre, trim($searchTerm)) ||
-                                    !!stristr($item->cliente->customer_company->business_name, trim($searchTerm)) ||
-                                    !!stristr($item->cliente->full_name, trim($searchTerm)) ||
-                                    !!stristr($item->area_sol, trim($searchTerm));
-                            });
-                        }
-                    }
+                        $exactNumericMatch = $isNumericTerm && (
+                            (string)$item->id === $term ||
+                            (string)$item->solicitud_compra === $term
+                        );
+
+                        $partialMatch =
+                            !!stristr((string)$item->nombre, $term) ||
+                            !!stristr((string)$item->cliente->customer_company->business_name, $term) ||
+                            !!stristr((string)$item->cliente->full_name, $term) ||
+                            !!stristr((string)$item->solicitud_compra, $term) ||
+                            !!stristr((string)$item->area_sol, $term);
+
+                        return $exactNumericMatch || $partialMatch;
+                    });
                 }
 
                 $concursos = $concursos->sortBy('id');
@@ -973,7 +998,113 @@ class ConcursoController extends BaseController
             
         ];
     }
+    
+     public function getEvaluacionReputacionLazy(Request $request, Response $response)
+    {
+        $body = json_decode($request->getParsedBody()['Data'] ?? '{}');
+        $page = (int)($body->page ?? 1);
+        $searchTerm = isset($body->searchTerm) ? trim((string) $body->searchTerm) : null;
 
+        try {
+            $user = user();
+            
+            // CREATED - Mismo lógica que listDoFilter
+            if (isAdmin()) {
+                $created = Concurso::all();
+            } else if ($user->type_id != 7 && $user->type_id != 3 && $user->type_id != 4 && $user->type_id != 2) {
+                $created = $user->customer_company->getAllConcursosByCompany()->get();
+            } else if ($user->type_id == 3) {
+                $created = $user->customer_company->getAllConcursosByCompany()
+                    ->where('id_cliente', $user->id)
+                    ->get();
+            } else {
+                // type_id == 7 (evaluador técnico) o type_id == 4 (calificador reputación)
+                $created = Concurso::where([['ficha_tecnica_usuario_evalua', '=', $user->id]])->get();
+                
+                // Agregar concursos donde el usuario califica reputación
+                $concursosCalificaReputacion = Concurso::whereRaw("FIND_IN_SET(?, REPLACE(usuario_califica_reputacion, ' ', ''))", [$user->id])->get();
+                $created = $created->merge($concursosCalificaReputacion)->unique('id');
+            }
+
+            // EVALUATING
+            if (isAdmin()) {
+                $evaluating = collect();
+            } else {
+                $evaluating = $user->concursos_evalua;
+                // Agregar concursos donde el usuario califica reputación
+                $concursosCalificaReputacion = Concurso::whereRaw("FIND_IN_SET(?, REPLACE(usuario_califica_reputacion, ' ', ''))", [$user->id])->get();
+                $evaluating = collect($evaluating)->merge($concursosCalificaReputacion)->unique('id');
+            }
+
+            // Aplicar búsqueda si existe
+            if (!empty($searchTerm)) {
+                $matchesSearch = function ($item) use ($searchTerm) {
+                    $term = trim((string)$searchTerm);
+                    $isNumericTerm = is_numeric($term);
+
+                    $exactNumericMatch = $isNumericTerm && (
+                        (string)$item->id === $term ||
+                        (string)$item->solicitud_compra === $term
+                    );
+
+                    $partialMatch =
+                        !!stristr((string)$item->nombre, $term) ||
+                        !!stristr((string)$item->cliente->customer_company->business_name, $term) ||
+                        !!stristr((string)$item->cliente->full_name, $term) ||
+                        !!stristr((string)$item->solicitud_compra, $term) ||
+                        !!stristr((string)$item->area_sol, $term);
+
+                    return $exactNumericMatch || $partialMatch;
+                };
+
+                $created = $created->filter($matchesSearch);
+                $evaluating = $evaluating->filter($matchesSearch);
+            }
+
+            // Filtrar concursos en evaluación de reputación
+            $concursos = collect()
+                ->merge($created->where('adjudicado', true))
+                ->merge($evaluating->where('adjudicado', true))
+                ->unique('id')
+                ->filter(function ($concurso) {
+                    // Excluir concursos online usando el flag booleano
+                    if ((bool)($concurso->is_online ?? false)) {
+                        return false;
+                    }
+                    // Mantener sólo los que tienen oferentes en etapa de evaluación
+                    return $concurso->oferentes_etapa_evaluacion->count() > 0;
+                })
+                ->sortBy('id');
+
+            $itemsPerPage = 30;
+            $totalItems = count($concursos);
+            $offset = ($page - 1) * $itemsPerPage;
+
+            // Obtener items para la página solicitada
+            $concursosPage = $concursos->slice($offset, $itemsPerPage)->values();
+            $items = [];
+
+            foreach ($concursosPage as $concurso) {
+                $items[] = $this->mapConcursoList($concurso);
+            }
+
+            return $this->json($response, [
+                'success' => true,
+                'data' => [
+                    'items' => $items,
+                    'page' => $page,
+                    'totalPages' => ceil($totalItems / $itemsPerPage),
+                    'totalItems' => $totalItems,
+                    'hasMore' => ($offset + $itemsPerPage) < $totalItems
+                ]
+            ], 200);
+        } catch (\Exception $e) {
+            return $this->json($response, [
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
 
     public function delete(Request $request, Response $response, $params)
     {
@@ -1621,14 +1752,15 @@ class ConcursoController extends BaseController
                 }
                 
                 
-                if (!$concurso->adjudicado && $concurso->adjudicacion_anticipada && ($concurso->alguno_presento_economica || $plazoVencidoEconomicas)) {
+               // Si todos presentaron la economica, habilitar sin importar la fecha
+                if (!$concurso->adjudicado && $concurso->todos_presentaron_economica) {
                     $verOfertasEnable = true;
                 }
 
-                if (!$concurso->adjudicado && !$concurso->adjudicacion_anticipada && ($concurso->todos_presentaron_economica || $plazoVencidoEconomicas)) {
+                if (!$verOfertasEnable && !$concurso->adjudicado && $concurso->adjudicacion_anticipada
+                    && ($concurso->alguno_presento_economica || $plazoVencidoEconomicas) && $fechaLimiteVencida) {
                     $verOfertasEnable = true;
                 }
-
                 if ($concurso->technical_includes) {
                     $proveedores = $concurso->oferentes->where('has_tecnica_aprobada');
                 } else {
@@ -1744,11 +1876,17 @@ class ConcursoController extends BaseController
                 }
                 $verOfertasEnable = false;
                 $ejecutarNuevaRonda = $concurso->ronda_actual === Concurso::MAX_RONDAS ? false : true;
-                if (!$concurso->adjudicado && $concurso->adjudicacion_anticipada && ($concurso->alguno_presento_economica || $plazoVencidoEconomicas)) {
+                // Si todos presentaron la economica, habilitar sin importar la fecha
+                if (!$concurso->adjudicado && $concurso->todos_presentaron_economica) {
                     $verOfertasEnable = true;
                 }
                
-                if (!$concurso->adjudicado && !$concurso->adjudicacion_anticipada && ($concurso->todos_presentaron_economica || $plazoVencidoEconomicas)) {
+                if (!$verOfertasEnable && !$concurso->adjudicado && $concurso->adjudicacion_anticipada
+                    && ($concurso->alguno_presento_economica || $plazoVencidoEconomicas)) {
+                    $verOfertasEnable = true;
+                }
+               
+                if (!$verOfertasEnable && !$concurso->adjudicado && !$concurso->adjudicacion_anticipada && $plazoVencidoEconomicas) {
                     $verOfertasEnable = true;
                 }
 
@@ -1900,21 +2038,44 @@ class ConcursoController extends BaseController
             }
 
             $sheets = [];
+            $sheetsAdjudicado = [];
+            $tempAdjudicadoKey = null;
+            if ($create) {
+                try {
+                    $tempAdjudicadoKey = bin2hex(random_bytes(8));
+                } catch (\Throwable $e) {
+                    $tempAdjudicadoKey = uniqid('adj_', true);
+                }
+            }
+            
+            $adjudicadoTypeId = null;
             foreach (SheetType::all() as $sheet_type) {
+                // Guardar el ID del tipo 'adjudicado'
+                if ($sheet_type->code === 'adjudicado') {
+                    $adjudicadoTypeId = $sheet_type->id;
+                }
+                
                 if ($create) {
                     $sheet = $is_copy ? $concurso->sheets->where('type_id', $sheet_type->id)->first() : null;
                 } else {
                     $sheet = $concurso->sheets->where('type_id', $sheet_type->id)->first();
                 }
-                $sheets[] = [
+                
+                $sheet_data = [
                     'id' => $sheet ? $sheet->id : null,
                     'filename' => $sheet ? $sheet->filename : null,
                     'type_id' => $sheet_type->id,
                     'type_name' => $sheet_type->description,
                     'action' => null
                 ];
+                
+                // Separar los adjudicados de los demás
+                if ($sheet_type->code === 'adjudicado') {
+                    $sheetsAdjudicado[] = $sheet_data;
+                } else {
+                    $sheets[] = $sheet_data;
+                }
             }
-
             // COMMON
             $list = [
                 'Id' => $create ? 0 : $concurso->id,
@@ -1933,12 +2094,19 @@ class ConcursoController extends BaseController
                 'AreaUsr' => $create && !$is_copy ? '' : $concurso->area_sol,
                 'FechaAlta' => $create ? Carbon::now()->format('Y-m-d H:i:s') : $concurso->fecha_alta->format('Y-m-d H:i:s'),
                 'FilePath' => filePath($user->file_path_customer),
+                'TempAdjudicadoKey' => $tempAdjudicadoKey,
+                'FilePathAdjudicado' => $create
+                    ? filePath('/concursos/' . $user->customer_company->cuit . '/tmp/' . $tempAdjudicadoKey . '/')
+                    : filePath('/concursos/' . $user->customer_company->cuit . '/' . ($concurso ? $concurso->id : '0') . '/'),
+                'CUITCliente' => $user->customer_company->cuit,
+                'NROLicitacion' => $create ? 0 : $concurso->id,
                 'SolicitudCompra' => $create ? '' : $concurso->solicitud_compra,
                 'OrdenCompra' => $create ? '' : $concurso->orden_compra,
                 'Resena' => $create && !$is_copy ? '' : $concurso->resena,
                 'Descripcion' => $create && !$is_copy ? '' : $concurso->descripcion,
                 'DescriptionLimit' => $this::$description_limit,
                 'Sheets' => $sheets,
+                'SheetsAdjudicado' => $sheetsAdjudicado,
                 'Pais' => $create && !$is_copy ? '' : $concurso->pais,
                 'Provincia' => $create && !$is_copy ? '' : $concurso->provincia,
                 'Localidad' => $create && !$is_copy ? '' : $concurso->localidad,
@@ -2333,6 +2501,9 @@ class ConcursoController extends BaseController
 
     public function store(Request $request, Response $response, $params)
     {
+        $storeOutputBufferLevel = ob_get_level();
+        ob_start();
+
         $entity = json_decode($request->getParsedBody()['Entity'], false);
 
         $success = false;
@@ -2721,6 +2892,14 @@ class ConcursoController extends BaseController
                 'redirect' => ''
             ]
         ];
+
+        $storeOutputNoise = '';
+        while (ob_get_level() > $storeOutputBufferLevel) {
+            $storeOutputNoise .= (string) ob_get_clean();
+        }
+        if (trim($storeOutputNoise) !== '') {
+            error_log('[ConcursoController::store output noise] ' . $storeOutputNoise);
+        }
 
         return $this->json($response, $result, $status);
     }
@@ -3512,6 +3691,10 @@ class ConcursoController extends BaseController
 
     private function storePortrait($old_image, $entity)
     {
+        if (!isset($entity->Portrait) || !is_object($entity->Portrait)) {
+            return;
+        }
+
         $portait = $entity->Portrait;
         $absolute_path = filePath(config('app.images_path'), true);
         if (isset($portait->action))
@@ -3532,6 +3715,10 @@ class ConcursoController extends BaseController
 
     private function storePortraitDescription($old_image, $entity)
     {
+        if (!isset($entity->DescripcionPortrait) || !is_object($entity->DescripcionPortrait)) {
+            return;
+        }
+
         $portait = $entity->DescripcionPortrait;
         $absolute_path = filePath(config('app.images_path'), true);
         if (isset($portait->action))
@@ -3553,17 +3740,28 @@ class ConcursoController extends BaseController
     private function storeSheets($concurso, $entity)
     {
         $absolute_path = filePath($concurso->file_path, true);
+
         $documentChange = false;
         $documentDeleted = false;
-        // Pliegos
-        foreach ($entity->Sheets as $sheet) {
-            switch ($sheet->action) {
+
+        $regularSheets = (isset($entity->Sheets) && is_array($entity->Sheets)) ? $entity->Sheets : [];
+
+        // Pliegos regulares
+        foreach ($regularSheets as $sheet) {
+            $sheetAction = $sheet->action ?? null;
+            switch ($sheetAction) {
                 case 'upload':
+                    if (empty($sheet->filename) || empty($sheet->type_id)) {
+                        break;
+                    }
+
                     // Si había un archivo previo, lo eliminamos.
-                    if ($sheet->id) {
+                    if (!empty($sheet->id)) {
                         $to_delete = Sheet::find($sheet->id);
-                        @unlink($absolute_path . $to_delete->filename);
-                        $to_delete->delete();
+                        if ($to_delete) {
+                            @unlink($absolute_path . $to_delete->filename);
+                            $to_delete->delete();
+                        }
                     }
 
                     // Guardamos el nuevo archivo
@@ -3578,10 +3776,12 @@ class ConcursoController extends BaseController
                 case 'clear':
                 case 'delete':
                     // Si el archivo ya estaba guardado
-                    if ($sheet->id) {
+                    if (!empty($sheet->id)) {
                         $to_delete = Sheet::find($sheet->id);
-                        @unlink($absolute_path . $to_delete->filename);
-                        $to_delete->delete();
+                        if ($to_delete) {
+                            @unlink($absolute_path . $to_delete->filename);
+                            $to_delete->delete();
+                        }
                     }
                     $documentDeleted = true;
                     break;
@@ -3590,10 +3790,112 @@ class ConcursoController extends BaseController
             }
         }
 
+        // Archivos Solo Adjudicado
+        if (isset($entity->SheetsAdjudicado) && is_array($entity->SheetsAdjudicado)) {
+            $adjudicadoType = SheetType::where('code', 'adjudicado')->first();
+            $adjudicadoTypeId = $adjudicadoType ? (int) $adjudicadoType->id : null;
+            
+            if ($adjudicadoTypeId) {
+                foreach ($entity->SheetsAdjudicado as $sheet) {
+                    $sheetAction = $sheet->action ?? 'upload';
+                    switch ($sheetAction) {
+                        case 'upload':
+                            if (empty($sheet->filename)) {
+                                break;
+                            }
+
+                            // Si había un archivo previo, lo eliminamos.
+                            if (isset($sheet->id) && $sheet->id) {
+                                $to_delete = Sheet::find($sheet->id);
+                                if ($to_delete) {
+                                    @unlink($absolute_path . $to_delete->filename);
+                                    $to_delete->delete();
+                                }
+                            }
+
+                            // Guardamos el nuevo archivo con type_id adjudicado
+                            $new_sheet = new Sheet([
+                                'concurso_id' => $concurso->id,
+                                'type_id' => $adjudicadoTypeId,
+                                'filename' => $sheet->filename
+                            ]);
+                            $new_sheet->save();
+                            $documentChange = true;
+                            break;
+                        case 'clear':
+                        case 'delete':
+                            // Si el archivo ya estaba guardado
+                            if (isset($sheet->id) && $sheet->id) {
+                                $to_delete = Sheet::find($sheet->id);
+                                if ($to_delete) {
+                                    @unlink($absolute_path . $to_delete->filename);
+                                    $to_delete->delete();
+                                }
+                            }
+                            $documentDeleted = true;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        }
+
         return [
             'documentChange' => $documentChange,
             'documentDeleted' => $documentDeleted
         ];
+    }
+
+    private function moveAdjudicadoTempFiles($concurso, $entity)
+    {
+        if (empty($entity->TempAdjudicadoKey)) {
+            return;
+        }
+
+        $cuit = $concurso->cliente->customer_company->cuit ?? user()->customer_company->cuit;
+        if (empty($cuit)) {
+            return;
+        }
+
+        $tempDir = rootPath() . filePath('/concursos/' . $cuit . '/tmp/' . $entity->TempAdjudicadoKey . '/');
+        $finalDir = rootPath() . filePath('/concursos/' . $cuit . '/' . $concurso->id . '/');
+
+        if (!is_dir($tempDir)) {
+            return;
+        }
+        if (!is_dir($finalDir)) {
+            @mkdir($finalDir, 0777, true);
+        }
+
+        $filenames = [];
+        if (isset($entity->SheetsAdjudicado) && is_array($entity->SheetsAdjudicado)) {
+            foreach ($entity->SheetsAdjudicado as $sheet) {
+                if (!empty($sheet->filename)) {
+                    $filenames[] = $sheet->filename;
+                }
+            }
+        }
+
+        $filenames = array_values(array_unique($filenames));
+        foreach ($filenames as $filename) {
+            $source = $tempDir . $filename;
+            $dest = $finalDir . $filename;
+            if (!file_exists($source)) {
+                continue;
+            }
+            if (file_exists($dest)) {
+                @unlink($source);
+                continue;
+            }
+            if (!@rename($source, $dest)) {
+                if (@copy($source, $dest)) {
+                    @unlink($source);
+                }
+            }
+        }
+
+        @rmdir($tempDir);
     }
 
     public function checkProducts(Request $request, Response $response)
@@ -4705,6 +5007,9 @@ class ConcursoController extends BaseController
             $this->storePortraitDescription($old_image_descripcion, $entity);
         }
 
+        // Mover archivos adjudicados de temp a carpeta final
+        $this->moveAdjudicadoTempFiles($concurso, $entity);
+
         $documentsChanged = $this->storeSheets($concurso, $entity);
 
         // Productos
@@ -5101,7 +5406,8 @@ class ConcursoController extends BaseController
             $this->storePortraitDescription($old_image_descripcion, $entity);
         }
 
-
+        // Mover archivos adjudicados de temp a carpeta final
+        $this->moveAdjudicadoTempFiles($concurso, $entity);
 
         // Pliegos
         $documentsChanged = $this->storeSheets($concurso, $entity);
@@ -5335,6 +5641,14 @@ class ConcursoController extends BaseController
 
     public function createFromSolpeds(Request $request, Response $response)
     {
+
+        if (!isSolpedActive() && !isAdmin()) {
+            return $this->json($response, [
+                'success' => false,
+                'message' => 'El módulo de Solped está desactivado para tu empresa.'
+            ], 403);
+        }
+        
         $success = false;
         $message = null;
         $status = 200;
@@ -5483,6 +5797,14 @@ class ConcursoController extends BaseController
 
      public function createAuctionFromSolpeds(Request $request, Response $response)
     {
+
+        if (!isSolpedActive() && !isAdmin()) {
+            return $this->json($response, [
+                'success' => false,
+                'message' => 'El módulo de Solped está desactivado para tu empresa.'
+            ], 403);
+        }
+
         $success = false;
         $message = null;
         $status = 200;

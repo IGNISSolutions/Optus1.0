@@ -209,21 +209,25 @@ class CompanyController extends BaseController
 
     public function getOffererByCuit(Request $request, Response $response, $params)
     {
-        $cuit = preg_replace('/\D/', '', $params['cuit'] ?? '');
+        // Limpiar el CUIT: mantener solo letras y números (alfanumérico)
+        // Esto soporta códigos fiscales internacionales que pueden contener letras
+        $cuit = preg_replace('/[^a-zA-Z0-9]/', '', $params['cuit'] ?? '');
+        $cuit = strtoupper($cuit); // Normalizar a mayúsculas para comparación consistente
 
         if (strlen($cuit) < 2) {
             return $response->withJson([
                 'success' => false,
-                'message' => 'CUIT inválido'
+                'message' => 'Código fiscal inválido'
             ]);
         }
 
-        $offerer = OffererCompany::where('cuit', $cuit)->first();
+        // Usar método robusto para buscar duplicados
+        $offerer = $this->findOffererByCuitRobust($cuit);
 
         if (!$offerer) {
             return $response->withJson([
                 'success' => false,
-                'message' => 'No existe proveedor con ese CUIT'
+                'message' => 'No existe proveedor con ese código fiscal'
             ]);
         }
 
@@ -644,11 +648,9 @@ class CompanyController extends BaseController
         $breadcrumbs = [];
         $list = [];
 
-
         try {
             $role = $params['role'];
             $creation = $params['action'] === 'nuevo';
-
 
             $action_description = $creation ? 'Creación' : 'Edición';
 
@@ -663,30 +665,18 @@ class CompanyController extends BaseController
                     break;
             }
 
-            if (!$creation && !$company) {
-                throw new \Exception('Empresa no encontrada.', 404);
-            }
-
             // Refrescar la empresa para obtener las relaciones actualizadas
             if (!$creation && $company) {
                 $company->refresh();
                 // Limpiar la caché de relaciones para asegurar datos frescos
-                if ($role === 'offerer') {
-                    $company->load('alcances');
-                }
+                $company->load('alcances');
             }
-
-            $solpedActive = $role === 'client'
-                ? ($creation ? 'no' : (isset($company->solped_active) ? $company->solped_active : 'no'))
-                : null;
-
-            $statusId = $creation ? null : ($company && $company->status ? $company->status->id : null);
 
             $common = [
                 'Tipo' => $role,
                 'Id' => $creation ? null : $company->id,
                 'Estados' => $role === 'clientes' ? CustomerCompanyStatus::getList() : OffererCompanyStatus::getList(),
-                'Estado' => $statusId,
+                'Estado' => $creation ? null : $company->status->id,
                 'RazonSocial' => $creation ? null : strtoupper($company->business_name),
                 'Cuit' => $creation ? null : $company->cuit,
                 'Pais' => $creation ? null : $company->country,
@@ -703,8 +693,7 @@ class CompanyController extends BaseController
                 'Email' => $creation ? null : $company->email,
                 'SitioWeb' => $creation ? null : $company->website,
                 'Observaciones' => $creation ? null : $company->comments,
-                'timeZone' => $creation ? null : $company->timeZone,
-                'SolpedActive' => $solpedActive
+                'timeZone' => $creation ? null : $company->timeZone
             ];
 
             if ($role == 'offerer') {
@@ -793,7 +782,7 @@ class CompanyController extends BaseController
             } elseif ($role == 'client') {
                 $list = array_merge($common, [
                     'Tarifarios' => RateSystem::getList(),
-                    'Tarifario' => $creation ? null : ($company->rate_system ? $company->rate_system->id : null),
+                    'Tarifario' => $creation ? null : $company->rate_system->id,
                     'timeZones' => $this->getTimeZones(),
                 ]);
             }
@@ -1017,6 +1006,21 @@ class CompanyController extends BaseController
                         'message' => 'Ya existe una empresa con este CUIT asociada a su cuenta.',
                         'data' => [
                             'redirect' => null
+                        ]
+                    ], 422);
+                }
+
+                // Validación adicional robusta: buscar CUALQUIER empresa existente en el sistema con el mismo CUIT
+                // Esto previene duplicados en toda la base de datos, no solo para el usuario actual
+                $existingCompanyGlobal = $this->findCompanyByCuitRobust($cuit, $role);
+                if ($existingCompanyGlobal) {
+                    $connection->rollBack();
+                    return $this->json($response, [
+                        'success' => false,
+                        'message' => 'Ya existe un proveedor registrado con este código fiscal en el sistema. Por favor, busque y asocie el existente.',
+                        'data' => [
+                            'redirect' => null,
+                            'existing_id' => $existingCompanyGlobal->id
                         ]
                     ], 422);
                 }
@@ -1272,8 +1276,14 @@ class CompanyController extends BaseController
 
         try {
             $role = $params['role'];
-            $company = OffererCompany::where('cuit', $params['cuit'])->get();
-            if ($company->count() === 1) {
+            
+            // Normalizar el CUIT de búsqueda (alfanumérico)
+            $cuit = strtoupper(preg_replace('/[^a-zA-Z0-9]/', '', $params['cuit'] ?? ''));
+            
+            // Usar método robusto para buscar
+            $company = $this->findOffererByCuitRobust($cuit);
+            
+            if ($company) {
                 $data = $company;
                 $success = true;
                 $message = 'Empresa existente';
@@ -1305,26 +1315,10 @@ class CompanyController extends BaseController
         ];
         $company_status = CustomerCompanyStatus::find((int) $body->Estado);
         $rate_system = RateSystem::find((int) $body->Tarifario);
-        $solpedActive = 'no';
-        if (isset($body->SolpedActive)) {
-            if (is_bool($body->SolpedActive)) {
-                $solpedActive = $body->SolpedActive ? 'si' : 'no';
-            } else {
-                $value = strtolower(trim((string) $body->SolpedActive));
-                $solpedActive = ($value === 'si' || $value === '1' || $value === 'true') ? 'si' : 'no';
-            }
-        } elseif (!$creation) {
-            $existingCompany = CustomerCompany::find((int) $params['id']);
-            if ($existingCompany && isset($existingCompany->solped_active)) {
-                $solpedActive = $existingCompany->solped_active;
-            }
-        }
-
         $fields = array_merge($fields, [
             'status_id' => $company_status ? $company_status->id : 1,
             'rate_system_id' => $rate_system ? $rate_system->id : null,
-            'timeZone' => $body->TimeZone,
-            'solped_active' => $solpedActive
+            'timeZone' => $body->TimeZone
         ]);
 
         $validator = $this->validate($fields, $role);
@@ -1530,11 +1524,106 @@ class CompanyController extends BaseController
         return $result;
     }
 
+    /**
+     * Búsqueda robusta de proveedor por CUIT/Código fiscal
+     * Soporta múltiples variaciones de formato (con espacios, guiones, puntos, mayúsculas/minúsculas)
+     * 
+     * @param string $cuit Código fiscal normalizado (solo alfanumérico, mayúsculas)
+     * @return OffererCompany|null
+     */
+    private function findOffererByCuitRobust($cuit)
+    {
+        if (strlen($cuit) < 2) {
+            return null;
+        }
+
+        // Primera búsqueda: exacta normalizada
+        $offerer = OffererCompany::whereRaw(
+            'UPPER(REPLACE(REPLACE(REPLACE(cuit, \' \', \'\'), \'-\', \'\'), \'.\', \'\')) = ?',
+            [$cuit]
+        )->first();
+
+        if ($offerer) {
+            return $offerer;
+        }
+
+        // Segunda búsqueda: si no encontró, buscar sin tener en cuenta caracteres especiales adicionales
+        $offerer = OffererCompany::whereRaw(
+            'UPPER(REPLACE(REPLACE(REPLACE(REPLACE(cuit, \' \', \'\'), \'-\', \'\'), \'.\', \'\'), \',\', \'\')) = ?',
+            [$cuit]
+        )->first();
+
+        if ($offerer) {
+            return $offerer;
+        }
+
+        // Tercera búsqueda: búsqueda LIKE como fallback (para casos muy especiales)
+        // Solo si el CUIT tiene al menos 3 caracteres
+        if (strlen($cuit) >= 3) {
+            $searchPattern = '%' . substr($cuit, 0, 3) . '%';
+            $offerer = OffererCompany::whereRaw(
+                'UPPER(REPLACE(REPLACE(REPLACE(cuit, \' \', \'\'), \'-\', \'\'), \'.\', \'\')) LIKE ?',
+                [$searchPattern]
+            )->whereRaw(
+                'UPPER(REPLACE(REPLACE(REPLACE(cuit, \' \', \'\'), \'-\', \'\'), \'.\', \'\')) = ?',
+                [$cuit]
+            )->first();
+
+            if ($offerer) {
+                return $offerer;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Verificación robusta de existencia de empresa por CUIT
+     * Busca múltiples variaciones de formato
+     * 
+     * @param string $cuit CUIT a verificar
+     * @param string $role Rol ('client' o 'offerer')
+     * @return OffererCompany|CustomerCompany|null
+     */
+    private function findCompanyByCuitRobust($cuit, $role)
+    {
+        if (strlen($cuit) < 2) {
+            return null;
+        }
+
+        $normalizedCuit = strtoupper(preg_replace('/[^a-zA-Z0-9]/', '', $cuit));
+        $model = $role === 'client' ? CustomerCompany::class : OffererCompany::class;
+
+        // Primera búsqueda: exacta normalizada
+        $company = $model::whereRaw(
+            'UPPER(REPLACE(REPLACE(REPLACE(cuit, \' \', \'\'), \'-\', \'\'), \'.\', \'\')) = ?',
+            [$normalizedCuit]
+        )->first();
+
+        if ($company) {
+            return $company;
+        }
+
+        // Segunda búsqueda: caso insensitive adicional
+        $company = $model::whereRaw(
+            'UPPER(REPLACE(REPLACE(REPLACE(REPLACE(cuit, \' \', \'\'), \'-\', \'\'), \'.\', \'\'), \',\', \'\')) = ?',
+            [$normalizedCuit]
+        )->first();
+
+        return $company;
+    }
+
     private function checkExistingBusiness($cuit, $creatorId, $role)
     {
         $model = $role === 'client' ? CustomerCompany::class : OffererCompany::class;
-        return $model::where('cuit', $cuit)
-            ->where('creator_id', $creatorId)
-            ->exists();
+        
+        // Normalizar el CUIT de entrada
+        $normalizedCuit = strtoupper(preg_replace('/[^a-zA-Z0-9]/', '', $cuit));
+        
+        // Búsqueda robusta con múltiples variaciones de formato
+        return $model::whereRaw(
+            'UPPER(REPLACE(REPLACE(REPLACE(cuit, \' \', \'\'), \'-\', \'\'), \'.\', \'\')) = ?',
+            [$normalizedCuit]
+        )->where('creator_id', $creatorId)->exists();
     }
 }
