@@ -182,6 +182,39 @@ app()->group('/estrategia', function () {
     $this->post('/store', 'App\Http\Controllers\Estrategia\EstrategiaController:store')->add(new AuthMiddleware())->setName('estrategia.store');
 });
 
+// ADJUDICATION APPROVAL CHAIN
+app()->group('/approval', function () {
+    // Get pending approvals for current user (for type-list.tpl)
+    $this->get('/my-pending', 'App\Http\Controllers\Approval\ApprovalController:getMyPending')
+        ->add(new AuthMiddleware())
+        ->setName('approval.myPending');
+    
+    // Generate session token for approver access
+    $this->post('/generate-token', 'App\Http\Controllers\Approval\ApprovalController:generateToken')
+        ->add(new AuthMiddleware())
+        ->setName('approval.generateToken');
+
+    $this->post('/start', 'App\Http\Controllers\Approval\ApprovalController:startApproval')
+        ->add(new AuthMiddleware())
+        ->setName('approval.start');
+    
+    $this->get('/status/{contest_id}', 'App\Http\Controllers\Approval\ApprovalController:getStatus')
+        ->add(new AuthMiddleware())
+        ->setName('approval.status');
+    
+    $this->post('/approve', 'App\Http\Controllers\Approval\ApprovalController:approve')
+        ->add(new AuthMiddleware())
+        ->setName('approval.approve');
+    
+    $this->post('/reject', 'App\Http\Controllers\Approval\ApprovalController:reject')
+        ->add(new AuthMiddleware())
+        ->setName('approval.reject');
+    
+    $this->post('/process', 'App\Http\Controllers\Approval\ApprovalController:processAdjudication')
+        ->add(new AuthMiddleware())
+        ->setName('approval.process');
+});
+
 // SOLPED
 app()->group('/solped', function () {
 
@@ -403,16 +436,6 @@ app()->group('/configuraciones/tipocambio', function () {
     $this->get('', 'App\Http\Controllers\Configuration\TipoCambioController:serveList')->setName('tipocambio.serveList');
     $this->get('/list', 'App\Http\Controllers\Configuration\TipoCambioController:list')->setName('tipocambio.list');
 })->add(new AuthMiddleware(['configurations-tipocambio']));
-
-
-// ESTRATEGIA LIBERACION
-app()->group('/configuraciones/estrategia-liberacion', function () {
-    //Listado
-    $this->get('', 'App\Http\Controllers\Configuration\EstrategiaLiberacionController:serveList')->setName('estrategialiberacion.serveList');
-    $this->get('/list', 'App\Http\Controllers\Configuration\EstrategiaLiberacionController:list')->setName('estrategialiberacion.list');
-    //Nuevo
-    $this->get('/create', 'App\Http\Controllers\Configuration\EstrategiaLiberacionController:serveCreate')->setName('estrategialiberacion.serveCreate');
-})->add(new AuthMiddleware(['configurations-estrategia-liberacion']));
 
 // CATALOGOS
 app()->group('/configuraciones/catalogos', function () {
