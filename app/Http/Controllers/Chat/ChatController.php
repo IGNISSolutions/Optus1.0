@@ -51,7 +51,7 @@ class ChatController extends BaseController
                 if (count($resps) > 0) {
 
                     foreach ($resps as $resp) {
-                        if (cannot('chat-admin')) {
+                        if (cannot('chat-admin') && !$concurso->isUserEvaluador($user->id)) {
                             if ($resp->usuario->id !== $user->id && !$resp->is_approved) {
                                 continue;
                             }
@@ -71,7 +71,7 @@ class ChatController extends BaseController
                             'fecha' => Carbon::createFromFormat('Y-m-d H:i:s', $resp->fecha)->diffForHumans(),
                             'mensaje' => $resp->mensaje,
                             'estado' => $resp->estado,
-                            'is_admin' => $resp->usuario->can('chat-admin'),
+                            'is_admin' => $resp->usuario->can('chat-admin') || $concurso->isUserEvaluador($resp->usuario->id),
                             'tipo_name' => $resp->usuario->type->description,
                             'padre' => $resp->parent,
                             'filename' => $resp->filename,
@@ -82,7 +82,7 @@ class ChatController extends BaseController
                 }
 
                 // Si no es admin, no podrá ver los comentarios pendientes que no sean suyos
-                if (cannot('chat-admin')) {
+                if (cannot('chat-admin') && !$concurso->isUserEvaluador($user->id)) {
                     if ($item->usuario->id !== $user->id && !$item->is_approved) {
                         continue;
                     }
@@ -102,7 +102,7 @@ class ChatController extends BaseController
                     'fecha' => Carbon::createFromFormat('Y-m-d H:i:s', $item->fecha)->diffForHumans(),
                     'mensaje' => $item->mensaje,
                     'estado' => $item->estado,
-                    'is_admin' => $item->usuario->can('chat-admin'),
+                    'is_admin' => $item->usuario->can('chat-admin') || $concurso->isUserEvaluador($item->usuario->id),
                     'tipo_name' => $item->usuario->type->description,
                     'tipo_pregunta' => $item->tipo_mensaje,
                     'respuestas' => $respuestas,
@@ -121,6 +121,10 @@ class ChatController extends BaseController
                 $chat_enabled = $oferente->is_chat_enabled;
             } else {
                 $chat_enabled = $concurso->is_chat_enabled;
+                // Los evaluadores deben poder responder siempre en el muro
+                if ($concurso->isUserEvaluador($user->id)) {
+                    $chat_enabled = true;
+                }
                 $participantes = $concurso->participantesFiltradosPorEtapa()->get();
                 if (count($participantes) > 0) {
                     foreach ($participantes as $prov)
@@ -229,7 +233,7 @@ class ChatController extends BaseController
                 'cso_id' => $concurso->id,
                 'fecha' => Carbon::now()->format('Y-m-d H:i:s'),
                 'mensaje' => $body->Message->message,
-                'estado' => can('chat-admin') ? '1' : '2',
+                'estado' => (can('chat-admin') || $concurso->isUserEvaluador($user->id)) ? '1' : '2',
                 'leido' => $user->id,
                 'parent' => $parent,
                 'tipo' => $tipo,
@@ -244,7 +248,7 @@ class ChatController extends BaseController
             $respuesta_id = $new_message->parent;
 
 
-            if (cannot('chat-admin')) {
+            if (cannot('chat-admin') && !$concurso->isUserEvaluador($user->id)) {
                 $result = $this->sendEmailsCustomers($concurso, $user, $emailService, $tipo);
                 $success = $result['success'];
                 $message = $result['message'];
@@ -510,7 +514,7 @@ class ChatController extends BaseController
             $resps = $selectedMessage->where('parent', $selectedMessage->id)->get();
             if (count($resps) > 0) {
                 foreach ($resps as $resp) {
-                    if (cannot('chat-admin')) {
+                    if (cannot('chat-admin') && !$concurso->isUserEvaluador($user->id)) {
                         if ($resp->usuario->id !== $user->id && !$resp->is_approved) {
                             continue;
                         }
@@ -530,7 +534,7 @@ class ChatController extends BaseController
                         'fecha' => Carbon::createFromFormat('Y-m-d H:i:s', $resp->fecha)->diffForHumans(),
                         'mensaje' => $resp->mensaje,
                         'estado' => $resp->estado,
-                        'is_admin' => $resp->usuario->can('chat-admin'),
+                        'is_admin' => $resp->usuario->can('chat-admin') || $concurso->isUserEvaluador($resp->usuario->id),
                         'tipo_name' => $resp->usuario->type->description,
                         'padre' => $resp->parent,
                         'filename' => $resp->filename
@@ -547,7 +551,7 @@ class ChatController extends BaseController
                 'fecha' => Carbon::createFromFormat('Y-m-d H:i:s', $selectedMessage->fecha)->diffForHumans(),
                 'mensaje' => $selectedMessage->mensaje,
                 'estado' => $selectedMessage->estado,
-                'is_admin' => $selectedMessage->usuario->can('chat-admin'),
+                'is_admin' => $selectedMessage->usuario->can('chat-admin') || $concurso->isUserEvaluador($selectedMessage->usuario->id),
                 'tipo_name' => $selectedMessage->usuario->type->description,
                 'tipo_pregunta' => $selectedMessage->tipo_mensaje,
                 'respuestas' => $respuestas,
@@ -559,6 +563,11 @@ class ChatController extends BaseController
             if (isOfferer()) {
                 $oferente = $concurso->oferentes->where('id_offerer', (int) $user->offerer_company_id)->first();
                 $chat_enabled = $oferente->is_chat_enabled;
+            } else {
+                // Los evaluadores deben poder responder siempre en el muro
+                if ($concurso->isUserEvaluador($user->id)) {
+                    $chat_enabled = true;
+                }
             }
 
             $success = true;

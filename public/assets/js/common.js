@@ -389,6 +389,8 @@ var CommonPlugins = function () {
                     try {
                         value().filename(data.response.initialPreviewConfig[0].caption);
                         value().action('upload');
+                        // NO establecer id a null cuando se reemplaza, mantener el id existente
+                        // para que el backend pueda eliminar el registro anterior
                     } catch (e) {
                         value.filename(data.response.initialPreviewConfig[0].caption);
                         value.action('upload');
