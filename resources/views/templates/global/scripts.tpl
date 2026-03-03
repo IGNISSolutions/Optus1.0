@@ -85,9 +85,11 @@
 
 <!-- BEGIN DYNAMIC PRE-SCRIPTS -->
 {block name='pre-scripts'}{/block}
+{if isset($pre_scripts_child) && $pre_scripts_child}
 {foreach $pre_scripts_child as $tpl_script}
     {$tpl_script}
 {/foreach}
+{/if}
 <!-- END DYNAMIC PRE-SCRIPTS -->
 
 <!-- BEGIN DYNAMIC KNOCKOUT -->
@@ -104,9 +106,11 @@ var params = window.location.pathname.split('/').slice(1);
 
 <!-- BEGIN DYNAMIC POST-SCRIPTS -->
 {block name='post-scripts'}{/block}
+{if isset($post_scripts_child) && $post_scripts_child}
 {foreach $post_scripts_child as $tpl_script}
     {$tpl_script}
 {/foreach}
+{/if}
 <!-- END DYNAMIC POST-SCRIPTS -->
 
 <!-- END PAGE LEVEL SCRIPTS -->
