@@ -222,13 +222,7 @@
     </div>
     <!-- /ko -->
     
-    <!-- ko if: $root.AdjudicationRejected() -->
-    <div class="alert alert-danger" style="margin-bottom: 15px;">
-        <i class="fa fa-times-circle"></i> 
-        <strong>Adjudicación rechazada.</strong> 
-        La adjudicación fue rechazada por uno de los aprobadores. Puede volver a adjudicar para iniciar una nueva cadena de aprobación.
-    </div>
-    <!-- /ko -->
+    
     
     <!-- ko if: $root.ApprovalChainComplete() -->
     <div class="alert alert-success" style="margin-bottom: 15px;">
@@ -237,14 +231,22 @@
         Todos los niveles han aprobado la adjudicación.
     </div>
     <!-- /ko -->
+
+    <!-- ko if: $root.AdjudicationRejected() -->
+    <div class="alert alert-info" style="margin-bottom: 15px;">
+        <i class="fa fa-check-circle"></i> 
+        <strong>Adjudicación rechazada.</strong> 
+        Puede volver a adjudicar para iniciar una nueva cadena de aprobación.
+    </div>
+    <!-- /ko -->
     
     <!-- Historial de cadenas rechazadas anteriores -->
-    <!-- ko if: $root.RejectedHistory().length > 0 -->
+    <!-- ko if: $root.CombinedRejectedHistory().length > 0 -->
     <div style="margin-bottom: 15px; padding: 15px; background-color: #fff3cd; border: 1px solid #ffc107; border-radius: 4px;">
         <h5 class="text-warning" style="margin-top: 0;">
             <i class="fa fa-history"></i> Historial de Rechazos Anteriores
         </h5>
-        <!-- ko foreach: $root.RejectedHistory() -->
+        <!-- ko foreach: $root.CombinedRejectedHistory() -->
         <div style="padding: 10px; margin-bottom: 10px; background-color: #fff; border-left: 4px solid #dc3545; border-radius: 4px;">
             <p style="margin-bottom: 5px;">
                 <strong>Intento #<span data-bind="text: batch_id"></span></strong> 
@@ -267,6 +269,7 @@
     </div>
     <!-- /ko -->
     
+    <!-- ko if: $root.ShouldShowApprovalChainTable() -->
     <table class="table table-striped table-bordered" id="TablaCadenaAprobacion">
         <thead class="text-center">
             <tr>
@@ -318,6 +321,9 @@
             </tr>
         </tbody>
     </table>
+    <!-- /ko -->
+
+    
     
     <!-- Botón de Procesar Adjudicación - Debajo de la tabla de cadena -->
     <!-- Solo visible para el solicitante (no para aprobadores de la cadena) -->

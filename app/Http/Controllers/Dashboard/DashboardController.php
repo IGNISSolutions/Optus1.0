@@ -200,15 +200,11 @@ class DashboardController extends BaseController
                         if ($nextPending && $nextPending->user_id && $nextPending->user_id == $userId) {
                             $concurso = Concurso::find($contestId);
                             if ($concurso) {
-                                // Usar la fecha de fin de económica o fecha límite
-                                $fechaEconomica = $concurso->fecha_limite_economicas 
-                                    ? $concurso->fecha_limite_economicas->format('Y-m-d') 
-                                    : ($concurso->fecha_limite ? $concurso->fecha_limite->format('Y-m-d') : date('Y-m-d'));
 
                                 $list['AprobacionesPendientes'][] = [
                                     'id'     => $concurso->id,
                                     'nombre' => $concurso->nombre,
-                                    'fecha'  => $fechaEconomica,
+                                    'fecha'  => date('Y-m-d'),
                                     'class'  => 'aprobacion-pendiente-color',
                                     'etapa'  => 'Aprobación Pendiente',
                                     'tipo_concurso'  => $concurso->tipo_concurso,
@@ -436,3 +432,4 @@ class DashboardController extends BaseController
 
 
 }
+

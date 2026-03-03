@@ -665,14 +665,23 @@
                     if (response.success && response.data) {
                         var d = response.data;
                         
-                        self.AdjudicationPendingApproval(d.has_request && !d.chain_complete && !d.chain_rejected);
-                        if (d.has_request) {
+                        var toBool = function(v) {
+                            return v === true || v === 1 || v === '1' || v === 'true';
+                        };
+                        var hasRequest = toBool(d.has_request);
+                        var chainComplete = toBool(d.chain_complete);
+                        var chainRejected = toBool(d.chain_rejected);
+                        var canApprove = toBool(d.can_approve);
+                        var isChainApprover = toBool(d.is_chain_approver);
+
+                        self.AdjudicationPendingApproval(hasRequest && !chainComplete && !chainRejected);
+                        if (hasRequest) {
                             self.EstrategiaHabilitada(true);
                         }
-                        self.AdjudicationRejected(d.chain_rejected || false);
-                        self.ApprovalChainComplete(d.chain_complete || false);
-                        self.CanApproveInChain(d.can_approve || false);
-                        self.IsChainApprover(d.is_chain_approver || false);
+                        self.AdjudicationRejected(chainRejected);
+                        self.ApprovalChainComplete(chainComplete);
+                        self.CanApproveInChain(canApprove);
+                        self.IsChainApprover(isChainApprover);
                         self.PendingApprovalId(d.pending_approval_id || null);
                         
                         if (d.levels && d.levels.length > 0) {
@@ -708,6 +717,20 @@
                         } else {
                             self.RejectedHistory([]);
                         }
+
+                        console.log('[Approval Debug] Raw status payload:', d);
+                        console.log('[Approval Debug] Flags parsed:', {
+                            hasRequest: hasRequest,
+                            chainComplete: chainComplete,
+                            chainRejected: chainRejected,
+                            pending: self.AdjudicationPendingApproval(),
+                            canApprove: canApprove,
+                            isChainApprover: isChainApprover
+                        });
+                        console.log('[Approval Debug] Levels:', self.NivelesAprobacion());
+                        console.log('[Approval Debug] Rejected history:', self.RejectedHistory());
+                        console.log('[Approval Debug] Combined history:', self.CombinedRejectedHistory ? self.CombinedRejectedHistory() : []);
+                        console.log('[Approval Debug] Show table:', self.ShouldShowApprovalChainTable ? self.ShouldShowApprovalChainTable() : null);
                     }
                     if (callback) callback(response);
                 },
@@ -726,6 +749,68 @@
                 }
                 return false;
             };
+
+            // Historial mostrado: incluye rechazos guardados + cadena rechazada actual (si existe)
+            this.CombinedRejectedHistory = ko.computed(function() {
+                var history = self.RejectedHistory() ? self.RejectedHistory().slice(0) : [];
+
+                if (!self.AdjudicationRejected()) {
+                    return history;
+                }
+
+                var levels = self.NivelesAprobacion() || [];
+                if (!levels.length) {
+                    return history;
+                }
+
+                var rejectedLevel = null;
+                for (var i = 0; i < levels.length; i++) {
+                    if (levels[i].estado === 'Rechazado') {
+                        rejectedLevel = levels[i];
+                        break;
+                    }
+                }
+
+                if (!rejectedLevel) {
+                    return history;
+                }
+
+                var type = self.TipoAdjudicacionSeleccionada();
+                history.push({
+                    batch_id: history.length + 1,
+                    adjudication_type: type ? type.toLowerCase() : '-',
+                    amount_usd: self.MontoEnDolares(),
+                    rejected_by: rejectedLevel.usuario || '-',
+                    rejected_at_level: rejectedLevel.rol || '-',
+                    rejected_at: rejectedLevel.fecha || '-',
+                    rejection_reason: rejectedLevel.motivo || 'Sin motivo especificado'
+                });
+
+                return history;
+            });
+            
+            // Mostrar tabla solo si hay proceso activo (alg�n pendiente) o cadena completa (todos aprobados)
+            this.ShouldShowApprovalChainTable = ko.computed(function() {
+                var levels = self.NivelesAprobacion() || [];
+                if (!levels.length) {
+                    return false;
+                }
+
+                var hasPending = false;
+                var hasRejected = false;
+                var hasApproved = false;
+
+                for (var i = 0; i < levels.length; i++) {
+                    var estado = levels[i].estado;
+                    if (estado === 'Pendiente') hasPending = true;
+                    if (estado === 'Rechazado') hasRejected = true;
+                    if (estado === 'Aprobado') hasApproved = true;
+                }
+
+                if (hasPending) return true;
+                if (!hasRejected && hasApproved) return true;
+                return false;
+            });
             
             // Función para cargar/recargar la cadena de aprobación con un monto específico
             this.cargarCadenaAprobacion = function(montoAdjudicacion, callback) {
