@@ -36,6 +36,7 @@ class AdjudicationApproval extends Model
     const STATUS_PENDING = 'pending';
     const STATUS_APPROVED = 'approved';
     const STATUS_REJECTED = 'rejected';
+    const STATUS_CANCELLED = 'cancelled';
 
     public function contest()
     {
@@ -200,6 +201,14 @@ class AdjudicationApproval extends Model
         $this->reason = $reason;
         $this->approved_by_user_id = $userId;
         $this->save();
+
+        // Marcar los niveles pendientes restantes como cancelados
+        // para que no puedan ser aprobados después del rechazo
+        $currentBatch = self::getCurrentBatchId($this->contest_id);
+        self::where('contest_id', $this->contest_id)
+            ->where('batch_id', $currentBatch)
+            ->where('status', self::STATUS_PENDING)
+            ->update(['status' => self::STATUS_CANCELLED]);
 
         Concurso::where('id', $this->contest_id)->update([
             'adjudication_pending_approval' => 0,

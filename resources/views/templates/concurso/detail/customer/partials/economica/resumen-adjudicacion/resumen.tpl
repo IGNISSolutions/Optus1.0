@@ -205,7 +205,7 @@
 <!-- /ko -->
 
 <!-- Tabla de Cadena de Aprobación -->
-<!-- ko if: $root.EstrategiaHabilitada() && ($root.NivelesAprobacion().length > 0 || $root.AdjudicationPendingApproval()) -->
+<!-- ko if: $root.EstrategiaHabilitada() && ($root.NivelesAprobacion().length > 0 || $root.AdjudicationPendingApproval() || $root.CombinedRejectedHistory().length > 0) -->
 <div style="margin-top: 20px; padding: 15px; border: 1px solid #e0e0e0; border-radius: 4px; background-color: #fafafa;">
     <h4 class="block bold" style="margin-top: 0; padding-top: 0;">
         <i class="fa fa-sitemap"></i> Cadena de Aprobación
@@ -244,9 +244,8 @@
 
     <!-- ko if: $root.AdjudicationRejected() -->
     <div class="alert alert-info" style="margin-bottom: 15px;">
-        <i class="fa fa-check-circle"></i> 
         <strong>Adjudicación rechazada.</strong> 
-        Puede volver a adjudicar para iniciar una nueva cadena de aprobación o solicitar una nueva ronda económica.
+        Puede volver a adjudicar o solicitar una nueva ronda económica para iniciar un nuevo proceso de liberación.
     </div>
     <!-- /ko -->
 
@@ -255,7 +254,7 @@
     <div
         style="margin-bottom: 15px; padding: 15px; background-color: #fff3cd; border: 1px solid #ffc107; border-radius: 4px;">
         <h5 class="text-warning" style="margin-top: 0;">
-            <i class="fa fa-history"></i> Historial de Rechazos Anteriores
+            <i class="fa fa-history"></i><strong> Historial de Rechazos</strong> 
         </h5>
         <!-- ko foreach: $root.CombinedRejectedHistory() -->
         <div
@@ -299,7 +298,7 @@
         </thead>
         <tbody data-bind="foreach: $root.NivelesAprobacion()">
             <tr
-                data-bind="css: { 'success': estado === 'Aprobado', 'danger': estado === 'Rechazado', 'warning': estado === 'Pendiente' && $root.IsCurrentLevel($index()) }">
+                data-bind="css: { 'success': estado === 'Aprobado', 'danger': estado === 'Rechazado', 'warning': estado === 'Pendiente' && $root.IsCurrentLevel($index()), 'active': estado === 'Cancelado' }">
                 <td class="text-center" data-bind="text: orden"></td>
                 <td class="text-center" style="white-space: nowrap;" data-bind="text: rol"></td>
                 <td class="text-center" style="white-space: nowrap;" data-bind="text: usuario || '-'"></td>
@@ -309,7 +308,8 @@
                             css: {
                                 'label-warning': estado === 'Pendiente',
                                 'label-success': estado === 'Aprobado',
-                                'label-danger':  estado === 'Rechazado'
+                                'label-danger':  estado === 'Rechazado',
+                                'label-default': estado === 'Cancelado'
                             }">
                     </span>
                 </td>
@@ -318,11 +318,11 @@
                 <!-- ko if: $root.CanApproveInChain() -->
                 <td class="text-center">
                     <!-- ko if: estado === 'Pendiente' && $root.IsCurrentLevel($index()) && $root.CanApproveInChain() -->
-                    <button type="button" class="btn btn-success btn-sm" data-bind="click: $root.ApproveLevel"
+                    <button type="button" class="btn btn-success btn-sm" data-bind="click: $root.ApproveLevel, disable: $root.IsProcessingApproval()"
                         title="Aprobar">
                         <i class="fa fa-check"></i> Aprobar
                     </button>
-                    <button type="button" class="btn btn-danger btn-sm" data-bind="click: $root.RejectLevel"
+                    <button type="button" class="btn btn-danger btn-sm" data-bind="click: $root.RejectLevel, disable: $root.IsProcessingApproval()"
                         title="Rechazar">
                         <i class="fa fa-times"></i> Rechazar
                     </button>
@@ -342,8 +342,10 @@
         <button type="button" class="btn btn-success btn-lg" data-bind="click: $root.ProcessApprovedAdjudication">
             <i class="fa fa-gavel"></i> Procesar Adjudicación Aprobada
         </button>
+        <!-- /ko -->
     </div>
     <!-- /ko -->
+
 </div>
 <!-- /ko -->
 
@@ -432,7 +434,7 @@
                     Cancelar
                 </button>
                 <button type="button" class="btn btn-danger"
-                    data-bind="click: $root.ConfirmRejection, enable: $root.RejectionReason() && $root.RejectionReason().trim().length > 0">
+                    data-bind="click: $root.ConfirmRejection, enable: $root.RejectionReason() && $root.RejectionReason().trim().length > 0 && !$root.IsProcessingApproval(), css: { disabled: !($root.RejectionReason() && $root.RejectionReason().trim().length > 0) || $root.IsProcessingApproval() }">
                     <i class="fa fa-times"></i> Confirmar Rechazo
                 </button>
             </div>
@@ -460,7 +462,7 @@
                 <button type="button" class="btn btn-default" data-dismiss="modal">
                     Cancelar
                 </button>
-                <button type="button" class="btn btn-success" data-bind="click: $root.ConfirmApproval">
+                <button type="button" class="btn btn-success" data-bind="click: $root.ConfirmApproval, enable: !$root.IsProcessingApproval(), css: { disabled: $root.IsProcessingApproval() }">
                     <i class="fa fa-check"></i> Confirmar Aprobación
                 </button>
             </div>

@@ -656,16 +656,21 @@
             // Modal fields
             this.RejectionReason = ko.observable('');
             this.ApprovalComment = ko.observable('');
+            this.IsProcessingApproval = ko.observable(false);
 
             this.loadApprovalStatus = function(callback) {
                 var concursoId = data.list.IdConcurso;
                 
                 Services.Get('/approval/status/' + concursoId, {
-                    UserToken: User.Token
+                    UserToken: User.Token,
+                    _t: (new Date()).getTime()
                 },
                 function(response) {
+                    console.log('[DEBUG] loadApprovalStatus response:', JSON.stringify(response));
                     if (response.success && response.data) {
                         var d = response.data;
+                        console.log('[DEBUG] rejected_history:', JSON.stringify(d.rejected_history));
+                        console.log('[DEBUG] has_request:', d.has_request, 'chain_complete:', d.chain_complete, 'chain_rejected:', d.chain_rejected);
                         
                         var toBool = function(v) {
                             return v === true || v === 1 || v === '1' || v === 'true';
@@ -677,7 +682,7 @@
                         var isChainApprover = toBool(d.is_chain_approver);
 
                         self.AdjudicationPendingApproval(hasRequest && !chainComplete && !chainRejected);
-                        if (hasRequest) {
+                        if (hasRequest || (d.rejected_history && d.rejected_history.length > 0)) {
                             self.EstrategiaHabilitada(true);
                         }
                         self.AdjudicationRejected(chainRejected);
@@ -693,7 +698,8 @@
                                     rol: level.role,
                                     usuario: level.user,
                                     estado: level.status === 'Pending' ? 'Pendiente' : 
-                                           (level.status === 'Approved' ? 'Aprobado' : 'Rechazado'),
+                                           (level.status === 'Approved' ? 'Aprobado' : 
+                                           (level.status === 'Rejected' ? 'Rechazado' : 'Cancelado')),
                                     fecha: level.date,
                                     motivo: level.reason
                                 };
@@ -711,13 +717,24 @@
                             if (d.requester_user_id) {
                                 self.RequesterUserId(d.requester_user_id);
                             }
+                        } else {
+                            // Sin niveles activos: limpiar tabla
+                            self.NivelesAprobacion([]);
+                            self.MontoEnDolares(null);
+                            self.TipoAdjudicacionSeleccionada(null);
+                            self.RequesterUserId(null);
                         }
                         // Cargar historial de cadenas rechazadas
                         if (d.rejected_history && d.rejected_history.length > 0) {
                             self.RejectedHistory(d.rejected_history);
+                            console.log('[DEBUG] RejectedHistory SET:', self.RejectedHistory().length, 'items');
                         } else {
                             self.RejectedHistory([]);
+                            console.log('[DEBUG] RejectedHistory CLEARED - d.rejected_history:', d.rejected_history);
                         }
+                        console.log('[DEBUG] CombinedRejectedHistory length:', self.CombinedRejectedHistory().length);
+                        console.log('[DEBUG] AdjudicationRejected:', self.AdjudicationRejected());
+                        console.log('[DEBUG] EstrategiaHabilitada:', self.EstrategiaHabilitada());
                     }
                     if (callback) callback(response);
                 },
@@ -776,7 +793,7 @@
                 return history;
             });
             
-            // Mostrar tabla solo si hay proceso activo (alg�n pendiente) o cadena completa (todos aprobados)
+            // Mostrar tabla si hay cadena cargada: pendiente, aprobada o rechazada
             this.ShouldShowApprovalChainTable = ko.computed(function() {
                 var levels = self.NivelesAprobacion() || [];
                 if (!levels.length) {
@@ -792,9 +809,11 @@
                     if (estado === 'Pendiente') hasPending = true;
                     if (estado === 'Rechazado') hasRejected = true;
                     if (estado === 'Aprobado') hasApproved = true;
+                    if (estado === 'Cancelado') hasRejected = true;
                 }
 
                 if (hasPending) return true;
+                if (hasRejected) return true;
                 if (!hasRejected && hasApproved) return true;
                 return false;
             });
@@ -2092,6 +2111,9 @@
             };
 
             this.ConfirmApproval = function() {
+                if (self.IsProcessingApproval()) return;
+                self.IsProcessingApproval(true);
+                
                 $('#modalApprovalComment').modal('hide');
                 $.blockUI({ message: 'Procesando aprobación...' });
                 
@@ -2107,7 +2129,31 @@
                 function(response) {
                     $.unblockUI();
                     if (response.success) {
+                        // Actualizar UI inmediatamente desde la respuesta
+                        if (response.data && response.data.levels && response.data.levels.length > 0) {
+                            var mappedLevels = response.data.levels.map(function(level) {
+                                return {
+                                    orden: level.sort_order,
+                                    rol: level.role,
+                                    usuario: level.user,
+                                    estado: level.status === 'Pending' ? 'Pendiente' : 
+                                           (level.status === 'Approved' ? 'Aprobado' : 
+                                           (level.status === 'Rejected' ? 'Rechazado' : 'Cancelado')),
+                                    fecha: level.date,
+                                    motivo: level.reason
+                                };
+                            });
+                            self.NivelesAprobacion(mappedLevels);
+                        }
+                        
+                        self.CanApproveInChain(false);
+                        if (response.data && response.data.chain_complete) {
+                            self.ApprovalChainComplete(true);
+                            self.AdjudicationPendingApproval(false);
+                        }
+                        
                         self.loadApprovalStatus(function() {
+                            self.IsProcessingApproval(false);
                             swal({
                                 title: 'Aprobado',
                                 text: response.message || 'Su aprobación ha sido registrada.',
@@ -2117,11 +2163,13 @@
                             });
                         });
                     } else {
+                        self.IsProcessingApproval(false);
                         swal('Error', response.message || 'Error al procesar la aprobación', 'error');
                     }
                 },
                 function(error) {
                     $.unblockUI();
+                    self.IsProcessingApproval(false);
                     swal('Error', 'Error de comunicación con el servidor', 'error');
                 });
             };
@@ -2132,12 +2180,15 @@
             };
 
             this.ConfirmRejection = function() {
+                if (self.IsProcessingApproval()) return;
+                
                 var reason = self.RejectionReason();
                 if (!reason || reason.trim().length === 0) {
                     swal('Error', 'El motivo del rechazo es obligatorio', 'error');
                     return;
                 }
                 
+                self.IsProcessingApproval(true);
                 $('#modalRejectionReason').modal('hide');
                 $.blockUI({ message: 'Procesando rechazo...' });
                 
@@ -2153,7 +2204,30 @@
                 function(response) {
                     $.unblockUI();
                     if (response.success) {
+                        if (response.data && response.data.levels && response.data.levels.length > 0) {
+                            var mappedLevels = response.data.levels.map(function(level) {
+                                return {
+                                    orden: level.sort_order,
+                                    rol: level.role,
+                                    usuario: level.user,
+                                    estado: level.status === 'Pending' ? 'Pendiente' : 
+                                           (level.status === 'Approved' ? 'Aprobado' : 
+                                           (level.status === 'Rejected' ? 'Rechazado' : 'Cancelado')),
+                                    fecha: level.date,
+                                    motivo: level.reason
+                                };
+                            });
+                            self.NivelesAprobacion(mappedLevels);
+                        }
+
+                        self.AdjudicationRejected(true);
+                        self.AdjudicationPendingApproval(false);
+                        self.ApprovalChainComplete(false);
+                        self.CanApproveInChain(false);
+                        self.PendingApprovalId(null);
+
                         self.loadApprovalStatus(function() {
+                            self.IsProcessingApproval(false);
                             swal({
                                 title: 'Rechazado',
                                 text: response.message || 'La adjudicación ha sido rechazada.',
@@ -2163,11 +2237,13 @@
                             });
                         });
                     } else {
+                        self.IsProcessingApproval(false);
                         swal('Error', response.message || 'Error al procesar el rechazo', 'error');
                     }
                 },
                 function(error) {
                     $.unblockUI();
+                    self.IsProcessingApproval(false);
                     swal('Error', 'Error de comunicación con el servidor', 'error');
                 });
             };

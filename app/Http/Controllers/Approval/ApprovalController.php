@@ -287,10 +287,41 @@ class ApprovalController extends BaseController
             }
 
             $approvals = AdjudicationApproval::getByContest($contestId);
+
+            // Detectar cadena stale: rechazada en una ronda anterior.
+            // Usamos los flags del concurso para determinarlo:
+            // - Cuando se rechaza: adjudication_rejected=1, adjudication_pending_approval=0
+            // - Cuando se lanza nueva ronda (sendSecondRound): ambos se resetean a 0
+            // Si la cadena está rechazada PERO adjudication_rejected=0, significa que
+            // ya se inició una nueva ronda y la cadena rechazada es de la ronda anterior.
+            $isStaleChain = false;
+            if (!$approvals->isEmpty() && AdjudicationApproval::isChainRejected($contestId)) {
+                $concurso = Concurso::find($contestId);
+
+                if ($concurso
+                    && !$concurso->adjudication_rejected
+                    && !$concurso->adjudication_pending_approval) {
+                    $isStaleChain = true;
+                }
+            }
             
-            if ($approvals->isEmpty()) {
-                // Verificar si hay historial de cadenas rechazadas anteriores
-                $rejectedHistory = AdjudicationApproval::getRejectedHistory($contestId);
+            if ($approvals->isEmpty() || $isStaleChain) {
+                // Obtener historial completo de TODOS los batches rechazados
+                // (incluyendo el batch actual si es stale)
+                $allRejectedBatches = AdjudicationApproval::where('contest_id', $contestId)
+                    ->where('status', AdjudicationApproval::STATUS_REJECTED)
+                    ->distinct()
+                    ->pluck('batch_id');
+
+                $allRejectedRecords = collect();
+                if ($allRejectedBatches->isNotEmpty()) {
+                    $allRejectedRecords = AdjudicationApproval::where('contest_id', $contestId)
+                        ->whereIn('batch_id', $allRejectedBatches)
+                        ->orderBy('batch_id', 'desc')
+                        ->orderBy('sort_order', 'asc')
+                        ->get()
+                        ->groupBy('batch_id');
+                }
                 
                 $data = [
                     'has_request' => false,
@@ -299,7 +330,7 @@ class ApprovalController extends BaseController
                     'chain_complete' => false,
                     'chain_rejected' => false,
                     'is_chain_approver' => false,
-                    'rejected_history' => $this->formatRejectedHistory($rejectedHistory)
+                    'rejected_history' => $this->formatRejectedHistory($allRejectedRecords)
                 ];
             } else {
                 // Verificar si el usuario actual puede aprobar (simplemente si su user_id coincide con el nivel pendiente)
@@ -366,6 +397,11 @@ class ApprovalController extends BaseController
 
             if (!$contestId) {
                 throw new \Exception('ID del concurso requerido');
+            }
+
+            // Verificar que la cadena no esté ya rechazada
+            if (AdjudicationApproval::isChainRejected($contestId)) {
+                throw new \Exception('La cadena de aprobación ya fue rechazada. No se puede aprobar.');
             }
 
             // Buscar el nivel pendiente que corresponde a este usuario

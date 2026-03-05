@@ -213,42 +213,6 @@ class DashboardController extends BaseController
                             }
                         }
                     }
-
-                    // APROBACIONES PENDIENTES - Para usuarios que son aprobadores en la cadena
-                    $userId = User()->id;
-                    
-                    // Obtener los contest_ids únicos con aprobaciones pendientes
-                    $contestIds = AdjudicationApproval::where('status', 'pending')
-                        ->distinct()
-                        ->pluck('contest_id');
-
-                    foreach ($contestIds as $contestId) {
-                        // Obtener el PRIMER pendiente por sort_order para este concurso
-                        $nextPending = AdjudicationApproval::where('contest_id', $contestId)
-                            ->where('status', 'pending')
-                            ->orderBy('sort_order', 'asc')
-                            ->first();
-
-                        // Solo mostrar si el user_id del siguiente pendiente coincide con el usuario actual
-                        if ($nextPending && $nextPending->user_id && $nextPending->user_id == $userId) {
-                            $concurso = Concurso::find($contestId);
-                            if ($concurso) {
-                                // Usar la fecha de fin de económica o fecha límite
-                                $fechaEconomica = $concurso->fecha_limite_economicas 
-                                    ? $concurso->fecha_limite_economicas->format('Y-m-d') 
-                                    : ($concurso->fecha_limite ? $concurso->fecha_limite->format('Y-m-d') : date('Y-m-d'));
-
-                                $list['AprobacionesPendientes'][] = [
-                                    'id'     => $concurso->id,
-                                    'nombre' => $concurso->nombre,
-                                    'fecha'  => $fechaEconomica,
-                                    'class'  => 'aprobacion-pendiente-color',
-                                    'etapa'  => 'Aprobación Pendiente',
-                                    'tipo_concurso'  => $concurso->tipo_concurso,
-                                ];
-                            }
-                        }
-                    }
                 }
 
             /// BEGIN OFFERER ///

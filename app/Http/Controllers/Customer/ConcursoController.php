@@ -21,6 +21,7 @@ use App\Models\Catalogo;
 use App\Models\GoType;
 use App\Models\Alcance;
 use App\Models\Concurso;
+use App\Models\AdjudicationApproval;
 use App\Models\ConcursoPlantillaItem;
 use App\Models\Participante;
 use App\Models\Producto;
@@ -3471,6 +3472,8 @@ class ConcursoController extends BaseController
                     'segunda_ronda_habilita' => 'si',
                     'finalizacion_consultas' => $dateNewMuroConsulta,
                     'fecha_limite_economicas' => $dateNewRound,
+                    'adjudication_pending_approval' => 0,
+                    'adjudication_rejected' => 0,
                     $fechaNuevaCampo => $dateNewRound,
                     $comentarioCampo => $body->CommentNewRound
                 ];
