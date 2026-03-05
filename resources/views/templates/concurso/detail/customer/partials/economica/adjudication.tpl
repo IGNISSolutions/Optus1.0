@@ -81,3 +81,78 @@
         </div>
     </div>
 </div>
+
+<!-- Modal Nueva Ronda (fuera de los contenedores) -->
+<div class="modal fade bs-modal-md" id="newRound" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+
+            <!-- HEADER -->
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title text-center" data-bind="text:'¿Confirma la ' + $root.NuevaRonda() + '?'"></h4>
+            </div>
+
+            <div class="modal-body text-center">
+                 <!-- FECHA LIMITE NUEVA RONDA -->
+                <span> Indica la fecha limite de la nueva ronda <b style="color: red;">*</b></span>
+                    <br>
+                <span>(Minimo 72 hs a partir de hoy)</span>
+
+                <div class="form-group required" data-bind="validationElement: $root.FechaNewRound()">
+                    <div class="input-group date form_datetime bs-datetime" style="margin: auto;">
+                        <input class="form-control" size="36" type="text" data-bind="dateTimePicker: $root.FechaNewRound, dateTimePickerOptions: {
+                            format: 'dd-mm-yyyy hh:ii',
+                            momentFormat: 'DD-MM-YYYY HH:mm',
+                            startDate: $root.ThreeDaysFromTodayDate(),
+                            value: $root.FechaNewRound(),
+                            todayBtn: false
+                        }">
+                    </div>
+                </div>
+
+                <!-- FECHA LIMITE CIERRE MURO DE CONSULTA -->
+                <span class="text-center" data-bind="text:'Indica la fecha limite para el cierre del muro de consultas'"></span>
+                    <br>
+                <span>(24 hs antes de la fecha limite de la nueva ronda)</span>
+
+                <div class="form-group required" data-bind="validationElement: $root.NuevaFechaCierreMuroConsulta()">
+                    <div class="input-group date form_datetime bs-datetime" style="margin: auto;">
+                        <input id="NuevaFechaCierreMuroConsulta" class="form-control" size="36" type="text" 
+                            data-bind="dateTimePicker: $root.NuevaFechaCierreMuroConsulta, 
+                                        dateTimePickerOptions: {
+                                            format: 'dd-mm-yyyy hh:ii',
+                                            momentFormat: 'DD-MM-YYYY HH:mm',
+                                            startDate: $root.TodayDate(),
+                                            endDate: $root.FechaMaximaCierreDeConsulta(),
+                                            value: $root.NuevaFechaCierreMuroConsulta(),
+                                            todayBtn: false
+                                        },
+                                        enable: $root.FechaNewRound()">
+                    </div>
+                </div>
+                
+                <!-- BOX DE COMENTARIO -->
+                <p>Añada un comentario para la nueva ronda <b style="color: red;">*</b></p>
+                    <textarea rows="3" cols="50" class="form-control" style="resize: none;"data-bind="textInput: $root.ComentarioNuevaRonda">
+                </textarea>
+
+                <span>
+                        Todos los campos marcados con <b style="color: red;">*</b> son oblgatorios
+                    <br>
+                </span>
+            </div>
+
+            <!-- FOOTER CON BOTONES -->
+            <div class="modal-footer">
+                <button type="button" class="btn red BTNC" data-dismiss="modal">
+                    Cancelar
+                </button>
+                <button type="button" class="btn green"  data-dismiss="modal"
+                    data-bind="click: $root.SendNewRound">
+                    Aceptar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

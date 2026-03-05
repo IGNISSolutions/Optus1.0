@@ -41,6 +41,10 @@
 	color: #80319b!important;
 background-color: #80319b;
 }
+.aprobacion-pendiente-color {
+	color: #3498db!important;
+	background-color: #3498db;
+}
 
 .vertical-align-middle {
 	vertical-align: middle!important;
