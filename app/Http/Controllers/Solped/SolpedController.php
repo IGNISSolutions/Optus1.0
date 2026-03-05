@@ -198,8 +198,12 @@ class SolpedController extends BaseController
             }
             fwrite($fp, "Total productos: " . count($productos) . "\n");
 
-            // FilePath (usar el mismo path público donde se mueven los archivos: /storage/img/solpeds/)
-            $file_path = '/storage/img/solpeds/';
+            // FilePath - usar la estructura CUIT/AÑO
+            $cuit = $solped->cliente->customer_company->cuit ?? '';
+            $year = $solped->fecha_alta instanceof \Carbon\Carbon 
+                ? $solped->fecha_alta->format('Y') 
+                : substr($solped->fecha_alta ?? date('Y'), 0, 4);
+            $file_path = '/storage/img/solpeds/' . $cuit . '/' . $year . '/';
             $document = SolpedDocument::where('solped_id', $solped->id)->first();
             fwrite($fp, "FilePath base: {$file_path}\n");
             fwrite($fp, "Document encontrado: " . ($document ? $document->filename : 'NO') . "\n");
@@ -1229,11 +1233,13 @@ class SolpedController extends BaseController
 
             // Mover archivos desde directorio temporal al directorio final de solpeds
             if (!empty($docs)) {
-                $targetDir = rootPath() . '/storage/img/solpeds/';
+                // Construir ruta usando file_path del modelo
+                $targetDir = rootPath() . '/storage/img/' . $solped->file_path;
                 
                 // Crear directorio si no existe
                 if (!is_dir($targetDir)) {
                     mkdir($targetDir, 0777, true);
+                    $log('directory-created', ['path' => $targetDir]);
                 }
                 
                 foreach ($docs as $filename) {
@@ -1242,7 +1248,6 @@ class SolpedController extends BaseController
                         rootPath() . '/storage/temp/' . $filename,
                         rootPath() . '/uploads/' . $filename,
                         rootPath() . '/storage/uploads/' . $filename,
-                        rootPath() . '/storage/img/solpeds/' . $filename // Ya está en el lugar correcto
                     ];
                     
                     $sourcePath = null;
@@ -1253,7 +1258,7 @@ class SolpedController extends BaseController
                         }
                     }
                     
-                    if ($sourcePath && !strpos($sourcePath, '/storage/img/solpeds/')) {
+                    if ($sourcePath) {
                         $targetPath = $targetDir . $filename;
                         
                         // Mover archivo al directorio final
@@ -1262,7 +1267,7 @@ class SolpedController extends BaseController
                         } else {
                             $log('file-move-failed', ['source' => $sourcePath, 'target' => $targetPath]);
                         }
-                    } elseif (!$sourcePath) {
+                    } else {
                         $log('file-not-found', ['filename' => $filename, 'searched' => $tempPaths]);
                     }
                 }
@@ -1360,6 +1365,40 @@ class SolpedController extends BaseController
                         'solped_id' => $solped->id,
                         'filename'  => $filename,
                     ]);
+                }
+
+                // Mover archivos desde directorios temporales al destino final
+                $targetDir = rootPath() . '/storage/img/' . $solped->file_path;
+                if (!is_dir($targetDir)) {
+                    mkdir($targetDir, 0777, true);
+                    $log('directory-created', ['path' => $targetDir]);
+                }
+
+                foreach ($docs as $filename) {
+                    $tempPaths = [
+                        rootPath() . '/storage/temp/' . $filename,
+                        rootPath() . '/uploads/' . $filename,
+                        rootPath() . '/storage/uploads/' . $filename,
+                    ];
+
+                    $sourcePath = null;
+                    foreach ($tempPaths as $path) {
+                        if (file_exists($path)) {
+                            $sourcePath = $path;
+                            break;
+                        }
+                    }
+
+                    if ($sourcePath) {
+                        $targetPath = $targetDir . $filename;
+                        if (rename($sourcePath, $targetPath)) {
+                            $log('file-moved', ['from' => $sourcePath, 'to' => $targetPath]);
+                        } else {
+                            $log('file-move-failed', ['source' => $sourcePath, 'target' => $targetPath]);
+                        }
+                    } else {
+                        $log('file-not-found', ['filename' => $filename, 'searched' => $tempPaths]);
+                    }
                 }
             }
 

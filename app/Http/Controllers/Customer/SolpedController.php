@@ -5,6 +5,7 @@ use App\Http\Controllers\BaseController;
 use App\Models\InvitationStatus;
 use App\Models\ProposalStatus;
 use App\Models\Solped;
+use App\Models\SolpedDocument;
 use App\Models\UserType;
 use Carbon\Traits\ToStringFormat;
 use PhpMyAdmin\Console;

@@ -142,6 +142,16 @@ class Solped extends Model
         return $this->belongsTo(User::class, 'id_comprador_first_revision');
     }
 
+    public function cliente()
+    {
+        return $this->belongsTo(User::class, 'id_solicitante');
+    }
+
+    public function documents()
+    {
+        return $this->hasMany(SolpedDocument::class, 'solped_id', 'id');
+    }
+
     public function getTipocompraNombreAttribute()
     {
         return $this::TYPE_DESCRIPTION[$this->attributes['tipo_compra']];
@@ -162,11 +172,6 @@ class Solped extends Model
     public function getSolpedsEnPreparacionAttribute()
     {
         return $this->etapa_actual === 'en-preparacion' && $this->estado_actual === 'borrador';
-    }
-
-        public function getFilePathAttributeSolped()
-    {
-        return $this->cliente->file_path;
     }
 
 
