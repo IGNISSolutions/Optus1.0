@@ -203,6 +203,8 @@ class Concurso extends Model
         'balances_estados_resultados',
         'estatuto_contrato_social',
         'actas_designacion_autoridades',
+        'adjudication_pending_approval',
+        'adjudication_rejected',
 
     ];
 

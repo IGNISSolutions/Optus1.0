@@ -73,6 +73,10 @@
                                 <td><i class="fa fa-circle" style="color: #2cc281" aria-hidden="true"></i></td>
                                 <td>Adjudicación Pendiente</td>
                             </tr>
+                            <tr>
+                                <td><i class="fa fa-circle" style="color: #3498db" aria-hidden="true"></i></td>
+                                <td>Aprobación Pendiente</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -94,7 +98,8 @@
             Consultas: ko.observableArray(''),
             Tecnicas: ko.observableArray(''),
             Economicas: ko.observableArray(''),
-            PorAdjudicar: ko.observableArray('')
+            PorAdjudicar: ko.observableArray(''),
+            AprobacionesPendientes: ko.observableArray('')
         };
 
         this.setEntity = function(data) {
@@ -103,6 +108,7 @@
             self.Entity.Tecnicas(data.list.Tecnicas);
             self.Entity.Economicas(data.list.Economicas);
             self.Entity.PorAdjudicar(data.list.PorAdjudicar);
+            self.Entity.AprobacionesPendientes(data.list.AprobacionesPendientes || []);
         };
         self.setEntity(data);
     };
@@ -120,8 +126,9 @@
                     var arr2 = E.Entity.Tecnicas();
                     var arr3 = E.Entity.Economicas();
                     var arr4 = E.Entity.PorAdjudicar();
+                    var arr5 = E.Entity.AprobacionesPendientes();
 
-                    var array = arr.concat(arr1, arr2, arr3, arr4);
+                    var array = arr.concat(arr1, arr2, arr3, arr4, arr5);
 
                     var events = [];
                     $.each(array, function(i, v) {
@@ -181,7 +188,8 @@
                                 'muro-color':         'chat-muro-consultas',
                                 'tecnica-color':      'analisis-tecnicas',
                                 'economica-color':    'analisis-ofertas',
-                                'adjudicacion-color': 'evaluacion-reputacion'
+                                'adjudicacion-color': 'evaluacion-reputacion',
+                                'aprobacion-pendiente-color': 'analisis-ofertas'
                             };
 
                             // === Fallback por TEXTO (variantes frecuentes) ===
@@ -207,7 +215,10 @@
 
                                 // Adjudicación
                                 'adjudicacion pendiente': 'evaluacion-reputacion',
-                                'adjudicacion':           'evaluacion-reputacion'
+                                'adjudicacion':           'evaluacion-reputacion',
+
+                                // Aprobación
+                                'aprobacion pendiente': 'analisis-ofertas'
                             };
 
                             const step = classToStep[classKey] || etapaToStep[etapaKey] || 'convocatoria-oferentes';

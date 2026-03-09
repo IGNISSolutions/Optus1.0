@@ -21,6 +21,7 @@ use App\Models\Catalogo;
 use App\Models\GoType;
 use App\Models\Alcance;
 use App\Models\Concurso;
+use App\Models\AdjudicationApproval;
 use App\Models\ConcursoPlantillaItem;
 use App\Models\Participante;
 use App\Models\Producto;
@@ -99,38 +100,41 @@ class ConcursoController extends BaseController
         $sessionId = session_id();
         $expectedToken = hash_hmac('sha256', $id . $sessionId, $secret);
         $storedToken   = $_SESSION['edit_token'][$id] ?? null;
-        $isEvaluator = false;
         $user = user();
+        $isEvaluator = false;
+        $isApprover = false;
+        $concursoForCheck = null;
 
-        if (!$storedToken || $expectedToken !== $storedToken) {
-            // Permitir acceso si el usuario es evaluador del concurso
+        if (!isAdmin()) {
+            $isTokenValid = $storedToken && $expectedToken === $storedToken;
+            $isApprover = $this->isUserApprover($id, $user);
+
             $concursoForCheck = Concurso::find($id);
-            if (!($concursoForCheck && $concursoForCheck->isUserEvaluador($user->id))) {
+            $isEvaluator = $concursoForCheck && $concursoForCheck->isUserEvaluador($user->id);
+
+            $hasAccess = $isTokenValid || $isApprover || $isEvaluator;
+
+            if (!$hasAccess) {
                 return $this->json($response, [
                     'success' => false,
                     'message' => 'Acceso no autorizado. Token inválido para ver el detalle del concurso'
                 ], 403);
             }
-            $isEvaluator = true;
-        }
 
-        // No eliminamos el token para permitir F5
-        // unset($_SESSION['edit_token'][$id]);
+            if (!$isTokenValid && ($isApprover || $isEvaluator)) {
+                $_SESSION['edit_token'] = $_SESSION['edit_token'] ?? [];
+                $_SESSION['edit_token'][$id] = $expectedToken;
+            }
+        }
 
         if (isAdmin()) {
             $concurso = Concurso::find($id);
         } else {
-            $user = user();
             $concurso = $user->customer_company->getAllConcursosByCompany()->find($id)
                     ?? $user->concursos_evalua->find($id);
 
-            // Si no pertenece a la compañía ni está en concursos_evalua, pero es evaluador de reputación, cargarlo igualmente
-            if (!$concurso) {
-                $tmp = Concurso::find($id);
-                if ($tmp && $tmp->isUserEvaluador($user->id)) {
-                    $concurso = $tmp;
-                    $isEvaluator = true;
-                }
+            if (!$concurso && ($isApprover || $isEvaluator)) {
+                $concurso = $concursoForCheck ?? Concurso::find($id);
             }
         }
 
@@ -1483,6 +1487,9 @@ class ConcursoController extends BaseController
 
         try {
             $user = user();
+            $isApprover = false;
+            $isEvaluator = false;
+            $concursoTemp = null;
 
             if (isAdmin()) {
                 $concurso = Concurso::find($params['id']);
@@ -1493,7 +1500,10 @@ class ConcursoController extends BaseController
                 // Si no lo encuentra, verificar si el usuario califica reputación en este concurso
                 if (!$concurso) {
                     $concursoTemp = Concurso::find($params['id']);
-                    if ($concursoTemp && $concursoTemp->isUserEvaluador($user->id)) {
+                    $isEvaluator = $concursoTemp && $concursoTemp->isUserEvaluador($user->id);
+                    $isApprover = $this->isUserApprover($params['id'], $user);
+                    
+                    if ($isEvaluator || $isApprover) {
                         $concurso = $concursoTemp;
                     }
                 }
@@ -3462,6 +3472,8 @@ class ConcursoController extends BaseController
                     'segunda_ronda_habilita' => 'si',
                     'finalizacion_consultas' => $dateNewMuroConsulta,
                     'fecha_limite_economicas' => $dateNewRound,
+                    'adjudication_pending_approval' => 0,
+                    'adjudication_rejected' => 0,
                     $fechaNuevaCampo => $dateNewRound,
                     $comentarioCampo => $body->CommentNewRound
                 ];
@@ -6075,5 +6087,40 @@ class ConcursoController extends BaseController
                 'data' => []
             ], $status);
         }
+    }
+
+    // Helper para estrategia de liberacion 
+    private function isUserApprover($contestId, $user)
+    {
+        $pendingApprovals = \App\Models\AdjudicationApproval::where('contest_id', $contestId)
+            ->where('status', 'pending')
+            ->get();
+        
+        foreach ($pendingApprovals as $approval) {
+            // User match
+            if ($approval->user_id && $approval->user_id == $user->id) {
+                return true;
+            }
+            
+            // Match basado en roles; "Gerente de Compras" debe matchear con el rol de usuario "Gerente" y el area "Compras"
+            // Esto esta horrible, pero es la unica forma que se me ocurrió lmao
+            if (!$approval->user_id && $user->rol) {
+                $expectedRole = $user->rol;
+                if ($user->area) {
+                    $expectedRole .= ' de ' . $user->area;
+                }
+                
+                if ($approval->role === $expectedRole) {
+                    return true;
+                }
+                
+                // Check para "Gerente General" que no tiene area
+                if ($approval->role === $user->rol && !$approval->area) {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
     }
 }
