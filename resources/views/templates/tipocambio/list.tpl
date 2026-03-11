@@ -32,11 +32,11 @@
                             </div>
                         </div>
                     </div>
-                    <div class="alert alert-info" style="background-color: #355633; color: #ffffff; font-size: 18px; font-weight: bold; text-align: center; border: none;">
-                        <i class="fa fa-money"></i> Conversión a 1 Dólar (USD)
-                    </div>
                     <table class="table table-striped table-bordered" id="listaUnidades">
                         <thead>
+                            <tr>
+                                <th colspan="2" class="text-left header-col" style="background-color: #659BE0; color: #ffffff;">Conversión a 1 dólar</th>
+                            </tr>
                             <tr>
                                 <th class="text-left header-col" style="background-color: #32C5D2; color: #ffffff;">Moneda</th>
                                 <th class="text-left header-col" style="background-color: #32C5D2; color: #ffffff;">Cambio</th>
@@ -75,8 +75,6 @@ var ConfiguracionesTipoCambioListado = function (data) {
     this.Breadcrumbs = ko.observableArray(data.breadcrumbs);
     this.ListaUnidades = ko.observableArray(ko.utils.arrayMap(data.list, function(item) {
         return new Unidad(item);
-    }).sort(function(a, b) {
-        return a.Moneda().localeCompare(b.Moneda());
     }));
     
 };
