@@ -9,6 +9,7 @@ use App\Models\Concurso;
 use App\Models\Participante;
 use App\Models\User;
 use Carbon\Carbon;
+use App\Models\AdjudicationApproval;
 
 class DashboardController extends BaseController
 {
@@ -43,7 +44,9 @@ class DashboardController extends BaseController
             'Consultas'    => [],
             'Tecnicas'     => [],
             'Economicas'   => [],
-            'PorAdjudicar' => []
+            'PorAdjudicar' => [],
+            'AprobacionesPendientes' => [],
+            
         ];
         $breadcrumbs = [];
     
@@ -177,6 +180,38 @@ class DashboardController extends BaseController
                             'etapa'  => Participante::ETAPAS_NOMBRES['adjudicacion-pendiente'],
                             'tipo_concurso'  => $concurso->tipo_concurso,
                         ];
+                    }
+
+                    // APROBACIONES PENDIENTES - Para usuarios que son aprobadores en la cadena
+                    $userId = User()->id;
+                    
+                    // Obtener los contest_ids únicos con aprobaciones pendientes
+                    $contestIds = AdjudicationApproval::where('status', 'pending')
+                        ->distinct()
+                        ->pluck('contest_id');
+
+                    foreach ($contestIds as $contestId) {
+                        // Obtener el PRIMER pendiente por sort_order para este concurso
+                        $nextPending = AdjudicationApproval::where('contest_id', $contestId)
+                            ->where('status', 'pending')
+                            ->orderBy('sort_order', 'asc')
+                            ->first();
+
+                        // Solo mostrar si el user_id del siguiente pendiente coincide con el usuario actual
+                        if ($nextPending && $nextPending->user_id && $nextPending->user_id == $userId) {
+                            $concurso = Concurso::find($contestId);
+                            if ($concurso) {
+
+                                $list['AprobacionesPendientes'][] = [
+                                    'id'     => $concurso->id,
+                                    'nombre' => $concurso->nombre,
+                                    'fecha'  => date('Y-m-d'),
+                                    'class'  => 'aprobacion-pendiente-color',
+                                    'etapa'  => 'Aprobación Pendiente',
+                                    'tipo_concurso'  => $concurso->tipo_concurso,
+                                ];
+                            }
+                        }
                     }
                 }
 

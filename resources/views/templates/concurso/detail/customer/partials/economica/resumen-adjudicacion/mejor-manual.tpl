@@ -96,7 +96,7 @@
     <div class="col-md-12">
         <div class="form-group text-right">
             <label class="control-label visible-ie8 visible-ie9" style="display: block;">&nbsp;</label>
-            <button data-bind="click: $root.AdjudicationItemAddOrDelete.bind($data, 'add')" class="btn btn-xl btn-success"
+            <button data-bind="click: $root.AdjudicationItemAddOrDelete.bind($data, 'add'), disable: $root.IsChainApprover()" class="btn btn-xl btn-success"
                 title="Agregar Item">
                 <i class="fa fa-plus"></i>
                 Agregar Item

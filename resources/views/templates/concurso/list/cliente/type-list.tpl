@@ -18,6 +18,9 @@
         #ListaConcursosCancelados_wrapper div.row {
             display: none;
         }
+        #ListaConcursosPendientesAprobacion_wrapper div.row {
+            display: none;
+        }
         
         /* Estilo para botón deshabilitado */
         .btn-disabled {
@@ -78,6 +81,63 @@
                     <input type="text" class="form-control"
                         data-bind="value: Filters().searchTerm"
                         placeholder="Nombre, Solicitante o ID de concurso">
+                </div>
+            </div>
+        </div>
+
+        <!-- Pendientes de Aprobación -->
+        
+        <div class="col-md-12" data-bind="visible: Lists().ListaConcursosPendientesAprobacion && Lists().ListaConcursosPendientesAprobacion().length > 0">
+            <div class="portlet box green-jungle">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-check-square-o"></i>
+                        <span class="caption-subject bold">Pendientes de Aprobación</span>
+                        <span class="caption-helper font-white"
+                            data-bind="text: Lists().ListaConcursosPendientesAprobacion().length">
+                        </span>
+                    </div>
+                    <div class="tools">
+                        <a href="javascript:;" data-original-title="" class="collapse" title="">
+                        </a>
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <table class="table table-striped table-bordered ListaConcursos" id="ListaConcursosPendientesAprobacion">
+                        <thead>
+                            <tr>
+                                <th> Nº Concurso </th>
+                                <th> Nombre del concurso </th>
+                                <th> Tipo Adjudicación </th>
+                                <th> Monto </th>
+                                <th> Monto USD </th>
+                                <th> Nivel </th>
+                                <th> Solicitante </th>
+                                <th> Fecha Solicitud </th>
+                                <th class="text-center"> Acciones </th>
+                            </tr>
+                        </thead>
+                        <tbody data-bind="foreach: Lists().ListaConcursosPendientesAprobacion">
+                            <tr>
+                                <td data-bind="text: ContestId()" class="vertical-align-middle"></td>
+                                <td data-bind="text: ContestName()" class="vertical-align-middle"></td>
+                                <td data-bind="text: AdjudicationType()" class="vertical-align-middle"></td>
+                                <td data-bind="text: Amount()" class="vertical-align-middle"></td>
+                                <td data-bind="text: AmountUsd()" class="vertical-align-middle"></td>
+                                <td data-bind="text: Role()" class="vertical-align-middle"></td>
+                                <td data-bind="text: RequesterName()" class="vertical-align-middle"></td>
+                                <td data-bind="text: CreatedAt()" class="vertical-align-middle"></td>
+                                <td class="text-center vertical-align-middle">
+                                    <a href="javascript:void(0);"
+                                        data-bind="click: function() { $root.goToApproval(ContestId(), TipoConcursoPath()) }"
+                                        class="btn btn-xs green-jungle" title="Revisar y Aprobar">
+                                        Revisar
+                                        <i class="fa fa-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -644,6 +704,15 @@
             this.UsuarioSolicitante = ko.observable(data.UsuarioSolicitante);
             this.AreaSolicitante = ko.observable(data.AreaSolicitante);
             
+            // Approvals (Estrategia de liberacion)
+            this.ContestId = ko.observable(data.ContestId);
+            this.ContestName = ko.observable(data.ContestName);
+            this.AdjudicationType = ko.observable(data.AdjudicationType);
+            this.Amount = ko.observable(data.Amount);
+            this.AmountUsd = ko.observable(data.AmountUsd);
+            this.Role = ko.observable(data.Role);
+            this.RequesterName = ko.observable(data.RequesterName);
+            this.CreatedAt = ko.observable(data.CreatedAt);
         }
 
         var List = function(data) {
@@ -695,6 +764,13 @@
             if (data.ListaConcursosAdjudicados.length > 0) {
                 data.ListaConcursosAdjudicados.forEach(item => {
                     self.ListaConcursosAdjudicados.push(new ListItem(item));
+                });
+            }
+
+            this.ListaConcursosPendientesAprobacion = ko.observableArray([]);
+            if (data.ListaConcursosPendientesAprobacion && data.ListaConcursosPendientesAprobacion.length > 0) {
+                data.ListaConcursosPendientesAprobacion.forEach(item => {
+                    self.ListaConcursosPendientesAprobacion.push(new ListItem(item));
                 });
             }
 
@@ -756,7 +832,10 @@
             // Cargar datos iniciales de Evaluación de Reputación
             this.loadEvaluacionReputacionInitial = function() {
                 self.EvaluacionReputacionLoading(true);
-                var data = { page: 1 };
+                var data = { 
+                    page: 1,
+                    searchTerm: self.Filters() ? self.Filters().searchTerm() : null
+                };
                 
                 console.log('Iniciando carga de Evaluación de Reputación...');
                 
@@ -802,7 +881,10 @@
                 
                 self.EvaluacionReputacionLoadingMore(true);
                 var nextPage = self.EvaluacionReputacionCurrentPage() + 1;
-                var data = { page: nextPage };
+                var data = { 
+                    page: nextPage,
+                    searchTerm: self.Filters() ? self.Filters().searchTerm() : null
+                };
                 
                 Services.Post('/concursos/cliente/list/evaluacion-reputacion-lazy', {
                         UserToken: User.Token,
@@ -844,7 +926,25 @@
                         },
                         (response) => {
                             if (response.success) {
-                                self.Lists(new List(response.data.list))
+                                self.Lists(new List(response.data.list));
+                                
+                                // Sincronizar estado de Evaluación de Reputación después del filtro
+                                var currentSearchTerm = self.Filters() ? self.Filters().searchTerm() : null;
+                                var reputacionCount = response.data.list.ListaConcursosEvaluacionReputacion ? response.data.list.ListaConcursosEvaluacionReputacion.length : 0;
+                                
+                                if (currentSearchTerm) {
+                                    self.EvaluacionReputacionTotal(reputacionCount);
+                                    self.EvaluacionReputacionCurrentPage(1);
+                                    self.EvaluacionReputacionTotalPages(1);
+                                    self.EvaluacionReputacionHasMore(false);
+                                    self.EvaluacionReputacionExpanded(reputacionCount > 0);
+                                } else {
+                                    self.EvaluacionReputacionTotal(0);
+                                    self.EvaluacionReputacionCurrentPage(1);
+                                    self.EvaluacionReputacionTotalPages(1);
+                                    self.EvaluacionReputacionHasMore(false);
+                                    self.EvaluacionReputacionExpanded(false);
+                                }
                             }
                             $.unblockUI();
                         },
@@ -899,9 +999,26 @@
                 });
             };
 
-
-
-
+            // Helper para approvals (Estrategia liberacion)
+            this.goToApproval = function(idConcurso, tipoConcursoPath) {
+                $.blockUI();
+                Services.Post('/approval/generate-token', {
+                    UserToken: User.Token,
+                    contest_id: idConcurso
+                },
+                function(response) {
+                    $.unblockUI();
+                    if (response.success) {
+                        window.location.href = '/concursos/cliente/' + tipoConcursoPath + '/analisis-ofertas/' + idConcurso;
+                    } else {
+                        swal('Error', response.message, 'error');
+                    }
+                },
+                function(error) {
+                    $.unblockUI();
+                    swal('Error', error.message, 'error');
+                 });
+            };
 
             // Conectar a la subasta online si esta ha iniciado.
             var query = '?id_cliente=' + User.Id + '&listado=true';
@@ -1031,8 +1148,28 @@
                 },
                 (response) => {
                     if (response.success) {
+                        // Inicializa el array de pendientes de aprobacion vacio si no esta presente
+                        if (!response.data.list.ListaConcursosPendientesAprobacion) {
+                            response.data.list.ListaConcursosPendientesAprobacion = [];
+                        }
+                        
                         window.E = new ConcursosListadosCliente(response.data);
                         AppOptus.Bind(E);
+                        
+                        // Carga pendientes de aprobacion por separado
+                        Services.Get('/approval/my-pending', {
+                            UserToken: User.Token
+                        },
+                        function(approvalResponse) {
+                            if (approvalResponse.success && approvalResponse.data && approvalResponse.data.length > 0) {
+                                approvalResponse.data.forEach(function(item) {
+                                    E.Lists().ListaConcursosPendientesAprobacion.push(new ListItem(item));
+                                });
+                            }
+                        },
+                        function(error) {
+                            console.log('Error loading pending approvals:', error);
+                        });
                     }
                     $.unblockUI();
                 },

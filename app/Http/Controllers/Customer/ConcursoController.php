@@ -21,6 +21,7 @@ use App\Models\Catalogo;
 use App\Models\GoType;
 use App\Models\Alcance;
 use App\Models\Concurso;
+use App\Models\AdjudicationApproval;
 use App\Models\ConcursoPlantillaItem;
 use App\Models\Participante;
 use App\Models\Producto;
@@ -99,38 +100,41 @@ class ConcursoController extends BaseController
         $sessionId = session_id();
         $expectedToken = hash_hmac('sha256', $id . $sessionId, $secret);
         $storedToken   = $_SESSION['edit_token'][$id] ?? null;
-        $isEvaluator = false;
         $user = user();
+        $isEvaluator = false;
+        $isApprover = false;
+        $concursoForCheck = null;
 
-        if (!$storedToken || $expectedToken !== $storedToken) {
-            // Permitir acceso si el usuario es evaluador del concurso
+        if (!isAdmin()) {
+            $isTokenValid = $storedToken && $expectedToken === $storedToken;
+            $isApprover = $this->isUserApprover($id, $user);
+
             $concursoForCheck = Concurso::find($id);
-            if (!($concursoForCheck && $concursoForCheck->isUserEvaluador($user->id))) {
+            $isEvaluator = $concursoForCheck && $concursoForCheck->isUserEvaluador($user->id);
+
+            $hasAccess = $isTokenValid || $isApprover || $isEvaluator;
+
+            if (!$hasAccess) {
                 return $this->json($response, [
                     'success' => false,
                     'message' => 'Acceso no autorizado. Token inválido para ver el detalle del concurso'
                 ], 403);
             }
-            $isEvaluator = true;
-        }
 
-        // No eliminamos el token para permitir F5
-        // unset($_SESSION['edit_token'][$id]);
+            if (!$isTokenValid && ($isApprover || $isEvaluator)) {
+                $_SESSION['edit_token'] = $_SESSION['edit_token'] ?? [];
+                $_SESSION['edit_token'][$id] = $expectedToken;
+            }
+        }
 
         if (isAdmin()) {
             $concurso = Concurso::find($id);
         } else {
-            $user = user();
             $concurso = $user->customer_company->getAllConcursosByCompany()->find($id)
                     ?? $user->concursos_evalua->find($id);
 
-            // Si no pertenece a la compañía ni está en concursos_evalua, pero es evaluador de reputación, cargarlo igualmente
-            if (!$concurso) {
-                $tmp = Concurso::find($id);
-                if ($tmp && $tmp->isUserEvaluador($user->id)) {
-                    $concurso = $tmp;
-                    $isEvaluator = true;
-                }
+            if (!$concurso && ($isApprover || $isEvaluator)) {
+                $concurso = $concursoForCheck ?? Concurso::find($id);
             }
         }
 
@@ -434,6 +438,7 @@ class ConcursoController extends BaseController
         $success = false;
         $message = null;
         $status = 200;
+        $searchTerm = null;
         $list = [
             'ListaConcursosEnPreparacion' => [],
             'ListaConcursosConvocatoriaOferentes' => [],
@@ -530,55 +535,35 @@ class ConcursoController extends BaseController
 
 
             
-//Check if Knockout has passed filters
+                //Check if Knockout has passed filters
                 if ($filters) {
-                    $searchTerm = $filters->searchTerm ?? null;
+                    $searchTerm = isset($filters->searchTerm) ? trim((string) $filters->searchTerm) : null;
                     
                     //Checks for a text input to exist
-                    if ($searchTerm) {
-                        // Buscar en todos los campos relevantes, sin importar si es numérico o no
-                        // Esto permite encontrar clientes cuyo nombre es solo números (ej: "0938")
-                        // También busca coincidencias parciales en ID (ej: "29" encuentra 529, 129, etc.)
-                        $created = $created->filter(function ($item) use ($searchTerm) {
-                            return 
-                                !!stristr((string)$item->id, trim($searchTerm)) ||
-                                !!stristr($item->nombre, trim($searchTerm)) ||
-                                !!stristr($item->cliente->customer_company->business_name, trim($searchTerm)) ||
-                                !!stristr($item->cliente->full_name, trim($searchTerm)) ||
-                                !!stristr($item->solicitud_compra, trim($searchTerm)) ||
-                                !!stristr($item->area_sol, trim($searchTerm));
-                                
-                        });
-                        
-                        $evaluating = $evaluating->filter(function ($item) use ($searchTerm) {
-                            return 
-                                !!stristr((string)$item->id, trim($searchTerm)) ||
-                                !!stristr($item->nombre, trim($searchTerm)) ||
-                                !!stristr($item->cliente->customer_company->business_name, trim($searchTerm)) ||
-                                !!stristr($item->cliente->full_name, trim($searchTerm)) ||
-                                !!stristr($item->solicitud_compra, trim($searchTerm)) ||
-                                !!stristr($item->area_sol, trim($searchTerm));
-                        });
-                        
-                        $created_with_trashed = $created_with_trashed->filter(function ($item) use ($searchTerm) {
-                            return 
-                                !!stristr((string)$item->id, trim($searchTerm)) ||
-                                !!stristr($item->nombre, trim($searchTerm)) ||
-                                !!stristr($item->cliente->customer_company->business_name, trim($searchTerm)) ||  
-                                !!stristr($item->cliente->full_name, trim($searchTerm)) ||
-                                !!stristr($item->solicitud_compra, trim($searchTerm)) ||  
-                                !!stristr($item->area_sol, trim($searchTerm));
-                        });
+                    if (!empty($searchTerm)) {
+                        $matchesSearch = function ($item) use ($searchTerm) {
+                            $term = trim((string)$searchTerm);
+                            $isNumericTerm = is_numeric($term);
 
-                        $deleted_with_trashed = $deleted_with_trashed->filter(function ($item) use ($searchTerm) {
-                            return
-                                !!stristr((string)$item->id, trim($searchTerm)) ||
-                                !!stristr($item->nombre, trim($searchTerm)) ||
-                                !!stristr($item->cliente->customer_company->business_name, trim($searchTerm)) ||  
-                                !!stristr($item->cliente->full_name, trim($searchTerm)) ||
-                                !!stristr($item->solicitud_compra, trim($searchTerm)) ||  
-                                !!stristr($item->area_sol, trim($searchTerm));
-                        });
+                            $exactNumericMatch = $isNumericTerm && (
+                                (string)$item->id === $term ||
+                                (string)$item->solicitud_compra === $term
+                            );
+
+                            $partialMatch =
+                                !!stristr((string)$item->nombre, $term) ||
+                                !!stristr((string)$item->cliente->customer_company->business_name, $term) ||
+                                !!stristr((string)$item->cliente->full_name, $term) ||
+                                !!stristr((string)$item->solicitud_compra, $term) ||
+                                !!stristr((string)$item->area_sol, $term);
+
+                            return $exactNumericMatch || $partialMatch;
+                        };
+
+                        $created = $created->filter($matchesSearch);
+                        $evaluating = $evaluating->filter($matchesSearch);
+                        $created_with_trashed = $created_with_trashed->filter($matchesSearch);
+                        $deleted_with_trashed = $deleted_with_trashed->filter($matchesSearch);
                     }
                 }
 
@@ -984,6 +969,29 @@ class ConcursoController extends BaseController
         foreach ($concursos as $concurso) {
             $list['ListaConcursosInformes'][] = $this->mapConcursoList($concurso);
         }
+
+            // EVALUACIÓN
+            // Se cargan lazy cuando el usuario expanda la sección.
+            // Si hay búsqueda activa, incluir resultados para que el monitor los encuentre.
+            if (!empty($searchTerm)) {
+                $concursos = collect()
+                    ->merge($created->where('adjudicado', true))
+                    ->merge($evaluating->where('adjudicado', true))
+                    ->unique('id')
+                    ->filter(function ($concurso) {
+                        if ((bool)($concurso->is_online ?? false)) {
+                            return false;
+                        }
+
+                        return $concurso->oferentes_etapa_evaluacion->count() > 0;
+                    })
+                    ->sortBy('id');
+
+                foreach ($concursos as $concurso) {
+                    $list['ListaConcursosEvaluacionReputacion'][] = $this->mapConcursoList($concurso);
+                }
+            }
+
             // CANCELADOS
                 $concursos = collect();
                if ($user->type_id == 7) {
@@ -1003,20 +1011,25 @@ class ConcursoController extends BaseController
                 }
 
                 // Aplico los mismos filtros que al principio
-                if ($filters) {
-                    $searchTerm = $filters->searchTerm ?? null;
+                if ($filters && !empty($searchTerm)) {
+                    $concursos = $concursos->filter(function ($item) use ($searchTerm) {
+                        $term = trim((string)$searchTerm);
+                        $isNumericTerm = is_numeric($term);
 
-                    if ($searchTerm) {
-                        // Buscar en todos los campos relevantes, sin importar si es numérico o no
-                        // Esto permite encontrar clientes cuyo nombre es solo números (ej: "0938")
-                        // También busca coincidencias parciales en ID (ej: "29" encuentra 529, 129, etc.)
-                        $concursos = $concursos->filter(function ($item) use ($searchTerm) {
-                            return 
-                                !!stristr((string)$item->id, trim($searchTerm)) ||
-                                !!stristr($item->nombre, trim($searchTerm)) ||
-                                !!stristr($item->cliente->full_name, trim($searchTerm));
-                        });
-                    }
+                        $exactNumericMatch = $isNumericTerm && (
+                            (string)$item->id === $term ||
+                            (string)$item->solicitud_compra === $term
+                        );
+
+                        $partialMatch =
+                            !!stristr((string)$item->nombre, $term) ||
+                            !!stristr((string)$item->cliente->customer_company->business_name, $term) ||
+                            !!stristr((string)$item->cliente->full_name, $term) ||
+                            !!stristr((string)$item->solicitud_compra, $term) ||
+                            !!stristr((string)$item->area_sol, $term);
+
+                        return $exactNumericMatch || $partialMatch;
+                    });
                 }
 
                 $concursos = $concursos->sortBy('id');
@@ -1061,6 +1074,7 @@ class ConcursoController extends BaseController
     {
         $body = json_decode($request->getParsedBody()['Data'] ?? '{}');
         $page = (int)($body->page ?? 1);
+        $searchTerm = isset($body->searchTerm) ? trim((string) $body->searchTerm) : null;
 
         try {
             $user = user();
@@ -1091,6 +1105,31 @@ class ConcursoController extends BaseController
                 // Agregar concursos donde el usuario califica reputación
                 $concursosCalificaReputacion = Concurso::whereRaw("FIND_IN_SET(?, REPLACE(usuario_califica_reputacion, ' ', ''))", [$user->id])->get();
                 $evaluating = collect($evaluating)->merge($concursosCalificaReputacion)->unique('id');
+            }
+
+            // Aplicar búsqueda si existe
+            if (!empty($searchTerm)) {
+                $matchesSearch = function ($item) use ($searchTerm) {
+                    $term = trim((string)$searchTerm);
+                    $isNumericTerm = is_numeric($term);
+
+                    $exactNumericMatch = $isNumericTerm && (
+                        (string)$item->id === $term ||
+                        (string)$item->solicitud_compra === $term
+                    );
+
+                    $partialMatch =
+                        !!stristr((string)$item->nombre, $term) ||
+                        !!stristr((string)$item->cliente->customer_company->business_name, $term) ||
+                        !!stristr((string)$item->cliente->full_name, $term) ||
+                        !!stristr((string)$item->solicitud_compra, $term) ||
+                        !!stristr((string)$item->area_sol, $term);
+
+                    return $exactNumericMatch || $partialMatch;
+                };
+
+                $created = $created->filter($matchesSearch);
+                $evaluating = $evaluating->filter($matchesSearch);
             }
 
             // Filtrar concursos en evaluación de reputación
@@ -1448,6 +1487,9 @@ class ConcursoController extends BaseController
 
         try {
             $user = user();
+            $isApprover = false;
+            $isEvaluator = false;
+            $concursoTemp = null;
 
             if (isAdmin()) {
                 $concurso = Concurso::find($params['id']);
@@ -1458,7 +1500,10 @@ class ConcursoController extends BaseController
                 // Si no lo encuentra, verificar si el usuario califica reputación en este concurso
                 if (!$concurso) {
                     $concursoTemp = Concurso::find($params['id']);
-                    if ($concursoTemp && $concursoTemp->isUserEvaluador($user->id)) {
+                    $isEvaluator = $concursoTemp && $concursoTemp->isUserEvaluador($user->id);
+                    $isApprover = $this->isUserApprover($params['id'], $user);
+                    
+                    if ($isEvaluator || $isApprover) {
                         $concurso = $concursoTemp;
                     }
                 }
@@ -3427,6 +3472,8 @@ class ConcursoController extends BaseController
                     'segunda_ronda_habilita' => 'si',
                     'finalizacion_consultas' => $dateNewMuroConsulta,
                     'fecha_limite_economicas' => $dateNewRound,
+                    'adjudication_pending_approval' => 0,
+                    'adjudication_rejected' => 0,
                     $fechaNuevaCampo => $dateNewRound,
                     $comentarioCampo => $body->CommentNewRound
                 ];
@@ -6040,5 +6087,40 @@ class ConcursoController extends BaseController
                 'data' => []
             ], $status);
         }
+    }
+
+    // Helper para estrategia de liberacion 
+    private function isUserApprover($contestId, $user)
+    {
+        $pendingApprovals = \App\Models\AdjudicationApproval::where('contest_id', $contestId)
+            ->where('status', 'pending')
+            ->get();
+        
+        foreach ($pendingApprovals as $approval) {
+            // User match
+            if ($approval->user_id && $approval->user_id == $user->id) {
+                return true;
+            }
+            
+            // Match basado en roles; "Gerente de Compras" debe matchear con el rol de usuario "Gerente" y el area "Compras"
+            // Esto esta horrible, pero es la unica forma que se me ocurrió lmao
+            if (!$approval->user_id && $user->rol) {
+                $expectedRole = $user->rol;
+                if ($user->area) {
+                    $expectedRole .= ' de ' . $user->area;
+                }
+                
+                if ($approval->role === $expectedRole) {
+                    return true;
+                }
+                
+                // Check para "Gerente General" que no tiene area
+                if ($approval->role === $user->rol && !$approval->area) {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
     }
 }

@@ -150,6 +150,26 @@
             {/if}
 
             {if isAdmin() || isCustomer() }
+            <li class="nav-item{if $page eq 'estrategia'} active open{/if}">
+                <a href="#" class="nav-link nav-toggle">
+                    <i class="icon-layers"></i>
+                    <span class="title">Estrategia de liberación</span>
+                    <span class="arrow{if $page eq 'estrategia'} open{/if}"></span>
+                    {if $page eq 'estrategia'}
+                        <span class="selected"></span>
+                    {/if}
+                </a>
+                <ul class="sub-menu">
+                    <li class="nav-item{if $accion eq 'matriz'} active open{/if}">
+                        <a href="/estrategia/matriz" class="nav-link">
+                            <span class="title">Matriz</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            {/if}
+
+            {if isAdmin() || isCustomer() }
 
                 {if can('usuarios-clients-edit') or can('usuarios-offerer-edit') or can('usuarios-admin-edit')}
                     <li class="nav-item{if $page eq 'usuarios'} active open{/if}">
@@ -204,7 +224,6 @@
             {if isAdmin() || isCustomer() }
 
                 {if can('configurations-areas') or can('configurations-measurements') or can('configurations-tipocambio') or can('configurations-catalogs')}
-                    <!-- or can('configurations-estrategia-liberacion') -->
                     <li class="nav-item{if $page eq 'configuraciones'} active open{/if}">
                         <a href="/configuraciones" class="nav-link nav-toggle">
                             <i class="icon-settings"></i>
@@ -245,14 +264,6 @@
                                 </a>
                             </li>
                             {/if}
-
-                            <!-- {if can('configurations-estrategia-liberacion')}
-                                <li class="nav-item{if $accion eq 'listado-estrategia-liberacion'} active open{/if}">
-                                    <a href="/configuraciones/estrategia-liberacion" class="nav-link ">
-                                        <span class="title">Estrategia de liberación</span>
-                                    </a>
-                                </li>
-                            {/if} -->
                         </ul>
                     </li>
                 {/if}
