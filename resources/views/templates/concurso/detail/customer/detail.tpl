@@ -619,6 +619,7 @@
             this.ConcursoEconomicasPrimeraRonda = ko.observableArray(data.list.ConcursoEconomicasPrimeraRonda);
             this.ConcursoEconomicasSegundaRonda = ko.observableArray(data.list.ConcursoEconomicasSegundaRonda);
             this.Adjudicado = ko.observable(data.list.Adjudicado);
+            this.ProveedoresAdjudicados = ko.observableArray(data.list.ProveedoresAdjudicados || []);
             this.PlazoVencidoEconomica = ko.observable(data.list.PlazoVencidoEconomica);
             this.TodosPresentaronEconomica = ko.observable(data.list.TodosPresentaronEconomica);
             this.IsRevisado = ko.observable(data.list.IsRevisado);

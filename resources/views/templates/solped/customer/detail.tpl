@@ -431,9 +431,19 @@
                 if (!self.guardSolpedActive()) {
                     return;
                 }
-                swal({  title: 'Aceptar Solicitud', 
-                        text: '¿Esta seguro que desea aceptar la solicitud?', 
-                        icon: 'info' }, function (result) {
+                swal({
+                        title: 'Aceptar Solicitud',
+                        text: '¿Está seguro que desea aceptar la solicitud?',
+                        type: 'warning',
+                        closeOnClickOutside: false,
+                        showCancelButton: true,
+                        closeOnConfirm: true,
+                        closeOnCancel: true,
+                        confirmButtonText: 'Aceptar',
+                        confirmButtonClass: 'btn btn-success',
+                        cancelButtonText: 'Cancelar',
+                        cancelButtonClass: 'btn btn-default'
+                    }, function (result) {
                             swal.close();
                             if (result) {
                                 $.blockUI();

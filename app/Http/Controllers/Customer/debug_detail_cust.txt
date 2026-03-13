@@ -1,0 +1,84 @@
+
+=== detail INICIO === 12-03-2026 12:14:35 ===
+FECHAS => Resolucion: 14-03-2026 00:00, Entrega: 21-03-2026 00:00, Creacion: 12-03-2026 12:13:40
+FECHA CANCELACION: null
+FECHA ACEPTACION: null
+FECHA RECHAZO: null
+FECHA DEVOLUCION: null
+FECHA FIRST REVISION: 12-03-2026 12:14:34
+RAW fecha_resolucion attr: 2026-03-14 00:00:00
+RAW fecha_entrega attr: 2026-03-21 00:00:00
+DB ROW: {"id":70,"id_solicitante":727,"codigo_interno":"","area_sol":"Administraci\u00f3n","nombre":"Fix errores","descripcion":"","pais":"Argentina","provincia":"C\u00f3rdoba","localidad":"C\u00f3rdoba","direccion":"Avenida Poeta L. Lugones 284","cp":"X5000","latitud":"-31.4240833","longitud":"-64.1798542","clasificacion":null,"fecha_resolucion":"2026-03-14 00:00:00","fecha_entrega":"2026-03-21 00:00:00","id_comprador_sugerido":7,"id_comprador_first_revision":7,"id_comprador_decision":null,"tipo_compra":1,"fecha_alta":"2026-03-12 12:13:40","etapa_actual":"en-analisis","estado_actual":"revisada","fecha_envio_a_comprador":"2026-03-12 12:14:10","fecha_first_revision":"2026-03-12 12:14:34","fecha_devolucion":null,"fecha_aceptacion":null,"fecha_rechazo":null,"reject_comment":null,"return_comment":null,"fecha_inicio_licitacion":null,"created_at":null,"updated_at":null,"cancel_motive":null,"deleted_at":null}
+LIST KEYS: IdSolicitud,Nombre,IdSolicitante,Solicitante,TipoCompraId,CodigoInterno,Descripcion,AreaSolicitante,CompradorSugerido,FechaCreacion,FechaEnvioComprador,FechaResolucion,FechaEntrega,Eliminado,UsuarioReject,UsuarioAccept,FechaRechazo,FechaAceptacion,RejectComment,ReturnComment,Etapa,EstadoActual,CompradorDecision,CompradorFirstRevision,FechaFirstRevision,FechaDevolucion,CompradorDecisionFecha,CompradorDevolucionFecha,CancelMotive,FechaCancelacion,Productos,FilePath,Documents,FilePathComplete,file_path
+
+=== detail INICIO === 12-03-2026 12:18:03 ===
+FECHAS => Resolucion: 14-03-2026 00:00, Entrega: 21-03-2026 00:00, Creacion: 12-03-2026 12:13:40
+FECHA CANCELACION: null
+FECHA ACEPTACION: null
+FECHA RECHAZO: null
+FECHA DEVOLUCION: null
+FECHA FIRST REVISION: 12-03-2026 12:14:34
+RAW fecha_resolucion attr: 2026-03-14 00:00:00
+RAW fecha_entrega attr: 2026-03-21 00:00:00
+DB ROW: {"id":70,"id_solicitante":727,"codigo_interno":"","area_sol":"Administraci\u00f3n","nombre":"Fix errores","descripcion":"","pais":"Argentina","provincia":"C\u00f3rdoba","localidad":"C\u00f3rdoba","direccion":"Avenida Poeta L. Lugones 284","cp":"X5000","latitud":"-31.4240833","longitud":"-64.1798542","clasificacion":null,"fecha_resolucion":"2026-03-14 00:00:00","fecha_entrega":"2026-03-21 00:00:00","id_comprador_sugerido":7,"id_comprador_first_revision":7,"id_comprador_decision":null,"tipo_compra":1,"fecha_alta":"2026-03-12 12:13:40","etapa_actual":"en-analisis","estado_actual":"revisada","fecha_envio_a_comprador":"2026-03-12 12:14:10","fecha_first_revision":"2026-03-12 12:14:34","fecha_devolucion":null,"fecha_aceptacion":null,"fecha_rechazo":null,"reject_comment":null,"return_comment":null,"fecha_inicio_licitacion":null,"created_at":null,"updated_at":null,"cancel_motive":null,"deleted_at":null}
+LIST KEYS: IdSolicitud,Nombre,IdSolicitante,Solicitante,TipoCompraId,CodigoInterno,Descripcion,AreaSolicitante,CompradorSugerido,FechaCreacion,FechaEnvioComprador,FechaResolucion,FechaEntrega,Eliminado,UsuarioReject,UsuarioAccept,FechaRechazo,FechaAceptacion,RejectComment,ReturnComment,Etapa,EstadoActual,CompradorDecision,CompradorFirstRevision,FechaFirstRevision,FechaDevolucion,CompradorDecisionFecha,CompradorDevolucionFecha,CancelMotive,FechaCancelacion,Productos,FilePath,Documents,FilePathComplete,file_path
+
+=== detail INICIO === 12-03-2026 12:20:07 ===
+FECHAS => Resolucion: 14-03-2026 00:00, Entrega: 21-03-2026 00:00, Creacion: 12-03-2026 12:13:40
+FECHA CANCELACION: null
+FECHA ACEPTACION: null
+FECHA RECHAZO: null
+FECHA DEVOLUCION: 12-03-2026 12:19:55
+FECHA FIRST REVISION: 12-03-2026 12:14:34
+RAW fecha_resolucion attr: 2026-03-14 00:00:00
+RAW fecha_entrega attr: 2026-03-21 00:00:00
+DB ROW: {"id":70,"id_solicitante":727,"codigo_interno":"","area_sol":"Administraci\u00f3n","nombre":"Fix errores","descripcion":"","pais":"Argentina","provincia":"C\u00f3rdoba","localidad":"C\u00f3rdoba","direccion":"Avenida Poeta L. Lugones 284","cp":"X5000","latitud":"-31.4240833","longitud":"-64.1798542","clasificacion":null,"fecha_resolucion":"2026-03-14 00:00:00","fecha_entrega":"2026-03-21 00:00:00","id_comprador_sugerido":7,"id_comprador_first_revision":7,"id_comprador_decision":7,"tipo_compra":1,"fecha_alta":"2026-03-12 12:13:40","etapa_actual":"devuelta","estado_actual":"devuelta","fecha_envio_a_comprador":"2026-03-12 12:14:10","fecha_first_revision":"2026-03-12 12:14:34","fecha_devolucion":"2026-03-12 12:19:55","fecha_aceptacion":null,"fecha_rechazo":null,"reject_comment":null,"return_comment":"Por que si","fecha_inicio_licitacion":null,"created_at":null,"updated_at":null,"cancel_motive":null,"deleted_at":null}
+LIST KEYS: IdSolicitud,Nombre,IdSolicitante,Solicitante,TipoCompraId,CodigoInterno,Descripcion,AreaSolicitante,CompradorSugerido,FechaCreacion,FechaEnvioComprador,FechaResolucion,FechaEntrega,Eliminado,UsuarioReject,UsuarioAccept,FechaRechazo,FechaAceptacion,RejectComment,ReturnComment,Etapa,EstadoActual,CompradorDecision,CompradorFirstRevision,FechaFirstRevision,FechaDevolucion,CompradorDecisionFecha,CompradorDevolucionFecha,CancelMotive,FechaCancelacion,Productos,FilePath,Documents,FilePathComplete,file_path
+
+=== detail INICIO === 12-03-2026 12:42:38 ===
+FECHAS => Resolucion: 14-03-2026 00:00, Entrega: 21-03-2026 00:00, Creacion: 12-03-2026 12:13:40
+FECHA CANCELACION: null
+FECHA ACEPTACION: null
+FECHA RECHAZO: null
+FECHA DEVOLUCION: null
+FECHA FIRST REVISION: 12-03-2026 12:14:34
+RAW fecha_resolucion attr: 2026-03-14 00:00:00
+RAW fecha_entrega attr: 2026-03-21 00:00:00
+DB ROW: {"id":70,"id_solicitante":727,"codigo_interno":"","area_sol":"Administraci\u00f3n","nombre":"Fix errores","descripcion":"","pais":"Argentina","provincia":"C\u00f3rdoba","localidad":"C\u00f3rdoba","direccion":"Avenida Poeta L. Lugones 284","cp":"X5000","latitud":"-31.4240833","longitud":"-64.1798542","clasificacion":null,"fecha_resolucion":"2026-03-14 00:00:00","fecha_entrega":"2026-03-21 00:00:00","id_comprador_sugerido":7,"id_comprador_first_revision":7,"id_comprador_decision":null,"tipo_compra":1,"fecha_alta":"2026-03-12 12:13:40","etapa_actual":"en-analisis","estado_actual":"revisada-2","fecha_envio_a_comprador":"2026-03-12 12:41:54","fecha_first_revision":"2026-03-12 12:14:34","fecha_devolucion":null,"fecha_aceptacion":null,"fecha_rechazo":null,"reject_comment":null,"return_comment":null,"fecha_inicio_licitacion":null,"created_at":null,"updated_at":null,"cancel_motive":null,"deleted_at":null}
+LIST KEYS: IdSolicitud,Nombre,IdSolicitante,Solicitante,TipoCompraId,CodigoInterno,Descripcion,AreaSolicitante,CompradorSugerido,FechaCreacion,FechaEnvioComprador,FechaResolucion,FechaEntrega,Eliminado,UsuarioReject,UsuarioAccept,FechaRechazo,FechaAceptacion,RejectComment,ReturnComment,Etapa,EstadoActual,CompradorDecision,CompradorFirstRevision,FechaFirstRevision,FechaDevolucion,CompradorDecisionFecha,CompradorDevolucionFecha,CancelMotive,FechaCancelacion,Productos,FilePath,Documents,FilePathComplete,file_path
+
+=== detail INICIO === 12-03-2026 12:43:03 ===
+FECHAS => Resolucion: 14-03-2026 00:00, Entrega: 21-03-2026 00:00, Creacion: 12-03-2026 12:13:40
+FECHA CANCELACION: null
+FECHA ACEPTACION: 12-03-2026 12:42:47
+FECHA RECHAZO: null
+FECHA DEVOLUCION: null
+FECHA FIRST REVISION: 12-03-2026 12:14:34
+RAW fecha_resolucion attr: 2026-03-14 00:00:00
+RAW fecha_entrega attr: 2026-03-21 00:00:00
+DB ROW: {"id":70,"id_solicitante":727,"codigo_interno":"","area_sol":"Administraci\u00f3n","nombre":"Fix errores","descripcion":"","pais":"Argentina","provincia":"C\u00f3rdoba","localidad":"C\u00f3rdoba","direccion":"Avenida Poeta L. Lugones 284","cp":"X5000","latitud":"-31.4240833","longitud":"-64.1798542","clasificacion":null,"fecha_resolucion":"2026-03-14 00:00:00","fecha_entrega":"2026-03-21 00:00:00","id_comprador_sugerido":7,"id_comprador_first_revision":7,"id_comprador_decision":7,"tipo_compra":1,"fecha_alta":"2026-03-12 12:13:40","etapa_actual":"aceptada","estado_actual":"aceptada","fecha_envio_a_comprador":"2026-03-12 12:41:54","fecha_first_revision":"2026-03-12 12:14:34","fecha_devolucion":null,"fecha_aceptacion":"2026-03-12 12:42:47","fecha_rechazo":null,"reject_comment":null,"return_comment":null,"fecha_inicio_licitacion":null,"created_at":null,"updated_at":null,"cancel_motive":null,"deleted_at":null}
+LIST KEYS: IdSolicitud,Nombre,IdSolicitante,Solicitante,TipoCompraId,CodigoInterno,Descripcion,AreaSolicitante,CompradorSugerido,FechaCreacion,FechaEnvioComprador,FechaResolucion,FechaEntrega,Eliminado,UsuarioReject,UsuarioAccept,FechaRechazo,FechaAceptacion,RejectComment,ReturnComment,Etapa,EstadoActual,CompradorDecision,CompradorFirstRevision,FechaFirstRevision,FechaDevolucion,CompradorDecisionFecha,CompradorDevolucionFecha,CancelMotive,FechaCancelacion,Productos,FilePath,Documents,FilePathComplete,file_path
+
+=== detail INICIO === 12-03-2026 12:54:27 ===
+FECHAS => Resolucion: 12-03-2026 00:00, Entrega: 19-03-2026 00:00, Creacion: 12-03-2026 12:52:43
+FECHA CANCELACION: null
+FECHA ACEPTACION: null
+FECHA RECHAZO: null
+FECHA DEVOLUCION: null
+FECHA FIRST REVISION: 12-03-2026 12:54:27
+RAW fecha_resolucion attr: 2026-03-12 00:00:00
+RAW fecha_entrega attr: 2026-03-19 00:00:00
+DB ROW: {"id":71,"id_solicitante":727,"codigo_interno":"","area_sol":"Administraci\u00f3n","nombre":"Prueba de conversion fix errores","descripcion":"","pais":"Argentina","provincia":"C\u00f3rdoba","localidad":"C\u00f3rdoba","direccion":"Paran\u00e1 665","cp":"X5000","latitud":"-31.4260479","longitud":"-64.1805222","clasificacion":null,"fecha_resolucion":"2026-03-12 00:00:00","fecha_entrega":"2026-03-19 00:00:00","id_comprador_sugerido":7,"id_comprador_first_revision":7,"id_comprador_decision":null,"tipo_compra":1,"fecha_alta":"2026-03-12 12:52:43","etapa_actual":"en-analisis","estado_actual":"revisada","fecha_envio_a_comprador":"2026-03-12 12:52:54","fecha_first_revision":"2026-03-12 12:54:27","fecha_devolucion":null,"fecha_aceptacion":null,"fecha_rechazo":null,"reject_comment":null,"return_comment":null,"fecha_inicio_licitacion":null,"created_at":null,"updated_at":null,"cancel_motive":null,"deleted_at":null}
+LIST KEYS: IdSolicitud,Nombre,IdSolicitante,Solicitante,TipoCompraId,CodigoInterno,Descripcion,AreaSolicitante,CompradorSugerido,FechaCreacion,FechaEnvioComprador,FechaResolucion,FechaEntrega,Eliminado,UsuarioReject,UsuarioAccept,FechaRechazo,FechaAceptacion,RejectComment,ReturnComment,Etapa,EstadoActual,CompradorDecision,CompradorFirstRevision,FechaFirstRevision,FechaDevolucion,CompradorDecisionFecha,CompradorDevolucionFecha,CancelMotive,FechaCancelacion,Productos,FilePath,Documents,FilePathComplete,file_path
+
+=== detail INICIO === 12-03-2026 13:20:05 ===
+FECHAS => Resolucion: 20-02-2026 00:00, Entrega: 28-02-2026 00:00, Creacion: 20-02-2026 11:49:49
+FECHA CANCELACION: null
+FECHA ACEPTACION: null
+FECHA RECHAZO: null
+FECHA DEVOLUCION: null
+FECHA FIRST REVISION: 12-03-2026 13:20:05
+RAW fecha_resolucion attr: 2026-02-20 00:00:00
+RAW fecha_entrega attr: 2026-02-28 00:00:00
+DB ROW: {"id":62,"id_solicitante":727,"codigo_interno":"","area_sol":"Administraci\u00f3n","nombre":"0001 Prueba 2","descripcion":"","pais":"Argentina","provincia":"C\u00f3rdoba","localidad":"C\u00f3rdoba","direccion":"Paran\u00e1 671","cp":"X5000","latitud":"-31.4261238","longitud":"-64.1804838","clasificacion":null,"fecha_resolucion":"2026-02-20 00:00:00","fecha_entrega":"2026-02-28 00:00:00","id_comprador_sugerido":7,"id_comprador_first_revision":7,"id_comprador_decision":null,"tipo_compra":1,"fecha_alta":"2026-02-20 11:49:49","etapa_actual":"en-analisis","estado_actual":"revisada","fecha_envio_a_comprador":"2026-03-12 13:19:46","fecha_first_revision":"2026-03-12 13:20:05","fecha_devolucion":null,"fecha_aceptacion":null,"fecha_rechazo":null,"reject_comment":null,"return_comment":null,"fecha_inicio_licitacion":null,"created_at":null,"updated_at":null,"cancel_motive":null,"deleted_at":null}
+LIST KEYS: IdSolicitud,Nombre,IdSolicitante,Solicitante,TipoCompraId,CodigoInterno,Descripcion,AreaSolicitante,CompradorSugerido,FechaCreacion,FechaEnvioComprador,FechaResolucion,FechaEntrega,Eliminado,UsuarioReject,UsuarioAccept,FechaRechazo,FechaAceptacion,RejectComment,ReturnComment,Etapa,EstadoActual,CompradorDecision,CompradorFirstRevision,FechaFirstRevision,FechaDevolucion,CompradorDecisionFecha,CompradorDevolucionFecha,CancelMotive,FechaCancelacion,Productos,FilePath,Documents,FilePathComplete,file_path

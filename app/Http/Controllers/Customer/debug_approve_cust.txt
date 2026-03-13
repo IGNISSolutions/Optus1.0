@@ -1,0 +1,51 @@
+
+=== approve INICIO === 12-03-2026 12:42:47 ===
+Body recibido: stdClass Object
+(
+    [IdSolicitud] => 70
+    [IdUsuario] => 7
+)
+
+Usuario: ID=7, type_id=3
+Solped encontrada: ID=70, estado_actual=revisada-2
+Solped actualizada con estado aprobada
+Fecha aceptación: 12-03-2026 12:42:47
+Comprador decisión: 7 (Ucoca Cola)
+MAIL aprobacion: {"success":true,"message":"Mensaje enviado con \u00e9xito."}
+Transacción confirmada exitosamente
+=== approve FIN ===
+
+
+=== approve INICIO === 12-03-2026 12:54:31 ===
+Body recibido: stdClass Object
+(
+    [IdSolicitud] => 71
+    [IdUsuario] => 7
+)
+
+Usuario: ID=7, type_id=3
+Solped encontrada: ID=71, estado_actual=revisada
+Solped actualizada con estado aprobada
+Fecha aceptación: 12-03-2026 12:54:31
+Comprador decisión: 7 (Ucoca Cola)
+MAIL aprobacion: {"success":true,"message":"Mensaje enviado con \u00e9xito."}
+Transacción confirmada exitosamente
+=== approve FIN ===
+
+
+=== approve INICIO === 12-03-2026 13:20:08 ===
+Body recibido: stdClass Object
+(
+    [IdSolicitud] => 62
+    [IdUsuario] => 7
+)
+
+Usuario: ID=7, type_id=3
+Solped encontrada: ID=62, estado_actual=revisada
+Solped actualizada con estado aprobada
+Fecha aceptación: 12-03-2026 13:20:08
+Comprador decisión: 7 (Ucoca Cola)
+MAIL aprobacion: {"success":true,"message":"Mensaje enviado con \u00e9xito."}
+Transacción confirmada exitosamente
+=== approve FIN ===
+

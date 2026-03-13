@@ -65,7 +65,8 @@ class ConcursoController extends BaseController
             'accion' => 'poretapasoferente',
             'tipo_concurso' => $params['type'],
             'tipo' => $params['step'],
-            'idConcurso' => (int) $params['id']
+            'idConcurso' => (int) $params['id'],
+            'mapboxToken' => getenv('MAPBOX_ACCESS_TOKEN') ?: ''
         ]);
     }
 
@@ -1017,7 +1018,7 @@ class ConcursoController extends BaseController
                                 'indice' => $sheet->type->id,
                                 'nombre' => $sheet->type->description,
                                 'imagen' => $sheet->filename,
-                                'path' => filePath('/concursos/' . $concurso->cliente->customer_company->cuit . '/' . $concurso->id . '/' . $sheet->filename)
+                                'path' => filePath('/pliegos/' . $concurso->cliente->customer_company->cuit . '/adjudicado/' . $sheet->filename)
                             ];
                         }
                     }

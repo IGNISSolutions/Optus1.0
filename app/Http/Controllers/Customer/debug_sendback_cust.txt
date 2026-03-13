@@ -1,0 +1,16 @@
+
+=== sendBack INICIO === 12-03-2026 12:19:55 ===
+Body recibido: stdClass Object
+(
+    [IdSolicitud] => 70
+    [IdUsuario] => 7
+)
+
+Reason recibido: Por que si
+Usuario: ID=7, type_id=3
+Solped encontrada: ID=70, estado_actual=revisada
+Solped actualizada con estado devuelta
+MAIL devolucion: {"success":true,"message":"Mensaje enviado con \u00e9xito."}
+Transacción confirmada
+=== sendBack FIN ===
+

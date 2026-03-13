@@ -13,6 +13,7 @@
     <link href="{asset('/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css')}" rel="stylesheet"
         type="text/css" />
     <link href="{asset('/global/css/components-rounded.min.css')}" rel="stylesheet" id="style_components" type="text/css" />
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.5.1/mapbox-gl.css" rel="stylesheet" type="text/css" />
 {/block}
 
 <!-- SCRIPTS PREVIOS A KNOCKOUT -->
@@ -49,10 +50,11 @@
 
 <!-- SCRIPTS POSTERIORES A KNOCKOUT -->
 {block 'post-scripts'}
-    <script src="{asset('/js/geo.js')}" type="text/javascript"></script>
-    <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCUtr9Ist4jejEMf2czdImyxk_EXoyWBgo&callback=initMapConcurso&libraries=places&v=weekly">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.5.1/mapbox-gl.js" type="text/javascript"></script>
+    <script>
+        window.MapboxToken = '{$mapboxToken|default:""}';
     </script>
+    <script src="{asset('/js/geo-concurso.js')}" type="text/javascript"></script>
 
     <script>
         Inputmask.extendAliases({
@@ -1112,6 +1114,9 @@
             this.CountrySelected = ko.observable();
             self.CountrySelected.subscribe(function(value) {
                 var newCountry = self.Countries().find(({ code }) => code === value);
+                if (!newCountry) {
+                    return;
+                }
                 var oldCountry = self.Pais();
                 if (newCountry.text != oldCountry && oldCountry != '') {
                     self.Pais(newCountry.text);
@@ -1121,6 +1126,18 @@
                     self.Cp("");
                 }
             })
+
+            var currentCountry = self.Pais();
+            if (currentCountry) {
+                var selectedCountry = self.Countries().find(function(country) {
+                    return country.code === currentCountry || country.text === currentCountry;
+                });
+                if (selectedCountry) {
+                    self.CountrySelected(selectedCountry.code);
+                    self.Pais(selectedCountry.text);
+                }
+            }
+
             this.ManOnTheMap = ko.observable();
             self.Direccion.subscribe(function(newValue) {
                 self.ManOnTheMap(false)
@@ -2135,6 +2152,7 @@
                     window.E = new Concurso(response.data);
                     E.action = ko.observable(action);
                     AppOptus.Bind(E);
+                    setTimeout(function () { window.initMapConcurso(); }, 0);
                     E.Entity.UsuarioCalificaReputacion(response.data.list.UsuarioCalificaReputacion);
                     E.Entity.UsuarioEvaluaTecnica(response.data.list.UsuarioEvaluaTecnica);
                     

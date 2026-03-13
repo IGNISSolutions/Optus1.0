@@ -11,7 +11,10 @@
                     <div class="form-group">
                         <label class="control-label visible-ie8 visible-ie9" style="display: block;">País</label>
                         <select
-                            data-bind="value: Entity.Pais, valueAllowUnset: true, options: Entity.Countries, optionsText: 'text', optionsValue: 'code', select2Safe: { placeholder: 'Seleccionar...' }, disable: ReadOnly()">
+                            id="solped-country-select"
+                            name="pais"
+                            class="form-control"
+                            data-bind="value: Entity.CountrySelected, valueAllowUnset: true, options: Entity.Countries, optionsText: 'text', optionsValue: 'code', disable: ReadOnly()">
                         </select>
                     </div>
                     <div class="form-group">
@@ -56,7 +59,7 @@
     </div>
     <div class="col-md-6">
         <div class="form-group">
-            <label class="control-label visible-ie8 visible-ie9" style="display: block;">Google Map</label>
+            <label class="control-label visible-ie8 visible-ie9" style="display: block;">Mapa (Mapbox)</label>
             <div id="map-canvas-1" style="width: 100%; height: 406px; background: #ccc;" data-bind="disable: ReadOnly()"></div>
         </div>
     </div>

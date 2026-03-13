@@ -204,15 +204,30 @@ class SolpedController extends BaseController
                 ? $solped->fecha_alta->format('Y') 
                 : substr($solped->fecha_alta ?? date('Y'), 0, 4);
             $file_path = '/storage/img/solpeds/' . $cuit . '/' . $year . '/';
-            $document = SolpedDocument::where('solped_id', $solped->id)->first();
+            $documents = SolpedDocument::where('solped_id', $solped->id)->orderBy('id')->get();
+            $sheetTypes = SheetType::orderBy('id')->get()->values();
+            $documentsList = [];
+            foreach ($documents as $index => $doc) {
+                $sheetType = isset($sheetTypes[$index]) ? $sheetTypes[$index] : null;
+                $label = $sheetType && !empty($sheetType->description)
+                    ? (string)$sheetType->description
+                    : (string)($doc->filename ?? 'Documento');
+
+                $documentsList[] = [
+                    'nombre' => $label,
+                    'archivo' => (string)($doc->filename ?? ''),
+                    'imagen' => $file_path . (string)($doc->filename ?? '')
+                ];
+            }
+            $firstDocument = count($documentsList) > 0 ? $documentsList[0]['imagen'] : null;
             fwrite($fp, "FilePath base: {$file_path}\n");
-            fwrite($fp, "Document encontrado: " . ($document ? $document->filename : 'NO') . "\n");
+            fwrite($fp, "Documents encontrados: " . count($documentsList) . "\n");
 
             // Siempre llenamos $list
             $list = array_merge($common_data, [
                 'Productos'        => $productos,
-                'FilePath'         => $file_path,
-                'FilePathComplete' => $file_path && $document ? $file_path . $document->filename : null,
+                'FilePath'         => $documentsList,
+                'FilePathComplete' => $firstDocument,
                 'Etapa'            => $solped->etapa_actual,
             ]);
 
@@ -786,6 +801,7 @@ class SolpedController extends BaseController
             // Catálogos comunes
             $measurementList = \App\Models\Measurement::getList();
             $buyersList      = $user->getCompradoresByCompanyList();
+            $countriesList   = \App\Models\Pais::getCountries();
 
             // === DOCS - Ruta dinámica con estructura CUIT/AÑO ===
             // Construir ruta base usando CUIT del usuario y año actual
@@ -887,6 +903,19 @@ class SolpedController extends BaseController
                 $compradoresSelected = [$compradorSugeridoId];
             }
 
+            $countrySelectedCode = null;
+            $countrySelectedId = null;
+            if (!$create && $solped && !empty($solped->pais)) {
+                foreach ($countriesList as $country) {
+                    $countryName = isset($country['text']) ? (string)$country['text'] : '';
+                    if ($countryName !== '' && strcasecmp($countryName, (string)$solped->pais) === 0) {
+                        $countrySelectedCode = isset($country['code']) ? (string)$country['code'] : null;
+                        $countrySelectedId = isset($country['id']) ? (string)$country['id'] : null;
+                        break;
+                    }
+                }
+            }
+
             $LOG('BUYERS_SELECTED', ['single' => $compradorSugeridoId, 'multi' => $compradoresSelected]);
 
             // Payload para KO
@@ -898,8 +927,12 @@ class SolpedController extends BaseController
                 'TipoCompraId'            => $create ? null : (isset($solped->tipo_compra) ? (int)$solped->tipo_compra : null),
                 'AreaSolicitante'         => $create ? null : $this->getAreaIdByName($solped->area_sol ?? ''),
                 'Pais'                    => $create ? null : ($solped->pais ?? null),
+                'CountrySelectedId'       => $countrySelectedId,
+                'CountrySelected'         => $countrySelectedCode,
+                'Countries'               => is_array($countriesList) ? $countriesList : (array)$countriesList,
                 'Provincia'               => $create ? '' : (string)($solped->provincia ?? ''),
                 'Ciudad'                  => $create ? '' : (string)($solped->localidad ?? ''),
+                'Localidad'               => $create ? '' : (string)($solped->localidad ?? ''),
                 'Direccion'               => $create ? '' : (string)($solped->direccion ?? ''),
                 'Cp'                      => $create ? '' : (string)($solped->cp ?? ''),
                 'Latitud'                 => $create ? '' : (string)($solped->latitud ?? ''),

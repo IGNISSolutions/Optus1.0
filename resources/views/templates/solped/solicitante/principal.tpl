@@ -10,6 +10,7 @@
     <link href="{asset('/global/plugins/datatables/datatables.min.css')}" rel="stylesheet" type="text/css" />
     <link href="{asset('/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css')}" rel="stylesheet" type="text/css" />
     <link href="{asset('/global/css/components-rounded.min.css')}" rel="stylesheet" id="style_components" type="text/css" />
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.5.1/mapbox-gl.css" rel="stylesheet" type="text/css" />
 {/block}
 
 <!-- SCRIPTS PREVIOS A KNOCKOUT -->
@@ -48,11 +49,11 @@
 <!-- SCRIPTS POSTERIORES A KNOCKOUT -->
 {block 'post-scripts'}
 
-    
-    <script src="{asset('/js/geo.js')}" type="text/javascript"></script>
-    <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCUtr9Ist4jejEMf2czdImyxk_EXoyWBgo&callback=initMapsolped&libraries=places&v=weekly">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.5.1/mapbox-gl.js" type="text/javascript"></script>
+    <script>
+        window.MapboxToken = '{$mapboxToken|default:""}';
     </script>
+    <script src="{asset('/js/geo-solped.js')}" type="text/javascript"></script>
 
     <script>
         Inputmask.extendAliases({
@@ -76,6 +77,21 @@
     </script>
 <script>
 (function () {
+    function syncSelect2VisibleText(el, normalizedValue) {
+        var $el = $(el);
+        var $rendered = $el.next('.select2').find('.select2-selection__rendered');
+        if (!$rendered.length) {
+            return;
+        }
+
+        var renderedText = String($rendered.text() || '').trim();
+        var selectedText = String($el.find('option:selected').text() || '').trim();
+        if (normalizedValue && !renderedText && selectedText) {
+            $rendered.text(selectedText);
+            $rendered.attr('title', selectedText);
+        }
+    }
+
   // Binding SELECT2 seguro: no invoca allBindings.value()
   ko.bindingHandlers.select2Safe = {
     init: function (el, valueAccessor, allBindingsAccessor) {
@@ -93,13 +109,39 @@
       });
     },
     update: function (el, valueAccessor, allBindingsAccessor) {
-      // Dejamos que el binding KO `value:` haga su trabajo.
-      // Solo re-sync si el select2 se perdió.
+            var optsAcc = (typeof allBindingsAccessor === 'function' ? allBindingsAccessor() : allBindingsAccessor) || {};
+            var currentValue = typeof optsAcc.value !== 'undefined'
+                ? ko.utils.unwrapObservable(optsAcc.value)
+                : $(el).val();
+            // Dependencia explícita de options para que update corra cuando cambie el listado.
+            // Esto evita que Select2 quede en placeholder si el value se seteó antes de que existan las opciones.
+            if (typeof optsAcc.options !== 'undefined') {
+                ko.utils.unwrapObservable(optsAcc.options);
+            }
+
+            // Dejamos que el binding KO `value:` haga su trabajo,
+            // pero forzamos a Select2 a refrescar el valor visible.
+            var normalizedValue = currentValue == null ? '' : String(currentValue);
+            if (String($(el).val() || '') !== normalizedValue) {
+                $(el).val(normalizedValue).trigger('change').trigger('change.select2');
+            }
+            syncSelect2VisibleText(el, normalizedValue);
+
+            // Reintento post-render por si las <option> se inyectaron después de este update.
+            setTimeout(function () {
+                if (String($(el).val() || '') !== normalizedValue) {
+                    $(el).val(normalizedValue).trigger('change').trigger('change.select2');
+                }
+                syncSelect2VisibleText(el, normalizedValue);
+            }, 0);
+
+            // Solo re-sync si el select2 se perdió.
       if (!$(el).hasClass('select2-hidden-accessible') || !$(el).data('select2')) {
-        var optsAcc = (typeof allBindingsAccessor === 'function' ? allBindingsAccessor() : allBindingsAccessor) || {};
         var opts = ko.utils.unwrapObservable(optsAcc.select2Safe) || {};
         try { if ($(el).data('select2')) $(el).select2('destroy'); } catch(e){}
         $(el).select2(Object.assign({ width: 'auto', language: 'es' }, opts));
+                $(el).val(normalizedValue).trigger('change').trigger('change.select2');
+                syncSelect2VisibleText(el, normalizedValue);
       }
     }
   };
@@ -232,15 +274,108 @@
     function Form(data, parent) {
         data = data || {}; data.list = data.list || {};
         var self = this;
-        console.log("datos", data)
 
         this.Id = ko.observable(data.list.Id || 0);
         this.Nombre        = ko.observable(data.list.Nombre || '').extend({ required: true });
         this.Descripcion = ko.observable(data.list.Descripcion || '')
         this.CodigoInterno = ko.observable(data.list.CodigoInterno || '');
         this.Pais = ko.observable(data.list.Pais || '');
+        this.CountrySelectedId = ko.observable(data.list.CountrySelectedId != null ? String(data.list.CountrySelectedId) : '');
+        this.CountrySelected = ko.observable(data.list.CountrySelected || '');
         this.Provincia = ko.observable(data.list.Provincia || '');
-        this.Ciudad = ko.observable(data.list.Ciudad || '');
+        this.Localidad = ko.observable(data.list.Localidad || data.list.Ciudad || '');
+        this.Ciudad = this.Localidad;
+        this.Direccion = ko.observable(data.list.Direccion || '');
+        this.Cp = ko.observable(data.list.Cp || '');
+        this.Latitud = ko.observable(data.list.Latitud || '');
+        this.Longitud = ko.observable(data.list.Longitud || '');
+        this.ManOnTheMap = ko.observable(!!data.list.ManOnTheMap);
+
+        var countriesSource = data.list.Countries || data.list.CountriesList || [];
+        var normalizeCountryText = function (value) {
+            return String(value || '')
+                .trim()
+                .toLowerCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '');
+        };
+        this.Countries = ko.observableArray(
+            (countriesSource || []).map(function (c) {
+                return {
+                    id: c.id != null ? String(c.id) : '',
+                    code: String(c.code || c.codigo || '').toUpperCase(),
+                    text: String(c.text || c.nombre || '')
+                };
+            }).filter(function (c) {
+                return c.text !== '';
+            })
+        );
+
+        this.CountrySelected.subscribe(function (countryCode) {
+            var selected = (self.Countries() || []).find(function (c) {
+                return String(c.code || '').toUpperCase() === String(countryCode || '').toUpperCase();
+            });
+            if (!selected) {
+                return;
+            }
+
+            var selectedName = String(selected.text || '');
+            var selectedId = String(selected.id || '');
+            if (selectedName && self.Pais() !== selectedName) {
+                self.Pais(selectedName);
+            }
+            if (self.CountrySelectedId() !== selectedId) {
+                self.CountrySelectedId(selectedId);
+            }
+        });
+
+        this.CountrySelectedId.subscribe(function (countryId) {
+            var selected = (self.Countries() || []).find(function (c) {
+                return String(c.id || '') === String(countryId || '');
+            });
+            if (selected) {
+                var newCode = String(selected.code || '').toUpperCase();
+                if (self.CountrySelected() !== newCode) {
+                    self.CountrySelected(newCode);
+                }
+            }
+        });
+
+        this.Pais.subscribe(function (countryName) {
+            var selected = (self.Countries() || []).find(function (c) {
+                return normalizeCountryText(c.text) === normalizeCountryText(countryName);
+            });
+            if (selected) {
+                var id = String(selected.id || '');
+                var code = String(selected.code || '').toUpperCase();
+                if (self.CountrySelectedId() !== id) {
+                    self.CountrySelectedId(id);
+                }
+                if (self.CountrySelected() !== code) {
+                    self.CountrySelected(code);
+                }
+            }
+        });
+
+        if (!this.CountrySelected() && this.Pais()) {
+            var selectedByName = (this.Countries() || []).find(function (c) {
+                return normalizeCountryText(c.text) === normalizeCountryText(self.Pais());
+            });
+            if (selectedByName) {
+                this.CountrySelectedId(String(selectedByName.id || ''));
+                this.CountrySelected(String(selectedByName.code || '').toUpperCase());
+            }
+        }
+
+        if (!this.Pais() && this.CountrySelected()) {
+            var selectedByCode = (this.Countries() || []).find(function (c) {
+                return String(c.code || '').toUpperCase() === String(self.CountrySelected() || '').toUpperCase();
+            });
+            if (selectedByCode) {
+                this.Pais(String(selectedByCode.text || ''));
+                this.CountrySelectedId(String(selectedByCode.id || ''));
+            }
+        }
 
         this.TipoCompra = ko.observable(
         data.list.TipoCompraId != null ? Number(data.list.TipoCompraId) : null
@@ -966,18 +1101,18 @@ jQuery(function () {
     ? '/solped/edit/' + solpedId   // devuelve JSON con datos guardados
     : '/solped/create';            // JSON para nuevo
 
-  console.log('[SOLPED] GET:', url);
-
   Services.Get(
     url,
     { UserToken: User.Token },
     function (response) {
-      console.log('[SOLPED] response:', response);
       if (response && response.success) {
         // importante: Solped VM debe estar cargado antes de este script
         window.E = new Solped(response.data);
         E.action = ko.observable(solpedId ? 'edit' : 'create');
         AppOptus.Bind(E);
+                if (typeof window.initMapsolped === 'function') {
+                    setTimeout(function () { window.initMapsolped(); }, 0);
+                }
 
         if (response.data && response.data.breadcrumbs && E.Breadcrumbs) {
           E.Breadcrumbs(response.data.breadcrumbs);
@@ -988,7 +1123,6 @@ jQuery(function () {
       $.unblockUI();
     },
     function (error) {
-      console.error('[SOLPED] error:', error);
       $.unblockUI();
       swal('Error', error.message || 'Fallo la carga', 'error');
     }

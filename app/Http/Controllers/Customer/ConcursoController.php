@@ -54,6 +54,150 @@ class ConcursoController extends BaseController
 {
     protected static $description_limit = 5000;
 
+    private function buildSolpedSummaryTexts($solpeds)
+    {
+        $formatDate = function ($value, $withTime = false) {
+            if (empty($value)) {
+                return 'N/D';
+            }
+            try {
+                if ($value instanceof Carbon) {
+                    return $value->format($withTime ? 'd-m-Y H:i' : 'd-m-Y');
+                }
+                return Carbon::parse($value)->format($withTime ? 'd-m-Y H:i' : 'd-m-Y');
+            } catch (\Throwable $e) {
+                return 'N/D';
+            }
+        };
+
+        $plainLines = [];
+        $htmlLines = [];
+        foreach ($solpeds as $solped) {
+            $resolucion = $formatDate($solped->fecha_resolucion, false);
+            $entrega = $formatDate($solped->fecha_entrega, false);
+
+            $plainLines[] = 'SOLPED #' . (int)$solped->id
+                . ' - Fecha resolucion: ' . $resolucion
+                . ' - Fecha entrega: ' . $entrega;
+
+            $htmlLines[] = '<strong>SOLPED #' . (int)$solped->id . '</strong><br>'
+                . '<strong>Fecha resolucion: ' . $resolucion . '</strong><br>'
+                . '<strong>Fecha entrega: ' . $entrega . '</strong>';
+        }
+
+        $header = 'Generado automaticamente desde SOLPED(s): ' . implode(', ', $solpeds->pluck('id')->toArray());
+        $plainBody = implode("\n", $plainLines);
+        $htmlBody = implode('<br><br>', $htmlLines);
+
+        return [
+            'resena' => trim($header . "\n" . $plainBody),
+            'descripcion' => trim('<p>' . $header . '</p><p>' . $htmlBody . '</p>'),
+        ];
+    }
+
+    private function resolveSolpedLocation($solpeds, $fallbackCountry = 'Argentina', $fallbackProvince = null)
+    {
+        if (!$solpeds || $solpeds->isEmpty()) {
+            return [
+                'pais' => $fallbackCountry,
+                'provincia' => $fallbackProvince,
+                'localidad' => null,
+                'direccion' => null,
+                'cp' => null,
+                'latitud' => null,
+                'longitud' => null,
+            ];
+        }
+
+        $source = $solpeds->first(function ($solped) {
+            return !empty($solped->pais)
+                || !empty($solped->provincia)
+                || !empty($solped->localidad)
+                || !empty($solped->direccion)
+                || !empty($solped->cp)
+                || !empty($solped->latitud)
+                || !empty($solped->longitud);
+        });
+
+        if (!$source) {
+            $source = $solpeds->first();
+        }
+
+        return [
+            'pais' => !empty($source->pais) ? $source->pais : $fallbackCountry,
+            'provincia' => !empty($source->provincia) ? $source->provincia : $fallbackProvince,
+            'localidad' => !empty($source->localidad) ? $source->localidad : null,
+            'direccion' => !empty($source->direccion) ? $source->direccion : null,
+            'cp' => !empty($source->cp) ? $source->cp : null,
+            'latitud' => !empty($source->latitud) ? $source->latitud : null,
+            'longitud' => !empty($source->longitud) ? $source->longitud : null,
+        ];
+    }
+
+    private function migrateSolpedDocumentsToConcurso($solpeds, $concurso)
+    {
+        if (!$solpeds || $solpeds->isEmpty() || !$concurso) {
+            return;
+        }
+
+        $sheetTypes = SheetType::orderBy('id')->get()->values();
+        if ($sheetTypes->isEmpty()) {
+            return;
+        }
+
+        $destinationDir = rtrim(rootPath() . filePath($concurso->file_path), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        if (!is_dir($destinationDir)) {
+            @mkdir($destinationDir, 0777, true);
+        }
+
+        $usedTypeIds = [];
+        foreach ($solpeds as $solped) {
+            $docs = \App\Models\SolpedDocument::where('solped_id', $solped->id)->orderBy('id')->get()->values();
+            if ($docs->isEmpty()) {
+                continue;
+            }
+
+            foreach ($docs as $index => $doc) {
+                $sheetType = isset($sheetTypes[$index]) ? $sheetTypes[$index] : null;
+                if (!$sheetType) {
+                    continue;
+                }
+
+                $typeId = (int)$sheetType->id;
+                if (isset($usedTypeIds[$typeId])) {
+                    continue;
+                }
+
+                $sourceDir = rtrim(rootPath() . '/storage/img/' . ltrim((string)$solped->file_path, '/'), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+                $sourcePath = $sourceDir . (string)$doc->filename;
+                if (!is_file($sourcePath)) {
+                    continue;
+                }
+
+                $baseFilename = basename((string)$doc->filename);
+                $targetFilename = $baseFilename;
+                $targetPath = $destinationDir . $targetFilename;
+                $collisionIdx = 1;
+                while (is_file($targetPath)) {
+                    $name = pathinfo($baseFilename, PATHINFO_FILENAME);
+                    $ext = pathinfo($baseFilename, PATHINFO_EXTENSION);
+                    $targetFilename = $name . '_' . $collisionIdx . ($ext ? '.' . $ext : '');
+                    $targetPath = $destinationDir . $targetFilename;
+                    $collisionIdx++;
+                }
+
+                if (@copy($sourcePath, $targetPath)) {
+                    Sheet::create([
+                        'concurso_id' => $concurso->id,
+                        'type_id' => $typeId,
+                        'filename' => $targetFilename,
+                    ]);
+                    $usedTypeIds[$typeId] = true;
+                }
+            }
+        }
+    }
+
     public function serveList(Request $request, Response $response)
     {
         return $this->render($response, 'concurso/list/cliente/type-list.tpl', [
@@ -201,7 +345,8 @@ class ConcursoController extends BaseController
             'title' => $title,
             'description' => $description,
             'concurso_id' => null,
-            'isCopy' => 0
+            'isCopy' => 0,
+            'mapboxToken' => getenv('MAPBOX_ACCESS_TOKEN') ?: ''
         ]);
     }
 
@@ -283,7 +428,8 @@ class ConcursoController extends BaseController
             'title' => $title,
             'description' => $description,
             'concurso_id' => $concurso_id,
-            'isCopy' => $concurso_id ? 1 : 0
+            'isCopy' => $concurso_id ? 1 : 0,
+            'mapboxToken' => getenv('MAPBOX_ACCESS_TOKEN') ?: ''
         ]);
     }
 
@@ -1603,7 +1749,19 @@ class ConcursoController extends BaseController
                 'urlChatMuro' => route($route_name, ['type' => $concurso->tipo_concurso, 'id' => $concurso->id, 'step' => 'chat-muro-consultas']),
                 'concurso_fiscalizado' => $concurso->concurso_fiscalizado,
                 'ChatEnable' => $concurso->is_sobrecerrado ? true : ($concurso->chat == 'si' ? true : false ),
-                'emailSuper' => $concurso->concurso_fiscalizado == 'si' ? $concurso->supervisor->email : null    
+                'emailSuper' => $concurso->concurso_fiscalizado == 'si' ? $concurso->supervisor->email : null,
+                'ProveedoresAdjudicados' => $concurso->oferentes
+                    ->filter(function($p) {
+                        return str_starts_with((string)$p->etapa_actual, 'adjudicacion-aceptada');
+                    })
+                    ->map(function($p) {
+                        return [
+                            'razonSocial' => $p->company->business_name ?? '',
+                            'telefono'    => $p->company->phone ?? '',
+                            'celular'     => $p->company->cellphone ?? '',
+                            'email'       => $p->company->email ?? '',
+                        ];
+                    })->values()->toArray(),
                             
             ];
 
@@ -1809,8 +1967,7 @@ class ConcursoController extends BaseController
                     $verOfertasEnable = true;
                 }
 
-                if (!$verOfertasEnable && !$concurso->adjudicado && $concurso->adjudicacion_anticipada
-                    && ($concurso->alguno_presento_economica || $plazoVencidoEconomicas) && $fechaLimiteVencida) {
+                if (!$verOfertasEnable && !$concurso->adjudicado && $concurso->adjudicacion_anticipada) {
                     $verOfertasEnable = true;
                 }
                 if ($concurso->technical_includes) {
@@ -1933,8 +2090,7 @@ class ConcursoController extends BaseController
                     $verOfertasEnable = true;
                 }
                
-                if (!$verOfertasEnable && !$concurso->adjudicado && $concurso->adjudicacion_anticipada
-                    && ($concurso->alguno_presento_economica || $plazoVencidoEconomicas)) {
+                if (!$verOfertasEnable && !$concurso->adjudicado && $concurso->adjudicacion_anticipada) {
                     $verOfertasEnable = true;
                 }
                
@@ -2059,7 +2215,8 @@ class ConcursoController extends BaseController
                     $bloquearInvitacionOferentes = $invitacionesExistentes;
                     
                     // --- NO venció (hoy < fecha económica) ---
-                    $noVencio = false;
+                    // Si la fecha económica aún no está definida, mantenemos visible para permitir edición.
+                    $noVencio = true;
                     if (!empty($fechaEconomicaLicitacion) && !empty($fechaActual)) {
                         $noVencio = strtotime($fechaActual) < strtotime($fechaEconomicaLicitacion);
                     }
@@ -3707,24 +3864,24 @@ class ConcursoController extends BaseController
     }
 
     /**
-     * Agrega horas a una fecha y si cae en fin de semana, la mueve al siguiente día hábil
-     * la hora siempre queda a las 23:00
+     * Agrega horas habiles (excluyendo sabado y domingo) a una fecha.
+     * La hora final siempre queda a las 23:00 para mantener el comportamiento actual.
      * @param Carbon $fecha Fecha inicial
-     * @param int $horas Cantidad de horas a agregar
+     * @param int $horas Cantidad de horas habiles a agregar
      * @return Carbon Fecha resultante
      */
     private function addBusinessHours($fecha, $horas)
     {
-        // Primero sumamos las horas normalmente
-        $fechaResultado = $fecha->copy()->addHours($horas);
-        
-        // Si cae en sábado (6), mover a lunes a la misma hora
-        if ($fechaResultado->dayOfWeek == Carbon::SATURDAY) {
-            $fechaResultado->addDays(2);
-        }
-        // Si cae en domingo (0), mover a lunes a la misma hora
-        elseif ($fechaResultado->dayOfWeek == Carbon::SUNDAY) {
-            $fechaResultado->addDays(1);
+        $fechaResultado = $fecha->copy();
+        $horasPendientes = (int) $horas;
+
+        // Sumamos hora por hora para no contar horas de fin de semana.
+        while ($horasPendientes > 0) {
+            $fechaResultado->addHour();
+            if ($fechaResultado->isWeekend()) {
+                continue;
+            }
+            $horasPendientes--;
         }
 
         $fechaResultado->hour(23)->minute(0)->second(0);
@@ -5739,6 +5896,18 @@ class ConcursoController extends BaseController
                 throw new \Exception("No se enviaron solicitudes de compra.");
             }
 
+            $solpeds = \App\Models\Solped::whereIn('id', $idsSolpeds)->get();
+            if ($solpeds->isEmpty()) {
+                throw new \Exception("No se encontraron solicitudes de compra válidas.");
+            }
+
+            $summaryTexts = $this->buildSolpedSummaryTexts($solpeds);
+            $locationData = $this->resolveSolpedLocation(
+                $solpeds,
+                $user->customer_company->country ?? 'Argentina',
+                $user->customer_company->province ?? null
+            );
+
             // 🔹 Traer los productos vinculados a esas solpeds usando el modelo
             $productos = \App\Models\SolpedItems::whereIn('id_solped', $idsSolpeds)->get();
 
@@ -5757,10 +5926,15 @@ class ConcursoController extends BaseController
             $concurso->tipo_concurso = Concurso::TYPES['sobrecerrado']; // Licitación sobre cerrado
             $concurso->tipo_operacion = 2; // Licitación
             $concurso->nombre = "Licitación desde SOLPEDs - N° de Solped: " . implode(', ', $idsSolpeds) . " - " . date('d/m/Y H:i');
-            $concurso->resena = "";
-            $concurso->descripcion = "";
-            $concurso->pais = $user->customer_company->country ?? 'Argentina';
-            $concurso->provincia = $user->customer_company->province ?? null;
+            $concurso->resena = $summaryTexts['resena'];
+            $concurso->descripcion = nl2br($summaryTexts['descripcion']);
+            $concurso->pais = $locationData['pais'];
+            $concurso->provincia = $locationData['provincia'];
+            $concurso->localidad = $locationData['localidad'];
+            $concurso->direccion = $locationData['direccion'];
+            $concurso->cp = $locationData['cp'];
+            $concurso->latitud = $locationData['latitud'];
+            $concurso->longitud = $locationData['longitud'];
             $concurso->fecha_alta = Carbon::now();
             $concurso->finalizacion_consultas = $fechaFinalizacionConsultas;
             $concurso->fecha_limite = $fechaFinalizacionConsultas;
@@ -5774,6 +5948,9 @@ class ConcursoController extends BaseController
             $concurso->created_from_solped = implode(',', $idsSolpeds); // Guardar IDs de SOLPEDs separados por coma
             
             $concurso->save();
+
+            // 🔹 Migrar documentación de SOLPED al concurso (sheets + copia física)
+            $this->migrateSolpedDocumentsToConcurso($solpeds, $concurso);
 
             // 🔹 Insertar productos asociados al concurso recién creado
             $insertCount = 0;
@@ -5812,33 +5989,40 @@ class ConcursoController extends BaseController
             $_SESSION['edit_token'] = $_SESSION['edit_token'] ?? [];
             $_SESSION['edit_token'][$concurso->id] = $token;
 
-            // 🔹 Enviar emails a los solicitantes de las SOLPEDs
-            $emailService = new EmailService();
-            $solpeds = \App\Models\Solped::whereIn('id', $idsSolpeds)->get();
-            
-            foreach ($solpeds as $solped) {
-                try {
-                    $solicitante = $solped->solicitante;
-                    if ($solicitante && $solicitante->email) {
-                        $template = rootPath(config('app.templates_path')) . '/email/solped-concurso-creado.tpl';
-                        $subject = 'Solicitud #' . $solped->id . ' - Proceso de Licitación Iniciado';
-                        
-                        $html = $this->fetch($template, [
-                            'title' => $subject,
-                            'ano' => Carbon::now()->format('Y'),
-                            'solped' => $solped,
-                            'user' => $solicitante,
-                            'fecha_creacion' => Carbon::now()->format('d-m-Y H:i')
-                        ]);
-                        
-                        $successMail = $emailService->send(
-                            $html,
-                            $subject,
-                            [$solicitante->email],
-                            $solicitante->full_name
-                        );
+            // 🔹 Enviar emails a los solicitantes de las SOLPEDs (best-effort, no bloqueante)
+            $emailService = null;
+            try {
+                $emailService = new EmailService();
+            } catch (\Throwable $e) {
+                // No bloquear creación de concurso por error de configuración SMTP/From.
+            }
+
+            if ($emailService) {
+                foreach ($solpeds as $solped) {
+                    try {
+                        $solicitante = $solped->solicitante;
+                        if ($solicitante && $solicitante->email) {
+                            $template = rootPath(config('app.templates_path')) . '/email/solped-concurso-creado.tpl';
+                            $subject = 'Solicitud #' . $solped->id . ' - Proceso de Licitación Iniciado';
+
+                            $html = $this->fetch($template, [
+                                'title' => $subject,
+                                'ano' => Carbon::now()->format('Y'),
+                                'solped' => $solped,
+                                'user' => $solicitante,
+                                'fecha_creacion' => Carbon::now()->format('d-m-Y H:i')
+                            ]);
+
+                            $emailService->send(
+                                $html,
+                                $subject,
+                                [$solicitante->email],
+                                $solicitante->full_name
+                            );
+                        }
+                    } catch (\Throwable $e) {
+                        // No bloquear conversión por fallos de envío puntuales.
                     }
-                } catch (\Exception $e) {
                 }
             }
             
@@ -5899,6 +6083,18 @@ class ConcursoController extends BaseController
                 throw new \Exception("No se enviaron solicitudes de compra.");
             }
 
+            $solpeds = \App\Models\Solped::whereIn('id', $idsSolpeds)->get();
+            if ($solpeds->isEmpty()) {
+                throw new \Exception("No se encontraron solicitudes de compra válidas.");
+            }
+
+            $summaryTexts = $this->buildSolpedSummaryTexts($solpeds);
+            $locationData = $this->resolveSolpedLocation(
+                $solpeds,
+                $user->customer_company->country ?? 'Argentina',
+                $user->customer_company->province ?? null
+            );
+
             // 🔹 Traer los productos vinculados a esas solpeds usando el modelo
             $productos = \App\Models\SolpedItems::whereIn('id_solped', $idsSolpeds)->get();
 
@@ -5919,10 +6115,15 @@ class ConcursoController extends BaseController
             $concurso->tipo_concurso = Concurso::TYPES['online']; // Subasta online
             $concurso->tipo_operacion = 2; // Licitación
             $concurso->nombre = "Subasta desde SOLPEDs - N° de Solped: " . implode(', ', $idsSolpeds) . " - " . date('d/m/Y H:i');
-            $concurso->resena = "";
-            $concurso->descripcion = "";
-            $concurso->pais = $user->customer_company->country ?? 'Argentina';
-            $concurso->provincia = $user->customer_company->province ?? null;
+            $concurso->resena = $summaryTexts['resena'];
+            $concurso->descripcion = nl2br($summaryTexts['descripcion']);
+            $concurso->pais = $locationData['pais'];
+            $concurso->provincia = $locationData['provincia'];
+            $concurso->localidad = $locationData['localidad'];
+            $concurso->direccion = $locationData['direccion'];
+            $concurso->cp = $locationData['cp'];
+            $concurso->latitud = $locationData['latitud'];
+            $concurso->longitud = $locationData['longitud'];
             $concurso->fecha_alta = Carbon::now();
             $concurso->finalizacion_consultas = $fechaFinalizacionConsultas;
             $concurso->fecha_limite = $fechaFinalizacionConsultas;
@@ -5949,6 +6150,9 @@ class ConcursoController extends BaseController
             $concurso->created_from_solped = implode(',', $idsSolpeds); // Guardar IDs de SOLPEDs separados por coma
             
             $concurso->save();
+
+            // 🔹 Migrar documentación de SOLPED al concurso (sheets + copia física)
+            $this->migrateSolpedDocumentsToConcurso($solpeds, $concurso);
 
             // 🔹 Insertar productos asociados al concurso recién creado
             $insertCount = 0;
@@ -5987,33 +6191,40 @@ class ConcursoController extends BaseController
             $_SESSION['edit_token'] = $_SESSION['edit_token'] ?? [];
             $_SESSION['edit_token'][$concurso->id] = $token;
 
-            // 🔹 Enviar emails a los solicitantes de las SOLPEDs
-            $emailService = new EmailService();
-            $solpeds = \App\Models\Solped::whereIn('id', $idsSolpeds)->get();
-            
-            foreach ($solpeds as $solped) {
-                try {
-                    $solicitante = $solped->solicitante;
-                    if ($solicitante && $solicitante->email) {
-                        $template = rootPath(config('app.templates_path')) . '/email/solped-concurso-creado.tpl';
-                        $subject = 'Solicitud #' . $solped->id . ' - Proceso de Subasta Iniciado';
-                        
-                        $html = $this->fetch($template, [
-                            'title' => $subject,
-                            'ano' => Carbon::now()->format('Y'),
-                            'solped' => $solped,
-                            'user' => $solicitante,
-                            'fecha_creacion' => Carbon::now()->format('d-m-Y H:i')
-                        ]);
-                        
-                        $successMail = $emailService->send(
-                            $html,
-                            $subject,
-                            [$solicitante->email],
-                            $solicitante->full_name
-                        );
+            // 🔹 Enviar emails a los solicitantes de las SOLPEDs (best-effort, no bloqueante)
+            $emailService = null;
+            try {
+                $emailService = new EmailService();
+            } catch (\Throwable $e) {
+                // No bloquear creación de subasta por error de configuración SMTP/From.
+            }
+
+            if ($emailService) {
+                foreach ($solpeds as $solped) {
+                    try {
+                        $solicitante = $solped->solicitante;
+                        if ($solicitante && $solicitante->email) {
+                            $template = rootPath(config('app.templates_path')) . '/email/solped-concurso-creado.tpl';
+                            $subject = 'Solicitud #' . $solped->id . ' - Proceso de Subasta Iniciado';
+
+                            $html = $this->fetch($template, [
+                                'title' => $subject,
+                                'ano' => Carbon::now()->format('Y'),
+                                'solped' => $solped,
+                                'user' => $solicitante,
+                                'fecha_creacion' => Carbon::now()->format('d-m-Y H:i')
+                            ]);
+
+                            $emailService->send(
+                                $html,
+                                $subject,
+                                [$solicitante->email],
+                                $solicitante->full_name
+                            );
+                        }
+                    } catch (\Throwable $e) {
+                        // No bloquear conversión por fallos de envío puntuales.
                     }
-                } catch (\Exception $e) {
                 }
             }
             

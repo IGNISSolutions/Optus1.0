@@ -13,6 +13,7 @@
     <link href="{asset('/global/plugins/icheck/skins/all.css')}" rel="stylesheet" type="text/css" />
     <link href="{asset('/global/css/common.css')}" rel="stylesheet" type="text/css" />
     <link href="{asset('/apps/css/inbox.min.css')}" rel="stylesheet" type="text/css" />
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.5.1/mapbox-gl.css" rel="stylesheet" type="text/css" />
 {/block}
 
 <!-- SCRIPTS PREVIOS A KNOCKOUT -->
@@ -31,10 +32,11 @@
 <!-- SCRIPTS POSTERIORES A KNOCKOUT -->
 {block 'post-scripts'}
     {if $tipo eq 'invitacion'}
-        <script src="{asset('/js/geo.js')}" type="text/javascript"></script>
-        <script async defer
-            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD3xU2zO42h1qL1s6bFkHsdhtv_hpvfxBo&callback=initMapConcursoInvitacion">
+        <script src="https://api.mapbox.com/mapbox-gl-js/v3.5.1/mapbox-gl.js" type="text/javascript"></script>
+        <script>
+            window.MapboxToken = '{$mapboxToken|default:""}';
         </script>
+        <script src="{asset('/js/geo-concurso.js')}" type="text/javascript"></script>
     {/if}
     <script src="{asset('/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js')}" type="text/javascript"></script>
     <script src="{asset('/global/plugins/bootstrap-fileinput-kartik/js/fileinput.min.js')}"></script>
@@ -2303,6 +2305,7 @@
                         if (response.success) {
                             window.E = new ConcursoPorEtapaOferente(response.data);
                             AppOptus.Bind(E);
+                            setTimeout(function () { window.initMapConcursoInvitacion(); }, 0);
                         }
                         $.unblockUI();
                     },

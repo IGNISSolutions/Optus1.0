@@ -4303,3 +4303,1185 @@ List final: Array
 
 === detail FIN ===
 
+
+=== detail INICIO === 12-03-2026 12:31:42 ===
+Params recibidos: Array
+(
+    [etapa] => en-correccion
+    [id] => 70
+)
+
+Usuario: ID=727, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=70, etapa=devuelta
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 91
+    [Nombre] => Hola
+    [Descripcion] => asdas
+    [Cantidad] => 1
+    [OfertaMinima] => 1
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Producto agregado: Array
+(
+    [Id] => 92
+    [Nombre] => sfsdf
+    [Descripcion] => 34234
+    [Cantidad] => 1
+    [OfertaMinima] => 1
+    [UnidadMedidaId] => 2
+    [UnidadMedidaNombre] => cm
+    [TargetCost] => 0
+)
+
+Total productos: 2
+FilePath base: /storage/img/solpeds/30529135943/2026/
+Document encontrado: Notas definitivas examen corregido.pdf
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 70
+    [Nombre] => Fix errores
+    [IdSolicitante] => 727
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 1
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 14-03-2026 00:00:00
+    [FechaEntrega] => 21-03-2026 00:00:00
+    [FechaCreacion] => 12-03-2026 12:13:40
+    [FechaEnvioComprador] => 12-03-2026 12:14:10
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 
+    [RejectComment] => 
+    [ReturnComment] => Por que si
+    [Etapa] => devuelta
+    [EstadoActual] => devuelta
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 12-03-2026 12:14:34
+    [FechaDevolucion] => 12-03-2026 12:19:55
+    [CompradorDecisionFecha] => Ucoca Cola - 12-03-2026 12:19:55
+    [CompradorDevolucionFecha] => Ucoca Cola - 12-03-2026 12:19:55
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 91
+                    [Nombre] => Hola
+                    [Descripcion] => asdas
+                    [Cantidad] => 1
+                    [OfertaMinima] => 1
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+            [1] => Array
+                (
+                    [Id] => 92
+                    [Nombre] => sfsdf
+                    [Descripcion] => 34234
+                    [Cantidad] => 1
+                    [OfertaMinima] => 1
+                    [UnidadMedidaId] => 2
+                    [UnidadMedidaNombre] => cm
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => /storage/img/solpeds/30529135943/2026/
+    [FilePathComplete] => /storage/img/solpeds/30529135943/2026/Notas definitivas examen corregido.pdf
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 12-03-2026 12:32:56 ===
+Params recibidos: Array
+(
+    [etapa] => en-correccion
+    [id] => 70
+)
+
+Usuario: ID=727, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=70, etapa=devuelta
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 91
+    [Nombre] => Hola
+    [Descripcion] => asdas
+    [Cantidad] => 1
+    [OfertaMinima] => 1
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Producto agregado: Array
+(
+    [Id] => 92
+    [Nombre] => sfsdf
+    [Descripcion] => 34234
+    [Cantidad] => 1
+    [OfertaMinima] => 1
+    [UnidadMedidaId] => 2
+    [UnidadMedidaNombre] => cm
+    [TargetCost] => 0
+)
+
+Total productos: 2
+FilePath base: /storage/img/solpeds/30529135943/2026/
+Document encontrado: Notas definitivas examen corregido.pdf
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 70
+    [Nombre] => Fix errores
+    [IdSolicitante] => 727
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 1
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 14-03-2026 00:00:00
+    [FechaEntrega] => 21-03-2026 00:00:00
+    [FechaCreacion] => 12-03-2026 12:13:40
+    [FechaEnvioComprador] => 12-03-2026 12:14:10
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 
+    [RejectComment] => 
+    [ReturnComment] => Por que si
+    [Etapa] => devuelta
+    [EstadoActual] => devuelta
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 12-03-2026 12:14:34
+    [FechaDevolucion] => 12-03-2026 12:19:55
+    [CompradorDecisionFecha] => Ucoca Cola - 12-03-2026 12:19:55
+    [CompradorDevolucionFecha] => Ucoca Cola - 12-03-2026 12:19:55
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 91
+                    [Nombre] => Hola
+                    [Descripcion] => asdas
+                    [Cantidad] => 1
+                    [OfertaMinima] => 1
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+            [1] => Array
+                (
+                    [Id] => 92
+                    [Nombre] => sfsdf
+                    [Descripcion] => 34234
+                    [Cantidad] => 1
+                    [OfertaMinima] => 1
+                    [UnidadMedidaId] => 2
+                    [UnidadMedidaNombre] => cm
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => /storage/img/solpeds/30529135943/2026/
+    [FilePathComplete] => /storage/img/solpeds/30529135943/2026/Notas definitivas examen corregido.pdf
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 12-03-2026 12:35:56 ===
+Params recibidos: Array
+(
+    [etapa] => en-correccion
+    [id] => 70
+)
+
+Usuario: ID=727, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=70, etapa=devuelta
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 91
+    [Nombre] => Hola
+    [Descripcion] => asdas
+    [Cantidad] => 1
+    [OfertaMinima] => 1
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Producto agregado: Array
+(
+    [Id] => 92
+    [Nombre] => sfsdf
+    [Descripcion] => 34234
+    [Cantidad] => 1
+    [OfertaMinima] => 1
+    [UnidadMedidaId] => 2
+    [UnidadMedidaNombre] => cm
+    [TargetCost] => 0
+)
+
+Total productos: 2
+FilePath base: /storage/img/solpeds/30529135943/2026/
+Documents encontrados: 2
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 70
+    [Nombre] => Fix errores
+    [IdSolicitante] => 727
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 1
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 14-03-2026 00:00:00
+    [FechaEntrega] => 21-03-2026 00:00:00
+    [FechaCreacion] => 12-03-2026 12:13:40
+    [FechaEnvioComprador] => 12-03-2026 12:14:10
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 
+    [RejectComment] => 
+    [ReturnComment] => Por que si
+    [Etapa] => devuelta
+    [EstadoActual] => devuelta
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 12-03-2026 12:14:34
+    [FechaDevolucion] => 12-03-2026 12:19:55
+    [CompradorDecisionFecha] => Ucoca Cola - 12-03-2026 12:19:55
+    [CompradorDevolucionFecha] => Ucoca Cola - 12-03-2026 12:19:55
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 91
+                    [Nombre] => Hola
+                    [Descripcion] => asdas
+                    [Cantidad] => 1
+                    [OfertaMinima] => 1
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+            [1] => Array
+                (
+                    [Id] => 92
+                    [Nombre] => sfsdf
+                    [Descripcion] => 34234
+                    [Cantidad] => 1
+                    [OfertaMinima] => 1
+                    [UnidadMedidaId] => 2
+                    [UnidadMedidaNombre] => cm
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => Array
+        (
+            [0] => Array
+                (
+                    [nombre] => Notas definitivas examen corregido.pdf
+                    [imagen] => /storage/img/solpeds/30529135943/2026/Notas definitivas examen corregido.pdf
+                )
+
+            [1] => Array
+                (
+                    [nombre] => Notas definitivas examen corregido (1).pdf
+                    [imagen] => /storage/img/solpeds/30529135943/2026/Notas definitivas examen corregido (1).pdf
+                )
+
+        )
+
+    [FilePathComplete] => /storage/img/solpeds/30529135943/2026/Notas definitivas examen corregido.pdf
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 12-03-2026 12:37:30 ===
+Params recibidos: Array
+(
+    [etapa] => en-correccion
+    [id] => 70
+)
+
+Usuario: ID=727, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=70, etapa=devuelta
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 91
+    [Nombre] => Hola
+    [Descripcion] => asdas
+    [Cantidad] => 1
+    [OfertaMinima] => 1
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Producto agregado: Array
+(
+    [Id] => 92
+    [Nombre] => sfsdf
+    [Descripcion] => 34234
+    [Cantidad] => 1
+    [OfertaMinima] => 1
+    [UnidadMedidaId] => 2
+    [UnidadMedidaNombre] => cm
+    [TargetCost] => 0
+)
+
+Total productos: 2
+FilePath base: /storage/img/solpeds/30529135943/2026/
+Documents encontrados: 2
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 70
+    [Nombre] => Fix errores
+    [IdSolicitante] => 727
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 1
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 14-03-2026 00:00:00
+    [FechaEntrega] => 21-03-2026 00:00:00
+    [FechaCreacion] => 12-03-2026 12:13:40
+    [FechaEnvioComprador] => 12-03-2026 12:14:10
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 
+    [RejectComment] => 
+    [ReturnComment] => Por que si
+    [Etapa] => devuelta
+    [EstadoActual] => devuelta
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 12-03-2026 12:14:34
+    [FechaDevolucion] => 12-03-2026 12:19:55
+    [CompradorDecisionFecha] => Ucoca Cola - 12-03-2026 12:19:55
+    [CompradorDevolucionFecha] => Ucoca Cola - 12-03-2026 12:19:55
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 91
+                    [Nombre] => Hola
+                    [Descripcion] => asdas
+                    [Cantidad] => 1
+                    [OfertaMinima] => 1
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+            [1] => Array
+                (
+                    [Id] => 92
+                    [Nombre] => sfsdf
+                    [Descripcion] => 34234
+                    [Cantidad] => 1
+                    [OfertaMinima] => 1
+                    [UnidadMedidaId] => 2
+                    [UnidadMedidaNombre] => cm
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => Array
+        (
+            [0] => Array
+                (
+                    [nombre] => Notas definitivas examen corregido.pdf
+                    [imagen] => /storage/img/solpeds/30529135943/2026/Notas definitivas examen corregido.pdf
+                )
+
+            [1] => Array
+                (
+                    [nombre] => Notas definitivas examen corregido (1).pdf
+                    [imagen] => /storage/img/solpeds/30529135943/2026/Notas definitivas examen corregido (1).pdf
+                )
+
+        )
+
+    [FilePathComplete] => /storage/img/solpeds/30529135943/2026/Notas definitivas examen corregido.pdf
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 12-03-2026 12:38:46 ===
+Params recibidos: Array
+(
+    [etapa] => en-correccion
+    [id] => 70
+)
+
+Usuario: ID=727, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=70, etapa=devuelta
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 91
+    [Nombre] => Hola
+    [Descripcion] => asdas
+    [Cantidad] => 1
+    [OfertaMinima] => 1
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Producto agregado: Array
+(
+    [Id] => 92
+    [Nombre] => sfsdf
+    [Descripcion] => 34234
+    [Cantidad] => 1
+    [OfertaMinima] => 1
+    [UnidadMedidaId] => 2
+    [UnidadMedidaNombre] => cm
+    [TargetCost] => 0
+)
+
+Total productos: 2
+FilePath base: /storage/img/solpeds/30529135943/2026/
+Documents encontrados: 2
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 70
+    [Nombre] => Fix errores
+    [IdSolicitante] => 727
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 1
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 14-03-2026 00:00:00
+    [FechaEntrega] => 21-03-2026 00:00:00
+    [FechaCreacion] => 12-03-2026 12:13:40
+    [FechaEnvioComprador] => 12-03-2026 12:14:10
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 
+    [RejectComment] => 
+    [ReturnComment] => Por que si
+    [Etapa] => devuelta
+    [EstadoActual] => devuelta
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 12-03-2026 12:14:34
+    [FechaDevolucion] => 12-03-2026 12:19:55
+    [CompradorDecisionFecha] => Ucoca Cola - 12-03-2026 12:19:55
+    [CompradorDevolucionFecha] => Ucoca Cola - 12-03-2026 12:19:55
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 91
+                    [Nombre] => Hola
+                    [Descripcion] => asdas
+                    [Cantidad] => 1
+                    [OfertaMinima] => 1
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+            [1] => Array
+                (
+                    [Id] => 92
+                    [Nombre] => sfsdf
+                    [Descripcion] => 34234
+                    [Cantidad] => 1
+                    [OfertaMinima] => 1
+                    [UnidadMedidaId] => 2
+                    [UnidadMedidaNombre] => cm
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => Array
+        (
+            [0] => Array
+                (
+                    [nombre] => Bases y condiciones
+                    [archivo] => Notas definitivas examen corregido.pdf
+                    [imagen] => /storage/img/solpeds/30529135943/2026/Notas definitivas examen corregido.pdf
+                )
+
+            [1] => Array
+                (
+                    [nombre] => Pliego de condiciones generales
+                    [archivo] => Notas definitivas examen corregido (1).pdf
+                    [imagen] => /storage/img/solpeds/30529135943/2026/Notas definitivas examen corregido (1).pdf
+                )
+
+        )
+
+    [FilePathComplete] => /storage/img/solpeds/30529135943/2026/Notas definitivas examen corregido.pdf
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 12-03-2026 12:39:06 ===
+Params recibidos: Array
+(
+    [etapa] => en-correccion
+    [id] => 70
+)
+
+Usuario: ID=727, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=70, etapa=devuelta
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 91
+    [Nombre] => Hola
+    [Descripcion] => asdas
+    [Cantidad] => 1
+    [OfertaMinima] => 1
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Producto agregado: Array
+(
+    [Id] => 92
+    [Nombre] => sfsdf
+    [Descripcion] => 34234
+    [Cantidad] => 1
+    [OfertaMinima] => 1
+    [UnidadMedidaId] => 2
+    [UnidadMedidaNombre] => cm
+    [TargetCost] => 0
+)
+
+Total productos: 2
+FilePath base: /storage/img/solpeds/30529135943/2026/
+Documents encontrados: 2
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 70
+    [Nombre] => Fix errores
+    [IdSolicitante] => 727
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 1
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 14-03-2026 00:00:00
+    [FechaEntrega] => 21-03-2026 00:00:00
+    [FechaCreacion] => 12-03-2026 12:13:40
+    [FechaEnvioComprador] => 12-03-2026 12:14:10
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 
+    [RejectComment] => 
+    [ReturnComment] => Por que si
+    [Etapa] => devuelta
+    [EstadoActual] => devuelta
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 12-03-2026 12:14:34
+    [FechaDevolucion] => 12-03-2026 12:19:55
+    [CompradorDecisionFecha] => Ucoca Cola - 12-03-2026 12:19:55
+    [CompradorDevolucionFecha] => Ucoca Cola - 12-03-2026 12:19:55
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 91
+                    [Nombre] => Hola
+                    [Descripcion] => asdas
+                    [Cantidad] => 1
+                    [OfertaMinima] => 1
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+            [1] => Array
+                (
+                    [Id] => 92
+                    [Nombre] => sfsdf
+                    [Descripcion] => 34234
+                    [Cantidad] => 1
+                    [OfertaMinima] => 1
+                    [UnidadMedidaId] => 2
+                    [UnidadMedidaNombre] => cm
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => Array
+        (
+            [0] => Array
+                (
+                    [nombre] => Bases y condiciones
+                    [archivo] => Notas definitivas examen corregido.pdf
+                    [imagen] => /storage/img/solpeds/30529135943/2026/Notas definitivas examen corregido.pdf
+                )
+
+            [1] => Array
+                (
+                    [nombre] => Pliego de condiciones generales
+                    [archivo] => Notas definitivas examen corregido (1).pdf
+                    [imagen] => /storage/img/solpeds/30529135943/2026/Notas definitivas examen corregido (1).pdf
+                )
+
+        )
+
+    [FilePathComplete] => /storage/img/solpeds/30529135943/2026/Notas definitivas examen corregido.pdf
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 12-03-2026 12:41:22 ===
+Params recibidos: Array
+(
+    [etapa] => en-correccion
+    [id] => 70
+)
+
+Usuario: ID=727, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=70, etapa=devuelta
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 91
+    [Nombre] => Hola
+    [Descripcion] => asdas
+    [Cantidad] => 1
+    [OfertaMinima] => 1
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Producto agregado: Array
+(
+    [Id] => 92
+    [Nombre] => sfsdf
+    [Descripcion] => 34234
+    [Cantidad] => 1
+    [OfertaMinima] => 1
+    [UnidadMedidaId] => 2
+    [UnidadMedidaNombre] => cm
+    [TargetCost] => 0
+)
+
+Total productos: 2
+FilePath base: /storage/img/solpeds/30529135943/2026/
+Documents encontrados: 2
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 70
+    [Nombre] => Fix errores
+    [IdSolicitante] => 727
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 1
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 14-03-2026 00:00:00
+    [FechaEntrega] => 21-03-2026 00:00:00
+    [FechaCreacion] => 12-03-2026 12:13:40
+    [FechaEnvioComprador] => 12-03-2026 12:14:10
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 
+    [RejectComment] => 
+    [ReturnComment] => Por que si
+    [Etapa] => devuelta
+    [EstadoActual] => devuelta
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 12-03-2026 12:14:34
+    [FechaDevolucion] => 12-03-2026 12:19:55
+    [CompradorDecisionFecha] => Ucoca Cola - 12-03-2026 12:19:55
+    [CompradorDevolucionFecha] => Ucoca Cola - 12-03-2026 12:19:55
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 91
+                    [Nombre] => Hola
+                    [Descripcion] => asdas
+                    [Cantidad] => 1
+                    [OfertaMinima] => 1
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+            [1] => Array
+                (
+                    [Id] => 92
+                    [Nombre] => sfsdf
+                    [Descripcion] => 34234
+                    [Cantidad] => 1
+                    [OfertaMinima] => 1
+                    [UnidadMedidaId] => 2
+                    [UnidadMedidaNombre] => cm
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => Array
+        (
+            [0] => Array
+                (
+                    [nombre] => Bases y condiciones
+                    [archivo] => Notas definitivas examen corregido.pdf
+                    [imagen] => /storage/img/solpeds/30529135943/2026/Notas definitivas examen corregido.pdf
+                )
+
+            [1] => Array
+                (
+                    [nombre] => Pliego de condiciones generales
+                    [archivo] => Notas definitivas examen corregido (1).pdf
+                    [imagen] => /storage/img/solpeds/30529135943/2026/Notas definitivas examen corregido (1).pdf
+                )
+
+        )
+
+    [FilePathComplete] => /storage/img/solpeds/30529135943/2026/Notas definitivas examen corregido.pdf
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 12-03-2026 12:41:29 ===
+Params recibidos: Array
+(
+    [etapa] => en-correccion
+    [id] => 70
+)
+
+Usuario: ID=727, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=70, etapa=devuelta
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 91
+    [Nombre] => Hola
+    [Descripcion] => asdas
+    [Cantidad] => 1
+    [OfertaMinima] => 1
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Producto agregado: Array
+(
+    [Id] => 92
+    [Nombre] => sfsdf
+    [Descripcion] => 34234
+    [Cantidad] => 1
+    [OfertaMinima] => 1
+    [UnidadMedidaId] => 2
+    [UnidadMedidaNombre] => cm
+    [TargetCost] => 0
+)
+
+Total productos: 2
+FilePath base: /storage/img/solpeds/30529135943/2026/
+Documents encontrados: 2
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 70
+    [Nombre] => Fix errores
+    [IdSolicitante] => 727
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 1
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 14-03-2026 00:00:00
+    [FechaEntrega] => 21-03-2026 00:00:00
+    [FechaCreacion] => 12-03-2026 12:13:40
+    [FechaEnvioComprador] => 12-03-2026 12:14:10
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 
+    [RejectComment] => 
+    [ReturnComment] => Por que si
+    [Etapa] => devuelta
+    [EstadoActual] => devuelta
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 12-03-2026 12:14:34
+    [FechaDevolucion] => 12-03-2026 12:19:55
+    [CompradorDecisionFecha] => Ucoca Cola - 12-03-2026 12:19:55
+    [CompradorDevolucionFecha] => Ucoca Cola - 12-03-2026 12:19:55
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 91
+                    [Nombre] => Hola
+                    [Descripcion] => asdas
+                    [Cantidad] => 1
+                    [OfertaMinima] => 1
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+            [1] => Array
+                (
+                    [Id] => 92
+                    [Nombre] => sfsdf
+                    [Descripcion] => 34234
+                    [Cantidad] => 1
+                    [OfertaMinima] => 1
+                    [UnidadMedidaId] => 2
+                    [UnidadMedidaNombre] => cm
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => Array
+        (
+            [0] => Array
+                (
+                    [nombre] => Bases y condiciones
+                    [archivo] => Notas definitivas examen corregido.pdf
+                    [imagen] => /storage/img/solpeds/30529135943/2026/Notas definitivas examen corregido.pdf
+                )
+
+            [1] => Array
+                (
+                    [nombre] => Pliego de condiciones generales
+                    [archivo] => Notas definitivas examen corregido (1).pdf
+                    [imagen] => /storage/img/solpeds/30529135943/2026/Notas definitivas examen corregido (1).pdf
+                )
+
+        )
+
+    [FilePathComplete] => /storage/img/solpeds/30529135943/2026/Notas definitivas examen corregido.pdf
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 12-03-2026 12:42:03 ===
+Params recibidos: Array
+(
+    [etapa] => en-correccion
+    [id] => 70
+)
+
+Usuario: ID=727, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=70, etapa=en-analisis
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 91
+    [Nombre] => Hola
+    [Descripcion] => asdas
+    [Cantidad] => 1
+    [OfertaMinima] => 1
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Producto agregado: Array
+(
+    [Id] => 92
+    [Nombre] => sfsdf
+    [Descripcion] => 34234
+    [Cantidad] => 1
+    [OfertaMinima] => 1
+    [UnidadMedidaId] => 2
+    [UnidadMedidaNombre] => cm
+    [TargetCost] => 0
+)
+
+Total productos: 2
+FilePath base: /storage/img/solpeds/30529135943/2026/
+Documents encontrados: 2
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 70
+    [Nombre] => Fix errores
+    [IdSolicitante] => 727
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 1
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 14-03-2026 00:00:00
+    [FechaEntrega] => 21-03-2026 00:00:00
+    [FechaCreacion] => 12-03-2026 12:13:40
+    [FechaEnvioComprador] => 12-03-2026 12:41:54
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 
+    [FechaRechazo] => 
+    [FechaAceptacion] => 
+    [RejectComment] => 
+    [ReturnComment] => 
+    [Etapa] => en-analisis
+    [EstadoActual] => esperando-revision-2
+    [CompradorDecision] => 
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 12-03-2026 12:14:34
+    [FechaDevolucion] => 
+    [CompradorDecisionFecha] => 
+    [CompradorDevolucionFecha] => 
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 91
+                    [Nombre] => Hola
+                    [Descripcion] => asdas
+                    [Cantidad] => 1
+                    [OfertaMinima] => 1
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+            [1] => Array
+                (
+                    [Id] => 92
+                    [Nombre] => sfsdf
+                    [Descripcion] => 34234
+                    [Cantidad] => 1
+                    [OfertaMinima] => 1
+                    [UnidadMedidaId] => 2
+                    [UnidadMedidaNombre] => cm
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => Array
+        (
+            [0] => Array
+                (
+                    [nombre] => Bases y condiciones
+                    [archivo] => Notas definitivas examen corregido.pdf
+                    [imagen] => /storage/img/solpeds/30529135943/2026/Notas definitivas examen corregido.pdf
+                )
+
+            [1] => Array
+                (
+                    [nombre] => Pliego de condiciones generales
+                    [archivo] => Notas definitivas examen corregido (1).pdf
+                    [imagen] => /storage/img/solpeds/30529135943/2026/Notas definitivas examen corregido (1).pdf
+                )
+
+        )
+
+    [FilePathComplete] => /storage/img/solpeds/30529135943/2026/Notas definitivas examen corregido.pdf
+)
+
+=== detail FIN ===
+
+
+=== detail INICIO === 12-03-2026 12:46:58 ===
+Params recibidos: Array
+(
+    [etapa] => aceptada
+    [id] => 70
+)
+
+Usuario: ID=727, type_id=4, company=1
+Usuario NO es ADMIN
+Solped encontrado: ID=70, etapa=aceptada
+Common data cargado
+Producto agregado: Array
+(
+    [Id] => 91
+    [Nombre] => Hola
+    [Descripcion] => asdas
+    [Cantidad] => 1
+    [OfertaMinima] => 1
+    [UnidadMedidaId] => 3
+    [UnidadMedidaNombre] => Lts
+    [TargetCost] => 0
+)
+
+Producto agregado: Array
+(
+    [Id] => 92
+    [Nombre] => sfsdf
+    [Descripcion] => 34234
+    [Cantidad] => 1
+    [OfertaMinima] => 1
+    [UnidadMedidaId] => 2
+    [UnidadMedidaNombre] => cm
+    [TargetCost] => 0
+)
+
+Total productos: 2
+FilePath base: /storage/img/solpeds/30529135943/2026/
+Documents encontrados: 2
+SUCCESS: List armado correctamente
+List final: Array
+(
+    [IdSolicitud] => 70
+    [Nombre] => Fix errores
+    [IdSolicitante] => 727
+    [Solicitante] => pepe diaz
+    [TipoCompraId] => 1
+    [CodigoInterno] => 
+    [Descripcion] => 
+    [AreaSolicitante] => Administración
+    [CompradorSugerido] => Ucoca Cola
+    [FechaResolucion] => 14-03-2026 00:00:00
+    [FechaEntrega] => 21-03-2026 00:00:00
+    [FechaCreacion] => 12-03-2026 12:13:40
+    [FechaEnvioComprador] => 12-03-2026 12:41:54
+    [Eliminado] => 
+    [UsuarioReject] => 
+    [UsuarioAccept] => 7
+    [FechaRechazo] => 
+    [FechaAceptacion] => 12-03-2026 12:42:47
+    [RejectComment] => 
+    [ReturnComment] => 
+    [Etapa] => aceptada
+    [EstadoActual] => licitando
+    [CompradorDecision] => Ucoca Cola
+    [CompradorFirstRevision] => Ucoca Cola
+    [FechaFirstRevision] => 12-03-2026 12:14:34
+    [FechaDevolucion] => 
+    [CompradorDecisionFecha] => 
+    [CompradorDevolucionFecha] => 
+    [CancelMotive] => 
+    [Productos] => Array
+        (
+            [0] => Array
+                (
+                    [Id] => 91
+                    [Nombre] => Hola
+                    [Descripcion] => asdas
+                    [Cantidad] => 1
+                    [OfertaMinima] => 1
+                    [UnidadMedidaId] => 3
+                    [UnidadMedidaNombre] => Lts
+                    [TargetCost] => 0
+                )
+
+            [1] => Array
+                (
+                    [Id] => 92
+                    [Nombre] => sfsdf
+                    [Descripcion] => 34234
+                    [Cantidad] => 1
+                    [OfertaMinima] => 1
+                    [UnidadMedidaId] => 2
+                    [UnidadMedidaNombre] => cm
+                    [TargetCost] => 0
+                )
+
+        )
+
+    [FilePath] => Array
+        (
+            [0] => Array
+                (
+                    [nombre] => Bases y condiciones
+                    [archivo] => Notas definitivas examen corregido.pdf
+                    [imagen] => /storage/img/solpeds/30529135943/2026/Notas definitivas examen corregido.pdf
+                )
+
+            [1] => Array
+                (
+                    [nombre] => Pliego de condiciones generales
+                    [archivo] => Notas definitivas examen corregido (1).pdf
+                    [imagen] => /storage/img/solpeds/30529135943/2026/Notas definitivas examen corregido (1).pdf
+                )
+
+        )
+
+    [FilePathComplete] => /storage/img/solpeds/30529135943/2026/Notas definitivas examen corregido.pdf
+)
+
+=== detail FIN ===
+
