@@ -3956,11 +3956,11 @@ class ConcursoController extends BaseController
         foreach ($concurso->oferentes as $oferente) {
             $inv = $oferente->invitation;
             // status
-            $statusDesc = $inv->status->description ?? null;
+            $statusDesc = $inv && $inv->status ? $inv->status->description : 'No enviada';
 
             // la fecha de respuesta SOLO si fue aceptada o rechazada (no pendiente)
             $fechaRespuesta = null;
-            if ($inv->is_accepted || $inv->is_rejected) {
+            if ($inv && ($inv->is_accepted || $inv->is_rejected)) {
                 $fechaRespuesta = $inv->updated_at
                     ? $inv->updated_at->format('d-m-Y H:i')
                     : null;
@@ -3971,16 +3971,17 @@ class ConcursoController extends BaseController
                 'IdConcurso'             => $oferente->id_concurso,
                 'TipoConcursoPath'       => $concurso->tipo_concurso,
                 'Nombre'                 => $oferente->company->business_name,
-                'FechaConvocatoria'      => $inv->created_at
+                'FechaConvocatoria'      => $inv && $inv->created_at
                                             ? $inv->created_at->format('d-m-Y H:i')
                                             : null,
-                'FechaRecordatorio'      => $inv->reminder_date
+                'FechaRecordatorio'      => $inv && $inv->reminder_date
                                             ? $inv->reminder_date->format('d-m-Y H:i')
                                             : null,
                 'FechaAceptacionRechazo' => $fechaRespuesta,
                 'HasInvitacionAceptada'  => $oferente->has_invitacion_aceptada,
                 'IsInvitacionPendiente'  => $oferente->is_invitacion_pendiente,
                 'IsInvitacionRechazada'  => $oferente->is_invitacion_rechazada,
+                'InvitationSent'         => (bool) $inv,
                 'Description'            => $statusDesc,
             ];
         }

@@ -142,6 +142,7 @@ app()->group('/concursos', function () {
     // invitar nuevo oferente luego de enviar invitaciones
     $this->post('/invitations/sendNew', 'App\Http\Controllers\Customer\InvitationController:newInvitation')->add(new AuthMiddleware())->setName('concursos.invitations.sendNew');
     $this->post('/invitations/reminder', 'App\Http\Controllers\Customer\InvitationController:sendReminder')->add(new AuthMiddleware())->setName('concursos.invitations.sendReminder');
+    $this->post('/invitations/retry-unsent', 'App\Http\Controllers\Customer\InvitationController:retryUnsent')->add(new AuthMiddleware())->setName('concursos.invitations.retryUnsent');
     $this->post('/invitations/acceptorreject', 'App\Http\Controllers\Offerer\InvitationController:acceptOrReject')->add(new AuthMiddleware())->setName('concursos.invitations.acceptOrReject');
 
     // CRUD

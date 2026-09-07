@@ -244,6 +244,122 @@ class InvitationController extends BaseController
         ], $status);
     }
 
+    /**
+     * Envía nuevamente las invitaciones que nunca llegaron a registrarse.
+     *
+     * Puede procesar un proveedor puntual (idOfferer) o todos los participantes
+     * seleccionados del concurso que todavía no tengan una invitación.
+     */
+    public function retryUnsent(Request $request, Response $response)
+    {
+        date_default_timezone_set(user()->customer_company->timeZone);
+
+        $body = $request->getParsedBody();
+        $concurso = Concurso::with(['oferentes.invitation', 'oferentes.company.users'])
+            ->find((int) ($body['IdConcurso'] ?? 0));
+
+        if (!$concurso) {
+            return $this->json($response, [
+                'success' => false,
+                'message' => 'Concurso no encontrado.',
+            ], 422);
+        }
+
+        $oferentes = $concurso->oferentes->filter(function ($oferente) {
+            return !$oferente->invitation;
+        });
+
+        if (!empty($body['idOfferer'])) {
+            $idOfferer = (int) $body['idOfferer'];
+            $oferentes = $oferentes->filter(function ($oferente) use ($idOfferer) {
+                return (int) $oferente->id_offerer === $idOfferer;
+            });
+        }
+
+        if ($oferentes->count() === 0) {
+            return $this->json($response, [
+                'success' => false,
+                'message' => 'No hay invitaciones sin enviar para procesar.',
+            ], 422);
+        }
+
+        $emailService = new EmailService();
+        $invitationStatus = InvitationStatus::where('code', InvitationStatus::CODES['pending'])->first();
+        if (!$invitationStatus) {
+            return $this->json($response, [
+                'success' => false,
+                'message' => 'No se encontró el estado pendiente para las invitaciones.',
+            ], 422);
+        }
+        $title = 'Invitación a Concurso de Precios';
+        $subject = $concurso->cliente->customer_company->business_name . ' - ' . $title;
+        $template = rootPath(config('app.templates_path')) . '/email/invitation.tpl';
+        $sent = 0;
+        $failed = [];
+
+        foreach ($oferentes as $oferente) {
+            $company = $oferente->company;
+            $recipients = $company ? $company->users->pluck('email') : collect();
+
+            if (!$company || $recipients->count() === 0) {
+                $failed[] = $company ? $company->business_name : ('Proveedor #' . $oferente->id_offerer);
+                continue;
+            }
+
+            $html = $this->fetch($template, [
+                'title' => $title,
+                'ano' => Carbon::now()->format('Y'),
+                'concurso' => $concurso,
+                'fecha_tecnica' => $concurso->technical_includes ? $concurso->ficha_tecnica_fecha_limite->format('d-m-Y H:i') : 'No aplica',
+                'company_name' => $company->business_name,
+                'timeZone' => $this->toGmtOffset($concurso->cliente->customer_company->timeZone)
+            ]);
+            try {
+                $result = $emailService->send($html, $subject, $recipients, '');
+            } catch (\Exception $e) {
+                $failed[] = $company->business_name;
+                continue;
+            }
+
+            if (empty($result['success'])) {
+                $failed[] = $company->business_name;
+                continue;
+            }
+
+            $invitation = new Invitation([
+                'concurso_id' => $concurso->id,
+                'participante_id' => $oferente->id,
+                'status_id' => $invitationStatus->id
+            ]);
+            $invitation->save();
+            $oferente->update([
+                'etapa_actual' => Participante::ETAPAS['invitacion-pendiente']
+            ]);
+            $sent++;
+        }
+
+        $success = $sent > 0;
+        $message = $sent === 1
+            ? 'Invitación enviada con éxito.'
+            : $sent . ' invitaciones enviadas con éxito.';
+
+        if (!$success) {
+            $message = 'No se pudo enviar ninguna invitación. Proveedores con error: ' . implode(', ', $failed) . '.';
+        } elseif (count($failed) > 0) {
+            $message .= ' Quedaron pendientes por error: ' . implode(', ', $failed) . '.';
+        }
+
+        return $this->json($response, [
+            'success' => $success,
+            'message' => $message,
+            'data' => [
+                'sent' => $sent,
+                'failed' => count($failed),
+                'partial' => $success && count($failed) > 0,
+            ],
+        ], $success ? 200 : 422);
+    }
+
     public function filter(Request $request, Response $response, $params)
     {
         $success = false;
