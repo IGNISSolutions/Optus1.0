@@ -6,6 +6,15 @@
     <h4 class="block bold" style="margin-top: 0; padding-top: 0;">
       Seguimiento Invitaciones
     </h4>
+    <!-- ko if: OferentesInvitados().some(function(oferente) { return !oferente.InvitationSent; }) -->
+    <div class="text-right" style="margin-bottom: 10px;">
+      <button type="button" class="btn green"
+              data-bind="click: $root.sendUnsentInvitations">
+        Enviar invitaciones no enviadas
+        <i class="fa fa-send"></i>
+      </button>
+    </div>
+    <!-- /ko -->
     <table class="table table-striped table-bordered" id="ListaSeguimientoInvitaciones">
       <thead>
         <tr>
@@ -13,6 +22,7 @@
           <th class="text-center vertical-align-middle">Fecha Invitación</th>
           <th class="text-center vertical-align-middle">Fecha Aceptación / Rechazo</th>
           <th class="text-center vertical-align-middle">Invitación</th>
+          <th class="text-center vertical-align-middle">Acción</th>
         </tr>
       </thead>
       <tbody data-bind="dataTablesForEach: {
@@ -46,9 +56,19 @@
                     css: {
                     'label-success': Description === 'Aceptada',
                     'label-warning': Description === 'Pendiente',
-                    'label-danger':  Description === 'Rechazada'
+                    'label-danger':  Description === 'Rechazada',
+                    'label-default': Description === 'No enviada'
                     }">
             </span>
+          </td>
+          <td class="text-center vertical-align-middle">
+            <!-- ko if: !InvitationSent -->
+            <button type="button" class="btn btn-xs green"
+                    data-bind="click: $root.sendUnsentInvitations.bind($data, IdOferente)">
+              Enviar invitación
+              <i class="fa fa-send"></i>
+            </button>
+            <!-- /ko -->
           </td>
         </tr>
       </tbody>

@@ -1254,6 +1254,52 @@
                 });
             }
 
+            this.sendUnsentInvitations = function(idOfferer) {
+                var isIndividual = typeof idOfferer === 'number' || typeof idOfferer === 'string';
+                swal({
+                    title: isIndividual ? '¿Desea enviar esta invitación?' : '¿Desea enviar las invitaciones no enviadas?',
+                    text: isIndividual
+                        ? 'Se enviará la invitación únicamente a este proveedor.'
+                        : 'Se enviarán invitaciones únicamente a los proveedores que aún no tienen un envío registrado.',
+                    type: 'info',
+                    closeOnClickOutside: false,
+                    showCancelButton: true,
+                    closeOnConfirm: true,
+                    confirmButtonText: 'Aceptar',
+                    confirmButtonClass: 'btn btn-success',
+                    cancelButtonText: 'Cancelar',
+                    cancelButtonClass: 'btn btn-default'
+                }, function(result) {
+                    if (!result) {
+                        return;
+                    }
+
+                    $.blockUI();
+                    Services.Post('/concursos/invitations/retry-unsent', {
+                        UserToken: User.Token,
+                        idOfferer: isIndividual ? idOfferer : null,
+                        IdConcurso: self.IdConcurso()
+                    }, function(response) {
+                        $.unblockUI();
+                        if (response.success) {
+                            swal({
+                                title: 'Hecho',
+                                text: response.message,
+                                type: 'success',
+                                confirmButtonText: 'Aceptar'
+                            }, function() {
+                                location.reload();
+                            });
+                        } else {
+                            swal('Error', response.message, 'error');
+                        }
+                    }, function(error) {
+                        $.unblockUI();
+                        swal('Error', error.message, 'error');
+                    });
+                });
+            }
+
             this.CancelConcurso = function() {
                 swal({
                     title: 'Cancelación de Concurso',
