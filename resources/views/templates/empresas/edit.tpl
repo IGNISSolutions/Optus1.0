@@ -679,6 +679,12 @@
                 if (isnew && params[1] === 'offerer') {
                     var cuit = String(self.Entity.Cuit() || '').trim().replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
                     if (cuit.length >= 2) {
+                        // El clic en Guardar dispara también el blur del CUIT. Cancelamos esa
+                        // verificación pendiente para no abrir dos veces el mismo diálogo.
+                        if (self.cuitVerificationTimeout) {
+                            clearTimeout(self.cuitVerificationTimeout);
+                            self.cuitVerificationTimeout = null;
+                        }
                         console.log('Verificación preventiva de CUIT duplicado antes de guardar:', cuit);
                         // Hacer una validación rápida antes de guardar
                         $.blockUI();
@@ -689,12 +695,20 @@
                             function(verifyResponse) {
                                 $.unblockUI();
                                 
-                                // Si encuentra algo, mostrar alerta y no continuar
-                                if (verifyResponse.success || (verifyResponse.data && verifyResponse.data.already_associated)) {
+                                // Si existe y todavía no está asociado, ofrecer asociarlo directamente.
+                                // No mostrar el aviso genérico porque obliga al usuario a volver al listado
+                                // y pierde el flujo de alta que acaba de completar.
+                                if (verifyResponse.success && verifyResponse.data && verifyResponse.data.id) {
+                                    self.showOffererExistsModal(verifyResponse.data);
+                                    return false;
+                                }
+
+                                // Si la relación ya existe, no debe ofrecerse asociarlo nuevamente.
+                                if (verifyResponse.data && verifyResponse.data.already_associated) {
                                     swal({
-                                        title: 'Proveedor duplicado',
-                                        text: 'Este proveedor ya existe en el sistema. Por favor, busque y asocie el existente.',
-                                        type: 'warning',
+                                        title: 'Proveedor ya asociado',
+                                        text: 'Este proveedor ya se encuentra asociado a tu empresa.',
+                                        type: 'info',
                                         confirmButtonText: 'Aceptar'
                                     });
                                     return false;
@@ -901,7 +915,7 @@
                 html: true,                  // SweetAlert v1
                 type: "warning",
                 showCancelButton: true,
-                confirmButtonText: "Agregar proveedor",
+                confirmButtonText: "Asociar proveedor",
                 cancelButtonText: "Cancelar",
                 closeOnConfirm: false,
                 closeOnCancel: true,
