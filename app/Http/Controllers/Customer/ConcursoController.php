@@ -4592,7 +4592,7 @@ class ConcursoController extends BaseController
                 $atributos[] = [
                     'id' => 0,
                     'atributo' => 'Puntaje mínimo necesario',
-                    'puntaje' => $body->PlantillaTecnicaSeleccionada->puntaje_minimo,
+                    'puntaje' => $puntaje_minimo,
                     'ponderacion' => 0
                 ];
                 $atributos = array_merge($atributos, $plantilla_tecnica['payroll']);
@@ -4684,7 +4684,7 @@ class ConcursoController extends BaseController
                 $atributos[] = [
                     'id' => 0,
                     'atributo' => 'Puntaje mínimo necesario',
-                    'puntaje' => $body->PlantillaTecnicaSeleccionada->puntaje_minimo,
+                    'puntaje' => $puntaje_minimo,
                     'ponderacion' => 0
                 ];
                 $atributos = array_merge($atributos, $plantilla_tecnica['payroll']);

@@ -1599,15 +1599,16 @@
 
                 var puntuacion = 0;
                 $('.puntuacion_' + UserId).each(function() {
-                    valor = parseInt($(this).val()) >= 1 ? parseInt($(this).val()) : false;
+                    valor = parseFloat($(this).val()) >= 1 ? parseFloat($(this).val()) : false;
                     values += valor + ",";
                     if (valor) {
-                        puntuacion += ((valor * parseInt($(this).attr('data'))) / 100) + 0.0001;
+                        puntuacion += (valor * parseFloat($(this).attr('data'))) / 100;
                         $("#puntos_" + UserId).html(puntuacion.toFixed(2));
                     }
                 });
                 valores = values.slice(0, -1);
-                var puntajeMinimo = parseInt($(".minimo").val());
+                var puntajeMinimo = parseFloat($(".minimo").val());
+                puntajeMinimo = isNaN(puntajeMinimo) ? 0 : puntajeMinimo;
                 if (self.CalificacionOferentes().length === 0) {
                     obj = {
                         UserId: UserId,
@@ -1646,7 +1647,7 @@
                         swal({
                             title: '¿Desea enviar la evaluación al oferente?',
                             type: 'info',
-                            ...(self.CalificacionOferentes()[0].alcanzado <= self
+                            ...(self.CalificacionOferentes()[0].alcanzado < self
                                 .CalificacionOferentes()[0].minimo && {
                                     text: htmlBody,
                                     type: "input",
@@ -1666,7 +1667,7 @@
                             const data = {
                                 IdConcurso: self.IdConcurso(),
                                 Calificacion: self.CalificacionOferentes,
-                                ...(self.CalificacionOferentes()[0].alcanzado <= self
+                                ...(self.CalificacionOferentes()[0].alcanzado < self
                                     .CalificacionOferentes()[0].minimo && {
                                         comentario: inputValue
                                     }),
