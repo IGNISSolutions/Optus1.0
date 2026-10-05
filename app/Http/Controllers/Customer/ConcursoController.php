@@ -4258,25 +4258,68 @@ class ConcursoController extends BaseController
         // Pliegos regulares
         foreach ($regularSheets as $sheet) {
             $sheetAction = $sheet->action ?? null;
+            $sheetTypeId = !empty($sheet->type_id) ? (int) $sheet->type_id : null;
+
+            // A sheet type represents a single document in the form.  Use the
+            // contest and type as the source of truth instead of trusting only
+            // the row id sent by the browser.  Besides preventing one contest
+            // from modifying another contest's sheet, this also cleans up old
+            // duplicate rows that otherwise make a removed document reappear.
+            $storedSheets = function () use ($concurso, $sheet, $sheetTypeId) {
+                $query = Sheet::where('concurso_id', $concurso->id);
+
+                if ($sheetTypeId) {
+                    return $query->where('type_id', $sheetTypeId)->get();
+                }
+
+                if (!empty($sheet->id)) {
+                    return $query->where('id', (int) $sheet->id)->get();
+                }
+
+                return collect([]);
+            };
+
+            $deleteStoredSheets = function ($replacementFilename = null) use ($storedSheets, $concurso, $absolute_path) {
+                $filenames = [];
+
+                foreach ($storedSheets() as $storedSheet) {
+                    $filenames[] = $storedSheet->filename;
+                    $storedSheet->delete();
+                }
+
+                foreach (array_unique($filenames) as $filename) {
+                    // Uploads are completed before the form is saved. Do not
+                    // unlink a same-name replacement, nor a file still used by
+                    // another document type in this contest.
+                    if ($filename === $replacementFilename) {
+                        continue;
+                    }
+
+                    $isStillReferenced = Sheet::where('concurso_id', $concurso->id)
+                        ->where('filename', $filename)
+                        ->exists();
+
+                    if (!$isStillReferenced) {
+                        @unlink($absolute_path . $filename);
+                    }
+                }
+            };
+
             switch ($sheetAction) {
                 case 'upload':
-                    if (empty($sheet->filename) || empty($sheet->type_id)) {
+                    if (empty($sheet->filename) || !$sheetTypeId) {
                         break;
                     }
 
-                    // Si había un archivo previo, lo eliminamos.
-                    if (!empty($sheet->id)) {
-                        $to_delete = Sheet::find($sheet->id);
-                        if ($to_delete) {
-                            @unlink($absolute_path . $to_delete->filename);
-                            $to_delete->delete();
-                        }
-                    }
+                    // Remove every previous row for this type. Legacy
+                    // duplicates can exist because the database has no unique
+                    // constraint for concurso_id + type_id.
+                    $deleteStoredSheets($sheet->filename);
 
                     // Guardamos el nuevo archivo
                     $new_sheet = new Sheet([
                         'concurso_id' => $concurso->id,
-                        'type_id' => (int) $sheet->type_id,
+                        'type_id' => $sheetTypeId,
                         'filename' => $sheet->filename
                     ]);
                     $new_sheet->save();
@@ -4284,14 +4327,7 @@ class ConcursoController extends BaseController
                     break;
                 case 'clear':
                 case 'delete':
-                    // Si el archivo ya estaba guardado
-                    if (!empty($sheet->id)) {
-                        $to_delete = Sheet::find($sheet->id);
-                        if ($to_delete) {
-                            @unlink($absolute_path . $to_delete->filename);
-                            $to_delete->delete();
-                        }
-                    }
+                    $deleteStoredSheets();
                     $documentDeleted = true;
                     break;
                 default:
