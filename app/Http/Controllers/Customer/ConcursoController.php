@@ -917,6 +917,7 @@ class ConcursoController extends BaseController
                            || $concurso->oferentes->count() == 0;
                 })
             )->sortBy('id');
+            $concursosEnPreparacionIds = $concursos->pluck('id');
             foreach ($concursos as $concurso) {
                 $oferentes = $concurso->oferentes;
                 // Verificar si el concurso está completo para habilitar el envío de invitaciones
@@ -1007,6 +1008,9 @@ class ConcursoController extends BaseController
                         })
                 )
                 ->unique('id')
+                ->reject(function ($concurso) use ($concursosEnPreparacionIds) {
+                    return $concursosEnPreparacionIds->contains($concurso->id);
+                })
                 ->filter(function($concurso) use ($etapas_economica) {
                     // si algún oferente ya está en etapa económica, lo excluimos;
                     // si no, lo incluimos, sin importar la fecha técnica.
@@ -1046,6 +1050,9 @@ class ConcursoController extends BaseController
             $concursosChat = collect($created)
                 ->merge($evaluating)
                 ->unique('id')
+                ->reject(function ($concurso) use ($concursosEnPreparacionIds) {
+                    return $concursosEnPreparacionIds->contains($concurso->id);
+                })
                 ->filter(function ($c) use ($user, $etapas_economica) {
                     // Solo si el usuario es evaluador del concurso
                     if (!($c && method_exists($c, 'isUserEvaluador') && $c->isUserEvaluador($user->id))) {
