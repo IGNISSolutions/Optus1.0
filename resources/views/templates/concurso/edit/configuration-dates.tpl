@@ -7,6 +7,10 @@
                 <input class="form-control" size="16" type="text" data-bind="dateTimePicker: Entity.FechaLimite, dateTimePickerOptions: {
                         format: 'dd-mm-yyyy hh:ii',
                         momentFormat: 'DD-MM-YYYY HH:mm',
+                        startDate: moment.max(
+                            moment(),
+                            moment(Entity.FechaAlta(), 'YYYY-MM-DD HH:mm:ss').add(1, 'day')
+                        ).toDate(),
                         startDate: moment(Entity.FechaAlta(), 'YYYY-MM-DD HH:mm:ss')
                             .add(1, 'day').toDate(),
                         value: Entity.FechaLimite(),
@@ -33,6 +37,10 @@
                 <input class="form-control" size="16" type="text" data-bind="dateTimePicker: Entity.FinalizacionConsultas, dateTimePickerOptions: {
                     format: 'dd-mm-yyyy hh:ii',
                     momentFormat: 'DD-MM-YYYY HH:mm',
+                    startDate: moment.max(
+                        moment(),
+                        moment(Entity.FechaLimite(), 'DD-MM-YYYY HH:mm')
+                    ).toDate(),
                     startDate: moment(Entity.FechaLimite(), 'DD-MM-YYYY HH:mm').toDate(),
                     value: Entity.FinalizacionConsultas(),
                     todayBtn: true
@@ -42,7 +50,7 @@
                     <button class="btn default date-set" type="button">
                         <i class="fa fa-calendar"></i>
                     </button>
-                    <button class="btn default" type="button" data-toggle="tooltip" title="La fecha de Muro de Consultas debe ser al menos 48 horas mayor a la fecha limite para aceptar la invitación">
+                    <button class="btn default" type="button" data-toggle="tooltip" title="La fecha de Muro de Consultas no puede ser anterior a la fecha límite para aceptar la invitación">
                         <i class="fa fa-info-circle" aria-hidden="true"></i>
                     </button>
                 </span>
@@ -64,6 +72,10 @@
                     data-bind="dateTimePicker: Entity.FechaLimiteTecnica, dateTimePickerOptions: {
                         format: 'dd-mm-yyyy hh:ii',
                         momentFormat: 'DD-MM-YYYY HH:mm',
+                        startDate: moment.max(
+                            moment(),
+                            moment(Entity.FechaLimite(), 'DD-MM-YYYY HH:mm').add(1, 'day')
+                        ).toDate(),
                         startDate: moment(Entity.FechaLimite(), 'DD-MM-YYYY HH:mm')
                             .add(1, 'day').toDate(),
                         value: Entity.FechaLimiteTecnica(),
@@ -75,7 +87,7 @@
                     <button class="btn default date-set" type="button">
                         <i class="fa fa-calendar"></i>
                     </button>
-                    <button class="btn default" type="button" data-toggle="tooltip" title="La fecha de Presentación Técnica debe ser al menos 48 horas mayor a la fecha limite para aceptar la invitación">
+                    <button class="btn default" type="button" data-toggle="tooltip" title="La fecha de Presentación Técnica debe ser al menos 24 horas posterior a la fecha límite para aceptar la invitación">
                         <i class="fa fa-info-circle" aria-hidden="true"></i>
                     </button>
                 </span>
@@ -95,6 +107,15 @@
                         data-bind="dateTimePicker: Entity.InicioSubasta, dateTimePickerOptions: {
                             format: 'dd-mm-yyyy hh:ii',
                             momentFormat: 'DD-MM-YYYY HH:mm',
+                            startDate: moment.max(
+                                moment(),
+                                Entity.IncluyePrecalifTecnica() == 'si' && Entity.FechaLimiteTecnica()
+                                    ? moment.max(
+                                        moment(Entity.FinalizacionConsultas(), 'DD-MM-YYYY HH:mm'),
+                                        moment(Entity.FechaLimiteTecnica(), 'DD-MM-YYYY HH:mm')
+                                    ).add(1, 'day')
+                                    : moment(Entity.FinalizacionConsultas(), 'DD-MM-YYYY HH:mm').add(1, 'day')
+                            ).toDate(),
                             startDate: Entity.IncluyePrecalifTecnica() == 'si' && Entity.FechaLimiteTecnica()
                                 ? moment.max(
                                     moment(Entity.FinalizacionConsultas(), 'DD-MM-YYYY HH:mm'),
@@ -154,6 +175,19 @@
                         dateTimePickerOptions: {
                         format: 'dd-mm-yyyy hh:ii',
                         momentFormat: 'DD-MM-YYYY HH:mm',
+                        startDate: moment.max(
+                            moment(),
+                            IsGo()
+                            ? moment(Entity.FechaLimite(), 'DD-MM-YYYY HH:mm').add(3, 'days')
+                            : (Entity.IncluyePrecalifTecnica() == 'si' && Entity.FechaLimiteTecnica()
+                                ? moment.max(
+                                    moment(Entity.FinalizacionConsultas(), 'DD-MM-YYYY HH:mm'),
+                                    moment(Entity.FechaLimiteTecnica(), 'DD-MM-YYYY HH:mm')
+                                ).add(1, 'day')
+                                : (Entity.FinalizacionConsultas()
+                                    ? moment(Entity.FinalizacionConsultas(), 'DD-MM-YYYY HH:mm').add(1, 'day')
+                                    : moment()))
+                        ).toDate(),
                         startDate: Entity.IncluyePrecalifTecnica() == 'si' && Entity.FechaLimiteTecnica()
                             ? moment.max(
                                 moment(Entity.FinalizacionConsultas(), 'DD-MM-YYYY HH:mm'),
@@ -172,7 +206,7 @@
                         <button class="btn default date-set" type="button">
                             <i class="fa fa-calendar"></i>
                         </button>
-                        <button class="btn default" type="button" data-toggle="tooltip" title="La fecha de Presentación Económica debe ser al menos 24 horas mayor a la fecha de cierre del muro de consultas">
+                        <button class="btn default" type="button" data-toggle="tooltip" data-bind="attr: { title: IsGo() ? 'La fecha de Presentación Económica debe ser al menos 3 días posterior a la fecha límite para aceptar la invitación' : 'La fecha de Presentación Económica debe ser al menos 24 horas posterior a la última etapa entre el muro de consultas y la presentación técnica' }">
                         <i class="fa fa-info-circle" aria-hidden="true"></i>
                     </button>
                     </span>
@@ -231,6 +265,10 @@
                                     dateTimePickerOptions: {
                                         format: 'dd-mm-yyyy hh:ii',
                                         momentFormat: 'DD-MM-YYYY HH:mm',
+                                        startDate: moment.max(
+                                            moment(),
+                                            moment(Entity.segunda_ronda_fecha(), 'DD-MM-YYYY HH:mm')
+                                        ).toDate(),
                                         startDate: moment(Entity.segunda_ronda_fecha(), 'DD-MM-YYYY HH:mm').toDate(),
                                         value: Entity.tercera_ronda_fecha_limite(),
                                         todayBtn: true
@@ -265,6 +303,10 @@
                                     dateTimePickerOptions: {
                                         format: 'dd-mm-yyyy hh:ii',
                                         momentFormat: 'DD-MM-YYYY HH:mm',
+                                        startDate: moment.max(
+                                            moment(),
+                                            moment(Entity.tercera_ronda_fecha_limite(), 'DD-MM-YYYY HH:mm')
+                                        ).toDate(),
                                         startDate: moment(Entity.tercera_ronda_fecha_limite(), 'DD-MM-YYYY HH:mm').toDate(),
                                         value: Entity.cuarta_ronda_fecha_limite(),
                                         todayBtn: true
@@ -299,6 +341,10 @@
                                     dateTimePickerOptions: {
                                         format: 'dd-mm-yyyy hh:ii',
                                         momentFormat: 'DD-MM-YYYY HH:mm',
+                                        startDate: moment.max(
+                                            moment(),
+                                            moment(Entity.cuarta_ronda_fecha_limite(), 'DD-MM-YYYY HH:mm')
+                                        ).toDate(),
                                         startDate: moment(Entity.cuarta_ronda_fecha_limite(), 'DD-MM-YYYY HH:mm').toDate(),
                                         value: Entity.quita_ronda_fecha_limite(),
                                         todayBtn: true
