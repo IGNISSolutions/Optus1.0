@@ -11,6 +11,8 @@
                             moment(),
                             moment(Entity.FechaAlta(), 'YYYY-MM-DD HH:mm:ss').add(1, 'day')
                         ).toDate(),
+                        startDate: moment(Entity.FechaAlta(), 'YYYY-MM-DD HH:mm:ss')
+                            .add(1, 'day').toDate(),
                         value: Entity.FechaLimite(),
                         todayBtn: true,
                         
@@ -39,6 +41,7 @@
                         moment(),
                         moment(Entity.FechaLimite(), 'DD-MM-YYYY HH:mm')
                     ).toDate(),
+                    startDate: moment(Entity.FechaLimite(), 'DD-MM-YYYY HH:mm').toDate(),
                     value: Entity.FinalizacionConsultas(),
                     todayBtn: true
                 },
@@ -73,6 +76,8 @@
                             moment(),
                             moment(Entity.FechaLimite(), 'DD-MM-YYYY HH:mm').add(1, 'day')
                         ).toDate(),
+                        startDate: moment(Entity.FechaLimite(), 'DD-MM-YYYY HH:mm')
+                            .add(1, 'day').toDate(),
                         value: Entity.FechaLimiteTecnica(),
                         todayBtn: true
                     },
@@ -111,6 +116,13 @@
                                     ).add(1, 'day')
                                     : moment(Entity.FinalizacionConsultas(), 'DD-MM-YYYY HH:mm').add(1, 'day')
                             ).toDate(),
+                            startDate: Entity.IncluyePrecalifTecnica() == 'si' && Entity.FechaLimiteTecnica()
+                                ? moment.max(
+                                    moment(Entity.FinalizacionConsultas(), 'DD-MM-YYYY HH:mm'),
+                                    moment(Entity.FechaLimiteTecnica(), 'DD-MM-YYYY HH:mm')
+                                ).add(1, 'day').toDate()
+                                : moment(Entity.FinalizacionConsultas(), 'DD-MM-YYYY HH:mm')
+                                    .add(1, 'day').toDate(),
                             value: Entity.InicioSubasta(),
                             todayBtn: true
                         },
@@ -176,6 +188,14 @@
                                     ? moment(Entity.FinalizacionConsultas(), 'DD-MM-YYYY HH:mm').add(1, 'day')
                                     : moment()))
                         ).toDate(),
+                        startDate: Entity.IncluyePrecalifTecnica() == 'si' && Entity.FechaLimiteTecnica()
+                            ? moment.max(
+                                moment(Entity.FinalizacionConsultas(), 'DD-MM-YYYY HH:mm'),
+                                moment(Entity.FechaLimiteTecnica(), 'DD-MM-YYYY HH:mm')
+                            ).add(1, 'day').toDate()
+                            : (Entity.FinalizacionConsultas()
+                                ? moment(Entity.FinalizacionConsultas(), 'DD-MM-YYYY HH:mm').add(1, 'day').toDate()
+                                : null),
                         value: Entity.FechaLimiteEconomicas(),
                         todayBtn: true
                         },
@@ -249,6 +269,7 @@
                                             moment(),
                                             moment(Entity.segunda_ronda_fecha(), 'DD-MM-YYYY HH:mm')
                                         ).toDate(),
+                                        startDate: moment(Entity.segunda_ronda_fecha(), 'DD-MM-YYYY HH:mm').toDate(),
                                         value: Entity.tercera_ronda_fecha_limite(),
                                         todayBtn: true
                                     },
@@ -286,6 +307,7 @@
                                             moment(),
                                             moment(Entity.tercera_ronda_fecha_limite(), 'DD-MM-YYYY HH:mm')
                                         ).toDate(),
+                                        startDate: moment(Entity.tercera_ronda_fecha_limite(), 'DD-MM-YYYY HH:mm').toDate(),
                                         value: Entity.cuarta_ronda_fecha_limite(),
                                         todayBtn: true
                                     },
@@ -323,6 +345,7 @@
                                             moment(),
                                             moment(Entity.cuarta_ronda_fecha_limite(), 'DD-MM-YYYY HH:mm')
                                         ).toDate(),
+                                        startDate: moment(Entity.cuarta_ronda_fecha_limite(), 'DD-MM-YYYY HH:mm').toDate(),
                                         value: Entity.quita_ronda_fecha_limite(),
                                         todayBtn: true
                                     },
